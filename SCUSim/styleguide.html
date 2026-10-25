@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SCUSim · 设计基座预览 (Airbnb × 川大红)</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 顶栏示例 -->
+  <header class="topbar">
+    <div class="topbar__brand">🐼 SCUSim</div>
+    <div class="topbar__meta">
+      <span class="pill pill--accent">第 1 学期</span>
+      <span class="pill">行动点 3/4</span>
+      <button class="btn-circle" aria-label="设置">⚙️</button>
+    </div>
+  </header>
+
+  <main class="screen stack-6">
+    <section>
+      <h1 class="section-title">设计基座 · 视觉预览</h1>
+      <p class="lead">Airbnb 设计语言 × 川大红。本页是 <code>css/style.css</code> 的组件演示，供四人在开发 UI 前对齐视觉基线。</p>
+    </section>
+
+    <!-- 配色令牌 -->
+    <section class="card">
+      <h2 class="section-title">配色令牌</h2>
+      <div class="grid grid--auto" style="margin-top:16px">
+        <div class="stack-2"><div style="height:48px;border-radius:12px;background:var(--canvas);border:1px solid var(--border)"></div><span class="tiny">canvas #fff</span></div>
+        <div class="stack-2"><div style="height:48px;border-radius:12px;background:var(--canvas-warm)"></div><span class="tiny">canvas-warm</span></div>
+        <div class="stack-2"><div style="height:48px;border-radius:12px;background:var(--text-1)"></div><span class="tiny">text-1</span></div>
+        <div class="stack-2"><div style="height:48px;border-radius:12px;background:var(--text-2)"></div><span class="tiny">text-2</span></div>
+        <div class="stack-2"><div style="height:48px;border-radius:12px;background:var(--accent)"></div><span class="tiny">accent 川大红</span></div>
+        <div class="stack-2"><div style="height:48px;border-radius:12px;background:var(--accent-soft)"></div><span class="tiny">accent-soft</span></div>
+        <div class="stack-2"><div style="height:48px;border-radius:12px;background:var(--success)"></div><span class="tiny">success</span></div>
+        <div class="stack-2"><div style="height:48px;border-radius:12px;background:var(--warning)"></div><span class="tiny">warning</span></div>
+        <div class="stack-2"><div style="height:48px;border-radius:12px;background:var(--danger)"></div><span class="tiny">danger</span></div>
+      </div>
+    </section>
+
+    <!-- 按钮 -->
+    <section class="card">
+      <h2 class="section-title">按钮</h2>
+      <div class="row" style="margin-top:16px">
+        <button class="btn btn--primary">主行动</button>
+        <button class="btn btn--secondary">次行动</button>
+        <button class="btn btn--ghost">文字按钮</button>
+        <button class="btn btn--danger">危险</button>
+        <button class="btn btn--primary" disabled>禁用态</button>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn btn--primary btn--lg">大号</button>
+        <button class="btn btn--primary btn--sm">小号</button>
+        <button class="btn-circle" aria-label="示例">＋</button>
+      </div>
+    </section>
+
+    <!-- 标签 / 胶囊 -->
+    <section class="card">
+      <h2 class="section-title">标签 / 胶囊 (含可选中)</h2>
+      <div class="row" style="margin-top:16px">
+        <span class="pill">普通</span>
+        <span class="pill pill--accent">川大红</span>
+        <span class="pill pill--success">通过</span>
+        <span class="pill pill--warning">警告</span>
+        <span class="pill pill--danger">挂科</span>
+        <span class="pill pill--selectable">可点选</span>
+        <span class="pill pill--selectable pill--selected">已选中</span>
+      </div>
+    </section>
+
+    <!-- 属性状态条 -->
+    <section class="card">
+      <h2 class="section-title">属性状态条</h2>
+      <div class="stack" style="margin-top:16px">
+        <div class="stat">
+          <div class="stat__head"><span class="stat__name">📚 学业</span><span class="stat__value">12</span></div>
+          <div class="stat__track"><div class="stat__fill" style="width:60%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="stat__head"><span class="stat__name">💰 资金</span><span class="stat__value">8</span></div>
+          <div class="stat__track"><div class="stat__fill stat__fill--warn" style="width:40%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="stat__head"><span class="stat__name">❤️ 健康</span><span class="stat__value">2 ⚠️</span></div>
+          <div class="stat__track"><div class="stat__fill stat__fill--bad" style="width:15%"></div></div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:16px">
+        <span class="tiny">行动点：</span>
+        <span class="ap-dots"><i class="ap-dot is-on"></i><i class="ap-dot is-on"></i><i class="ap-dot is-on"></i><i class="ap-dot"></i></span>
+      </div>
+    </section>
+
+    <!-- 表单 -->
+    <section class="card">
+      <h2 class="section-title">表单</h2>
+      <div class="grid grid--2" style="margin-top:16px">
+        <div class="field">
+          <label class="field__label">角色姓名</label>
+          <input class="input" placeholder="例如：李华" />
+        </div>
+        <div class="field">
+          <label class="field__label">所在学院</label>
+          <select class="select"><option>计算机学院</option><option>商学院</option></select>
+        </div>
+        <div class="field">
+          <label class="field__label">含错误示例</label>
+          <input class="input input--error" value="姓名过长超过限制" />
+        </div>
+      </div>
+    </section>
+
+    <!-- 事件弹窗示例 -->
+    <section class="card">
+      <h2 class="section-title">事件弹窗 (Modal)</h2>
+      <div class="row" style="margin-top:16px">
+        <button class="btn btn--primary" id="openModal">打开事件弹窗</button>
+        <button class="btn btn--secondary" id="openToast">触发提示条</button>
+      </div>
+    </section>
+
+    <p class="tiny">预览页仅用于视觉对齐，不参与游戏逻辑。游戏界面由 <code>ui.js</code> 基于这些类构建。</p>
+  </main>
+
+  <!-- 弹窗 -->
+  <div class="modal-overlay" id="modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+      <h3 class="modal__title" id="mt">🎉 社团招新</h3>
+      <p class="modal__body">文学社向你发出邀请！加入可获得「文艺」标签，但会占用本周一次行动点。是否加入？</p>
+      <div class="modal__actions">
+        <button class="btn btn--primary btn--block" data-close>加入社团</button>
+        <button class="btn btn--secondary btn--block" data-close>婉拒</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 提示条 -->
+  <div class="toast" id="toast" hidden>已保存存档 ✓</div>
+
+  <script>
+    const modal = document.getElementById('modal');
+    const toast = document.getElementById('toast');
+    document.getElementById('openModal').onclick = () => { modal.hidden = false; };
+    modal.querySelectorAll('[data-close]').forEach(b => b.onclick = () => { modal.hidden = true; });
+    modal.onclick = (e) => { if (e.target === modal) modal.hidden = true; };
+    document.getElementById('openToast').onclick = () => {
+      toast.hidden = false; toast.classList.add('toast--success');
+      setTimeout(() => { toast.hidden = true; }, 1800);
+    };
+  </script>
+</body>
+</html>
