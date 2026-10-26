@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "list": [
+    { "id": "study_hard", "name": "学霸", "desc": "天生爱学习", "effects": {} },
+    { "id": "social_butterfly", "name": "社牛", "desc": "社交无压力", "effects": {} },
+    { "id": "athlete", "name": "运动达人", "desc": "生命在于运动", "effects": {} },
+    { "id": "foodie", "name": "吃货", "desc": "美食不可辜负", "effects": {} },
+    { "id": "night_owl", "name": "夜猫子", "desc": "越夜越精神", "effects": {} },
+    { "id": "grind", "name": "卷王", "desc": "卷无止境", "effects": {} },
+    { "id": "chill", "name": "佛系", "desc": "一切随缘", "effects": {} },
+    { "id": "club_nerd", "name": "社团达人", "desc": "社团是我的家", "effects": {} },
+    { "id": "researcher", "name": "科研党", "desc": "实验室常驻", "effects": {} },
+    { "id": "startup", "name": "创业青年", "desc": "下一个风口", "effects": {} },
+    { "id": "artist", "name": "文艺青年", "desc": "诗与远方", "effects": {} },
+    { "id": "gamer", "name": "游戏宅", "desc": "电竞选手预备", "effects": {} }
+  ]
+}

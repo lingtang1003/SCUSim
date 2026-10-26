@@ -1,0 +1,18 @@
+# 依赖（本项目零运行时依赖，但以防万一）
+node_modules/
+
+# 本地存档/构建产物
+*.log
+.DS_Store
+Thumbs.db
+
+# 编辑器/IDE
+.vscode/
+.idea/
+*.swp
+
+# WorkBuddy 内部目录（不属于游戏产物）
+.workbuddy/
+
+# 可选：若不使用 Pages 构建，以下非运行时文件可不入库；保留亦无害
+# docs/ 与 styleguide.html 仅供开发预览，可按需忽略
