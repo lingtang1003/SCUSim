@@ -22,8 +22,10 @@ export async function loadConfig(reader) {
     read = (path) => Promise.resolve(reader.read(path));
   } else {
     // 浏览器默认：fetch + import.meta.url（loader 唯一允许的浏览器 API）
+    // 注意：loader.js 位于 src/config/ 下，配置目录在项目根 config/，
+    // 因此需 ../../config/（而非 ../config/，后者会解析到 src/config/ 导致 404）。
     read = async (path) => {
-      const url = new URL(`../config/${path}.json`, import.meta.url);
+      const url = new URL(`../../config/${path}.json`, import.meta.url);
       const res = await fetch(url);
       if (!res.ok) {
         throw { ok: false, reason: `加载 ${path} 失败`, errors: [`${path}.json HTTP ${res.status}`] };

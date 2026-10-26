@@ -262,7 +262,7 @@ if (typeof document !== 'undefined' && typeof document.getElementById === 'funct
   const el = document.getElementById('app');
   if (el) {
     const controller = createController({
-      loader,
+      loader: { loadConfig },
       storage: createStorage(),
       engine,
       createRng,
