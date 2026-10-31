@@ -3,26 +3,49 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#b9dcff" />
+  <meta name="theme-color" content="#faf7f6" />
   <meta name="description" content="SCUSim · 川大校园生活模拟器：视觉小说式的校园养成，40 个星期，从入学到毕业。" />
   <title>SCUSim · 川大校园生活模拟器</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    /* 首屏底色，避免脚本加载前白闪（与 style.css 的天空渐变一致） */
-    html, body { background: linear-gradient(180deg, #e8f4ff, #b9dcff 60%, #ffe6b0); }
+    /* 首屏底色（JS 起来之前的 1 帧）：红白主题，避免蓝金闪一下 */
+    html, body { background: #faf7f6; }
     #app { min-height: 100vh; }
     #boot {
       position: fixed; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 10px;
-      color: #3c5c8c; letter-spacing: .2em; font-size: 14px;
+      align-items: center; justify-content: center; gap: 14px;
+      background: #faf7f6;
+      color: #1a1414; letter-spacing: .24em; font-size: 15px;
     }
-    #boot small { letter-spacing: .08em; color: #7d90ab; }
+    #boot .boot__mark {
+      width: 46px; height: 46px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: #b3121a; color: #fff;
+      font-family: Georgia, "Songti SC", serif; font-size: 13px; letter-spacing: .06em;
+      box-shadow: 0 10px 24px rgba(179, 18, 26, .28);
+    }
+    #boot small { letter-spacing: .08em; color: #948a87; font-size: 12px; }
+    #boot .boot__bar {
+      width: 96px; height: 2px; border-radius: 2px;
+      background: linear-gradient(90deg, #b3121a, rgba(179, 18, 26, .15));
+      animation: boot-slide 1.2s ease-in-out infinite;
+      transform-origin: left center;
+    }
+    @keyframes boot-slide {
+      0%, 100% { transform: scaleX(.35); opacity: .7; }
+      50% { transform: scaleX(1); opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #boot .boot__bar { animation: none; }
+    }
   </style>
 </head>
 <body>
   <div id="app">
     <div id="boot">
+      <div class="boot__mark">SCU</div>
       <div>川大校园生活模拟器</div>
+      <div class="boot__bar"></div>
       <small>正在准备校园…</small>
     </div>
   </div>

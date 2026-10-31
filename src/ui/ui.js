@@ -36,6 +36,7 @@ const ATTRIBUTE_META = [
 
 const TOTAL_POINTS = 20; // 属性分配总和硬约束（与 balance.attributePointTotal 一致）
 const REQUIRED_TAGS = 3; // 标签数量硬约束
+const ATTR_DISPLAY_MAX = 60; // 属性条填充百分比的展示上限
 const NEXT_WEEK_TEXT = '进入下一周';
 
 /**
@@ -118,11 +119,11 @@ const WEEK_LINES = [
 /** 立绘（玩家可选形象）。art 为 true 时读取 ART.charDir + file。 */
 const APPEARANCES = [
   {
-    id: 'm_hoodie', name: '深蓝卫衣', gender: '男', desc: '安静、话不多，耳机不离身',
+    id: 'm_hoodie', name: '短发男生1', gender: '男',
     art: true, file: 'm_hoodie.webp', c1: '#dfe9f7', c2: '#2f3f66',
   },
   {
-    id: 'f_long', name: '黑长直', gender: '女', desc: '温柔、有耐心，喜欢在窗边看书',
+    id: 'f_long', name: '长发女生1', gender: '女',
     art: true, file: 'f_long.webp', c1: '#ffe4ec', c2: '#c98fa8',
   },
 ];
@@ -481,10 +482,17 @@ export function createApp(ctx) {
           onclick: () => openMenu(),
         }, ['☰']),
       ]),
-      h('div', { class: 'vn-hud__name' }, [
+      h('button', {
+        class: 'vn-hud__name',
+        type: 'button',
+        title: '查看角色信息',
+        'aria-label': '查看角色信息',
+        onclick: () => showProfile(),
+      }, [
         h('span', { class: 'vn-hud__avatar' }, [(player.name || '你').slice(0, 1)]),
         h('span', {}, [player.name || '无名']),
         h('small', {}, [findCollegeName(player.collegeId)]),
+        h('span', { class: 'vn-hud__more' }, ['›']),
       ]),
     ]);
   }
@@ -802,7 +810,6 @@ export function createApp(ctx) {
     });
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['你的名字']),
-      h('p', { class: 'vn-form__desc' }, ['这会是对话框上一直挂着的名字（1-16 字）。']),
       h('div', { class: 'field' }, [
         h('label', { class: 'field__label' }, ['姓名']),
         input,
@@ -838,7 +845,6 @@ export function createApp(ctx) {
           },
         }, [
           h('span', { class: 'vn-opt__name' }, [g === '男' ? '男 · 少年' : '女 · 少女']),
-          h('span', { class: 'vn-opt__desc' }, [g === '男' ? '清爽、干净的校园少年' : '温柔、明亮的校园少女']),
         ])
       )),
       h('button', {
@@ -867,7 +873,7 @@ export function createApp(ctx) {
     const cur = findCollege(creation.collegeId);
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['学院']),
-      h('p', { class: 'vn-form__desc' }, ['每个学院的气质不太一样，选择的标签也会影响你的大学。']),
+      h('p', { class: 'vn-form__desc' }, ['每个学院的气质不太一样。']),
       h('div', { class: 'field' }, [
         h('label', { class: 'field__label' }, ['学院']),
         select,
@@ -994,7 +1000,7 @@ export function createApp(ctx) {
     });
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['选择立绘']),
-      h('p', { class: 'vn-form__desc' }, ['选一个你喜欢的形象，游戏中会一直站在画面左侧。']),
+      h('p', { class: 'vn-form__desc' }, ['选一个你喜欢的形象。']),
       h('div', { class: 'vn-opt-grid' }, list.map((app) => {
         const sel = creation.appearanceId === app.id;
         const art = spriteArtStyle(app);
@@ -1014,7 +1020,6 @@ export function createApp(ctx) {
                 }),
           ]),
           h('span', { class: 'vn-opt__name' }, [app.name]),
-          h('span', { class: 'vn-opt__desc' }, [app.desc]),
           h('span', { class: 'vn-opt__flag' }, [app.gender + ' · ' + (sel ? '已选择' : '点击选择')]),
         ]);
       })),
@@ -1274,6 +1279,74 @@ export function createApp(ctx) {
     ];
     mountOverlay(
       modalShell('结局图鉴', body, [
+        h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['关闭']),
+      ], true)
+    );
+  }
+
+  // ---------------- 弹层：角色信息（点 HUD 姓名牌打开） ----------------
+  function showProfile() {
+    if (!rootEl || !lastState) return;
+    closeOverlay();
+    const state = lastState;
+    const player = state.player || {};
+    const attrs = player.attributes || {};
+    const appearance = findAppearance(ui.appearanceId);
+    const maxTurn = balanceOf('turns', 40);
+    const apMax = balanceOf('actionPointsPerTurn', 4);
+    const academics = state.academics || {};
+    const scores = Array.isArray(academics.semesterScores) ? academics.semesterScores : [];
+    const avg = scores.length
+      ? Math.round(scores.reduce((s, v) => s + (Number(v) || 0), 0) / scores.length)
+      : null;
+    const failed = Number(academics.failedCourses) || 0;
+    const study = Number(academics.studyActions) || 0;
+
+    const bars = ATTRIBUTE_META.map((m) => {
+      const val = Number(attrs[m.key]) || 0;
+      const pct = Math.max(0, Math.min(100, (Math.max(0, val) / ATTR_DISPLAY_MAX) * 100));
+      return h('div', { class: 'stat' }, [
+        h('div', { class: 'stat__head' }, [
+          h('span', { class: 'stat__name' }, [m.icon + ' ' + m.name]),
+          h('span', { class: 'stat__value' }, [String(val)]),
+        ]),
+        h('div', { class: 'stat__track' }, [
+          h('div', { class: 'stat__fill', style: 'width:' + pct + '%' }),
+        ]),
+      ]);
+    });
+
+    const cell = (k, v) => h('div', { class: 'vn-profile__cell' }, [
+      h('div', { class: 'vn-profile__k' }, [k]),
+      h('div', { class: 'vn-profile__v' }, [String(v)]),
+    ]);
+
+    const body = [
+      h('div', { class: 'vn-profile__head' }, [
+        h('span', { class: 'vn-profile__avatar' }, [(player.name || '你').slice(0, 1)]),
+        h('div', {}, [
+          h('div', { class: 'vn-profile__name' }, [player.name || '无名']),
+          h('div', { class: 'vn-profile__sub' }, [
+            findCollegeName(player.collegeId) + ' · ' + (player.gender || '') + ' · ' + appearance.name,
+          ]),
+        ]),
+      ]),
+      h('div', { class: 'vn-profile__grid' }, bars),
+      h('div', { class: 'vn-profile__tags' }, (player.tags || []).map((t) =>
+        h('span', { class: 'pill pill--accent' }, [findTagName(t)])
+      )),
+      h('div', { class: 'vn-profile__meta' }, [
+        cell('学年学期', semesterLabel(state.turn)),
+        cell('回合', state.turn + ' / ' + maxTurn),
+        cell('行动点', (state.actionPoints || 0) + ' / ' + apMax),
+        cell('学习行动', study + ' 次'),
+        cell('考试均分', avg == null ? '—' : avg),
+        cell('挂科', failed + ' 门'),
+      ]),
+    ];
+
+    mountOverlay(
+      modalShell('角色信息', body, [
         h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['关闭']),
       ], true)
     );

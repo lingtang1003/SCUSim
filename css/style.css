@@ -2770,3 +2770,35 @@ a:hover {
 .vn-toast { background: rgba(26, 20, 20, 0.94); }
 .vn-toast--danger { background: var(--red); }
 .vn-toast--warning { background: var(--red-deep); }
+
+/* ---- HUD 姓名牌：可点击查看角色信息 ---- */
+.vn-hud__name {
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.vn-hud__name:hover { background: #fff; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); }
+.vn-hud__more { color: var(--ink-3); font-size: 16px; line-height: 1; margin-left: 2px; }
+.vn-hud__name:hover .vn-hud__more { color: var(--red); }
+
+/* ---- 角色信息弹窗 ---- */
+.vn-profile { display: flex; flex-direction: column; gap: 14px; }
+.vn-profile__head { display: flex; align-items: center; gap: 12px; }
+.vn-profile__avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--red); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 18px;
+  box-shadow: 0 8px 20px rgba(179, 18, 26, 0.3);
+}
+.vn-profile__name { font-size: 20px; font-weight: 800; letter-spacing: 0.08em; color: var(--ink); }
+.vn-profile__sub { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+.vn-profile__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+.vn-profile__tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.vn-profile__meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.vn-profile__cell { padding: 8px 12px; border-radius: 12px; background: #fff; border: 1px solid var(--hair); }
+.vn-profile__k { font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em; }
+.vn-profile__v { font-size: 15px; font-weight: 700; color: var(--ink); margin-top: 2px; }
+@media (max-width: 560px) {
+  .vn-profile__grid { grid-template-columns: 1fr; }
+  .vn-profile__meta { grid-template-columns: 1fr 1fr; }
+}
