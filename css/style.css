@@ -425,11 +425,11 @@ a:hover {
 /* ----------------------------- 5. 立绘 ------------------------------ */
 .vn-sprite {
   position: absolute;
-  left: 2%;
+  left: 1%;
   bottom: 0;
   z-index: var(--z-sprite);
-  width: min(470px, 38vw);
-  height: min(85vh, 780px);
+  width: min(510px, 38vw);
+  height: min(86vh, 800px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -761,19 +761,15 @@ a:hover {
 /* ----------------------------- 8. 选项条 ------------------------------ */
 .vn-choices {
   position: absolute;
-  left: 50%;
-  bottom: 202px;
+  left: 57%;
+  bottom: 200px;
   transform: translateX(-50%);
   z-index: var(--z-choice);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 12px;
-  width: min(430px, 84vw);
-  max-height: 56vh;
-  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 14px;
+  width: min(560px, 86vw);
   padding: 4px;
-  scrollbar-width: none;
 }
 
 .vn-choices::-webkit-scrollbar {
@@ -783,14 +779,15 @@ a:hover {
 .vn-choice {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-3);
-  min-height: 58px;
-  padding: 10px 22px;
+  gap: 2px;
+  min-height: 64px;
+  padding: 9px 12px;
   border-radius: var(--r-md);
   font-size: 18px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   color: #fff;
   text-shadow: 0 1px 6px rgba(24, 48, 88, 0.45);
   background:
@@ -829,14 +826,15 @@ a:hover {
 }
 
 .vn-choice__meta {
-  font-size: var(--t-xs);
-  letter-spacing: 0.04em;
+  font-size: 11px;
+  letter-spacing: 0.02em;
   color: rgba(255, 255, 255, 0.82);
   text-shadow: none;
   white-space: nowrap;
 }
 
 .vn-choice--gold {
+  grid-column: 1 / -1;
   color: #6b4708;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
   background:
@@ -1581,7 +1579,7 @@ a:hover {
   position: static;
   transform: none;
   align-self: center;
-  max-height: none;
+  grid-template-columns: 1fr;
   width: min(430px, 84vw);
   margin-bottom: 6px;
 }
@@ -2255,23 +2253,29 @@ a:hover {
 
   .vn-sprite {
     left: 0;
-    width: min(330px, 46vw);
-    height: min(70vh, 560px);
+    width: min(300px, 34vw);
+    height: min(66vh, 520px);
     opacity: 0.95;
   }
 
-  .vn-text {
-    font-size: 17px;
+  .vn-choices {
+    left: 63%;
+    width: min(500px, 86vw);
+    gap: 8px 10px;
   }
 
   .vn-choice {
-    min-height: 52px;
+    min-height: 56px;
     font-size: 16px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.1em;
   }
 
   .vn-choice__meta {
     font-size: 10px;
+  }
+
+  .vn-text {
+    font-size: 17px;
   }
 }
 
@@ -2312,8 +2316,8 @@ a:hover {
 
   .vn-sprite {
     left: 0;
-    width: 64vw;
-    height: 60vh;
+    width: 78vw;
+    height: 62vh;
     opacity: 0.95;
   }
 
@@ -2345,10 +2349,11 @@ a:hover {
   .vn-choices {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    bottom: 148px;
+    left: 50%;
+    top: 78px;
+    bottom: auto;
     width: 94vw;
     gap: 8px;
-    max-height: 40vh;
   }
 
   .vn-choices--event {

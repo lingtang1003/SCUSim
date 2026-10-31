@@ -19,7 +19,7 @@
 |---|---|---|---|
 | 标题页 | 启动 / 返回标题 | 徽记 + 标题 + 竖排菜单 + 导入存档 | `.vn-title` `.vn-menu-btn` |
 | 创建角色（6 步） | 开始新游戏 | 左：立绘预览 + 角色摘要；右：步骤表单 | `.vn-create` `.vn-step` `.vn-opt` `.vn-tag` |
-| 主舞台 | 新游戏 / 读档 | 背景层 + 立绘 + HUD + 选项条 + 对话框 | `.vn-stage` `.vn-sprite` `.vn-hud` `.vn-choices` `.vn-dialogue` |
+| 主舞台 | 新游戏 / 读档 | 背景层 + 立绘 + HUD + 选项条（2 列 × 3 行）+ 对话框 | `.vn-stage` `.vn-sprite` `.vn-hud` `.vn-choices` `.vn-dialogue` |
 | 事件弹层 | 回合触达事件 | 暗化场景 + 事件名 + 选项 + 对话框正文 | `.vn-event` `.vn-choices--event` |
 | 结局 | 第 40 回合 | 整屏渐变 + 结局卡 + 属性回顾 | `.vn-ending` |
 | 菜单抽屉 | HUD ☰ | 右侧玻璃面板：保存/读取/回放/设置/商城 | `.vn-drawer` `.vn-scrim` |
@@ -38,6 +38,11 @@
 .vn-choices       底部上方的行动条（AP=0 时只剩金色「进入下一周」）
 .vn-dialogue      底部对话框：说话人牌 + 正文 + 效果 chips + ▼
 ```
+
+**选项条布局**：6 个基础行动固定 **2 列 × 3 行**（`.vn-choices` 用 grid，整体居中偏右，给左侧立绘让位；
+`left: 57%`）。AP 用尽时金色「进入下一周」跨两列（`grid-column: 1 / -1`）。
+**突发事件的选项不受此影响**：`.vn-choices--event` 强制单列，居中显示在对话框上方。
+窄屏（≤560px）时两列布局整体移到顶部，避免压住立绘的脸。
 
 行动 → 背景的映射在 `ACTION_SCENE`（图已就位，`ART.enabled = true`）：
 
