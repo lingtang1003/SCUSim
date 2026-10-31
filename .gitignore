@@ -14,5 +14,10 @@ Thumbs.db
 # WorkBuddy 内部目录（不属于游戏产物）
 .workbuddy/
 
+# 本地运行截图 / 预览产物（不进仓库）
+docs/screenshots/
+.shots/
+.shots*/
+
 # 可选：若不使用 Pages 构建，以下非运行时文件可不入库；保留亦无害
 # docs/ 与 styleguide.html 仅供开发预览，可按需忽略

@@ -23,6 +23,8 @@ export function createGameState(options) {
       name: typeof o.name === 'string' ? o.name : '',
       gender: o.gender === '女' ? '女' : '男',
       collegeId: typeof o.collegeId === 'string' ? o.collegeId : '',
+      // 外观（立绘 id）：纯展示字段，不参与任何数值计算，仅随存档保存
+      appearance: typeof o.appearance === 'string' ? o.appearance : '',
       attributes: {
         knowledge: Number(attrs.knowledge) || 0,
         social: Number(attrs.social) || 0,

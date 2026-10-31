@@ -41,6 +41,7 @@
 | `name` | string | 是 | —— | ⚠️ 提议 `1..16` 字符（中文/字母/数字/常见符号） | 创建(C) | 是 |
 | `gender` | enum | 是 | —— | ⚠️ 提议 `['男','女']` | 创建(C) | 是 |
 | `collegeId` | string | 是 | —— | 必须存在于 `colleges.json` | 创建(C) | 是 |
+| `appearance` | string | 否 | `""` | 立绘 id（见 `src/ui/ui.js` 的 `APPEARANCES`）；**纯展示字段**，不参与任何数值结算 | 创建(C) / 设置(C) | 是 |
 | `attributes` | object | 是 | —— | 见 §2.1 | 创建(C) / 规则(B) | 是 |
 | `tags` | string[3] | 是 | —— | 必须存在于 `tags.json`，严格 3 个 | 创建(C) | 是 |
 
@@ -128,6 +129,7 @@
 | `seedDisplay` | boolean | 是否在 UI 显示种子 |
 | `reduceMotion` | boolean | 减弱动画 |
 | `lastSaveAt` | number | 时间戳，仅展示 |
+| `appearance` | string | 上次选择的立绘 id，用于新游戏时的默认值（真正生效的是 `player.appearance`） |
 
 > 设置存于 storage 独立 key，不参与 GameState 序列化。
 

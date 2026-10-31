@@ -9,6 +9,11 @@
  *  - 模块顶层【不访问 DOM】（保证 Node import 不抛错）；DOM 仅在函数内部使用。
  *  - rng 由本层持有并在 newGame/doAction/advance/resolvePendingEvent 全程复用同一实例；
  *    读档时用 rng.setState(state.rngState) 还原随机序列。
+ *
+ * 与 UI 的契约：
+ *  - render(state, view)：view = { availability, actionId?, actionSeq? }
+ *      actionId/actionSeq 用于让表现层切换到对应场景（每个本周行动一张背景）。
+ *  - 立绘偏好存在 state.player.appearance，随存档走；设置面板改立绘走 onChangeAppearance。
  */
 
 import { loadConfig } from './config/loader.js';
@@ -33,6 +38,8 @@ export function createController(deps) {
   let config = null;
   let hasSave = false;
   let app = null;
+  let appearanceId = '';
+  let actionSeq = 0;
 
   // 对每项行动计算可用性，作为 render 的输入
   function computeAvailability(s) {
@@ -44,9 +51,14 @@ export function createController(deps) {
     return availability;
   }
 
-  function renderState() {
+  function renderState(view) {
     if (!state) return;
-    app.render(state, { availability: computeAvailability(state) });
+    const payload = { availability: computeAvailability(state) };
+    if (view && view.actionId) {
+      payload.actionId = view.actionId;
+      payload.actionSeq = view.actionSeq;
+    }
+    app.render(state, payload);
   }
 
   function endingOf(id) {
@@ -54,11 +66,19 @@ export function createController(deps) {
     return (list || []).find((e) => e.id === id) || { id, name: id, desc: '' };
   }
 
+  function toast(msg, kind) {
+    if (app && typeof app.showToast === 'function') app.showToast(msg, kind);
+    else if (app && typeof app.showError === 'function' && kind === 'danger') app.showError(msg);
+  }
+
   // ---------------- 回调：新游戏 ----------------
   async function onNewGame(opts) {
     if (!opts || typeof opts !== 'object') {
       app.showError('创建数据无效');
       return;
+    }
+    if (typeof opts.appearance === 'string' && opts.appearance) {
+      appearanceId = opts.appearance;
     }
     const seedNum = Number.isFinite(opts.seed)
       ? opts.seed
@@ -72,11 +92,16 @@ export function createController(deps) {
       return;
     }
     state = res.state;
+    if (!state.player.appearance && appearanceId) {
+      state.player.appearance = appearanceId;
+    }
     await storage.saveGame(state);
+    await storage.saveSettings({ appearance: state.player.appearance || appearanceId });
     hasSave = true;
-    // 回合 1 可能已生成固定事件（社团招新），优先弹事件
+    actionSeq = 0;
+    renderState();
+    // 回合 1 可能已生成固定事件（社团招新），在场景之上弹事件
     if (state.pendingEvent) app.showEvent(state.pendingEvent);
-    else renderState();
   }
 
   // ---------------- 回调：继续游戏 ----------------
@@ -88,8 +113,22 @@ export function createController(deps) {
     }
     state = r.state;
     rng = makeRng((state.rngState != null ? state.rngState : 0) >>> 0);
+    if (state.player && state.player.appearance) {
+      appearanceId = state.player.appearance;
+    }
     hasSave = true;
+    actionSeq = 0;
     renderState();
+  }
+
+  // ---------------- 回调：手动存档 ----------------
+  async function onSave() {
+    if (!state) {
+      toast('还没有可保存的进度', 'danger');
+      return;
+    }
+    await storage.saveGame(state);
+    toast('进度已保存到本机', 'success');
   }
 
   // ---------------- 回调：执行行动 ----------------
@@ -97,11 +136,12 @@ export function createController(deps) {
     if (!state) return;
     const res = eng.doAction(state, actionId, config, rng);
     if (!res.ok) {
-      app.showError(res.message || '行动失败');
+      app.showError(res.reason === 'AP' ? '行动点不够了，先结束这一周吧' : '这一步现在做不了');
       return;
     }
+    actionSeq += 1;
     await storage.saveGame(state);
-    renderState();
+    renderState({ actionId, actionSeq });
   }
 
   // ---------------- 回调：推进回合 ----------------
@@ -115,14 +155,14 @@ export function createController(deps) {
     await storage.saveGame(state);
     if (res.endingId) {
       await storage.unlockEnding(res.endingId);
+      renderState();
       app.showEnding(endingOf(res.endingId));
       return;
     }
+    renderState();
     if (res.pendingEvent || state.pendingEvent) {
       app.showEvent(state.pendingEvent);
-      return;
     }
-    renderState();
   }
 
   // ---------------- 回调：结算事件 ----------------
@@ -135,6 +175,17 @@ export function createController(deps) {
     }
     await storage.saveGame(state);
     renderState();
+  }
+
+  // ---------------- 回调：换立绘 ----------------
+  async function onChangeAppearance(id) {
+    if (!state || typeof id !== 'string' || !id) return;
+    appearanceId = id;
+    // 外观是纯展示字段：只写入存档，不参与任何结算
+    state.player.appearance = id;
+    await storage.saveGame(state);
+    await storage.saveSettings({ appearance: id });
+    if (app && typeof app.setAppearance === 'function') app.setAppearance(id);
   }
 
   // ---------------- 回调：导出存档 ----------------
@@ -157,6 +208,7 @@ export function createController(deps) {
       if (url && typeof URL.revokeObjectURL === 'function') {
         URL.revokeObjectURL(url);
       }
+      toast('存档已导出', 'success');
     } catch (_) {
       app.showError('导出失败');
     }
@@ -172,7 +224,11 @@ export function createController(deps) {
     }
     state = r.state;
     rng = makeRng((state.rngState != null ? state.rngState : 0) >>> 0);
+    if (state.player && state.player.appearance) {
+      appearanceId = state.player.appearance;
+    }
     hasSave = true;
+    actionSeq = 0;
     await storage.saveGame(state);
     renderState();
   }
@@ -200,18 +256,19 @@ export function createController(deps) {
     const r = await storage.getSettings();
     const settings =
       r && r.ok
-        ? r.settings
-        : { seedDisplay: false, reduceMotion: false, lastSaveAt: 0 };
+        ? { ...r.settings, appearance: appearanceId || r.settings.appearance || '' }
+        : { seedDisplay: false, reduceMotion: false, lastSaveAt: 0, appearance: appearanceId };
     if (doc && doc.documentElement && doc.documentElement.classList) {
       doc.documentElement.classList.toggle('reduce-motion', !!settings.reduceMotion);
     }
     app.showSettings(settings, async (newSettings) => {
-      await storage.saveSettings(newSettings || {});
+      const merged = newSettings || {};
+      await storage.saveSettings(merged);
       if (doc && doc.documentElement && doc.documentElement.classList) {
-        doc.documentElement.classList.toggle(
-          'reduce-motion',
-          !!(newSettings && newSettings.reduceMotion)
-        );
+        doc.documentElement.classList.toggle('reduce-motion', !!merged.reduceMotion);
+      }
+      if (typeof merged.appearance === 'string' && merged.appearance) {
+        appearanceId = merged.appearance;
       }
     });
   }
@@ -224,9 +281,11 @@ export function createController(deps) {
   const callbacks = {
     onNewGame,
     onLoadGame,
+    onSave,
     onAction,
     onAdvance,
     onResolveEvent,
+    onChangeAppearance,
     onExport,
     onImport,
     onClearSave,
@@ -235,10 +294,15 @@ export function createController(deps) {
     onOpenMenu,
   };
 
-  // 启动时加载配置 → 创建 UI → 挂载主菜单
+  // 启动时加载配置 → 读取偏好 → 创建 UI → 挂载主菜单
   async function start() {
     config = await loader.loadConfig();
-    app = makeApp({ config, callbacks, doc });
+    const pref = await storage.getSettings();
+    appearanceId = (pref && pref.ok && pref.settings && pref.settings.appearance) || '';
+    if (doc && doc.documentElement && doc.documentElement.classList && pref && pref.ok) {
+      doc.documentElement.classList.toggle('reduce-motion', !!pref.settings.reduceMotion);
+    }
+    app = makeApp({ config, callbacks, doc, appearance: appearanceId });
     const r = await storage.loadGame();
     hasSave = r.ok;
     app.mount(rootEl, { hasSave });
@@ -272,8 +336,9 @@ if (typeof document !== 'undefined' && typeof document.getElementById === 'funct
     });
     controller.start().catch((e) => {
       el.innerHTML =
-        '<div class="screen"><h1 class="section-title">加载失败</h1>' +
-        '<p class="muted">' +
+        '<div style="padding:48px 24px;text-align:center;color:#3c5c8c;font-family:PingFang SC,Microsoft YaHei,sans-serif">' +
+        '<h1 style="font-size:22px;letter-spacing:.1em">加载失败</h1>' +
+        '<p style="opacity:.75">' +
         (e && e.message ? e.message : String(e)) +
         '</p></div>';
     });
