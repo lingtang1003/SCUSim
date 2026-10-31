@@ -1,4 +1,4 @@
-/* =========================================================================
+﻿/* =========================================================================
    SCUSim · 视觉小说皮肤（橙光式）
    —— 天空金调 / 玻璃拟态 / 全屏场景 + 立绘 + 对话框 + 选项条 + 菜单抽屉
    纯原生 CSS，无框架、无预处理器、无外部字体或图片依赖。
@@ -2437,3 +2437,336 @@ a:hover {
     display: none !important;
   }
 }
+
+/* =========================================================================
+   19. 主题皮肤：红 · 白（主） + 黑（辅）
+   —— 只覆盖配色/质感，不改尺寸与布局（放在文件末尾，覆盖上面的默认皮肤）。
+   红 = 强调与主操作；白 = 面板/选项底/正文底；黑 = 正文与极细分隔线。
+   ========================================================================= */
+:root {
+  --red: #b3121a;
+  --red-bright: #d81b25;
+  --red-deep: #7d0c12;
+  --red-soft: rgba(179, 18, 26, 0.1);
+  --ink: #1a1414;
+  --ink-2: #5f5452;
+  --ink-3: #948a87;
+  --paper: #ffffff;
+  --paper-2: #faf7f6;
+  --hair: rgba(26, 20, 20, 0.12);
+  --glass-white: rgba(255, 255, 255, 0.88);
+}
+
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(179, 18, 26, 0.22);
+}
+
+/* ---- HUD ---- */
+.vn-chip {
+  background: var(--glass-white);
+  border-color: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+.vn-chip--gold {
+  background: var(--red);
+  border-color: var(--red-bright);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(179, 18, 26, 0.32);
+}
+.vn-chip--glass { background: var(--glass-white); }
+.vn-chip__k { color: var(--ink-2); }
+.vn-ap { background: rgba(26, 20, 20, 0.18); box-shadow: none; }
+.vn-ap.is-on { background: var(--red); box-shadow: 0 0 8px rgba(179, 18, 26, 0.45); }
+.vn-loc {
+  background: var(--glass-white);
+  border-color: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+}
+.vn-icon {
+  background: var(--glass-white);
+  border-color: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+.vn-icon:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.vn-hud__name {
+  background: var(--glass-white);
+  border-color: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+.vn-hud__name small { color: var(--ink-2); }
+.vn-hud__avatar { background: var(--red); }
+
+/* ---- 对话框（白纸 + 红名牌） ---- */
+.vn-dialogue__box {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 246, 245, 0.96));
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38), inset 0 1px 0 #fff;
+}
+.vn-dialogue__box::after { border-color: rgba(179, 18, 26, 0.12); }
+.vn-speaker {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red-bright);
+  box-shadow: 0 8px 20px rgba(125, 12, 18, 0.36);
+}
+.vn-text { color: var(--ink); }
+.vn-next { color: rgba(26, 20, 20, 0.4); }
+.vn-effect--up {
+  color: var(--red);
+  background: var(--red-soft);
+  border-color: rgba(179, 18, 26, 0.24);
+}
+.vn-effect--down {
+  color: var(--ink-2);
+  background: rgba(26, 20, 20, 0.06);
+  border-color: rgba(26, 20, 20, 0.14);
+}
+
+/* ---- 选项框：白底 + 细描边（关键：去掉大投影，避免间隙里叠出灰雾） ---- */
+.vn-choice {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(250, 246, 245, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
+  backdrop-filter: none;
+  filter: none;
+}
+.vn-choice:hover {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(179, 18, 26, 0.32);
+  filter: none;
+}
+.vn-choice:active { transform: scale(0.995); }
+.vn-choice__label { border-bottom: 0; padding-bottom: 0; }
+.vn-choice__label::before {
+  content: "◆";
+  margin-right: 9px;
+  font-size: 0.58em;
+  vertical-align: 3px;
+  color: var(--red);
+}
+.vn-choice:hover .vn-choice__label::before { color: #fff; }
+.vn-choice__meta { color: var(--ink-2); text-shadow: none; -webkit-text-stroke: 0; }
+.vn-choice:hover .vn-choice__meta { color: rgba(255, 255, 255, 0.86); }
+.vn-choice.is-locked { opacity: 0.5; filter: grayscale(0.35); }
+.vn-choice.is-locked .vn-choice__meta {
+  background: none;
+  padding: 0;
+  color: var(--ink-3);
+}
+.vn-choice--gold {
+  grid-column: 1 / -1;
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(179, 18, 26, 0.36);
+}
+.vn-choice--gold:hover { background: var(--red-bright); border-color: var(--red-bright); }
+.vn-choice--gold .vn-choice__label::before { content: none; }
+.vn-choice--gold .vn-choice__meta { color: rgba(255, 255, 255, 0.85); }
+
+/* ---- 菜单抽屉（白，红点缀） ---- */
+.vn-scrim { background: rgba(20, 14, 14, 0.42); }
+.vn-drawer {
+  background: linear-gradient(180deg, #ffffff, #fbf7f6);
+  border-left: 1px solid rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  box-shadow: -24px 0 60px rgba(0, 0, 0, 0.35);
+}
+.vn-drawer__title { color: var(--ink); }
+.vn-drawer__title::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  margin-right: 10px;
+  vertical-align: -2px;
+  background: var(--red);
+}
+.vn-drawer .vn-icon--close {
+  background: rgba(26, 20, 20, 0.06);
+  border-color: rgba(26, 20, 20, 0.12);
+  color: var(--ink);
+}
+.vn-drawer .vn-icon--close:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.vn-menu-btn {
+  background: #fff;
+  border: 0;
+  border-bottom: 1px solid var(--hair);
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--ink);
+}
+.vn-menu-btn:hover {
+  background: var(--red-soft);
+  border-bottom-color: var(--red);
+  box-shadow: none;
+  transform: none;
+}
+.vn-menu-btn--primary { background: var(--red-soft); border-bottom-color: rgba(179, 18, 26, 0.35); }
+.vn-menu-btn__label { color: var(--ink); }
+.vn-menu-btn__hint { color: var(--ink-2); }
+.vn-menu-btn.is-locked { opacity: 0.45; }
+.vn-drawer__foot { border-top-color: var(--hair); }
+.vn-drawer__credit { color: var(--ink-3); }
+.vn-link { color: var(--red); text-decoration-color: rgba(179, 18, 26, 0.3); }
+.vn-link:hover { color: var(--red-deep); text-decoration-color: currentColor; }
+
+/* ---- 标题页（白卡 + 红 CTA） ---- */
+.vn-title {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(252, 249, 248, 0.92));
+  border-color: #fff;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 #fff;
+}
+.vn-title__crest {
+  background: var(--red);
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(179, 18, 26, 0.4);
+}
+.vn-logo { color: var(--ink); text-shadow: 0 2px 0 #fff, 0 10px 26px rgba(0, 0, 0, 0.12); }
+.vn-logo__sub { color: var(--ink-2); }
+.vn-title__foot { border-top-color: var(--hair); }
+.vn-title__ver { color: var(--ink-3); }
+.vn-title .vn-menu-btn { border-bottom: 0; background: transparent; }
+.vn-title .vn-menu-btn:hover { background: var(--red-soft); }
+.vn-title .vn-menu-btn--primary {
+  background: var(--red);
+  border-radius: var(--r-md);
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(179, 18, 26, 0.34);
+}
+.vn-title .vn-menu-btn--primary:hover { background: var(--red-bright); }
+.vn-title .vn-menu-btn--primary .vn-menu-btn__label { color: #fff; }
+.vn-title .vn-menu-btn--primary .vn-menu-btn__hint { color: rgba(255, 255, 255, 0.8); }
+
+/* ---- 创建角色（白卡） ---- */
+.vn-create__preview { background: rgba(255, 255, 255, 0.92); border-color: #fff; }
+.vn-create__panel { background: linear-gradient(180deg, #ffffff, #fbf8f7); border-color: #fff; }
+.vn-create__title, .vn-form__title, .vn-create__name { color: var(--ink); }
+.vn-create__meta, .vn-form__desc { color: var(--ink-2); }
+.vn-create__attr { background: #fff; border-color: var(--hair); color: var(--ink-2); }
+.vn-step { color: var(--ink-3); background: rgba(26, 20, 20, 0.05); }
+.vn-step i { background: rgba(26, 20, 20, 0.2); }
+.vn-step.is-done { color: var(--ink); background: rgba(26, 20, 20, 0.07); }
+.vn-step.is-done i { background: var(--ink); }
+.vn-step.is-current {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 8px 18px rgba(179, 18, 26, 0.28);
+}
+.vn-step.is-current i { background: rgba(255, 255, 255, 0.3); }
+.vn-opt { background: #fff; border-color: var(--hair); }
+.vn-opt.is-selected { border-color: var(--red); box-shadow: 0 0 0 3px rgba(179, 18, 26, 0.14); }
+.vn-opt__name { color: var(--ink); }
+.vn-opt__desc { color: var(--ink-2); }
+.vn-opt__flag { color: var(--ink-3); }
+.vn-tag { background: #fff; border-color: var(--hair); }
+.vn-tag b { color: var(--ink); }
+.vn-tag small { color: var(--ink-3); }
+.vn-tag.is-selected {
+  border-color: var(--red);
+  background: linear-gradient(180deg, #fff, #fdf5f5);
+  box-shadow: 0 0 0 3px rgba(179, 18, 26, 0.12);
+}
+.vn-attr-row { background: #fff; border-color: var(--hair); }
+.vn-attr-name, .vn-attr-ctrl b { color: var(--ink); }
+.vn-step-btn { color: var(--ink); border-color: var(--hair); background: #fff; }
+.vn-step-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.vn-counter { color: var(--ink-2); background: rgba(26, 20, 20, 0.06); border-color: var(--hair); }
+.vn-counter.is-ok { color: #fff; background: var(--red); border-color: var(--red); }
+.vn-form__note {
+  color: var(--ink-2);
+  background: rgba(179, 18, 26, 0.06);
+  border-color: rgba(179, 18, 26, 0.2);
+}
+.vn-create__foot { border-top-color: var(--hair); }
+
+/* ---- 事件 ---- */
+.vn-event__scrim {
+  background:
+    radial-gradient(60% 44% at 50% 20%, rgba(179, 18, 26, 0.1), rgba(179, 18, 26, 0) 70%),
+    linear-gradient(180deg, rgba(14, 10, 10, 0.5), rgba(14, 10, 10, 0.42) 55%, rgba(10, 7, 7, 0.6));
+}
+.vn-event__tag {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red-bright);
+  box-shadow: 0 10px 26px rgba(125, 12, 18, 0.42);
+}
+
+/* ---- 结局 ---- */
+.vn-ending {
+  background:
+    radial-gradient(60% 50% at 50% 22%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(160deg, #f6efee 0%, #fdfbfa 46%, #f8e9e9 100%);
+}
+.vn-ending__card { background: rgba(255, 255, 255, 0.96); border-color: #fff; }
+.vn-ending__rank { color: #fff; background: var(--red); border-color: var(--red-bright); }
+.vn-ending__name { color: var(--ink); }
+.vn-ending__desc { color: var(--ink-2); }
+.vn-ending__stat { background: #fff; border-color: var(--hair); color: var(--ink); }
+
+/* ---- 弹窗 / 图鉴 / 回放 / 设置 ---- */
+.vn-modal-scrim { background: rgba(20, 14, 14, 0.46); }
+.vn-modal { background: linear-gradient(180deg, #ffffff, #fbf8f7); border-color: #fff; }
+.vn-modal__title { color: var(--ink); }
+.vn-modal__lead { color: var(--ink-2); }
+.vn-modal .vn-icon--close {
+  background: rgba(26, 20, 20, 0.06);
+  border-color: rgba(26, 20, 20, 0.12);
+  color: var(--ink);
+}
+.vn-modal .vn-icon--close:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.vn-modal__foot { border-top-color: var(--hair); }
+.vn-gallery__item { background: #fff; border-color: var(--hair); }
+.vn-gallery__row { color: var(--ink); }
+.vn-gallery__flag { color: var(--ink-2); background: rgba(26, 20, 20, 0.06); }
+.vn-gallery__item:not(.is-locked) .vn-gallery__flag {
+  color: var(--red);
+  background: var(--red-soft);
+  border-color: rgba(179, 18, 26, 0.2);
+}
+.vn-gallery__item.is-locked .vn-gallery__flag { color: var(--ink-3); }
+.vn-gallery__desc { color: var(--ink-2); }
+.vn-backlog__item { background: rgba(26, 20, 20, 0.03); border-left-color: var(--red); }
+.vn-backlog__who { color: var(--red); }
+.vn-backlog__text { color: var(--ink); }
+.vn-backlog__logs { border-top-color: var(--hair); }
+.vn-setting__label { color: var(--ink); }
+.vn-switch { color: var(--ink-2); background: rgba(26, 20, 20, 0.06); border-color: var(--hair); }
+.vn-switch.is-on { color: #fff; background: var(--red); border-color: var(--red); }
+
+/* ---- 通用控件 ---- */
+.btn { background: #fff; color: var(--ink); border-color: var(--hair); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); }
+.btn--primary { color: #fff; background: var(--red); border-color: var(--red); }
+.btn--primary:hover { background: var(--red-bright); border-color: var(--red-bright); }
+.btn--secondary { color: var(--ink); background: #fff; border-color: rgba(26, 20, 20, 0.18); }
+.btn--secondary:hover { background: var(--paper-2); }
+.btn--ghost { color: var(--red); background: transparent; box-shadow: none; }
+.btn--ghost:hover { background: var(--red-soft); }
+.input, .select, .textarea { border-color: var(--hair); }
+.input:focus, .select:focus, .textarea:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 4px rgba(179, 18, 26, 0.16);
+}
+.field__label { color: var(--ink-2); }
+.pill { background: #fff; border-color: var(--hair); color: var(--ink); }
+.pill--accent { background: var(--red-soft); border-color: rgba(179, 18, 26, 0.2); color: var(--red-deep); }
+.pill--success { background: rgba(26, 20, 20, 0.06); color: var(--ink); }
+.pill--warning { background: rgba(179, 18, 26, 0.1); color: var(--red-deep); }
+.stat__fill { background: var(--red); }
+.stat__track { background: rgba(26, 20, 20, 0.12); }
+.card { border-color: var(--hair); }
+.vn-toast { background: rgba(26, 20, 20, 0.94); }
+.vn-toast--danger { background: var(--red); }
+.vn-toast--warning { background: var(--red-deep); }

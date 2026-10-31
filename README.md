@@ -119,7 +119,7 @@ SCUSim/
 │  └─ ui/                  # 表现层（零 import，只经 callbacks 改状态）
 │     └─ ui.js
 ├─ css/
-│  └─ style.css            # 全部样式（视觉小说皮肤：天空金调 / 玻璃拟态 / 场景渐变）
+│  └─ style.css            # 全部样式（视觉小说皮肤：红白为主、黑色为辅）
 └─ tests/                  # 纯 Node 测试（见上文）
 ```
 
