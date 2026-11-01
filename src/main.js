@@ -59,6 +59,65 @@ export function createController(deps) {
       payload.actionSeq = view.actionSeq;
     }
     app.render(state, payload);
+    mountDevPanel();
+  }
+
+  // ---------------- 开发调试面板（仅 URL 带 ?dev=1 时出现，正式访问不可见） ----------------
+  function devModeEnabled() {
+    try {
+      return typeof location !== 'undefined'
+        && typeof location.search === 'string'
+        && /(^|[?&])dev=1(&|$)/.test(location.search);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function mountDevPanel() {
+    if (!devModeEnabled()) return;
+    if (!doc || typeof doc.createElement !== 'function' || !rootEl) return;
+    if (typeof doc.getElementById === 'function' && doc.getElementById('scusim-devpanel')) return;
+    const bar = doc.createElement('div');
+    bar.id = 'scusim-devpanel';
+    bar.setAttribute(
+      'style',
+      'position:fixed;left:8px;bottom:8px;z-index:99999;display:flex;gap:4px;flex-wrap:wrap;max-width:340px;'
+      + 'padding:6px;border-radius:8px;background:rgba(10,10,10,.82);color:#fff;font:12px/1.4 monospace'
+    );
+    const mk = (label, fn) => {
+      const b = doc.createElement('button');
+      b.textContent = label;
+      b.setAttribute('style', 'cursor:pointer;border:0;border-radius:4px;padding:3px 6px;background:#b3121a;color:#fff;font:inherit');
+      b.addEventListener('click', fn);
+      return b;
+    };
+    const bump = (key, delta) => {
+      if (!state) return;
+      const attrs = state.player.attributes;
+      attrs[key] = (Number(attrs[key]) || 0) + delta;
+      if (key !== 'money' && attrs[key] < 0) attrs[key] = 0;
+      storage.saveGame(state);
+      renderState();
+    };
+    bar.appendChild(mk('学识+10', () => bump('knowledge', 10)));
+    bar.appendChild(mk('社交+10', () => bump('social', 10)));
+    bar.appendChild(mk('健康+10', () => bump('health', 10)));
+    bar.appendChild(mk('钱+1000', () => bump('money', 1000)));
+    bar.appendChild(mk('钱−5000', () => bump('money', -5000)));
+    bar.appendChild(mk('AP 清零', () => {
+      if (!state) return;
+      state.actionPoints = 0;
+      storage.saveGame(state);
+      renderState();
+    }));
+    bar.appendChild(mk('结算事件', () => {
+      if (!state || !state.pendingEvent) return;
+      const first = state.pendingEvent.options && state.pendingEvent.options[0];
+      if (first) onResolveEvent(first.id);
+    }));
+    bar.appendChild(mk('结束回合', () => onAdvance()));
+    bar.appendChild(mk('清档', () => onClearSave()));
+    rootEl.appendChild(bar);
   }
 
   function endingOf(id) {
@@ -134,9 +193,21 @@ export function createController(deps) {
   // ---------------- 回调：执行行动 ----------------
   async function onAction(actionId) {
     if (!state) return;
+    // 设计 §11.1#9：存在待处理事件时先结算事件（引擎侧同样兜底拦截）
+    if (state.pendingEvent) {
+      toast('先处理当前事件，再安排这周的行动', 'warning');
+      return;
+    }
     const res = eng.doAction(state, actionId, config, rng);
     if (!res.ok) {
-      app.showError(res.reason === 'AP' ? '行动点不够了，先结束这一周吧' : '这一步现在做不了');
+      const why = res.reason === 'AP'
+        ? '行动点不够了，先结束这一周吧'
+        : res.reason === 'health'
+        ? '身体状况不支持这个行动（健康 < 3 时只能锻炼/休息）'
+        : res.reason === 'pending_event'
+        ? '先处理当前事件'
+        : '这一步现在做不了';
+      toast(why, 'danger');
       return;
     }
     actionSeq += 1;
@@ -153,16 +224,43 @@ export function createController(deps) {
       return;
     }
     await storage.saveGame(state);
+
+    // 月初收支反馈（SRS 3.3.1）
+    if (res.monthly && Number(res.monthly.net) !== 0) {
+      toast(`月度收支：+${res.monthly.income} / −${res.monthly.expense}`, 'info');
+    }
+
     if (res.endingId) {
       await storage.unlockEnding(res.endingId);
       renderState();
       app.showEnding(endingOf(res.endingId));
       return;
     }
-    renderState();
-    if (res.pendingEvent || state.pendingEvent) {
+
+    // 事件优先弹出（存在待处理事件时，玩家必须先在事件里做选择）
+    if (state.pendingEvent) {
+      renderState();
       app.showEvent(state.pendingEvent);
+      return;
     }
+
+    // 学期结算：C 提供 showExam 时弹结算页，否则先以 toast 兜底（W4 接弹窗队列）
+    if (res.settlement) {
+      renderState();
+      if (typeof app.showExam === 'function') {
+        app.showExam(res.settlement);
+      } else {
+        toast(
+          `学期 ${res.settlement.semester} 结算：总绩点 ${res.settlement.totalGpa}`
+          + `，累计挂科 ${res.settlement.failedCourses} 门`
+          + (res.settlement.warning ? '（已触发学业警告）' : ''),
+          res.settlement.warning ? 'danger' : 'info'
+        );
+      }
+      return;
+    }
+
+    renderState();
   }
 
   // ---------------- 回调：结算事件 ----------------
@@ -306,6 +404,7 @@ export function createController(deps) {
     const r = await storage.loadGame();
     hasSave = r.ok;
     app.mount(rootEl, { hasSave });
+    mountDevPanel();
     return controller;
   }
 
