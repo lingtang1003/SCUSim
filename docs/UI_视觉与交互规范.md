@@ -50,19 +50,23 @@
 **突发事件的选项不受此影响**：`.vn-choices--event` 强制单列，居中显示在对话框上方。
 窄屏（≤560px）时两列布局整体移到顶部，避免压住立绘的脸。
 
-行动 → 背景的映射在 `ACTION_SCENE`（图已就位，`ART.enabled = true`）：
+行动 → 背景的映射在 `ACTION_SCENE`，每个键对应一个**背景池**（`SCENES[key].files`），
+点一次行动从池里取一张：同回合内逐张轮换不重复，换回合起点会变（`pickScene(key, turn, seq)`，
+FNV-1a 哈希取偏移 + 序号步进，不依赖随机源，可复现）。每张图自带地点标签与旁白。
 
-| 行动 | 场景键 | 背景文件 | 画面 |
-|---|---|---|---|
-| 上课学习 `study` | classroom | `assets/bg/study.jpg` | 第一教学楼教室 |
-| 社团活动 `club` | clubroom | `assets/bg/clubroom.jpg` | 社团活动室 · 照片墙 |
-| 体育锻炼 `exercise` | track | `assets/bg/track.jpg` | 体育馆羽毛球馆 |
-| 兼职赚钱 `parttime` | store | `assets/bg/store.jpg` | 地铁 8 号线站台 |
-| 社交娱乐 `socialize` | street | `assets/bg/street.jpg` | 校外火锅店 |
-| 休息放松 `rest` | dorm | `assets/bg/rest.jpg` | 回宿舍的小路 |
+| 行动 | 场景键 | 池内图片 |
+|---|---|---|
+| 上课学习 `study` | classroom | library / classroom-screen / classroom-empty / classroom-podium / corridor |
+| 社团活动 `club` | clubroom | activity-wall / plaza-flowerbed / corridor |
+| 体育锻炼 `exercise` | track | field-track / gym-badminton / lawn-pavilion |
+| 兼职赚钱 `parttime` | store | metro-platform / metro-escalator |
+| 社交娱乐 `socialize` | street | hotpot / bar-live / canteen |
+| 休息放松 `rest` | dorm | dusk-road / river-bridge / lawn-pavilion / avenue |
 
-立绘（`APPEARANCES`）：`m_hoodie`（深蓝卫衣 · 男）、`f_long`（黑长直 · 女），
-文件在 `assets/char/*.webp`，创建第 6 步二选一，设置里可换。
+（文件都在 `assets/bg/`，扩展名 `.jpg`；标题页用 library / magnolia / dusk-road，每周开场用 campus 池 6 张。）
+
+立绘（`APPEARANCES`）：`m_hoodie`（短发男生1）、`f_long`（长发女生1），
+文件在 `assets/char/*.webp`。创建第 6 步与设置里都**只列出与角色性别匹配的立绘**。
 
 > 每次点击行动：切背景 → 台词换成该场景的旁白 → 对话框右侧显示本次属性变化 chips。
 

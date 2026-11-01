@@ -20,20 +20,50 @@ assets/
 
 ## 2. 场景背景 → `assets/bg/`
 
-| 文件名 | 场景键 | 触发时机 | 画面内容 |
-|---|---|---|---|
-| `title.jpg` | `title` | 标题页 | 黄昏的林荫道（校门口） |
-| `campus.jpg` | `campus` | 每周开场 / 默认 | 黄昏的林荫道（与标题同图，取景略低） |
-| `study.jpg` | `classroom` | 上课学习 | 第一教学楼教室（投影「欢迎新同学」） |
-| `clubroom.jpg` | `clubroom` | 社团活动 | 社团活动室 · 照片墙 |
-| `track.jpg` | `track` | 体育锻炼 | 体育馆羽毛球馆 |
-| `store.jpg` | `store` | 兼职赚钱 | 地铁 8 号线站台 |
-| `street.jpg` | `street` | 社交娱乐 | 校外火锅店，举杯 |
-| `rest.jpg` | `dorm` | 休息放松 | 入夜的回宿舍小路 |
+场景不再是一张图，而是**一组图**：每个行动对应一个池子，点一次行动换一张
+（同一回合内逐张轮换、不重复；换回合起点也会变），每张图还自带地点标签和旁白。
+
+| 行动 / 时机 | 场景键（CSS 类名后缀） | 池内图片 |
+|---|---|---|
+| 标题页 | `title` | `library` / `magnolia` / `dusk-road` |
+| 每周开场、新游戏第一幕、推进回合后 | `campus` | `avenue` / `magnolia` / `plaza-flowerbed` / `dusk-road` / `lawn-pavilion` / `river-bridge` |
+| 行动「上课学习」 | `classroom` | `library` / `classroom-screen` / `classroom-empty` / `classroom-podium` / `corridor` |
+| 行动「社团活动」 | `clubroom` | `activity-wall` / `plaza-flowerbed` / `corridor` |
+| 行动「体育锻炼」 | `track` | `field-track` / `gym-badminton` / `lawn-pavilion` |
+| 行动「兼职赚钱」 | `store` | `metro-platform` / `metro-escalator` |
+| 行动「社交娱乐」 | `street` | `hotpot` / `bar-live` / `canteen` |
+| 行动「休息放松」 | `dorm` | `dusk-road` / `river-bridge` / `lawn-pavilion` / `avenue` |
+| 事件弹层 | `event` | 无独立图（沿用当前场景 + 压暗模糊） |
+
+### 19 张图一览
+
+| 文件 | 地点标签（HUD 右上） | 会出现在 |
+|---|---|---|
+| `library.jpg` | 图书馆 · 自习区 | 上课学习、标题页 |
+| `classroom-screen.jpg` | 第一教学楼 · 教室 | 上课学习 |
+| `classroom-empty.jpg` | 第一教学楼 · 空教室 | 上课学习 |
+| `classroom-podium.jpg` | 第一教学楼 · 讲台 | 上课学习 |
+| `corridor.jpg` | 第一教学楼 · 走廊 | 上课学习、社团活动 |
+| `activity-wall.jpg` | 社团活动室 · 展板墙 | 社团活动 |
+| `plaza-flowerbed.jpg` | 学生活动中心 · 广场 | 社团活动、每周开场 |
+| `field-track.jpg` | 东区操场 · 田径场 | 体育锻炼 |
+| `gym-badminton.jpg` | 体育馆 · 羽毛球馆 | 体育锻炼 |
+| `lawn-pavilion.jpg` | 校园 · 草坪小亭 | 体育锻炼、休息放松、每周开场 |
+| `canteen.jpg` | 食堂 · 二层 | 社交娱乐 |
+| `hotpot.jpg` | 校外 · 火锅店 | 社交娱乐 |
+| `bar-live.jpg` | 校外 · 驻唱酒吧 | 社交娱乐 |
+| `dusk-road.jpg` | 校园 · 回宿舍的路 | 休息放松、每周开场、标题页 |
+| `river-bridge.jpg` | 江安河 · 栈桥 | 休息放松、每周开场 |
+| `avenue.jpg` | 校园 · 林荫道 | 每周开场、休息放松 |
+| `magnolia.jpg` | 校园 · 玉兰道 | 每周开场、标题页 |
+| `metro-platform.jpg` | 地铁 8 号线 · 站台 | 兼职赚钱 |
+| `metro-escalator.jpg` | 地铁 8 号线 · 扶梯 | 兼职赚钱 |
+
+> **事件弹层没有独立背景**：`event` 池为空，出现事件时沿用当前场景 + 压暗模糊。
 
 **规格**
 
-- 1920×1080（16:9），jpg，单张 ≤ 400KB（当前 150–420KB）
+- 1920×1080（16:9），jpg，单张 ≤ 400KB（当前 142–387KB）
 - 无文字、无水印
 - **安全区**：下方约 25% 会被对话框盖住；左侧约 30% 会立着立绘。
   重要画面元素请放在**右侧中上部**。
@@ -43,7 +73,8 @@ assets/
 
 ## 3. 立绘 → `assets/char/`
 
-玩家在创建角色第 6 步二选一，游戏中常驻画面左下（半身像，底边贴齐屏幕底部）。
+玩家在创建角色第 6 步选一个，游戏中常驻画面左下（半身像，底边贴齐屏幕底部）。
+**只列出与所选性别匹配的立绘**（现在男/女各一张，后续可以按性别继续追加）。
 
 | 文件名 | id | 名称 | 性别 | 人设 |
 |---|---|---|---|---|
