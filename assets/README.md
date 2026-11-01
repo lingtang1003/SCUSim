@@ -1,4 +1,4 @@
-# 美术素材（背景 / 立绘）
+﻿# 美术素材（背景 / 立绘）
 
 UI 是**视觉小说形态**：全屏背景 + 左下立绘 + 底部对话框 + 中央选项条。
 图片都放在本目录，文件名与 `src/ui/ui.js` 顶部的 `SCENES` / `APPEARANCES` 一一对应。
@@ -25,7 +25,7 @@ assets/
 
 | 行动 / 时机 | 场景键（CSS 类名后缀） | 池内图片 |
 |---|---|---|
-| 标题页 | `title` | `library` / `magnolia` / `dusk-road` |
+| 标题页（封面） | `title` | `gate`（老校门，固定） |
 | 每周开场、新游戏第一幕、推进回合后 | `campus` | `avenue` / `magnolia` / `plaza-flowerbed` / `dusk-road` / `lawn-pavilion` / `river-bridge` |
 | 行动「上课学习」 | `classroom` | `library` / `classroom-screen` / `classroom-empty` / `classroom-podium` / `corridor` |
 | 行动「社团活动」 | `clubroom` | `activity-wall` / `plaza-flowerbed` / `corridor` |
@@ -35,11 +35,11 @@ assets/
 | 行动「休息放松」 | `dorm` | `dusk-road` / `river-bridge` / `lawn-pavilion` / `avenue` |
 | 事件弹层 | `event` | 无独立图（沿用当前场景 + 压暗模糊） |
 
-### 19 张图一览
+### 20 张图一览
 
 | 文件 | 地点标签（HUD 右上） | 会出现在 |
 |---|---|---|
-| `library.jpg` | 图书馆 · 自习区 | 上课学习、标题页 |
+| `library.jpg` | 图书馆 · 自习区 | 上课学习 |
 | `classroom-screen.jpg` | 第一教学楼 · 教室 | 上课学习 |
 | `classroom-empty.jpg` | 第一教学楼 · 空教室 | 上课学习 |
 | `classroom-podium.jpg` | 第一教学楼 · 讲台 | 上课学习 |
@@ -52,12 +52,13 @@ assets/
 | `canteen.jpg` | 食堂 · 二层 | 社交娱乐 |
 | `hotpot.jpg` | 校外 · 火锅店 | 社交娱乐 |
 | `bar-live.jpg` | 校外 · 驻唱酒吧 | 社交娱乐 |
-| `dusk-road.jpg` | 校园 · 回宿舍的路 | 休息放松、每周开场、标题页 |
+| `dusk-road.jpg` | 校园 · 回宿舍的路 | 休息放松、每周开场 |
 | `river-bridge.jpg` | 江安河 · 栈桥 | 休息放松、每周开场 |
 | `avenue.jpg` | 校园 · 林荫道 | 每周开场、休息放松 |
-| `magnolia.jpg` | 校园 · 玉兰道 | 每周开场、标题页 |
+| `magnolia.jpg` | 校园 · 玉兰道 | 每周开场 |
 | `metro-platform.jpg` | 地铁 8 号线 · 站台 | 兼职赚钱 |
 | `metro-escalator.jpg` | 地铁 8 号线 · 扶梯 | 兼职赚钱 |
+| `gate.jpg` | 国立四川大学 · 校门 | 标题页（封面） |
 
 > **事件弹层没有独立背景**：`event` 池为空，出现事件时沿用当前场景 + 压暗模糊。
 
@@ -132,3 +133,4 @@ APPEARANCES.push({
 - [ ] 文件名与上表完全一致（全小写）
 - [ ] 桌面 1600×1000 与手机 390×844 下，关键画面不被对话框/选项遮住
 - [ ] 控制台无 404
+

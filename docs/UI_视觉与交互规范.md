@@ -1,4 +1,4 @@
-# SCUSim · UI 视觉与交互规范（视觉小说形态）
+﻿# SCUSim · UI 视觉与交互规范（视觉小说形态）
 
 > 对应代码：`src/ui/ui.js`（表现层） + `css/style.css`（皮肤）
 > 归属：C · 表现层。红线不变：**UI 零 import、只读 state、状态变更只经 callbacks**。
@@ -63,7 +63,7 @@ FNV-1a 哈希取偏移 + 序号步进，不依赖随机源，可复现）。每�
 | 社交娱乐 `socialize` | street | hotpot / bar-live / canteen |
 | 休息放松 `rest` | dorm | dusk-road / river-bridge / lawn-pavilion / avenue |
 
-（文件都在 `assets/bg/`，扩展名 `.jpg`；标题页用 library / magnolia / dusk-road，每周开场用 campus 池 6 张。）
+（文件都在 `assets/bg/`，扩展名 `.jpg`；标题页固定用 gate（老校门封面），每周开场用 campus 池 6 张。）
 
 立绘（`APPEARANCES`）：`m_hoodie`（短发男生1）、`f_long`（长发女生1），
 文件在 `assets/char/*.webp`。创建第 6 步与设置里都**只列出与角色性别匹配的立绘**。
@@ -136,3 +136,4 @@ UI 内部视图状态（**不是** GameState，不参与结算、不进存档）
 3. **自动播放 / 快进**：对话框控制行（Auto / Skip）。
 4. **多存档槽位**：目前是单槽自动存档 + 手动保存。
 5. **更多立绘 / 场景**：新增人物与场景只需改 `APPEARANCES` / `SCENES` 并放图（见 `assets/README.md`）。
+

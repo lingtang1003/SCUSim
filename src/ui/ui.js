@@ -73,6 +73,7 @@ const BG = {
   magnolia: { art: 'magnolia.jpg', label: '校园 · 玉兰道', line: '（玉兰开得正好，花瓣落在楼前的台阶上）' },
   metroPlatform: { art: 'metro-platform.jpg', label: '地铁 8 号线 · 站台', line: '（8 号线的站台一眼望不到头，显示屏跳着下一班的时间）' },
   metroEscalator: { art: 'metro-escalator.jpg', label: '地铁 8 号线 · 扶梯', line: '（扶梯慢慢往上，你把今天的工牌塞回口袋）' },
+  gate: { art: 'gate.jpg', label: '国立四川大学 · 校门', line: '（老校门的砖缝里长着草，牌匾上的字被雨洗得发亮）' },
 };
 
 /**
@@ -80,7 +81,7 @@ const BG = {
  * 键名即 CSS 类名后缀（素材缺失时用对应渐变兜底）。
  */
 const SCENES = {
-  title: { files: [BG.library, BG.magnolia, BG.duskRoad] },
+  title: { files: [BG.gate] },
   campus: { files: [BG.avenue, BG.magnolia, BG.plaza, BG.duskRoad, BG.lawn, BG.river] },
   classroom: { files: [BG.library, BG.classScreen, BG.classEmpty, BG.classPodium, BG.corridor] },
   clubroom: { files: [BG.activityWall, BG.plaza, BG.corridor] },
