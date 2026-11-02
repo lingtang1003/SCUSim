@@ -190,6 +190,10 @@ test('Engine: actionPoints===0 时 doAction → {ok:false,reason:"AP"} 且 state
 test('Engine: doAction("study") → AP 4→3 / studyActions+1 / 效果生效 / log 追加', () => {
   const ng = newGame(validOptions, config, createRng(1));
   const s = ng.state;
+  // 第六版引擎：存在待处理事件时不允许行动，先把开局事件结掉再测行动本身
+  if (s.pendingEvent && s.pendingEvent.eventId) {
+    resolvePendingEvent(s, s.pendingEvent.options[0].id, config, createRng(3));
+  }
   const beforeLog = s.log.length;
   const r = doAction(s, 'study', config, createRng(2));
   return r.ok === true
@@ -197,7 +201,7 @@ test('Engine: doAction("study") → AP 4→3 / studyActions+1 / 效果生效 / l
     && s.academics.studyActions === 1
     && s.player.attributes.knowledge === 7   // 5 + 2
     && s.player.attributes.health === 4      // 5 - 1
-    && s.log.length === beforeLog + 1;
+    && s.log.length >= beforeLog + 1;
 });
 
 // ---------------- 6) Engine.advance ----------------

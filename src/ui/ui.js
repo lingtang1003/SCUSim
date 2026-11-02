@@ -49,20 +49,50 @@ const ART = {
   charDir: 'assets/char/',
 };
 
-/** 场景清单：键名即 CSS 类名后缀，art 为 assets/bg/ 下的文件名。 */
-const SCENES = {
-  title: { art: 'title.jpg', label: '四川大学 · 黄昏' },
-  campus: { art: 'campus.jpg', label: '校园 · 林荫道' },
-  classroom: { art: 'study.jpg', label: '第一教学楼 · 教室' },
-  clubroom: { art: 'clubroom.jpg', label: '社团活动室 · 照片墙' },
-  track: { art: 'track.jpg', label: '体育馆 · 羽毛球馆' },
-  store: { art: 'store.jpg', label: '地铁 8 号线 · 站台' },
-  street: { art: 'street.jpg', label: '校外 · 火锅店' },
-  dorm: { art: 'rest.jpg', label: '校园 · 回宿舍的路' },
-  event: { art: null, label: '校园 · 此刻' },
+/**
+ * 背景图库：每一张图就是一个"地点"，自带地点标签（HUD 右上）与落点旁白。
+ * art 对应 assets/bg/ 下的文件名。
+ */
+const BG = {
+  library: { art: 'library.jpg', label: '图书馆 · 自习区', line: '（图书馆的空调开得很足，翻书声压过了脚步声）' },
+  classScreen: { art: 'classroom-screen.jpg', label: '第一教学楼 · 教室', line: '（投影还亮着「欢迎你，新同学」，你从第一页开始抄）' },
+  classEmpty: { art: 'classroom-empty.jpg', label: '第一教学楼 · 空教室', line: '（教室里只有你和窗外的树影，安静得能听见笔尖）' },
+  classPodium: { art: 'classroom-podium.jpg', label: '第一教学楼 · 讲台', line: '（讲台上摊着上节课的讲义，粉笔灰在光里飘）' },
+  corridor: { art: 'corridor.jpg', label: '第一教学楼 · 走廊', line: '（走廊尽头的门虚掩着，夕阳把地砖照成一条光带）' },
+  activityWall: { art: 'activity-wall.jpg', label: '社团活动室 · 展板墙', line: '（展板上钉满了活动照片，有人把「不止画画」写得很大）' },
+  plaza: { art: 'plaza-flowerbed.jpg', label: '学生活动中心 · 广场', line: '（活动中心门口停满了共享单车，花坛开得正热闹）' },
+  field: { art: 'field-track.jpg', label: '东区操场 · 田径场', line: '（足球场上有人在跑，红色跑道被太阳晒得发烫）' },
+  gym: { art: 'gym-badminton.jpg', label: '体育馆 · 羽毛球馆', line: '（球拍挥到手臂发酸，馆里的灯白得有点刺眼）' },
+  canteen: { art: 'canteen.jpg', label: '食堂 · 二层', line: '（食堂的窗口排起长队，餐盘碰撞的声音此起彼伏）' },
+  hotpot: { art: 'hotpot.jpg', label: '校外 · 火锅店', line: '（牛油锅咕嘟咕嘟地响，几只杯子在半空中碰在一起）' },
+  bar: { art: 'bar-live.jpg', label: '校外 · 驻唱酒吧', line: '（驻唱刚开口，整间屋子的人一起安静了两秒）' },
+  duskRoad: { art: 'dusk-road.jpg', label: '校园 · 回宿舍的路', line: '（路灯一盏一盏亮起来，你沿着林荫道慢慢往回走）' },
+  river: { art: 'river-bridge.jpg', label: '江安河 · 栈桥', line: '（江安河的水把晚霞揉碎，桥栏杆还是温的）' },
+  lawn: { art: 'lawn-pavilion.jpg', label: '校园 · 草坪小亭', line: '（草坪上的小亭子空着，风把书页吹得哗哗响）' },
+  avenue: { art: 'avenue.jpg', label: '校园 · 林荫道', line: '（两排树把路遮成绿色的走廊，落叶踩上去沙沙响）' },
+  magnolia: { art: 'magnolia.jpg', label: '校园 · 玉兰道', line: '（玉兰开得正好，花瓣落在楼前的台阶上）' },
+  metroPlatform: { art: 'metro-platform.jpg', label: '地铁 8 号线 · 站台', line: '（8 号线的站台一眼望不到头，显示屏跳着下一班的时间）' },
+  metroEscalator: { art: 'metro-escalator.jpg', label: '地铁 8 号线 · 扶梯', line: '（扶梯慢慢往上，你把今天的工牌塞回口袋）' },
+  gate: { art: 'gate.jpg', label: '国立四川大学 · 校门', line: '（老校门的砖缝里长着草，牌匾上的字被雨洗得发亮）' },
 };
 
-/** 行动 → 场景（每个本周行动对应不同背景）。 */
+/**
+ * 场景池：同一个行动会从池里挑一张，每次点行动都不完全一样。
+ * 键名即 CSS 类名后缀（素材缺失时用对应渐变兜底）。
+ */
+const SCENES = {
+  title: { files: [BG.gate] },
+  campus: { files: [BG.avenue, BG.magnolia, BG.plaza, BG.duskRoad, BG.lawn, BG.river] },
+  classroom: { files: [BG.library, BG.classScreen, BG.classEmpty, BG.classPodium, BG.corridor] },
+  clubroom: { files: [BG.activityWall, BG.plaza, BG.corridor] },
+  track: { files: [BG.field, BG.gym, BG.lawn] },
+  store: { files: [BG.metroPlatform, BG.metroEscalator] },
+  street: { files: [BG.hotpot, BG.bar, BG.canteen] },
+  dorm: { files: [BG.duskRoad, BG.river, BG.lawn, BG.avenue] },
+  event: { files: [] },
+};
+
+/** 行动 → 场景池（决定"点这个行动会去哪儿"）。 */
 const ACTION_SCENE = {
   study: 'classroom',
   club: 'clubroom',
@@ -70,40 +100,6 @@ const ACTION_SCENE = {
   parttime: 'store',
   socialize: 'street',
   rest: 'dorm',
-};
-
-/** 行动旁白（旁白腔，避免与数值说明混淆）。 */
-const ACTION_FLAVOR = {
-  study: [
-    '（投影亮着「欢迎新同学」，你翻开课本，从第一页做起）',
-    '（空调的风把窗帘吹得一鼓一鼓，你把笔记抄满了整页）',
-    '（下课铃响过很久，教室里只剩翻书的声音）',
-  ],
-  club: [
-    '（活动室的墙上钉满了往年活动的照片，一角还留着没撕干净的胶带）',
-    '（部长指着照片里的人群说：今年你也得在上面）',
-    '（第一次觉得，大学的热闹原来是这样堆出来的）',
-  ],
-  exercise: [
-    '（球拍挥到手臂发酸，馆里的灯白得有点刺眼）',
-    '（捡球的间隙，你听见隔壁场地在喊「好球」）',
-    '（出了一身汗，走回宿舍的路上风都变凉了）',
-  ],
-  parttime: [
-    '（晚高峰的 8 号线，你被挤在门口，耳机里放着兼职群的消息）',
-    '（站台的灯一格一格地亮，你数着还有几站到学校）',
-    '（回到学校已经十点，便利店的关东煮还剩最后两串）',
-  ],
-  socialize: [
-    '（牛油锅咕嘟咕嘟地响，几只杯子在半空中碰在一起）',
-    '（一桌人抢最后一片毛肚，笑声比锅还沸）',
-    '（散场时夜风一吹，你才发现自己的脸有点烫）',
-  ],
-  rest: [
-    '（路灯一盏一盏亮起来，你沿着林荫道慢慢往回走）',
-    '（回到宿舍，把鞋一蹬，整个人陷进椅子里）',
-    '（手机屏幕的光照在天花板上，你不知不觉就睡了）',
-  ],
 };
 
 /** 每周开场旁白（按回合序号轮转，保证可复现）。 */
@@ -158,6 +154,7 @@ export function createApp(ctx) {
   const ui = {
     appearanceId: resolveAppearanceId(ctx && ctx.appearance),
     scene: 'campus',
+    sceneEntry: null,
     speaker: '',
     text: '',
     effects: [],
@@ -166,6 +163,7 @@ export function createApp(ctx) {
     history: [],
     reduceMotion: false,
   };
+  let titleSeq = 0;
 
   // ---------------- 轻量 DOM 构造器 ----------------
   function h(tag, attrs, children) {
@@ -312,15 +310,40 @@ export function createApp(ctx) {
     return Object.prototype.hasOwnProperty.call(SCENES, key) ? key : 'campus';
   }
 
-  function sceneLabel(key) {
-    return (SCENES[sceneKeyOf(key)] || SCENES.campus).label;
+  function scenePool(key) {
+    const scene = SCENES[sceneKeyOf(key)];
+    return scene && Array.isArray(scene.files) ? scene.files : [];
   }
 
-  function sceneArtStyle(key) {
-    if (!ART.enabled) return null;
-    const scene = SCENES[sceneKeyOf(key)];
-    if (!scene || !scene.art) return null;
-    return 'background-image:url("' + ART.bgDir + scene.art + '")';
+  /**
+   * 确定性挑图：同一个 (场景, 回合, 序号) 永远落到同一张，便于复现与测试。
+   * 实现是 FNV-1a 哈希取模，不依赖任何随机源。
+   */
+  function hashPick(text, len) {
+    let h = 2166136261;
+    for (let i = 0; i < text.length; i++) {
+      h ^= text.charCodeAt(i);
+      h = (h * 16777619) >>> 0;
+    }
+    return len > 0 ? h % len : 0;
+  }
+
+  /**
+   * 确定性挑图：回合决定起始偏移、行为序号决定步进，
+   * 因此「同一回合连续点同一个行动」必定逐张轮换，不同回合起始点又不同，
+   * 既不会连续撞图，也能完全复现（不依赖任何随机源）。
+   */
+  function pickScene(key, turn, seq) {
+    const k = sceneKeyOf(key);
+    const pool = scenePool(k);
+    if (!pool.length) return null;
+    const offset = hashPick(k + '|' + turn, pool.length);
+    return pool[(offset + (Number(seq) || 0)) % pool.length];
+  }
+
+  function sceneArtStyle(entry) {
+    if (!ART.enabled || !entry || !entry.art) return null;
+    return 'background-image:url("' + ART.bgDir + entry.art + '")';
   }
 
   function spriteArtStyle(appearance) {
@@ -349,6 +372,17 @@ export function createApp(ctx) {
     const yearLabel = '大' + ['一', '二', '三', '四'][Math.min(3, Math.floor((total - 1) / 2))];
     const term = total % 2 === 1 ? '上' : '下';
     return yearLabel + term + ' · 第' + total + '学期';
+  }
+
+  /**
+   * 当前回合的"季节"。一个学年 10 个回合 = 上学期(9~1月) + 下学期(2~6月)：
+   * 9/10/11 月=秋，12/1/2 月=冬，3/4/5 月=春，6 月=夏（7~8 月放暑假不在校）。
+   */
+  const SEASON_CYCLE = ['秋', '秋', '秋', '冬', '冬', '冬', '春', '春', '春', '夏'];
+
+  function seasonOf(turn) {
+    const t = Math.max(1, Number(turn) || 1);
+    return SEASON_CYCLE[(t - 1) % SEASON_CYCLE.length];
   }
 
   function weekLine(turn) {
@@ -406,11 +440,12 @@ export function createApp(ctx) {
   }
 
   // ---------------- 通用组件 ----------------
-  function bgLayer(key) {
+  function bgLayer(key, entry) {
     const k = sceneKeyOf(key);
+    const picked = entry || pickScene(k, 0, 0);
     return h('div', { class: 'vn-bg vn-scene--' + k }, [
       h('div', { class: 'vn-bg__paint' }),
-      h('div', { class: 'vn-bg__art', style: sceneArtStyle(k) }),
+      h('div', { class: 'vn-bg__art', style: sceneArtStyle(picked) }),
       h('div', { class: 'vn-bg__veil' }),
     ]);
   }
@@ -460,7 +495,7 @@ export function createApp(ctx) {
         showSeed ? h('span', { class: 'vn-chip' }, ['种子 ' + showSeed]) : null,
       ]),
       h('div', { class: 'vn-hud__group' }, [
-        h('span', { class: 'vn-loc' }, ['◈ ' + sceneLabel(ui.scene)]),
+        h('span', { class: 'vn-loc' }, ['◈ ' + (ui.sceneEntry ? ui.sceneEntry.label : '校园')]),
         h('button', {
           class: 'vn-icon',
           title: '保存进度',
@@ -489,7 +524,10 @@ export function createApp(ctx) {
         'aria-label': '查看角色信息',
         onclick: () => showProfile(),
       }, [
-        h('span', { class: 'vn-hud__avatar' }, [(player.name || '你').slice(0, 1)]),
+        h('span', {
+          class: 'vn-hud__avatar',
+          'data-tip': '第 ' + state.turn + ' 周 · ' + seasonOf(state.turn),
+        }, [seasonOf(state.turn)]),
         h('span', {}, [player.name || '无名']),
         h('small', {}, [findCollegeName(player.collegeId)]),
         h('span', { class: 'vn-hud__more' }, ['›']),
@@ -588,9 +626,9 @@ export function createApp(ctx) {
     if (actionId && seq && seq !== ui.consumedSeq) {
       ui.consumedSeq = seq;
       ui.scene = ACTION_SCENE[actionId] || ui.scene;
-      const lines = ACTION_FLAVOR[actionId] || [];
-      const text = lines.length ? lines[seq % lines.length] : '（时间悄悄过去了）';
+      ui.sceneEntry = pickScene(ui.scene, state.turn, seq);
       const action = findAction(actionId);
+      const text = (ui.sceneEntry && ui.sceneEntry.line) || '（时间悄悄过去了）';
       ui.speaker = player.name || '你';
       ui.text = text;
       ui.effects = effectChips(action && action.effects);
@@ -599,6 +637,7 @@ export function createApp(ctx) {
       const first = ui.lastTurn === 0;
       ui.lastTurn = state.turn;
       ui.scene = 'campus';
+      ui.sceneEntry = pickScene('campus', state.turn, 0);
       ui.speaker = '旁白';
       ui.text = first
         ? (state.turn > 1
@@ -631,7 +670,7 @@ export function createApp(ctx) {
 
     rootEl.appendChild(
       h('div', { class: 'vn-stage' }, [
-        bgLayer(ui.scene),
+        bgLayer(ui.scene, ui.sceneEntry),
         spriteLayer(appearance),
         hud(state, v),
         actionChoices(state, v.availability),
@@ -643,7 +682,7 @@ export function createApp(ctx) {
   // ---------------- 标题页 ----------------
   function titleScreen(hasSave) {
     return h('div', { class: 'vn-stage vn-stage--title' }, [
-      bgLayer('title'),
+      bgLayer('title', ui.sceneEntry),
       h('div', { class: 'vn-title' }, [
         h('div', { class: 'vn-title__crest' }, ['SCU']),
         h('h1', { class: 'vn-logo' }, ['川大校园生活模拟器']),
@@ -709,6 +748,8 @@ export function createApp(ctx) {
     stopTypewriter();
     clearRoot();
     ui.scene = 'title';
+    titleSeq += 1;
+    ui.sceneEntry = pickScene('title', titleSeq, 0);
     rootEl.appendChild(titleScreen(!!hasSave));
   }
 
@@ -762,7 +803,7 @@ export function createApp(ctx) {
     const art = spriteArtStyle(app);
     return h('aside', { class: 'vn-create__preview' }, [
       h('div', { class: 'vn-create__preview-stage' }, [
-        bgLayer('campus'),
+        bgLayer('campus', pickScene('campus', 3, 1)),
         h('div', { class: 'vn-preview-sprite' }, [
           art
             ? h('div', { class: 'vn-sprite__art', style: art })
@@ -834,7 +875,7 @@ export function createApp(ctx) {
     const options = ['男', '女'];
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['性别']),
-      h('p', { class: 'vn-form__desc' }, ['决定可选立绘的范围，随时可以在设置里更换。']),
+      h('p', { class: 'vn-form__desc' }, ['选择你的性别，这将决定可选立绘的范围。']),
       h('div', { class: 'vn-opt-grid' }, options.map((g) =>
         h('button', {
           class: 'vn-opt vn-opt--plain' + (creation.gender === g ? ' is-selected' : ''),
@@ -844,7 +885,7 @@ export function createApp(ctx) {
             renderCreation();
           },
         }, [
-          h('span', { class: 'vn-opt__name' }, [g === '男' ? '男 · 少年' : '女 · 少女']),
+          h('span', { class: 'vn-opt__name' }, [g]),
         ])
       )),
       h('button', {
@@ -993,11 +1034,12 @@ export function createApp(ctx) {
   }
 
   function creationAppearanceStep() {
-    const list = APPEARANCES.slice().sort((a, b) => {
-      const ga = a.gender === creation.gender ? 0 : 1;
-      const gb = b.gender === creation.gender ? 0 : 1;
-      return ga - gb;
-    });
+    // 只列出与已选性别匹配的立绘（没有匹配项时才回退到全部）
+    const matched = APPEARANCES.filter((a) => a.gender === creation.gender);
+    const list = matched.length ? matched : APPEARANCES;
+    if (!list.some((a) => a.id === creation.appearanceId)) {
+      creation.appearanceId = list[0].id;
+    }
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['选择立绘']),
       h('p', { class: 'vn-form__desc' }, ['选一个你喜欢的形象。']),
@@ -1083,7 +1125,7 @@ export function createApp(ctx) {
     }
     rootEl.appendChild(
       h('div', { class: 'vn-stage vn-stage--creation' }, [
-        bgLayer('campus'),
+        bgLayer('campus', pickScene('campus', 5, 2)),
         h('div', { class: 'vn-create' }, [
           creationPreview(),
           h('section', { class: 'vn-create__panel' }, [
@@ -1291,7 +1333,6 @@ export function createApp(ctx) {
     const state = lastState;
     const player = state.player || {};
     const attrs = player.attributes || {};
-    const appearance = findAppearance(ui.appearanceId);
     const maxTurn = balanceOf('turns', 40);
     const apMax = balanceOf('actionPointsPerTurn', 4);
     const academics = state.academics || {};
@@ -1323,12 +1364,10 @@ export function createApp(ctx) {
 
     const body = [
       h('div', { class: 'vn-profile__head' }, [
-        h('span', { class: 'vn-profile__avatar' }, [(player.name || '你').slice(0, 1)]),
+        h('span', { class: 'vn-profile__avatar' }, [player.gender || '？']),
         h('div', {}, [
           h('div', { class: 'vn-profile__name' }, [player.name || '无名']),
-          h('div', { class: 'vn-profile__sub' }, [
-            findCollegeName(player.collegeId) + ' · ' + (player.gender || '') + ' · ' + appearance.name,
-          ]),
+          h('div', { class: 'vn-profile__sub' }, [findCollegeName(player.collegeId)]),
         ]),
       ]),
       h('div', { class: 'vn-profile__grid' }, bars),
@@ -1396,8 +1435,18 @@ export function createApp(ctx) {
       },
     }, [reduceMotion ? '已开启（减弱动效）' : '已关闭']);
 
+    // 设置里换立绘也只列出与当前角色性别匹配的（没有存档时列出全部）
+    const playerGender = lastState && lastState.player ? lastState.player.gender : '';
+    const matched = playerGender
+      ? APPEARANCES.filter((a) => a.gender === playerGender)
+      : APPEARANCES;
+    const roster = matched.length ? matched : APPEARANCES;
+    if (!roster.some((a) => a.id === appearanceId)) {
+      appearanceId = roster[0].id;
+    }
+
     const optionNodes = [];
-    const grid = h('div', { class: 'vn-opt-grid vn-opt-grid--tight' }, APPEARANCES.map((app) => {
+    const grid = h('div', { class: 'vn-opt-grid vn-opt-grid--tight' }, roster.map((app) => {
       const art = spriteArtStyle(app);
       const node = h('button', {
         class: 'vn-opt vn-opt--sm' + (app.id === appearanceId ? ' is-selected' : ''),
