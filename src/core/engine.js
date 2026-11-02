@@ -372,8 +372,13 @@ export function advance(state, config, rng) {
     pushHistory(state, { type: 'exam', text: `学期 ${semester} 期末：绩点 ${state.academics.totalGpa}` }, config);
   }
 
-  // 事件（固定 > 负债 > 随机，同刻至多一个）
-  enterTurn(state, config, rng, debt && debt.triggered ? debt.eventId : null);
+  // 事件（固定 > 负债 > 随机，同刻至多一个）；终局回合不再触发事件
+  const isFinalTurn = state.turn >= maxTurn;
+  if (isFinalTurn) {
+    state.pendingEvent = null;
+  } else {
+    enterTurn(state, config, rng, debt && debt.triggered ? debt.eventId : null);
+  }
 
   // 终局
   let endingId = null;

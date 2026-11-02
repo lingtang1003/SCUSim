@@ -1,6 +1,6 @@
 # C · UI 与交互负责人 · 任务书
 
-> 你负责玩家能看见、能点的全部东西：主菜单、开局四步、主界面、事件弹窗、学期结算、结局、图鉴、设置、响应式与无障碍。
+> 你负责玩家能看见、能点的全部东西：主菜单、六步开局、主界面、事件弹窗、学期结算、结局、图鉴、设置、响应式与无障碍。
 > 你的硬约束只有两条：**`ui.js` 零 import**、**绝不直接改 `GameState`**。所有数据从 `render(state, view)` 和 callbacks 来。
 > 配套阅读：`docs/团队分工与验收手册.md`（下称《手册》）§2.2 配置契约、§2.4 UI 接口、§5.4 手测清单。
 
@@ -30,9 +30,9 @@
 
 | 周 | 交付物 |
 |---|---|
-| W0 | UI 清单 + 三档分辨率走查截图 + 交互稿（四步开局/结算/事件/履历/结局/图鉴） |
+| W0 | UI 清单 + 三档分辨率走查截图 + 交互稿（六步开局/结算/事件/履历/结局/图鉴） |
 | W1 | 学期结算弹窗 + 月度收支提示 + 负债条 + 置灰原因 + `showToast` |
-| W2 | 四步开局："6 选 3"（含换一批）+ 属性 0 起 + 姓名 12 字 + 标签效果预览 |
+| W2 | 六步开局（姓名/性别/学院/属性/标签/立绘）："6 选 3"（含换一批）+ 属性 0 起 + 姓名 12 字 + 标签效果预览 |
 | W3 | 事件弹窗 v2（前置置灰）+ 履历面板 + 结局页（主/副）+ 图鉴 |
 | W4 | 1366×768 / 375 适配 + 键盘/aria/focus trap + 设置 + 清档确认 |
 | W5 | 视觉定稿 + 演示动线 + 截图/录屏素材 |
@@ -85,18 +85,19 @@
 
 **门禁**：`node tests/unit/c-ui.mjs` 全 PASS；`node tests/verify_ui.mjs` 不回归（14 项全 PASS）；ui-lab 里 5 个场景截图。
 
-### W2 · 开局四步
+### W2 · 开局六步（现网已是六步：姓名→性别→学院→属性→标签→立绘）
 
 **目标**：G17/G18/G19。
 
-1. 第④步标签：只渲染 `opts.tagCandidates`（6 个 id），选 3 个；不足 6 个时降级 `config.tags.list.slice(0,6)`（保证旧测试 `startCreation()` 无参调用不崩）。
+1. 第⑤步标签：只渲染 `opts.tagCandidates`（6 个 id），选 3 个；不足 6 个时降级 `config.tags.list.slice(0,6)`（保证旧测试 `startCreation()` 无参调用不崩）。
 2. "换一批"按钮 → `callbacks.onRerollTags?.()`；A 会重绘并传入新候选。
 3. 每个候选标签显示 `name` + `desc` + `modifiers` 摘要（如"学识 +3 / 健康 −1"），让玩家能决策。
 4. 属性分配：四项初始 0（`makeCreationState` 改），共 20 点；剩余 0 才能下一步；每项上限 20。
-5. 姓名与性别合并为一屏（①姓名+性别 →②学院 →③属性 →④标签），`maxlength=12`，去掉首尾空格，空值拦截；提示"1–12 字"。
+5. 姓名单独一屏（**不要**和性别合并，现网六步已定）：`maxlength=12`，去掉首尾空格，空值拦截；提示"1–12 字"。
 6. 学院选择：显示 `desc` 与"该学院事件偏向：…"（从 `config.colleges.list[i].eventBias` 读，只展示前 3 个对应事件名）。
+7. 立绘（第⑥步）保持现有 `APPEARANCES` 实现，不改。
 
-**门禁**：`verify_ui` 全 PASS；ui-lab 截 4 张（第④步默认/换一批/选满 3/属性未分满）；`accept/w2` 的 UI 断言通过。
+**门禁**：`verify_ui` 全 PASS；ui-lab 截 4 张（第⑤步默认/换一批/选满 3/属性未分满）；`accept/w2` 的 UI 断言通过。
 
 ### W3 · 事件 / 履历 / 结局 / 图鉴
 
@@ -180,18 +181,19 @@ node server.js                      # 打开 /dev/ui-lab.html 自己点
 最后贴 `node tests/unit/c-ui.mjs`、`node tests/verify_ui.mjs`、`npm test` 的真实输出，并说明 ui-lab 里怎么点到这个弹窗。
 ```
 
-### 6.3 W2 · 开局四步提示词
+### 6.3 W2 · 开局六步提示词
 
 ```text
-【任务 C-W2｜6 选 3 标签 + 属性 0 起 + 四步开局 + 学院偏向展示】
-先读 src/ui/ui.js 的 makeCreationState/creationNameStep/creationGenderStep/creationAttributeStep/creationTagStep/startCreation/renderCreation。
+【任务 C-W2｜6 选 3 标签 + 属性 0 起 + 六步开局 + 学院偏向展示】
+先读 src/ui/ui.js 的 makeCreationState/creationNameStep/creationGenderStep/creationCollegeStep/creationAttributeStep/creationTagStep/creationAppearanceStep/startCreation/renderCreation。
 实现：
 1. startCreation(opts)：可选入参 {tagCandidates}；没有时降级 config.tags.list.slice(0,6).map(t=>t.id)（保证 tests/verify_ui.mjs 的无参调用不崩）。
-2. 第④步只渲染 tagCandidates 对应的 6 个标签；每个显示 name、desc、modifiers 摘要（如「学识 +3 / 健康 −1」）；选满 3 个才能提交；提供「换一批」按钮调 callbacks.onRerollTags?.()。
+2. 第⑤步只渲染 tagCandidates 对应的 6 个标签；每个显示 name、desc、modifiers 摘要（如「学识 +3 / 健康 −1」）；选满 3 个才能提交；提供「换一批」按钮调 callbacks.onRerollTags?.()。
 3. 属性分配四项初始 0、共 20 点、每项 0–20、剩余 0 才能下一步；顶部显示「剩余 N 点」。
-4. 姓名与性别合并为一屏（四步开局：①姓名+性别 →②学院 →③属性 →④标签），maxlength=12、trim、空值拦截、提示「1–12 字」。
+4. 姓名单独一屏（现网固定六步：姓名→性别→学院→属性→标签→立绘，不要合并），maxlength=12、trim、空值拦截、提示「1–12 字」。
 5. 学院下拉展示 desc；选中后展示「事件偏向」：从 config.colleges.list[i].eventBias 取前 3 个事件 id，用 config.events 找 name 展示。
-6. 保持 renderCreation 的「第 N/4 步」文案与现有 DOM 类名（.card/.btn/.pill），不要在 W2 动样式体系。
+6. 保持 renderCreation 的「第 N/6 步」文案与现有 DOM 类名（.vn-* / .card / .btn），不要在 W2 动样式体系。
+7. 第⑥步立绘（creationAppearanceStep）保持现状，不改。
 约束：零 import；不用 Math.random；不改 state；不改 callbacks 协议（只新增 onRerollTags 的使用）。
 最后贴 `node tests/verify_ui.mjs`、`npm test` 的真实输出，并给 ui-lab 四张截图说明（默认/换一批/选满/未分满）。
 ```
