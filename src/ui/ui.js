@@ -622,8 +622,17 @@ export function createApp(ctx) {
     const player = state.player || {};
     const seq = view && Number.isFinite(view.actionSeq) ? view.actionSeq : 0;
     const actionId = view && view.actionId;
+    const eventResult = view && view.eventResult;
 
-    if (actionId && seq && seq !== ui.consumedSeq) {
+    if (eventResult) {
+      // 事件选项结算：把结果文本与实际数值变化落到对话框
+      const def = findEventById(eventResult.eventId) || {};
+      const chips = effectChips({ attributes: eventResult.delta || {} });
+      ui.speaker = def.name || '事件';
+      ui.text = eventResult.text || '（这件事就这样过去了）';
+      ui.effects = chips.length ? chips : [{ text: '什么也没有发生', kind: 'flat' }];
+      ui.history.push({ who: ui.speaker, text: ui.text });
+    } else if (actionId && seq && seq !== ui.consumedSeq) {
       ui.consumedSeq = seq;
       ui.scene = ACTION_SCENE[actionId] || ui.scene;
       ui.sceneEntry = pickScene(ui.scene, state.turn, seq);
@@ -1336,12 +1345,55 @@ export function createApp(ctx) {
     const maxTurn = balanceOf('turns', 40);
     const apMax = balanceOf('actionPointsPerTurn', 4);
     const academics = state.academics || {};
-    const scores = Array.isArray(academics.semesterScores) ? academics.semesterScores : [];
-    const avg = scores.length
-      ? Math.round(scores.reduce((s, v) => s + (Number(v) || 0), 0) / scores.length)
+    // 兼容两种学业结构：旧存档只有 semesterScores，新引擎还会写 semesterRecords[].subjects
+    const records = Array.isArray(academics.semesterRecords) ? academics.semesterRecords : [];
+    const subjectScores = [];
+    for (const rec of records) {
+      if (!rec) continue;
+      if (Array.isArray(rec.subjects) && rec.subjects.length) {
+        for (const sub of rec.subjects) {
+          const sc = Number(sub && sub.score);
+          if (Number.isFinite(sc)) subjectScores.push(sc);
+        }
+      } else {
+        const sc = Number(rec.score);
+        if (Number.isFinite(sc)) subjectScores.push(sc);
+      }
+    }
+    const legacyScores = (Array.isArray(academics.semesterScores) ? academics.semesterScores : [])
+      .map(Number)
+      .filter((v) => Number.isFinite(v));
+    const pool = subjectScores.length ? subjectScores : legacyScores;
+    const avg = pool.length
+      ? Math.round(pool.reduce((s, v) => s + v, 0) / pool.length)
       : null;
+    const gpa = Number(academics.totalGpa);
     const failed = Number(academics.failedCourses) || 0;
-    const study = Number(academics.studyActions) || 0;
+
+    // 逐学期成绩清单：新结构取每学期 subjects 的均分与绩点，旧存档取 semesterScores 单项
+    const semesterList = [];
+    if (records.length) {
+      records.forEach((rec, idx) => {
+        if (!rec) return;
+        const subs = Array.isArray(rec.subjects) ? rec.subjects : [];
+        const scores = subs
+          .map((x) => Number(x && x.score))
+          .filter((v) => Number.isFinite(v));
+        const mean = scores.length
+          ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+          : null;
+        semesterList.push({
+          label: '第 ' + (Number(rec.semester) || idx + 1) + ' 学期',
+          score: mean,
+          gpa: Number.isFinite(Number(rec.gpa)) ? Number(rec.gpa) : null,
+          failed: Number(rec.failed) || 0,
+        });
+      });
+    } else if (legacyScores.length) {
+      legacyScores.forEach((v, idx) => {
+        semesterList.push({ label: '第 ' + (idx + 1) + ' 学期', score: v, gpa: null, failed: 0 });
+      });
+    }
 
     const bars = ATTRIBUTE_META.map((m) => {
       const val = Number(attrs[m.key]) || 0;
@@ -1361,6 +1413,7 @@ export function createApp(ctx) {
       h('div', { class: 'vn-profile__k' }, [k]),
       h('div', { class: 'vn-profile__v' }, [String(v)]),
     ]);
+    let listEl = null;
 
     const body = [
       h('div', { class: 'vn-profile__head' }, [
@@ -1378,9 +1431,51 @@ export function createApp(ctx) {
         cell('学年学期', semesterLabel(state.turn)),
         cell('回合', state.turn + ' / ' + maxTurn),
         cell('行动点', (state.actionPoints || 0) + ' / ' + apMax),
-        cell('学习行动', study + ' 次'),
-        cell('考试均分', avg == null ? '—' : avg),
+        cell('绩点', Number.isFinite(gpa) && gpa > 0 ? gpa.toFixed(2) : '—'),
+        cell('考试均分', avg == null ? '尚未考试' : avg),
         cell('挂科', failed + ' 门'),
+      ]),
+      h('div', { class: 'vn-score' }, [
+        h('button', {
+          class: 'vn-score__head',
+          type: 'button',
+          'aria-expanded': 'false',
+          onclick: (e) => {
+            const btn = e && e.currentTarget;
+            const list = listEl;
+            const open = list.className.indexOf('is-collapsed') >= 0;
+            list.className = 'vn-score__list' + (open ? '' : ' is-collapsed');
+            if (btn) {
+              btn.className = 'vn-score__head' + (open ? ' is-open' : '');
+              btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+          },
+        }, [
+          h('span', {}, ['学期成绩']),
+          h('span', { class: 'vn-score__count' }, [semesterList.length + ' 个学期']),
+          h('span', { class: 'vn-score__arrow' }, ['▾']),
+        ]),
+        semesterList.length
+          ? (listEl = h('div', { class: 'vn-score__list is-collapsed' }, semesterList.map((it) =>
+              h('div', { class: 'vn-score__row' }, [
+                h('span', { class: 'vn-score__sem' }, [it.label]),
+                h('span', { class: 'vn-score__val' }, [it.score == null ? '—' : it.score + ' 分']),
+                it.gpa != null
+                  ? h('span', { class: 'vn-score__gpa' }, ['绩点 ' + it.gpa.toFixed(2)])
+                  : null,
+                it.failed > 0
+                  ? h('span', { class: 'vn-score__fail' }, ['挂 ' + it.failed + ' 门'])
+                  : null,
+              ])
+            )))
+          : h('p', { class: 'vn-score__empty' }, ['还没有期末成绩记录。']),
+        h('div', { class: 'vn-score__total' }, [
+          h('span', {}, ['总体平均']),
+          h('b', {}, [avg == null ? '尚未考试' : avg + ' 分']),
+          Number.isFinite(gpa) && gpa > 0
+            ? h('span', { class: 'vn-score__gpa' }, ['绩点 ' + gpa.toFixed(2)])
+            : null,
+        ]),
       ]),
     ];
 

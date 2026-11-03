@@ -58,6 +58,9 @@ export function createController(deps) {
       payload.actionId = view.actionId;
       payload.actionSeq = view.actionSeq;
     }
+    if (view && view.eventResult) {
+      payload.eventResult = view.eventResult;
+    }
     app.render(state, payload);
     mountDevPanel();
   }
@@ -266,13 +269,24 @@ export function createController(deps) {
   // ---------------- 回调：结算事件 ----------------
   async function onResolveEvent(choiceId) {
     if (!state || !state.pendingEvent) return;
+    const eventId = state.pendingEvent.eventId;
+    const before = Object.assign({}, (state.player && state.player.attributes) || {});
     const res = eng.resolvePendingEvent(state, choiceId, config, rng);
     if (!res.ok) {
       app.showError('选择无效');
       return;
     }
+    // 实际变化量（含 clamp 后的结果），交给表现层在对话框里展示
+    const after = (state.player && state.player.attributes) || {};
+    const delta = {};
+    for (const k of Object.keys(after)) {
+      const d = (Number(after[k]) || 0) - (Number(before[k]) || 0);
+      if (d !== 0) delta[k] = d;
+    }
     await storage.saveGame(state);
-    renderState();
+    renderState({
+      eventResult: { eventId: eventId, text: res.message || '', delta: delta },
+    });
   }
 
   // ---------------- 回调：换立绘 ----------------

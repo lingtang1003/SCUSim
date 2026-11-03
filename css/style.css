@@ -2842,5 +2842,61 @@ a:hover {
   transform: translateY(0);
 }
 
+/* ---- 角色信息：逐学期成绩清单 ---- */
+.vn-score {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--hair);
+}
+.vn-score__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 2px 2px 6px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+  text-align: left;
+}
+.vn-score__head:hover { color: var(--ink); }
+.vn-score__count { font-weight: 500; font-size: 11px; color: var(--ink-3); }
+.vn-score__arrow { margin-left: auto; color: var(--ink-3); transition: transform 160ms var(--ease); }
+.vn-score__head.is-open .vn-score__arrow { transform: rotate(180deg); }
+.vn-score__list { display: flex; flex-direction: column; }
+.vn-score__list.is-collapsed { display: none; }
+.vn-score__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 2px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--hair);
+}
+.vn-score__sem { color: var(--ink-2); }
+.vn-score__val { margin-left: auto; font-weight: 700; color: var(--ink); }
+.vn-score__gpa { font-size: 12px; color: var(--ink-3); }
+.vn-score__fail { font-size: 12px; color: var(--red); }
+.vn-score__empty { margin: 0; font-size: 12px; color: var(--ink-3); }
+.vn-score__total {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-top: 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.vn-score__total b { font-size: 15px; color: var(--ink); }
 
-
+/* 事件结果：无数值变化时的中性标签 */
+.vn-effect--flat {
+  color: var(--ink-3);
+  background: rgba(26, 20, 20, 0.05);
+  border: 1px solid rgba(26, 20, 20, 0.1);
+}
