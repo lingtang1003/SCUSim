@@ -147,7 +147,7 @@
           "effects": { "attributes": { "social": 1 } } },
         { "id": "join", "label": "报名参赛", "resultText": "你带队参赛，投入精力。",
           "requires": { "gpaAtLeast": 3.0 },
-          "denyText": "没有人愿意和我组队，报名失败。",
+          "denyText": "没有人愿意和你组队，报名失败。",
           "effects": { "flags": { "competition": "started" }, "money": -100 } } ] },
     { "id": "ev_r17", "name": "实习内推", "weight": 7, "termRange": [30, 40],
       "text": "学姐的公司有实习内推，机会难得。",

@@ -186,7 +186,11 @@ console.log('== A · W1 引擎单测（a-engine）==');
   const se = stateWithoutPending(cfgExam);
   for (let i = 0; i < 3; i += 1) advance(se, cfgExam, createRng(20 + i));
   se.academics.studyActions = 3;
-  const re = advance(se, cfgExam, createRng(30));
+  const re0 = advance(se, cfgExam, createRng(30));
+  // 期末周若同时触发事件，考试会推迟到选项结算之后（让期末周选项真正影响成绩）
+  const re = re0.settlement
+    ? re0
+    : resolvePendingEvent(se, se.pendingEvent.options[0].id, cfgExam, createRng(31));
   check('advance: 第 5 回合触发期末结算', se.turn === 5 && re.settlement !== null);
   check('advance: settlement 含科目/绩点/挂科/警告', re.settlement
     && Array.isArray(re.settlement.subjects)
@@ -201,7 +205,14 @@ console.log('== A · W1 引擎单测（a-engine）==');
   // 40 回合终局
   const s40 = stateWithoutPending(base, 12345);
   let guard = 0;
-  while (s40.turn < 40 && !s40.endingId && guard < 100) { guard += 1; advance(s40, base, createRng(400 + guard)); }
+  while (s40.turn < 40 && !s40.endingId && guard < 100) {
+    guard += 1;
+    advance(s40, base, createRng(400 + guard));
+    // 期末周推迟的考试需要事件结算才会落账，这里每回合把事件结掉
+    if (s40.pendingEvent) {
+      resolvePendingEvent(s40, s40.pendingEvent.options[0].id, base, createRng(900 + guard));
+    }
+  }
   check('advance: 40 回合后 turn 停在 40', s40.turn === 40, String(s40.turn));
   check('advance: 终局写入 endingId', typeof s40.endingId === 'string' && s40.endingId.length > 0, String(s40.endingId));
   check('advance: 8 个学期都有成绩记录（examTurns 8 个）', s40.academics.semesterRecords.length === 8, String(s40.academics.semesterRecords.length));

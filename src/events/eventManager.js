@@ -15,7 +15,6 @@
  */
 
 import { applyEffects, describeChanges } from '../core/effects.js';
-import { runFinalExam } from '../core/academy.js';
 
 function getAllEvents(config) {
   const events = (config && config.events) || {};
@@ -327,8 +326,8 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
     if (state.__recentEvents.length > cap) state.__recentEvents.shift();
   }
   let text = option.resultText || '';
-  // 考试类事件：只有在真正的期末周（balance.examTurns）才公布成绩。
-  // 否则随机事件会校历外提前把期末考掉、写坏学期记录，正式期末反而被跳过。
+  // 考试类事件：只在期末周、且引擎已经算好本次成绩时「复述」成绩。
+  // 事件自己不再开考（否则会提前考一次、还会和引擎的学期结算重复写记录）。
   const examTurns = Array.isArray(config && config.balance && config.balance.examTurns)
     ? config.balance.examTurns
     : [];
@@ -339,20 +338,9 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
       : 5;
     const curSem = Math.ceil(state.turn / months);
     const recs = (state.academics && state.academics.semesterRecords) || [];
-    let last = recs[recs.length - 1];
-    // 引擎若已在期末回合算好本次成绩则复用；否则当场运行 runFinalExam 计算本次成绩与绩点
-    if (!last || last.semester !== curSem || !Array.isArray(last.subjects) || !last.subjects.length) {
-      const exam = runFinalExam(state, config, rng);
-      if (exam && exam.ok) {
-        last = {
-          semester: curSem, turn: state.turn,
-          subjects: exam.subjects,
-          semesterGpa: exam.semesterGpa,
-          failed: exam.failedThisSemester,
-        };
-      }
-    }
-    if (last && Array.isArray(last.subjects) && last.subjects.length) {
+    const last = recs[recs.length - 1];
+    if (last && last.semester === curSem
+      && Array.isArray(last.subjects) && last.subjects.length) {
       const scores = last.subjects.map((x) => `${x.name} ${x.score} 分`).join('、');
       text += ` ｜ 期末成绩：${scores} ｜ 绩点 ${last.semesterGpa} ｜ 挂 ${last.failed} 门`;
     }

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 核心引擎（负责人 A）。编排 state / economy / academy / eventManager / ending。
  *
  * 所有函数就地修改传入的 state，并返回统一结果对象：
@@ -320,9 +320,38 @@ export function doAction(state, actionId, config, rng) {
 }
 
 /**
+ * 期末考试 + 绩点 + 学业警告 + 学期学习计数重置，返回本次结算数据。
+ * advance() 在期末周调用；若期末周同时有事件，则推迟到事件结算之后调用。
+ */
+function runExamSettlement(state, config, rng, turnOverride) {
+  const balance = getBalance(config);
+  const monthsPerSemester = num(balance.monthsPerSemester, MONTHS_PER_SEMESTER_DEFAULT);
+  const examTurn = Number.isFinite(turnOverride) ? turnOverride : state.turn;
+  const semester = Math.ceil(examTurn / monthsPerSemester);
+  const exam = runExam(state, config, rng);
+  warningCheck(state, config);
+  state.academics.studyActionsBySemester = Number(state.academics.studyActions) || 0;
+  state.academics.studyActions = 0;
+  const settlement = {
+    semester,
+    turn: examTurn,
+    subjects: (exam && exam.subjects) || [],
+    semesterGpa: exam && exam.semesterGpa != null ? exam.semesterGpa : null,
+    totalGpa: state.academics.totalGpa,
+    failedCourses: state.academics.failedCourses,
+    failedThisSemester: (exam && exam.failedThisSemester) || 0,
+    warning: !!state.academics.warning,
+  };
+  pushLog(state, `学期 ${semester} 结算：总绩点 ${state.academics.totalGpa}，累计挂科 ${state.academics.failedCourses} 门`, config);
+  pushHistory(state, { type: 'exam', text: `学期 ${semester} 期末：绩点 ${state.academics.totalGpa}` }, config);
+  return settlement;
+}
+
+/**
  * 推进一个回合（就地改 state）。
- * 顺序（D-10）：回合+1/AP 重置 → 月初结算 → 负债判定 → 期末成绩/绩点/警告 →
- *              学期学习计数重置 → 固定/负债/随机事件 → 终局结局判定。
+ * 顺序（D-10）：回合+1/AP 重置 → 月初结算 → 负债判定 → 固定/负债/随机事件 →
+ *              期末成绩/绩点/警告 → 学期学习计数重置 → 终局结局判定。
+ * 期末周若同时有事件，考试会推迟到事件结算之后（pendingExam）。
  * @returns {{ ok, state, monthly?, settlement?, pendingEvent?, endingId?, message?, reason? }}
  */
 export function advance(state, config, rng) {
@@ -336,6 +365,14 @@ export function advance(state, config, rng) {
   // 进入新回合
   state.turn += 1;
   state.actionPoints = apPerTurn;
+
+  // 上一回合期末周的考试若因事件没结算掉，这里补算（按当时的回合推学期）
+  if (state.pendingExam) {
+    const pend = state.pendingExam;
+    const pendTurn = pend && Number.isFinite(pend.turn) ? pend.turn : state.turn - 1;
+    state.pendingExam = false;
+    runExamSettlement(state, config, rng, pendTurn);
+  }
 
   // 月初收支结算（SRS 3.3.1）
   const monthly = settleMonth(state, config);
@@ -352,25 +389,10 @@ export function advance(state, config, rng) {
   }
 
   // 学期考试 / 绩点 / 警告
+  // 期末周若同时触发了事件，先把考试挂起：等玩家选完「期末周」选项再考，
+  // 这样选项加的知识/状态才真的影响成绩（否则结算会抢先弹出来）。
   let settlement = null;
-  if (examTurns.indexOf(state.turn) >= 0) {
-    const exam = runExam(state, config, rng);
-    warningCheck(state, config);
-    state.academics.studyActionsBySemester = Number(state.academics.studyActions) || 0;
-    state.academics.studyActions = 0;
-    settlement = {
-      semester,
-      turn: state.turn,
-      subjects: (exam && exam.subjects) || [],
-      semesterGpa: exam && exam.semesterGpa != null ? exam.semesterGpa : null,
-      totalGpa: state.academics.totalGpa,
-      failedCourses: state.academics.failedCourses,
-      failedThisSemester: (exam && exam.failedThisSemester) || 0,
-      warning: !!state.academics.warning,
-    };
-    pushLog(state, `学期 ${semester} 结算：总绩点 ${state.academics.totalGpa}，累计挂科 ${state.academics.failedCourses} 门`, config);
-    pushHistory(state, { type: 'exam', text: `学期 ${semester} 期末：绩点 ${state.academics.totalGpa}` }, config);
-  }
+  const isExamTurn = examTurns.indexOf(state.turn) >= 0;
 
   // 事件（固定 > 负债 > 随机，同刻至多一个）；终局回合不再触发事件
   const isFinalTurn = state.turn >= maxTurn;
@@ -378,6 +400,11 @@ export function advance(state, config, rng) {
     state.pendingEvent = null;
   } else {
     enterTurn(state, config, rng, debt && debt.triggered ? debt.eventId : null);
+  }
+
+  if (isExamTurn) {
+    if (state.pendingEvent) state.pendingExam = { turn: state.turn };
+    else settlement = runExamSettlement(state, config, rng);
   }
 
   // 终局
@@ -418,8 +445,14 @@ export function resolvePendingEvent(state, choiceId, config, rng) {
   state.pendingEvent = null;
   clampAttrs(state, config);
   pushHistory(state, { type: 'choice', eventId, text: res.message || `事件选择：${choiceId}` }, config);
+  // 期末周被挂起的考试：选项效果已生效，现在结算
+  let settlement = null;
+  if (state.pendingExam) {
+    state.pendingExam = false;
+    settlement = runExamSettlement(state, config, rng);
+  }
   state.rngState = rng.getState();
-  return { ok: true, state, result: res.result, message: res.message };
+  return { ok: true, state, result: res.result, message: res.message, settlement };
 }
 
 /**
@@ -429,3 +462,4 @@ export function resolvePendingEvent(state, choiceId, config, rng) {
 export function getEnding(state, config) {
   return { ok: true, endingId: evaluateEnding(state, config) };
 }
+
