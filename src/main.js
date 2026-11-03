@@ -313,6 +313,58 @@ export function createController(deps) {
     }
   }
 
+  // ---------------- 事件选项：前置不足时的说明文案 ----------------
+  const ATTR_NAME = { knowledge: '学识', social: '社交', health: '健康', money: '金钱' };
+
+  function findEventOption(eventId, choiceId) {
+    const ev = config && config.events;
+    const all = [].concat(
+      Array.isArray(ev && ev.fixed) ? ev.fixed : [],
+      Array.isArray(ev && ev.random) ? ev.random : []
+    );
+    const def = all.find((e) => e && e.id === eventId);
+    const list = (def && Array.isArray(def.options)) ? def.options : [];
+    return list.find((o) => o && o.id === choiceId) || null;
+  }
+
+  /** 拼出「选择无效的原因，可能带来的后果」 */
+  function denyMessage(option, s) {
+    const req = (option && option.requires) || null;
+    const reasons = [];
+    if (req) {
+      const attrs = (s.player && s.player.attributes) || {};
+      if (req.attribute && req.attribute.key) {
+        const cur = Number(attrs[req.attribute.key]) || 0;
+        const min = Number(req.attribute.min);
+        if (Number.isFinite(min) && cur < min) {
+          reasons.push(`${ATTR_NAME[req.attribute.key] || req.attribute.key}不足（需要 ${min}，现在 ${cur}）`);
+        }
+      }
+      if (req.moneyAtLeast != null) {
+        const cur = Number(attrs.money) || 0;
+        const min = Number(req.moneyAtLeast);
+        if (Number.isFinite(min) && cur < min) {
+          reasons.push(`金钱不足（需要 ${min}，现在 ${cur}）`);
+        }
+      }
+      if (req.gpaAtLeast != null) {
+        const cur = Number(s.academics && s.academics.totalGpa) || 0;
+        const min = Number(req.gpaAtLeast);
+        if (Number.isFinite(min) && cur < min) {
+          reasons.push(`总绩点不够（需要 ${min}，现在 ${cur.toFixed(2)}）`);
+        }
+      }
+      if (req.flag) {
+        const flags = (s.player && s.player.flags) || {};
+        if (String(flags[req.flag.key]) !== String(req.flag.value)) {
+          reasons.push('前置剧情还没走到');
+        }
+      }
+    }
+    const tail = (option && option.denyText) || '这个选择现在行不通。';
+    return (reasons.length ? `${reasons.join('、')}，` : '') + tail;
+  }
+
   // ---------------- 回调：结算事件 ----------------
   async function onResolveEvent(choiceId) {
     if (!state || !state.pendingEvent) return;
@@ -320,7 +372,11 @@ export function createController(deps) {
     const before = Object.assign({}, (state.player && state.player.attributes) || {});
     const res = eng.resolvePendingEvent(state, choiceId, config, rng);
     if (!res.ok) {
-      app.showError('选择无效');
+      // 不满足前置：把原因和可能的后果说清楚，而不是一句「选择无效」
+      const option = findEventOption(eventId, choiceId);
+      const msg = denyMessage(option, state);
+      if (typeof app.showHint === 'function') app.showHint(msg);
+      else if (typeof app.showError === 'function') app.showError(msg);
       return;
     }
     // 实际变化量（含 clamp 后的结果），交给表现层在对话框里展示

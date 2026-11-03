@@ -2918,3 +2918,23 @@ a:hover {
 @media (max-width: 560px) {
   .vn-profile__meta--4 { grid-template-columns: 1fr 1fr; }
 }
+
+/* ---- 事件弹层：前置不足的说明（不挡选项、8 秒后淡出） ---- */
+.vn-event__hint {
+  align-self: center;
+  max-width: min(660px, 88vw);
+  margin: 10px auto 0;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border-left: 3px solid var(--red);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 4px 14px rgba(26, 20, 20, 0.12);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity 160ms var(--ease), transform 160ms var(--ease);
+}
+.vn-event__hint.is-on { opacity: 1; transform: translateY(0); }

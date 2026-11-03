@@ -327,12 +327,17 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
     if (state.__recentEvents.length > cap) state.__recentEvents.shift();
   }
   let text = option.resultText || '';
-  // 考试类事件：直接公布本次期末考试成绩并计算绩点
-  if (ev.showExamResult) {
+  // 考试类事件：只有在真正的期末周（balance.examTurns）才公布成绩。
+  // 否则随机事件会校历外提前把期末考掉、写坏学期记录，正式期末反而被跳过。
+  const examTurns = Array.isArray(config && config.balance && config.balance.examTurns)
+    ? config.balance.examTurns
+    : [];
+  const isExamTurn = examTurns.indexOf(state.turn) >= 0;
+  if (ev.showExamResult && isExamTurn) {
     const months = Number.isFinite(config && config.balance && config.balance.monthsPerSemester)
       ? config.balance.monthsPerSemester
       : 5;
-    const curSem = Math.ceil(state.turn / 5);
+    const curSem = Math.ceil(state.turn / months);
     const recs = (state.academics && state.academics.semesterRecords) || [];
     let last = recs[recs.length - 1];
     // 引擎若已在期末回合算好本次成绩则复用；否则当场运行 runFinalExam 计算本次成绩与绩点

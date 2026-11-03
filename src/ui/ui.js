@@ -1,4 +1,4 @@
-﻿/**
+/**
  * SCUSim · UI 表现层（负责人 C · 寇豆码）
  *
  * 视觉形态：橙光式「视觉小说（VN）」——
@@ -151,6 +151,8 @@ export function createApp(ctx) {
   let lastState = null;
   let keysBound = false;
   let typeRaf = null;
+  let eventHintEl = null;
+  let eventHintTimer = null;
 
   // UI 内部视图状态（不是 GameState，不参与存档结算）
   const ui = {
@@ -1245,6 +1247,8 @@ export function createApp(ctx) {
     const options = Array.isArray(ev.options) && ev.options.length
       ? ev.options
       : (Array.isArray(def.options) ? def.options : []);
+    // 前置不足时的说明条（默认隐藏，由 showHint 填入）
+    const hintEl = h('p', { class: 'vn-event__hint' }, ['']);
 
     const node = h('div', { class: 'vn-event' }, [
       h('div', { class: 'vn-event__scrim' }),
@@ -1258,9 +1262,11 @@ export function createApp(ctx) {
             },
           })
         )),
+        hintEl,
         dialogueBox(title, body, []),
       ]),
     ]);
+    eventHintEl = hintEl;
     mountOverlay(node, null, false);
     markStageEvent(true);
   }
@@ -1686,11 +1692,32 @@ export function createApp(ctx) {
     showToast(msg, 'danger');
   }
 
+  /**
+   * 事件选项前置不足时的说明：优先显示在事件弹层里（不挡选项），
+   * 没有事件弹层时退回 toast。
+   */
+  function showHint(msg) {
+    if (!msg) return;
+    if (eventHintEl && eventHintEl.parentNode) {
+      eventHintEl.textContent = String(msg);
+      eventHintEl.classList.add('is-on');
+      if (eventHintTimer && typeof clearTimeout === 'function') clearTimeout(eventHintTimer);
+      if (typeof setTimeout === 'function') {
+        eventHintTimer = setTimeout(() => {
+          if (eventHintEl) eventHintEl.classList.remove('is-on');
+        }, 8000);
+      }
+      return;
+    }
+    showToast(String(msg), 'danger');
+  }
+
   // ---------------- 对外接口 ----------------
   return {
     mount,
     render,
     showEvent,
+    showHint,
     showExam,
     showEnding,
     showError,
