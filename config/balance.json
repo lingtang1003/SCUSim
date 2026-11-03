@@ -5,22 +5,53 @@
   "monthsPerSemester": 5,
   "examTurns": [5, 10, 15, 20, 25, 30, 35, 40],
   "randomEventBaseChance": 0.35,
+  "recentEventCooldown": 3,
   "attributePointTotal": 20,
   "attributeKeys": ["knowledge", "social", "health", "money"],
   "healthRestrictThreshold": 3,
   "warningFailedCourses": 3,
-  "threeTierBonus": {
-    "thresholds": [5, 15],
-    "tiers": ["low", "mid", "high"],
-    "note": "待确认：属性分段阈值与对应行动加成系数，当前为占位，未接入引擎"
-  },
+
+  "monthlyIncome": 2000,
+  "monthlyExpense": 1950,
+  "debtThreshold": -3000,
+  "debtCooldownTurns": 6,
+  "attributeClamp": { "min": 0, "max": 100 },
+
   "exam": {
-    "base": 60,
+    "subjects": ["高等数学", "大学英语", "专业核心", "思想政治"],
+    "fluctuation": 0.10,
+    "passLine": 60,
+    "base": 50,
     "knowledgeWeight": 1.0,
     "studyBonusPerAction": 3,
     "difficulty": 10,
-    "passLine": 60,
-    "note": "待确认公式：score = base + knowledgeWeight*knowledge + studyBonusPerAction*studyActions - difficulty"
+    "note": "单门 score = round(base + 学识×knowledgeWeight×(1±fluctuation))，夹[0,100]；base 保证低学识期正常学习也能及格，完全不学（学识<10）才挂科"
   },
-  "note": "数值为占位初值，平衡需经 40 回合模拟测试调优（见开发方案 §2 E/D）"
+
+  "gpaTable": [
+    { "min": 90, "gpa": 4.0 },
+    { "min": 85, "gpa": 3.7 },
+    { "min": 82, "gpa": 3.3 },
+    { "min": 78, "gpa": 3.0 },
+    { "min": 75, "gpa": 2.7 },
+    { "min": 72, "gpa": 2.3 },
+    { "min": 68, "gpa": 2.0 },
+    { "min": 64, "gpa": 1.5 },
+    { "min": 60, "gpa": 1.0 }
+  ],
+
+  "thesis": {
+    "knowledgeWeight": 1.0,
+    "gpaWeight": 25,
+    "passLine": 60
+  },
+
+  "threeTierBonus": {
+    "thresholds": [10, 20],
+    "tiers": ["low", "mid", "high"],
+    "bonus": { "low": 0, "mid": 1, "high": 2 },
+    "note": "属性分档加成：<10 → +0，10–19 → +1，≥20 → +2"
+  },
+
+  "note": "数值为初值，期末公式已切换为：单门 score = round(学识 × (1 ± 波动))，绩点查 gpaTable；平衡需经 40 回合模拟调优"
 }
