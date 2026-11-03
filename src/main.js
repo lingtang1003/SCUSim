@@ -41,6 +41,48 @@ export function createController(deps) {
   let appearanceId = '';
   let actionSeq = 0;
 
+  // ---------------- 弹窗队列（D-13：学期结算先、事件后） ----------------
+  // 约定：UI 的 showExam / showEvent 收第二个参数 done，关闭时调用它；
+  //      或调用 callbacks.onModalClosed()；或返回 Promise。三者任一即可。
+  const modalQueue = [];
+  let modalBusy = false;
+
+  function notifyModalClosed() {
+    if (!modalBusy) return;
+    modalBusy = false;
+    pumpModalQueue();
+  }
+
+  function pumpModalQueue() {
+    if (modalBusy || modalQueue.length === 0) return;
+    const show = modalQueue.shift();
+    modalBusy = true;
+    let finished = false;
+    const done = () => {
+      if (finished) return;
+      finished = true;
+      modalBusy = false;
+      pumpModalQueue();
+    };
+    try {
+      const ret = show(done);
+      if (ret && typeof ret.then === 'function') ret.then(done, done);
+    } catch (_) {
+      done();
+    }
+  }
+
+  function queueModal(show) {
+    modalQueue.push(show);
+    pumpModalQueue();
+  }
+
+  /** 新局/读档/回主菜单时清空队列，避免上一局的弹窗残留 */
+  function resetModals() {
+    modalQueue.length = 0;
+    modalBusy = false;
+  }
+
   // 对每项行动计算可用性，作为 render 的输入
   function computeAvailability(s) {
     const availability = {};
@@ -135,6 +177,7 @@ export function createController(deps) {
 
   // ---------------- 回调：新游戏 ----------------
   async function onNewGame(opts) {
+    resetModals();
     if (!opts || typeof opts !== 'object') {
       app.showError('创建数据无效');
       return;
@@ -168,6 +211,7 @@ export function createController(deps) {
 
   // ---------------- 回调：继续游戏 ----------------
   async function onLoadGame() {
+    resetModals();
     const r = await storage.loadGame();
     if (!r.ok) {
       app.showError('没有可用的存档');
@@ -196,6 +240,8 @@ export function createController(deps) {
   // ---------------- 回调：执行行动 ----------------
   async function onAction(actionId) {
     if (!state) return;
+    // 弹窗未关时先让队列前进（UI 未必回调 done，这里给一个隐式关闭兜底）
+    if (modalBusy) notifyModalClosed();
     // 设计 §11.1#9：存在待处理事件时先结算事件（引擎侧同样兜底拦截）
     if (state.pendingEvent) {
       toast('先处理当前事件，再安排这周的行动', 'warning');
@@ -240,30 +286,31 @@ export function createController(deps) {
       return;
     }
 
-    // 事件优先弹出（存在待处理事件时，玩家必须先在事件里做选择）
-    if (state.pendingEvent) {
-      renderState();
-      app.showEvent(state.pendingEvent);
-      return;
-    }
-
-    // 学期结算：C 提供 showExam 时弹结算页，否则先以 toast 兜底（W4 接弹窗队列）
-    if (res.settlement) {
-      renderState();
-      if (typeof app.showExam === 'function') {
-        app.showExam(res.settlement);
-      } else {
-        toast(
-          `学期 ${res.settlement.semester} 结算：总绩点 ${res.settlement.totalGpa}`
-          + `，累计挂科 ${res.settlement.failedCourses} 门`
-          + (res.settlement.warning ? '（已触发学业警告）' : ''),
-          res.settlement.warning ? 'danger' : 'info'
-        );
-      }
-      return;
-    }
-
+    // 结算与事件同回合时：学期结算先、事件后（D-13），由弹窗队列串行弹出
     renderState();
+    const settlement = res.settlement;
+    const pendingEvent = state.pendingEvent;
+    if (settlement) {
+      queueModal((done) => {
+        if (typeof app.showExam === 'function') {
+          app.showExam(settlement, done);
+        } else {
+          toast(
+            `学期 ${settlement.semester} 结算：总绩点 ${settlement.totalGpa}`
+            + `，累计挂科 ${settlement.failedCourses} 门`
+            + (settlement.warning ? '（已触发学业警告）' : ''),
+            settlement.warning ? 'danger' : 'info'
+          );
+          done();
+        }
+      });
+    }
+    if (pendingEvent) {
+      queueModal((done) => {
+        if (typeof app.showEvent === 'function') app.showEvent(pendingEvent, done);
+        else done();
+      });
+    }
   }
 
   // ---------------- 回调：结算事件 ----------------
@@ -287,6 +334,7 @@ export function createController(deps) {
     renderState({
       eventResult: { eventId: eventId, text: res.message || '', delta: delta },
     });
+    notifyModalClosed();
   }
 
   // ---------------- 回调：换立绘 ----------------
@@ -329,6 +377,7 @@ export function createController(deps) {
   // ---------------- 回调：导入存档 ----------------
   async function onImport(file) {
     if (!file) return;
+    resetModals();
     const r = await storage.importSaveFile(file);
     if (!r.ok) {
       app.showError('导入失败：' + (r.reason || ''));
@@ -347,6 +396,7 @@ export function createController(deps) {
 
   // ---------------- 回调：清除存档（回主菜单） ----------------
   async function onClearSave() {
+    resetModals();
     await storage.clearSave();
     state = null;
     hasSave = false;
@@ -387,6 +437,7 @@ export function createController(deps) {
 
   // ---------------- 回调：返回主菜单 ----------------
   function onOpenMenu() {
+    resetModals();
     if (app.mount) app.mount(rootEl, { hasSave });
   }
 
@@ -404,6 +455,7 @@ export function createController(deps) {
     onOpenGallery,
     onOpenSettings,
     onOpenMenu,
+    onModalClosed: notifyModalClosed,
   };
 
   // 启动时加载配置 → 读取偏好 → 创建 UI → 挂载主菜单
@@ -419,6 +471,17 @@ export function createController(deps) {
     hasSave = r.ok;
     app.mount(rootEl, { hasSave });
     mountDevPanel();
+    // 仅 ?dev=1：暴露只读调试句柄，供浏览器 E2E / 手工调试驱动（正式访问不存在）
+    if (devModeEnabled() && typeof globalThis !== 'undefined') {
+      globalThis.__scusim = {
+        get state() { return state; },
+        get config() { return config; },
+        get app() { return app; },
+        callbacks,
+        controller,
+        _setState(s) { state = s; },
+      };
+    }
     return controller;
   }
 

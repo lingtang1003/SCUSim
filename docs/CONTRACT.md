@@ -41,7 +41,7 @@
 | `attributePointTotal` | number | 是 | ✅ 20 | engine | 开局分配总点 |
 | `attributeKeys` | string[4] | 是 | ✅ | schema | 属性键 |
 | `attributeClamp` | object | 否 | ⏳ D-W1 | state.clampAttrs | `{knowledge:[0,99],social:[0,99],health:[0,99],money:null}`；`null` = 不钳制 |
-| `walletPerMoneyPoint` | number | 否 | ⏳ D-W1 | engine.newGame | 1 点「金钱」兑换的初始资金（D-01，建议 200） |
+| `walletPerMoneyPoint` | number | 否 | ⏳ D-W1 | engine.newGame | 1 点「金钱」兑换的初始资金；**具体值由 D/B 定**（W1 决议：不采用 200），A 代码不写死；缺省 = 0，表示不兑换 |
 | `monthlyIncome` / `monthlyExpense` | number | 否 | ⏳ D-W1 | economy.settleMonthly | 每月 +2000 / −1800 |
 | `debtThreshold` | number | 否 | ⏳ D-W1 | economy.checkDebt | 负债触发线（−3000） |
 | `debtCooldownTurns` | number | 否 | ⏳ D-W1 | economy.checkDebt | 负债事件冷却（6） |
@@ -256,7 +256,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | B | `economy.settleMonthly(state, config)` / `applyExtraMoney` / `checkDebt(state, config)` | W1 |
 | B | `academy.runFinalExam(state, config, rng)` / `gradePoint(score, config)` / `checkWarning(state, config)` / `judgeThesis(state, config)` | W1 |
 | B | `eventManager.computeWeight` / `rollEvent` / `availableOptions` / `buildPending(event, state, config)` / `resolveEvent` | W2 |
-| C | `app.showExam(settlement)` / `app.showToast(msg, kind)`（已有）/ `app.startCreation({tagCandidates})` | W1–W2 |
+| C | `app.showExam(settlement, done?)` / `app.showEvent(ev, done?)` / `app.showToast(msg, kind)`（已有）/ `app.setAppearance(id)`（已有）/ `app.showBacklog()`（已有） | W1–W2：`showExam` 与 `onModalClosed` 待交付；其余已在现网 UI 中可用 |
 | D | `loadConfig` 并行 / `validateConfigs` v2 / `storage` IndexedDB + `migrateSave` | W1–W4 |
 
 > 兼容策略：A 在 engine 内做了**过渡适配**（见 §9），B 的 v2 函数一旦出现即自动优先使用，旧实现自动降级；B 合并后 A 删除适配层。
@@ -268,7 +268,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 
 | 编号 | 决策 | 结论 | 影响 | 状态 |
 |---|---|---|---|---|
-| **D-01** | 金钱语义 | **货币**：不参与 0–99 钳制、可为负；开局资金 = 分配点数 × `walletPerMoneyPoint`（建议 200） | endings 阈值、UI 显示、金额脚本 | ✅ 代码就绪，等配置激活 |
+| **D-01** | 金钱语义 | **货币**：不参与 0–99 钳制、可为负；开局资金 = 分配点数 × `walletPerMoneyPoint`（值由 D/B 定，不采用 200） | endings 阈值、UI 显示、金额脚本 | ✅ 代码就绪，等配置激活 |
 | **D-02** | 结局优先级方向 | 按 SRS **数值越小越高**；`balance.endingPriorityOrder` 控制，当前默认 `desc` 兼容旧配置 | ending.js、endings.json、测试 | ✅ 代码就绪，W3 原子切换 |
 | **D-03** | 健康阈值 | 健康 < 3 只能**锻炼 + 休息**；健康 < 5 学习学识 +0，`studyPenalty.dropChance` 概率再 −1 | actionAvailability / doAction | ✅ 已生效（惩罚等配置） |
 | D-04 | 三档加成 | `<10 +0 / 10–19 +1 / ≥20 +2`，只加 `mainAttr`，不加负向 | doAction | ✅ 代码就绪，等 `mainAttr` |
@@ -280,6 +280,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | D-10 | 结算顺序 | 回合+1 → 月初 → 负债 → 期末 → 事件（固定 > 负债 > 随机）→ 终局 | engine.advance | ✅ 已实现 |
 | D-11 | 履历/图鉴 | `history` ≤60 条结构化；图鉴跨周目唯一 | state / storage | ✅ 引擎侧已实现 |
 | D-12 | 依赖 | 不引入任何第三方运行时/测试依赖 | 全组 | ✅ |
+| D-13 | 弹窗顺序 | 同回合「结算 → 事件」；由 `main.modalQueue` 串行，UI 通过 `done` 回调 / `onModalClosed` / 返回 Promise 任一种方式通知关闭；UI 不通知时下一次交互隐式关闭兜底 | main / UI | ✅ 队列已实现（等 C 的 `showExam`） |
 
 ---
 
@@ -330,7 +331,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | 履历/日志环形 | `state.pushHistory/pushLog` | ✅ 已激活（默认 60） | — | A |
 | 学期学习计数重置 | `engine.advance` | ✅ 已激活 | — | A |
 | 学期结算数据 | `engine.advance().settlement` | ✅ 已激活（单科降级） | B 的 `runFinalExam` 合并后自动升 4 科 | A + B |
-| `?dev=1` 调试面板 | `main.mountDevPanel` | ✅ 已激活 | — | A |
+| `?dev=1` 调试面板 + 只读句柄 `__scusim` | `main.mountDevPanel` / `main.start` | ✅ 已激活（无 `dev=1` 时不存在，已由浏览器 E2E 验证） | — | A |
 | 三档加成 | `engine.tierBonus` | 🟡 就绪未激活 | B 给 `actions.mainAttr` + D 给 `tierBonus` | B/D |
 | 健康 <5 学习惩罚 | `engine.applyStudyPenalty` | 🟡 就绪未激活 | D 给 `studyPenalty` + `healthStudyPenaltyBelow` | D |
 | 初始资金兑换 | `engine.newGame` | 🟡 就绪未激活 | D 给 `walletPerMoneyPoint` 并改 `verify_ui` 的"属性和=20"断言 | D |
@@ -339,7 +340,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | 4 科 ±10% 考试 / 绩点 / 论文 | `engine.runExam/gradePoint` 适配层 | 🟡 降级单科 | B 合并 `runFullExam` 系列 | B |
 | 结局方向 asc | `ending.sortByPriority` | 🟡 就绪未激活（默认 desc） | D 给 `endingPriorityOrder:'asc'` + 重排 endings | D/A W3 |
 | 学期结算弹窗 | `main.onAdvance` | 🟡 toast 兜底 | C 提供 `app.showExam` | C |
-| 弹窗队列 | `main.onAdvance` | ❌ 未实现 | C 提供 `onModalClosed` 后由 A 在 W4 接队列 | A + C |
+| 弹窗队列 | `main.modalQueue` + `onModalClosed` | ✅ 已实现（结算先、事件后；含隐式关闭兜底） | C 交付 `showExam` 后自动生效 | A + C |
 | IndexedDB / 迁移 | `storage` | ❌ 未实现 | D-W4 | D |
 
 **过渡适配层**：`engine.js` 顶部「过渡适配层」一节（`settleMonth / debtCheck / gradePoint / runExam / warningCheck / rollRandom / buildPendingEvent`）。
@@ -356,15 +357,31 @@ B 合并 v2 后，A 删除该段并保留直接调用——**删除时同步更�
 
 ---
 
+## 11. 决议回填（W1 中期）
+
+| # | 议题 | 决议 | 落地 |
+|---|---|---|---|
+| Q1 | `walletPerMoneyPoint` 取值 | **不采用 200**；具体值由 D/B 定，A 不写死（缺省 0 = 不兑换） | §2.1 已改；值定了以后 D 同 PR 改 `verify_ui` 的"四属性和=20"断言，C 把 money 渲染成金额 |
+| Q2 | 低健康学习惩罚 | **概率扣**（`studyPenalty.dropChance` 建议 0.3、`dropAmount` 1） | 引擎已按概率；D 填配置 |
+| Q3 | 结算 / 事件弹窗顺序 | **结算先、事件后** | `main.modalQueue` + D-13；C 交 `showExam` 即生效 |
+| Q4 | 结局方向切换周次 | **W3** 与 `endings.json` 重排同 PR | 保持 `endingPriorityOrder` 待激活 |
+| Q5 | 开局步骤 | **六步**：姓名 → 性别 → 学院 → 属性 → 标签 → 立绘 | 任务书与手册措辞已同步（原"四步"作废） |
+
+> Q1 是本周期唯一的开放项：A 的代码对取值不敏感（任意数字都支持），但**值确定前不要打开**，否则 `verify_ui` 的断言会红。
+
+---
+
 ## 附录 A · W1 已交付清单（A）
 
 | 文件 | 变更 |
 |---|---|
 | `src/core/state.js` | v2 字段、`clampAttrs`、`pushHistory`、`pushLog`；保留 `appearance` 展示字段 |
-| `src/core/engine.js` | 三档加成、健康白名单、学习惩罚、pending 阻断、`advance` 新顺序+`monthly/settlement`、负债接线、过渡适配层 |
+| `src/core/engine.js` | 三档加成、健康白名单、学习惩罚、pending 阻断、`advance` 新顺序+`monthly/settlement`、负债接线、过渡适配层、终局回合不触发事件（E2E 缺陷修复） |
 | `src/core/ending.js` | `sortByPriority`（`endingPriorityOrder` 开关），条件类型 W3 扩展 |
-| `src/main.js` | `onAdvance` 结算/事件/toast 分支、`onAction` 原因文案、`?dev=1` 调试面板 |
+| `src/main.js` | 弹窗队列（`modalQueue`，结算先事件后 + 隐式关闭兜底）、`onAdvance` 排队、`onAction` 原因文案、`?dev=1` 调试面板 |
 | `tests/unit/a-engine.mjs` | 45 条断言（全 PASS） |
+| `tests/unit/a-main.mjs` | 12 条断言：队列顺序 / 不叠窗 / 隐式关闭 / `onModalClosed`（全 PASS） |
+| `tests/unit/a-browser-e2e.mjs` | 真实 Edge headless E2E：23 条断言 + 5 张截图（`docs/截图/W1-A/`），全 PASS |
 
 ## 附录 B · 签署
 

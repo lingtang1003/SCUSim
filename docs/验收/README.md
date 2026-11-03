@@ -50,6 +50,7 @@ node tests/unit/d-schema.mjs
 |---|---|---|---|
 | `tests/accept/w1.mjs` 不存在 | W1 机器门禁无法闭环 | D | W1 周五 |
 | `balance.json` 缺 v2 字段（月度/负债/绩点/三档/惩罚/资金兑换） | 多项能力"就绪未激活" | D | W1 周二 |
+| `walletPerMoneyPoint` 取值未定（Q1：不采用 200） | 初始资金兑换无法激活，结局金额阈值也定不了 | D/B 定值 | W1 周三 |
 | `tags.modifiers` / `actions.mainAttr` 为空 | 标签与三档加成不生效 | B | W1 周四 |
 | `verify_m1.mjs` 有 1 条用例与新行为冲突 | 旧脚本 29/30 | D | W1 周五 |
 | 预览 URL 未在 PR 里出现 | A 无法在浏览器验收 | A 检查 Pages 设置 | W1 周一 |

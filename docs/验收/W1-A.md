@@ -58,15 +58,15 @@ settlement:      { semester, turn, subjects[], semesterGpa, totalGpa, failedCour
 2. 期末仍是"单科降级"，4 科 ±10% 与真绩点要等 B 的 `runFinalExam/gradePoint`。
 3. `verify_m1` 有 1 条用例与新行为冲突（D 负责更新）。
 
-### ⑤ 需要拍板的问题（请在群里回一句）
+### ⑤ 待拍板问题的决议（W1 中期已回填）
 
-| # | 问题 | A 的建议 | 谁定 |
+| # | 问题 | 决议 | A 的落地 |
 |---|---|---|---|
-| 1 | `walletPerMoneyPoint` 取多少？取 200 后开局 money=1000，四属性展示需要改成"金额格式"而不是 0–99 进度条 | **200**，C 在 W2 把 money 单独渲染成 `¥1000` | 全员 + C |
-| 2 | 低健康学习惩罚是"必扣"还是"概率扣"？ | **概率扣（0.3）**，SRS 原文是"存在倒扣可能性" | 全员 |
-| 3 | 学期结算与事件同回合时的弹窗顺序？ | **结算先、事件后**（玩家先看到成绩再处理事件）；需要 C 的 `onModalClosed` 才能排队 | A + C |
-| 4 | 结局方向切换周次 | **W3** 与 D 的 endings 重排同 PR，避免线上演示退化 | A + D |
-| 5 | 开局步骤数：`docs/分工/C-UI与交互.md` 写的是四步，当前 `ui.js` 已是**六步**（含姓名/性别/学院/属性/标签/立绘） | 以当前 UI 的六步为准，A 在 W2 修正任务书措辞 | C 确认 |
+| 1 | `walletPerMoneyPoint` 取多少？ | **不采用 200**；具体值由 D/B 定，A 代码不写死（缺省 0 = 不兑换） | CONTRACT §2.1 已改；值确定后 D 必须同步改 `verify_ui` 的"四属性和=20"断言，C 把 money 展示成金额 |
+| 2 | 低健康学习惩罚 | **概率扣**（`studyPenalty.dropChance`，建议 0.3 / 扣 1） | 引擎按概率实现，配置由 D 填 |
+| 3 | 结算与事件弹窗顺序 | **结算先、事件后** | `main.modalQueue` 已实现（含隐式关闭兜底），见 §9 |
+| 4 | 结局方向切换周次 | **W3** 与 D 的 endings 重排同 PR | CONTRACT §9 保持"就绪未激活" |
+| 5 | 开局步骤 | **六步**（姓名/性别/学院/属性/标签/立绘） | 已修正 `docs/分工/C-UI与交互.md` 与手册措辞；UI 不改 |
 
 ## 1. 本周目标（对照任务卡）
 
@@ -86,9 +86,11 @@ settlement:      { semester, turn, subjects[], semesterGpa, totalGpa, failedCour
 | 文件 | 变更 |
 |---|---|
 | `src/core/state.js` | 新增 `club/romance/flags/appearance`、`semesterRecords/totalGpa/thesis/warningTurn/studyActionsBySemester`、`history`；新增 `clampAttrs` / `pushHistory` / `pushLog`（环形 60）；`version` 暂留 `1.0.0`（见 CONTRACT §6） |
-| `src/core/engine.js` | ① `actionAvailability` 增加健康 <3 白名单（`exercise`/`rest`）② `doAction` 增加三档加成、学习惩罚、`pending_event` 阻断、结算后钳制 ③ `advance` 改为「回合+1 → 月初结算 → 负债 → 期末/绩点/警告 → 学习计数重置 → 事件（固定>负债>随机）→ 终局」并返回 `monthly/settlement` ④ `newGame` 按 `walletPerMoneyPoint` 兑换初始资金 ⑤ 顶部「过渡适配层」（B 的 v2 函数出现即自动优先） |
+| `src/core/engine.js` | ① `actionAvailability` 增加健康 <3 白名单（`exercise`/`rest`）② `doAction` 增加三档加成、学习惩罚、`pending_event` 阻断、结算后钳制 ③ `advance` 改为「回合+1 → 月初结算 → 负债 → 期末/绩点/警告 → 学习计数重置 → 事件（固定>负债>随机）→ 终局」并返回 `monthly/settlement` ④ `newGame` 按 `walletPerMoneyPoint` 兑换初始资金 ⑤ 顶部「过渡适配层」 ⑥ **终局回合不再触发事件**（E2E 发现的结局被重绘清空缺陷） |
 | `src/core/ending.js` | `sortByPriority` 读 `balance.endingPriorityOrder`（默认 `desc`，`asc` 为 SRS 口径）；条件类型仍 3 种，W3 扩展 |
-| `src/main.js` | `onAdvance` 三分支（结局/事件/学期结算）；`onAction` 增加 pending 拦截与 `reason` 文案；新增 `?dev=1` 调试面板（改属性/改钱/清 AP/结算事件/结束回合/清档） |
+| `src/main.js` | 弹窗队列 `modalQueue`（同回合「结算先、事件后」，支持 `done` 回调 / `onModalClosed` / Promise，含隐式关闭兜底）；`onAdvance` 改为排队；`onAction` pending 拦截与 `reason` 文案；`?dev=1` 调试面板 + 只读调试句柄 `__scusim`（仅 dev） |
+| `tests/unit/a-main.mjs` | 新增 12 条断言：队列顺序、不叠窗、隐式关闭兜底、`onModalClosed` 存在性 |
+| `tests/unit/a-browser-e2e.mjs` | 新增真实浏览器 E2E（Edge headless + CDP，零依赖）：23 条断言 + 5 张截图 |
 | `tests/unit/a-engine.mjs` | 新增 45 条断言：钳制、环形、v2 字段、资金兑换、三档边界、健康 0/1/2/3、学习惩罚、pending 阻断、AP=0、月度收支、期末结算、40 回合、复现性、结局方向、事件链路 |
 
 ## 3. 门禁实测（真实输出）
@@ -114,12 +116,76 @@ $ npm test
 $ node tests/verify_m1.mjs（历史脚本，不在 npm test 内）
   总计 30 项，PASS 29，FAIL 1
   失败：Engine: doAction("study") → AP 4→3 / studyActions+1 / 效果生效 / log 追加
+
+$ node tests/unit/a-main.mjs（弹窗队列）
+  总计 12 项，PASS 12，FAIL 0
 ```
 
 **唯一失败项的定性**：该用例在 `newGame` 之后**没有先结算回合 1 的固定事件**就调用 `doAction`，
 而 W1 按设计 §11.1#9 引入了"存在待处理事件时禁止行动"的规则。这是**预期的行为变更**，
 需要测试 Owner（D）把该用例改成"先 `resolvePendingEvent`，再 `doAction`"。
 A 不改他人测试（红线 6），已在 §5 列为 D 的动作项。
+
+### 3.1 浏览器 E2E（真实 Edge headless，A 档手测第 1/3/4 项）
+
+```bash
+# 终端 1
+node server.js
+# 终端 2
+node tests/unit/a-browser-e2e.mjs
+```
+
+真实输出（23 项全 PASS）：
+
+```
+== A · 浏览器 E2E（Edge headless）==
+  PASS  首屏不白屏（#app 有内容）
+  PASS  ?dev=1 时调试面板存在
+  PASS  首屏无残留弹层
+  PASS  新游戏：turn=1 / AP=4
+  PASS  回合 1 弹出社团招新事件
+  PASS  推进到第 10 回合
+  PASS  第 10 回合已有 2 个学期成绩记录
+  PASS  期间最多一个弹层（不叠窗）
+  PASS  属性钳制在合法区间（health 0–99）
+  PASS  到达第 40 回合
+  PASS  结局已判定（endingId 非空）
+  PASS  8 个学期成绩记录齐全
+  PASS  结局弹层出现
+  PASS  全程最多一个弹层（不叠窗）
+  PASS  图鉴写入 localStorage 且含本次结局
+  PASS  dev 面板按钮可点（≥6 个）
+  PASS  点击「钱−5000」真实扣款
+  PASS  点击「AP 清零」真实生效
+  PASS  正式访问无调试面板
+  PASS  正式访问无 __scusim 句柄
+  PASS  正式访问首屏正常渲染
+  PASS  无未捕获异常
+  PASS  无 console.error
+
+== a-browser-e2e 结果 ==
+总计 23 项，PASS 23，FAIL 0
+```
+
+**截图**（1600×900，`docs/截图/W1-A/`）：
+
+| 文件 | 画面 |
+|---|---|
+| `01-title-dev.jpg` | 标题页 + 左下角 `?dev=1` 调试面板（9 个按钮） |
+| `02-turn1-event.jpg` | 第 1 回合 · 大上第 1 学期 · 社团招新事件弹层（2 选项 + 对话框 + 立绘） |
+| `03-turn10.jpg` | 第 10 回合主舞台（HUD/选项条/对话框） |
+| `04-ending.jpg` | 第 40 回合结局卡「学术之星 · 学识 99 / 社交 17 / 健康 5 / 金钱 2」+ 返回标题/再玩一次 |
+| `05-title-normal.jpg` | 去掉 `?dev=1` 的正式访问（无调试面板、无 `__scusim`） |
+
+**E2E 抓到的真实缺陷（已修）**：
+
+| # | 现象 | 根因 | 修复 |
+|---|---|---|---|
+| 1 | 第 40 回合结局卡被"事件已结算"后的重绘清掉，玩家看不到结局 | `advance` 在终局回合仍调用 `enterTurn` 生成 `pendingEvent`；UI 结算该事件时 `renderState()` 清空了根节点，把结局弹层一起删了 | `engine.advance` 终局回合**不再触发事件**并清空 `pendingEvent`（`isFinalTurn` 分支） |
+| 2 | 截图过早，结局淡入动画未结束，底层舞台透出来 | 截图时机问题（非产品缺陷） | E2E 截图前加 400–800ms 等待 |
+| 3 | dev 面板"钱 −5000"点不动 | E2E 选择器写的是 ASCII `-`，按钮文案是 U+2212 `−` | 选择器改为匹配 `5000` |
+
+> 缺陷 1 是**只有真浏览器才能暴露**的集成 bug：Node 侧单测与 `verify_ui` 都只断言"结局 id 非空"，不看 DOM。
 
 ## 4. 行为变更（请 B/C 注意）
 
@@ -178,3 +244,37 @@ node server.js                   # 打开 http://localhost:5173/?dev=1 用调试
 - 学院 `eventBias` 注入事件权重（B 的 `computeWeight` 读取，A 保证 state 上下文）。
 - 事件队列（固定 > 负债 > 随机，同刻至多 1 个）与 `buildViewModel`（`actions[].reason`、`tierInfo`、`flags`）。
 - 门禁：`accept/w2` + `tests/unit/a-engine.mjs` 增补标签修正与队列用例。
+
+## 9. 本周剩余工作（按"能不能现在做"分三档）
+
+### A. 现在就能做（不依赖别人，A 独占文件）
+
+| # | 事项 | 产出 | 预计 |
+|---|---|---|---|
+| 1 | **弹窗队列**（结算先、事件后 + 隐式关闭兜底） | `main.modalQueue` + `tests/unit/a-main.mjs`（12/12） | ✅ 已完成 |
+| 2 | 五项决议回填契约与任务书（钱包值不写死、概率扣、结算先、W3 切 asc、六步开局） | CONTRACT §2.1/§5/§11、`docs/分工/C` | ✅ 已完成 |
+| 3 | `?dev=1` 面板自测（改钱、清 AP、结算事件、结束回合） | 浏览器 E2E 真实点击 9 个按钮：钱−5000、AP 清零均生效 | ✅ 已完成 |
+| 4 | 40 回合全流程（真实浏览器）确认无死锁、不叠窗、无 console error | `tests/unit/a-browser-e2e.mjs` 23/23 + 5 张截图 | ✅ 已完成（顺带修掉 1 个结局被清空的缺陷） |
+| 5 | 仓库设置：`main` 分支保护、Labels、Milestones、Projects 看板 | CONTRACT §8 勾选 | ⏳ 20 分钟（GitHub 网页，只能你点） |
+
+### B. 等别人交付后立刻能接（不写新代码，只接线/复跑）
+
+| # | 事项 | 等谁 | 到时动作 |
+|---|---|---|---|
+| 6 | 学期结算弹窗真正弹出 | C 的 `app.showExam(settlement, done)` | 无需改 main，队列已支持；只做浏览器手测 |
+| 7 | 事件弹窗不叠窗 | C 的 `done` 或 `onModalClosed` | 同上；若 C 未接，隐式关闭兜底已生效 |
+| 8 | 月度收支/学习惩罚/资金兑换/三档加成真正生效 | D 的 `balance` 字段 + B 的 `mainAttr` | 复跑 `a-engine` + 浏览器看数字 |
+| 9 | 期末从"单科降级"升级为 4 科 + 真绩点 | B 的 `runFinalExam/gradePoint` | 删「过渡适配层」里 `runExam/gradePoint` 两段，复跑 |
+| 10 | `accept/w1.mjs` 门禁闭环 | D 的脚本 | 跑红→修→绿，把结论从 🟡 改 ✅ |
+| 11 | `verify_m1` 回到 30/30 | D 改 1 条用例 | 复跑确认 |
+
+### C. 只能催、不能替（红线：不改别人文件）
+
+| # | 事项 | 谁 | 提醒话术（可直接发群） |
+|---|---|---|---|
+| 12 | `balance.json` v2 字段 | D | "W1 门禁卡在 5 个字段：monthlyIncome/Expense、walletPerMoneyPoint（值你们定，不写死）、studyPenalty、healthStudyPenaltyBelow、gpaTable；周二前给我就来得及" |
+| 13 | `actions.mainAttr` + `tags.modifiers` | B | "三档加成和标签修正的代码已就绪，只差 mainAttr/modifiers 两个字段；给我就能在预览站点看到数字变化" |
+| 14 | `showExam` + `onModalClosed` | C | "队列已写好，`showExam(settlement, done)` 收第二参并在关闭时调用，或者调 `callbacks.onModalClosed()`；两种都支持" |
+
+> **本周（W1）A 的收口标准**：A 档 5 项全绿、B 档至少 6/7 两项在浏览器验证通过、C 档三项都有明确回执。
+> 达到后把本文件结论从 🟡 改为 ✅（`accept/w1` 仍由 D 的脚本决定）。
