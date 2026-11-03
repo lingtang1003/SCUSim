@@ -11,12 +11,15 @@
  * 纯逻辑模块，随机一律通过入参 rng，不触碰 DOM / 存储 / 原生随机。
  */
 
+import { pushLog } from './state.js';
+
 const DEFAULT_EXAM = {
   subjects: ['科目'],
   fluctuation: 0.10,
   passLine: 60,
   base: 60,
   knowledgeWeight: 1.0,
+  growthRate: 0.6,
   studyBonusPerAction: 3,
   difficultyBase: 10,
 };
@@ -86,15 +89,16 @@ export function runFinalExam(state, config, rng) {
   const passLine = Number.isFinite(exam.passLine) ? exam.passLine : DEFAULT_EXAM.passLine;
   const base = Number.isFinite(exam.base) ? exam.base : DEFAULT_EXAM.base;
   const kWeight = Number.isFinite(exam.knowledgeWeight) ? exam.knowledgeWeight : DEFAULT_EXAM.knowledgeWeight;
+  const growth = Number.isFinite(exam.growthRate) ? exam.growthRate : DEFAULT_EXAM.growthRate;
   const subjects = Array.isArray(exam.subjects) && exam.subjects.length ? exam.subjects : DEFAULT_EXAM.subjects;
 
   const next = (rng && typeof rng.next === 'function') ? () => rng.next() : () => 0.5;
   const results = subjects.map((name) => {
     const n = next();
-    // score = base + 学识×系数×(1±波动)；base 让低学识期正常学习也能及格，完全不学才挂科
-    const raw = base + knowledge * kWeight * (1 + (n * 2 - 1) * fluctuation);
+    // 保底 passLine：score 恒 >= passLine(60)，学识越高分越高，封顶 100（永不挂科）
+    const raw = passLine + knowledge * kWeight * growth * (1 + (n * 2 - 1) * fluctuation);
     let score = Math.round(raw);
-    score = Math.max(0, Math.min(100, score));
+    score = Math.max(passLine, Math.min(100, score));
     const passed = score >= passLine;
     const gpa = gradePoint(score, config);
     return { name, score, passed, gpa };
@@ -115,6 +119,14 @@ export function runFinalExam(state, config, rng) {
     semesterGpa,
     failed: failedThisSemester,
   });
+
+  const months = Number.isFinite(getBalance(config).monthsPerSemester)
+    ? getBalance(config).monthsPerSemester
+    : 5;
+  const scoreText = results
+    .map((s) => `${s.name} ${s.score} 分` + (s.passed ? '' : '（未及格）'))
+    .join('、');
+  pushLog(state, `学期 ${Math.ceil(state.turn / months)} 期末成绩：${scoreText}，总绩点 ${totalGpa}`, config);
 
   return { ok: true, subjects: results, semesterGpa, totalGpa, failedThisSemester };
 }

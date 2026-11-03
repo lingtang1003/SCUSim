@@ -14,7 +14,7 @@
     {
       "id": "exercise", "name": "体育锻炼", "desc": "跑步、打球、健身",
       "cost": 1, "requiresHealth": 2, "mainAttr": "health",
-      "effects": { "attributes": { "health": 2 } }
+      "effects": { "attributes": { "health": 2, "social": 1 } }
     },
     {
       "id": "parttime", "name": "兼职赚钱", "desc": "校外兼职补贴生活",

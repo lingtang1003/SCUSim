@@ -15,6 +15,7 @@
  */
 
 import { applyEffects, describeChanges } from '../core/effects.js';
+import { runFinalExam } from '../core/academy.js';
 
 function getAllEvents(config) {
   const events = (config && config.events) || {};
@@ -43,6 +44,46 @@ function semesterOf(state) {
 }
 
 /**
+ * 剧情线保证触发：每局 40 回合内，竞赛 / 恋爱 / 保研 / 实习各至少触发一次，
+ * 且保研、实习只安排在大四（回合 30 之后）。窗口回合且该线尚未触发 → 强制返回其起始事件。
+ * 起始事件一旦被 resolve（无论选哪个选项）都会写入 player.flags.chain_<line>，防止重复触发。
+ */
+const STORYLINES = [
+  { line: 'competition', start: 'ev_r16', window: [8, 13] },
+  { line: 'romance', start: 'ev_r23', window: [2, 6] },
+  { line: 'scholarship', start: 'ev_r35', window: [32, 36] },
+  { line: 'intern', start: 'ev_r17', window: [33, 37] },
+];
+
+function storylineKey(line) { return `chain_${line}`; }
+
+function nextStoryline(state, config) {
+  if (!state || !state.player || typeof state.turn !== 'number') return null;
+  const flags = state.player.flags || {};
+  const turn = state.turn;
+  for (const L of STORYLINES) {
+    if (turn >= L.window[0] && turn <= L.window[1] && !flags[storylineKey(L.line)]) {
+      return L.start;
+    }
+  }
+  return null;
+}
+
+/**
+ * 期末考试事件强制：第 5/10/15/20/25/30/35 回合必出现「期末考试周」事件。
+ * 回合 40 为终局回合，引擎直接判定结局、不派发事件，故不安排期末。
+ * 回合列表优先读 balance.exam.examTurns，缺省用固定七次期末。
+ */
+function examTurnEvent(state, config) {
+  if (!state || typeof state.turn !== 'number') return null;
+  const turns = (config && config.balance && config.balance.exam && Array.isArray(config.balance.exam.examTurns))
+    ? config.balance.exam.examTurns
+    : [5, 10, 15, 20, 25, 30, 35];
+  if (turns.indexOf(state.turn) >= 0) return 'ev_r14';
+  return null;
+}
+
+/**
  * 返回本回合应触发的固定事件 id 数组（已结算过的不重复）。
  * 仅处理 trigger.type === 'turn' 的固定事件；负债（type:'debt'）等由 engine 另行接入。
  * @param {object} state
@@ -60,6 +101,14 @@ export function checkFixedEvents(state, config) {
       && !history.includes(e.id)) {
       result.push(e.id);
     }
+  }
+  // 期末考试事件强制：第 5/10/15/20/25/30/35/40 回合必出现「期末考试周」（最高优先）
+  const exam = examTurnEvent(state, config);
+  if (exam) return [exam];
+  // 剧情线保证触发：窗口回合且该线未触发时，强制返回其起始事件（优先于固定/随机）
+  const lineEvent = nextStoryline(state, config);
+  if (lineEvent) {
+    return [lineEvent].concat(result.filter((id) => id !== lineEvent));
   }
   return result;
 }
@@ -278,12 +327,28 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
     if (state.__recentEvents.length > cap) state.__recentEvents.shift();
   }
   let text = option.resultText || '';
-  // 考试类事件：追加最近一次期末成绩 / 绩点
+  // 考试类事件：直接公布本次期末考试成绩并计算绩点
   if (ev.showExamResult) {
+    const months = Number.isFinite(config && config.balance && config.balance.monthsPerSemester)
+      ? config.balance.monthsPerSemester
+      : 5;
+    const curSem = Math.ceil(state.turn / 5);
     const recs = (state.academics && state.academics.semesterRecords) || [];
-    const last = recs[recs.length - 1];
-    if (last && Array.isArray(last.subjects)) {
-      const scores = last.subjects.map((x) => `${x.name} ${x.score}`).join(' / ');
+    let last = recs[recs.length - 1];
+    // 引擎若已在期末回合算好本次成绩则复用；否则当场运行 runFinalExam 计算本次成绩与绩点
+    if (!last || last.semester !== curSem || !Array.isArray(last.subjects) || !last.subjects.length) {
+      const exam = runFinalExam(state, config, rng);
+      if (exam && exam.ok) {
+        last = {
+          semester: curSem, turn: state.turn,
+          subjects: exam.subjects,
+          semesterGpa: exam.semesterGpa,
+          failed: exam.failedThisSemester,
+        };
+      }
+    }
+    if (last && Array.isArray(last.subjects) && last.subjects.length) {
+      const scores = last.subjects.map((x) => `${x.name} ${x.score} 分`).join('、');
       text += ` ｜ 期末成绩：${scores} ｜ 绩点 ${last.semesterGpa} ｜ 挂 ${last.failed} 门`;
     }
   }
@@ -291,6 +356,14 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
   const effParts = describeChanges(applied.changes);
   if (effParts.length) text += ` ｜ 效果：${effParts.join('，')}`;
   state.log.push(`事件【${ev.name}】选择「${option.label}」：${text}`);
+  // 剧情线起始事件：无论选哪个选项，标记该线已触发，避免强制调度重复
+  if (state && state.player) {
+    const st = STORYLINES.find((L) => L.start === eventId);
+    if (st) {
+      if (!state.player.flags) state.player.flags = {};
+      state.player.flags[storylineKey(st.line)] = true;
+    }
+  }
   return {
     ok: true,
     result: { eventId, choiceId, effects: option.effects || {} },

@@ -46,10 +46,13 @@ console.log('== B · 学业单测 ==');
 {
   const s = baseState(10);
   const res = runFinalExam(s, config, rngStub(0));
-  const expected = Math.round(exam.base + 10 * (1 - fluctuation));
-  check('runFinalExam: rng=0 → score=round(base+10×0.9)=59',
+  const passLine = Number.isFinite(exam.passLine) ? exam.passLine : 60;
+  const expected = Math.round(passLine + 10 * 0.6 * (1 - fluctuation));
+  check('runFinalExam: rng=0 → score=round(60+10×0.6×0.9)=65（保底及格）',
     res.ok === true && res.subjects.every((x) => x.score === expected),
     `expected=${expected}, scores=${res.subjects.map((x) => x.score).join(',')}`);
+  check('runFinalExam: 永不低于及格线 60', res.subjects.every((x) => x.score >= passLine),
+    `scores=${res.subjects.map((x) => x.score).join(',')}`);
   check('runFinalExam: 返回 4 门与挂科数', res.subjects.length === exam.subjects.length
     && res.failedThisSemester === res.subjects.filter((x) => !x.passed).length,
     `n=${res.subjects.length}`);
@@ -65,8 +68,9 @@ console.log('== B · 学业单测 ==');
 {
   const s = baseState(10);
   const res = runFinalExam(s, config, rngStub(0.999999));
-  const expected = Math.round(exam.base + 10 * (1 + fluctuation));
-  check('runFinalExam: rng≈1 → score=round(base+10×1.1)=61',
+  const passLine2 = Number.isFinite(exam.passLine) ? exam.passLine : 60;
+  const expected = Math.round(passLine2 + 10 * 0.6 * (1 + fluctuation));
+  check('runFinalExam: rng≈1 → score=round(60+10×0.6×1.1)=67',
     res.subjects.every((x) => x.score === expected),
     `expected=${expected}, scores=${res.subjects.map((x) => x.score).join(',')}`);
 }
