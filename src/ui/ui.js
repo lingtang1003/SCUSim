@@ -146,6 +146,7 @@ export function createApp(ctx) {
   let overlayEl = null;
   let overlayClose = null;
   let overlayStage = null;
+  let overlayDismissible = true;
   let lastState = null;
   let keysBound = false;
   let typeRaf = null;
@@ -248,9 +249,10 @@ export function createApp(ctx) {
     }
   }
 
-  function mountOverlay(node, onClose) {
+  function mountOverlay(node, onClose, dismissible) {
     overlayEl = node;
     overlayClose = onClose || null;
+    overlayDismissible = dismissible !== false;
     if (rootEl) rootEl.appendChild(node);
   }
 
@@ -775,7 +777,7 @@ export function createApp(ctx) {
     keysBound = true;
     doc.addEventListener('keydown', (e) => {
       if (!e || e.key == null) return;
-      if (e.key === 'Escape' && overlayEl) closeOverlay();
+      if (e.key === 'Escape' && overlayEl && overlayDismissible) closeOverlay();
     });
   }
 
@@ -1242,7 +1244,7 @@ export function createApp(ctx) {
         dialogueBox(title, body, []),
       ]),
     ]);
-    mountOverlay(node);
+    mountOverlay(node, null, false);
     markStageEvent(true);
   }
 
@@ -1280,10 +1282,68 @@ export function createApp(ctx) {
         ]),
       ]),
     ]);
-    mountOverlay(node);
+    mountOverlay(node, null, false);
   }
 
-  // ---------------- 弹层：通用 ----------------
+  // ---------------- 弹层：学期结算 / 期末成绩（由协调层弹窗队列调用） ----------------
+  function showExam(settlement, done) {
+    if (!rootEl) return;
+    closeOverlay();
+    const s = settlement || {};
+    const subjects = Array.isArray(s.subjects) ? s.subjects : [];
+    const finish = () => {
+      closeOverlay();
+      if (typeof done === 'function') done();
+    };
+    const infoCell = (k, v) => h('div', { class: 'vn-profile__cell' }, [
+      h('div', { class: 'vn-profile__k' }, [k]),
+      h('div', { class: 'vn-profile__v' }, [String(v)]),
+    ]);
+
+    const rows = subjects.map((sub) => {
+      const score = Number(sub && sub.score);
+      const gpa = Number(sub && sub.gpa);
+      return h('div', { class: 'vn-score__row' }, [
+        h('span', { class: 'vn-score__sem' }, [(sub && sub.name) || '科目']),
+        h('span', { class: 'vn-score__val' }, [Number.isFinite(score) ? score + ' 分' : '—']),
+        Number.isFinite(gpa) ? h('span', { class: 'vn-score__gpa' }, ['绩点 ' + gpa.toFixed(2)]) : null,
+        sub && sub.passed === false ? h('span', { class: 'vn-score__fail' }, ['挂科']) : null,
+      ]);
+    });
+
+    const body = [
+      h('div', { class: 'vn-score' }, [
+        h('div', { class: 'vn-score__head vn-score__head--static' }, [
+          '第 ' + (s.semester || '?') + ' 学期 · 期末考试',
+        ]),
+        subjects.length
+          ? h('div', { class: 'vn-score__list' }, rows)
+          : h('p', { class: 'vn-score__empty' }, ['本次没有科目成绩。']),
+      ]),
+      h('div', { class: 'vn-profile__meta vn-profile__meta--4' }, [
+        infoCell('学期绩点', Number.isFinite(Number(s.semesterGpa)) ? Number(s.semesterGpa).toFixed(2) : '—'),
+        infoCell('总绩点', Number.isFinite(Number(s.totalGpa)) ? Number(s.totalGpa).toFixed(2) : '—'),
+        infoCell('本学期挂科', (Number(s.failedThisSemester) || 0) + ' 门'),
+        infoCell('累计挂科', (Number(s.failedCourses) || 0) + ' 门'),
+      ]),
+      s.warning
+        ? h('div', { class: 'vn-exam__warn' }, ['已触发学业警示：累计挂科达到阈值'])
+        : null,
+    ];
+
+    const node = h('div', { class: 'vn-modal-scrim' }, [
+      h('div', { class: 'vn-modal vn-modal--wide', role: 'dialog', 'aria-modal': 'true' }, [
+        h('div', { class: 'vn-modal__head' }, [
+          h('h3', { class: 'vn-modal__title' }, ['学期结算']),
+        ]),
+        h('div', { class: 'vn-modal__body' }, body),
+        h('div', { class: 'vn-modal__foot' }, [
+          h('button', { class: 'btn btn--primary btn--block btn--lg', onclick: finish }, ['继续']),
+        ]),
+      ]),
+    ]);
+    mountOverlay(node, null, false);
+  }
   function modalShell(title, bodyChildren, footChildren, wide) {
     return h('div', {
       class: 'vn-modal-scrim',
@@ -1613,6 +1673,7 @@ export function createApp(ctx) {
     mount,
     render,
     showEvent,
+    showExam,
     showEnding,
     showError,
     showToast,
