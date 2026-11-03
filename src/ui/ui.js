@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SCUSim · UI 表现层（负责人 C · 寇豆码）
  *
  * 视觉形态：橙光式「视觉小说（VN）」——
@@ -55,7 +55,8 @@ const ART = {
  */
 const BG = {
   library: { art: 'library.jpg', label: '图书馆 · 自习区', line: '（图书馆的空调开得很足，翻书声压过了脚步声）' },
-  classScreen: { art: 'classroom-screen.jpg', label: '第一教学楼 · 教室', line: '（投影还亮着「欢迎你，新同学」，你从第一页开始抄）' },
+  classScreen: { art: 'classroom-screen.jpg', label: '第一教学楼 · 教室', line: '（投影还亮着「欢迎你，新同学」，你从第一页开始抄）', oddSemesterFirstWeek: true },
+  classSunlit: { art: 'classroom-sunlit.jpg', label: '第一教学楼 · 午后教室', line: '（阳光斜进来，粉笔灰在光柱里慢慢往上飘）' },
   classEmpty: { art: 'classroom-empty.jpg', label: '第一教学楼 · 空教室', line: '（教室里只有你和窗外的树影，安静得能听见笔尖）' },
   classPodium: { art: 'classroom-podium.jpg', label: '第一教学楼 · 讲台', line: '（讲台上摊着上节课的讲义，粉笔灰在光里飘）' },
   corridor: { art: 'corridor.jpg', label: '第一教学楼 · 走廊', line: '（走廊尽头的门虚掩着，夕阳把地砖照成一条光带）' },
@@ -83,7 +84,7 @@ const BG = {
 const SCENES = {
   title: { files: [BG.gate] },
   campus: { files: [BG.avenue, BG.magnolia, BG.plaza, BG.duskRoad, BG.lawn, BG.river] },
-  classroom: { files: [BG.library, BG.classScreen, BG.classEmpty, BG.classPodium, BG.corridor] },
+  classroom: { files: [BG.library, BG.classScreen, BG.classSunlit, BG.classEmpty, BG.classPodium, BG.corridor] },
   clubroom: { files: [BG.activityWall, BG.plaza, BG.corridor] },
   track: { files: [BG.field, BG.gym, BG.lawn] },
   store: { files: [BG.metroPlatform, BG.metroEscalator] },
@@ -337,10 +338,27 @@ export function createApp(ctx) {
    */
   function pickScene(key, turn, seq) {
     const k = sceneKeyOf(key);
-    const pool = scenePool(k);
-    if (!pool.length) return null;
-    const offset = hashPick(k + '|' + turn, pool.length);
-    return pool[(offset + (Number(seq) || 0)) % pool.length];
+    const all = scenePool(k);
+    if (!all.length) return null;
+    // 可选时间条件：
+    //   minTurn / maxTurn        周区间
+    //   oddSemester              只在「上学期」（第 1/3/5/7 学期）
+    //   oddSemesterFirstWeek     只在各个「上学期」的第一周（第 1/11/21/31 周）
+    const t = Number(turn) || 0;
+    const months = balanceOf('monthsPerSemester', 5) || 5;
+    const sem = Math.ceil(t / months) || 1;
+    const weekInSem = ((Math.max(1, t) - 1) % months) + 1;
+    const isOddSem = sem % 2 === 1;
+    const pool = all.filter((e) => {
+      if (e.minTurn != null && t < e.minTurn) return false;
+      if (e.maxTurn != null && t > e.maxTurn) return false;
+      if (e.oddSemester && !isOddSem) return false;
+      if (e.oddSemesterFirstWeek && !(isOddSem && weekInSem === 1)) return false;
+      return true;
+    });
+    const list = pool.length ? pool : all;
+    const offset = hashPick(k + '|' + turn, list.length);
+    return list[(offset + (Number(seq) || 0)) % list.length];
   }
 
   function sceneArtStyle(entry) {
@@ -1441,10 +1459,19 @@ export function createApp(ctx) {
         const mean = scores.length
           ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
           : null;
+        // 学期绩点：引擎写的是 semesterGpa（旧数据可能叫 gpa），都没有就按科目绩点求平均
+        const subGpas = subs
+          .map((x) => Number(x && x.gpa))
+          .filter((v) => Number.isFinite(v));
+        let recGpa = Number(rec.semesterGpa);
+        if (!Number.isFinite(recGpa)) recGpa = Number(rec.gpa);
+        if (!Number.isFinite(recGpa) && subGpas.length) {
+          recGpa = subGpas.reduce((a, b) => a + b, 0) / subGpas.length;
+        }
         semesterList.push({
           label: '第 ' + (Number(rec.semester) || idx + 1) + ' 学期',
           score: mean,
-          gpa: Number.isFinite(Number(rec.gpa)) ? Number(rec.gpa) : null,
+          gpa: Number.isFinite(recGpa) ? recGpa : null,
           failed: Number(rec.failed) || 0,
         });
       });
@@ -1680,3 +1707,5 @@ export function createApp(ctx) {
     },
   };
 }
+
+

@@ -27,7 +27,7 @@ assets/
 |---|---|---|
 | 标题页（封面） | `title` | `gate`（老校门，固定） |
 | 每周开场、新游戏第一幕、推进回合后 | `campus` | `avenue` / `magnolia` / `plaza-flowerbed` / `dusk-road` / `lawn-pavilion` / `river-bridge` |
-| 行动「上课学习」 | `classroom` | `library` / `classroom-screen` / `classroom-empty` / `classroom-podium` / `corridor` |
+| 行动「上课学习」 | `classroom` | `library` / `classroom-sunlit` / `classroom-empty` / `classroom-podium` / `corridor` / `classroom-screen`（仅各上学期第 1 周） |
 | 行动「社团活动」 | `clubroom` | `activity-wall` / `plaza-flowerbed` / `corridor` |
 | 行动「体育锻炼」 | `track` | `field-track` / `gym-badminton` / `lawn-pavilion` |
 | 行动「兼职赚钱」 | `store` | `metro-platform` / `metro-escalator` |
@@ -35,14 +35,15 @@ assets/
 | 行动「休息放松」 | `dorm` | `dusk-road` / `river-bridge` / `lawn-pavilion` / `avenue` |
 | 事件弹层 | `event` | 无独立图（沿用当前场景 + 压暗模糊） |
 
-### 20 张图一览
+### 21 张图一览
 
 | 文件 | 地点标签（HUD 右上） | 会出现在 |
 |---|---|---|
 | `library.jpg` | 图书馆 · 自习区 | 上课学习 |
-| `classroom-screen.jpg` | 第一教学楼 · 教室 | 上课学习 |
+| `classroom-screen.jpg` | 第一教学楼 · 教室（投影「欢迎你，新同学」） | 上课学习（**仅第 1/11/21/31 周，即各个「上学期」的第一周**） |
 | `classroom-empty.jpg` | 第一教学楼 · 空教室 | 上课学习 |
 | `classroom-podium.jpg` | 第一教学楼 · 讲台 | 上课学习 |
+| `classroom-sunlit.jpg` | 第一教学楼 · 午后教室 | 上课学习 |
 | `corridor.jpg` | 第一教学楼 · 走廊 | 上课学习、社团活动 |
 | `activity-wall.jpg` | 社团活动室 · 展板墙 | 社团活动 |
 | `plaza-flowerbed.jpg` | 学生活动中心 · 广场 | 社团活动、每周开场 |
@@ -61,6 +62,9 @@ assets/
 | `gate.jpg` | 国立四川大学 · 校门 | 标题页（封面） |
 
 > **事件弹层没有独立背景**：`event` 池为空，出现事件时沿用当前场景 + 压暗模糊。
+
+> **时间窗**：池内每张图可带 `minTurn` / `maxTurn`（周区间）、`oddSemester`（只在第 1/3/5/7 学期）或 `oddSemesterFirstWeek`（只在各上学期第一周）。
+> 目前只有「欢迎你，新同学」那张限 `maxTurn: 4`（开学第一个月），之后自动退出池子。
 
 **规格**
 
@@ -133,4 +137,7 @@ APPEARANCES.push({
 - [ ] 文件名与上表完全一致（全小写）
 - [ ] 桌面 1600×1000 与手机 390×844 下，关键画面不被对话框/选项遮住
 - [ ] 控制台无 404
+
+
+
 

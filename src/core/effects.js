@@ -139,7 +139,8 @@ export function describeChanges(changes) {
       const d = Number(c.delta);
       if (Number.isFinite(d)) parts.push(`${label}${d > 0 ? '+' : ''}${d}`);
     } else if (c.kind === 'flag') {
-      parts.push(`${c.key}=${c.delta}`);
+      // 旗标属于内部状态（如 scholarship=pursuing），不写进玩家可见文本
+      continue;
     } else if (c.kind === 'club') {
       parts.push(`加入${c.delta}`);
     }
