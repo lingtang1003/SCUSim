@@ -627,12 +627,11 @@ export function createApp(ctx) {
     const eventResult = view && view.eventResult;
 
     if (eventResult) {
-      // 事件选项结算：把结果文本与实际数值变化落到对话框
+      // 事件选项结算：结果文本已由引擎追加「｜ 效果：…」，对话框只显示正文，不再重复挂数值标签
       const def = findEventById(eventResult.eventId) || {};
-      const chips = effectChips({ attributes: eventResult.delta || {} });
       ui.speaker = def.name || '事件';
       ui.text = eventResult.text || '（这件事就这样过去了）';
-      ui.effects = chips.length ? chips : [{ text: '什么也没有发生', kind: 'flat' }];
+      ui.effects = [];
       ui.history.push({ who: ui.speaker, text: ui.text });
     } else if (actionId && seq && seq !== ui.consumedSeq) {
       ui.consumedSeq = seq;
@@ -1491,8 +1490,8 @@ export function createApp(ctx) {
         cell('学年学期', semesterLabel(state.turn)),
         cell('回合', state.turn + ' / ' + maxTurn),
         cell('行动点', (state.actionPoints || 0) + ' / ' + apMax),
-        cell('绩点', Number.isFinite(gpa) && gpa > 0 ? gpa.toFixed(2) : '—'),
-        cell('考试均分', avg == null ? '尚未考试' : avg),
+        cell('目前总绩点', Number.isFinite(gpa) && gpa > 0 ? gpa.toFixed(2) : '—'),
+        cell('目前考试均分', avg == null ? '尚未考试' : avg),
         cell('挂科', failed + ' 门'),
       ]),
       h('div', { class: 'vn-score' }, [
@@ -1511,8 +1510,7 @@ export function createApp(ctx) {
             }
           },
         }, [
-          h('span', {}, ['学期成绩']),
-          h('span', { class: 'vn-score__count' }, [semesterList.length + ' 个学期']),
+          h('span', {}, ['各学期成绩和绩点']),
           h('span', { class: 'vn-score__arrow' }, ['▾']),
         ]),
         semesterList.length
@@ -1529,13 +1527,6 @@ export function createApp(ctx) {
               ])
             )))
           : h('p', { class: 'vn-score__empty' }, ['还没有期末成绩记录。']),
-        h('div', { class: 'vn-score__total' }, [
-          h('span', {}, ['总体平均']),
-          h('b', {}, [avg == null ? '尚未考试' : avg + ' 分']),
-          Number.isFinite(gpa) && gpa > 0
-            ? h('span', { class: 'vn-score__gpa' }, ['绩点 ' + gpa.toFixed(2)])
-            : null,
-        ]),
       ]),
     ];
 
