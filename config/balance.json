@@ -15,7 +15,7 @@
   "monthlyExpense": 1950,
   "debtThreshold": -3000,
   "debtCooldownTurns": 6,
-  "attributeClamp": { "min": 0, "max": 100 },
+  "attributeClamp": { "knowledge": [0, 99], "social": [0, 99], "health": [0, 99], "money": null },
 
   "exam": {
     "subjects": ["高等数学", "大学英语", "专业核心", "思想政治"],

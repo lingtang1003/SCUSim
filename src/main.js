@@ -391,18 +391,6 @@ export function createController(deps) {
       eventResult: { eventId: eventId, text: res.message || '', delta: delta },
     });
     notifyModalClosed();
-    // 期末周被挂起的考试：事件结算后（选项已生效）再弹学期结算
-    if (res.settlement) {
-      const settlement = res.settlement;
-      queueModal((done) => {
-        if (typeof app.showExam === 'function') {
-          app.showExam(settlement, done);
-        } else {
-          toast(`学期 ${settlement.semester} 结算：总绩点 ${settlement.totalGpa}`, 'info');
-          done();
-        }
-      });
-    }
   }
 
   // ---------------- 回调：换立绘 ----------------

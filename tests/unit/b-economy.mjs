@@ -95,8 +95,11 @@ console.log('== B · 经济单测 ==');
     && r.changes.some((c) => c.kind === 'club'),
     JSON.stringify(r.changes));
   const clamp = balance.attributeClamp || {};
-  const max = Number.isFinite(clamp.max) ? clamp.max : 100;
-  const min = Number.isFinite(clamp.min) ? clamp.min : 0;
+  const rangeOf = (k) => (Array.isArray(clamp[k])
+    ? clamp[k]
+    : [Number.isFinite(clamp.min) ? clamp.min : 0, Number.isFinite(clamp.max) ? clamp.max : 100]);
+  const max = rangeOf('knowledge')[1];
+  const min = rangeOf('health')[0];
   check('applyEffects: 非 money 属性被钳制到 [min,max]',
     s.player.attributes.knowledge === max && s.player.attributes.health === min,
     `knowledge=${s.player.attributes.knowledge}, health=${s.player.attributes.health}`);

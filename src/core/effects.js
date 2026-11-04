@@ -20,13 +20,26 @@ const DEFAULT_MIN = 0;
 const DEFAULT_MAX = 100;
 const HISTORY_LIMIT = 200;
 
-/** 解析钳制函数：ctx.clamp 优先，其次读 config.balance.attributeClamp，最后用默认 [0,100]（money 不钳制）。 */
+/** 解析钳制函数：ctx.clamp 优先，其次读 config.balance.attributeClamp，最后用默认 [0,100]（money 不钳制）。
+ *  配置既支持按属性写（{knowledge:[0,99], money:null}），也兼容全局 {min,max}。 */
 function resolveClamp(ctx) {
   if (ctx && typeof ctx.clamp === 'function') return ctx.clamp;
   const clampCfg = (ctx && ctx.config && ctx.config.balance && ctx.config.balance.attributeClamp) || {};
-  const min = Number.isFinite(clampCfg.min) ? clampCfg.min : DEFAULT_MIN;
-  const max = Number.isFinite(clampCfg.max) ? clampCfg.max : DEFAULT_MAX;
-  return (key, value) => (key === 'money' ? value : Math.max(min, Math.min(max, value)));
+  const globalMin = Number.isFinite(clampCfg.min) ? clampCfg.min : DEFAULT_MIN;
+  const globalMax = Number.isFinite(clampCfg.max) ? clampCfg.max : DEFAULT_MAX;
+  const rangeOf = (key) => {
+    const range = clampCfg[key];
+    if (Array.isArray(range) && range.length === 2) {
+      return [Number(range[0]), Number(range[1])];
+    }
+    if (range === null) return null; // 显式不钳制（如 money）
+    return [globalMin, globalMax];
+  };
+  return (key, value) => {
+    const range = rangeOf(key);
+    if (!range) return value;
+    return Math.max(range[0], Math.min(range[1], value));
+  };
 }
 
 /** 写入 history（可注入 pushHistory，否则就地惰性初始化 state.history）。 */

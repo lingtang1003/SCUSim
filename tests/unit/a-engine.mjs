@@ -186,12 +186,9 @@ console.log('== A · W1 引擎单测（a-engine）==');
   const se = stateWithoutPending(cfgExam);
   for (let i = 0; i < 3; i += 1) advance(se, cfgExam, createRng(20 + i));
   se.academics.studyActions = 3;
-  const re0 = advance(se, cfgExam, createRng(30));
-  // 期末周若同时触发事件，考试会推迟到选项结算之后（让期末周选项真正影响成绩）
-  const re = re0.settlement
-    ? re0
-    : resolvePendingEvent(se, se.pendingEvent.options[0].id, cfgExam, createRng(31));
-  check('advance: 第 5 回合触发期末结算', se.turn === 5 && re.settlement !== null);
+  advance(se, cfgExam, createRng(30)); // 进入第 5 周（期末周开始）
+  const re = advance(se, cfgExam, createRng(31)); // 结束第 5 周 → 期末结算
+  check('advance: 第 5 周结束时触发期末结算', se.turn === 6 && re.settlement !== null, `turn=${se.turn}`);
   check('advance: settlement 含科目/绩点/挂科/警告', re.settlement
     && Array.isArray(re.settlement.subjects)
     && re.settlement.subjects.length >= 1
