@@ -468,6 +468,21 @@ a:hover {
   background-repeat: no-repeat;
   background-size: contain;
   filter: drop-shadow(0 20px 30px rgba(26, 44, 78, 0.35));
+  /* 立绘左右边缘柔和淡出：素材里身体本就画到画面外，硬边会像被裁掉 */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 0,
+    #000 56px,
+    #000 calc(100% - 56px),
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 0,
+    #000 56px,
+    #000 calc(100% - 56px),
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
 .vn-sprite__frame {
@@ -2997,3 +3012,4 @@ a:hover {
 @media (max-width: 560px) {
   .vn-slot-grid { grid-template-columns: 1fr; }
 }
+
