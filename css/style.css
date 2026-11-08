@@ -1055,7 +1055,7 @@ a:hover {
   letter-spacing: 0.16em;
   text-indent: 0.16em;
   color: #2f4d7c;
-  text-shadow: 0 2px 0 #fff, 0 10px 26px rgba(60, 96, 148, 0.18);
+  text-shadow: none;
   text-align: center;
 }
 
@@ -2641,7 +2641,7 @@ a:hover {
   color: #fff;
   box-shadow: 0 10px 26px rgba(179, 18, 26, 0.4);
 }
-.vn-logo { color: var(--ink); text-shadow: 0 2px 0 #fff, 0 10px 26px rgba(0, 0, 0, 0.12); }
+.vn-logo { color: var(--ink); text-shadow: none; }
 .vn-logo__sub { color: var(--ink-2); }
 .vn-title__foot { border-top-color: var(--hair); }
 .vn-title__ver { color: var(--ink-3); }
@@ -2947,4 +2947,5 @@ a:hover {
   transition: opacity 160ms var(--ease), transform 160ms var(--ease);
 }
 .vn-event__hint.is-on { opacity: 1; transform: translateY(0); }
+
 
