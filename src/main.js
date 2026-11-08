@@ -237,6 +237,69 @@ export function createController(deps) {
     toast('进度已保存', 'success');
   }
 
+  // ---------------- 回调：存档位（保存 / 读取 / 删除） ----------------
+  async function openSlots(mode) {
+    const r = await storage.listSlots();
+    const slots = r && r.ok ? r.slots : [];
+    const cbs = callbacks || {};
+    app.showSlots(mode, slots, cbs);
+    return slots;
+  }
+
+  async function onOpenSaveSlots() {
+    if (!state) {
+      toast('还没有可保存的进度', 'danger');
+      return;
+    }
+    await openSlots('save');
+  }
+
+  async function onOpenLoadSlots() {
+    await openSlots('load');
+  }
+
+  async function onSaveSlot(slot) {
+    if (!state) return;
+    const r = await storage.saveGameSlot(state, slot);
+    if (!r || !r.ok) {
+      toast('保存失败', 'danger');
+      return;
+    }
+    hasSave = true;
+    await openSlots('save');
+    toast('已保存到「' + (Number(slot) === 0 ? '自动存档' : '存档 ' + slot) + '」', 'success');
+  }
+
+  async function onLoadSlot(slot) {
+    const r = await storage.loadGameSlot(slot);
+    if (!r || !r.ok) {
+      app.showError('这个存档位读取失败');
+      return;
+    }
+    resetModals();
+    state = r.state;
+    rng = makeRng((state.rngState != null ? state.rngState : 0) >>> 0);
+    if (state.player && state.player.appearance) {
+      appearanceId = state.player.appearance;
+    }
+    hasSave = true;
+    actionSeq = 0;
+    app.closeOverlay();
+    renderState();
+    if (state.pendingEvent && typeof app.showEvent === 'function') {
+      queueModal((done) => app.showEvent(state.pendingEvent, done));
+    }
+  }
+
+  async function onDeleteSlot(slot) {
+    await storage.clearSlot(slot);
+    const r = await storage.listSlots();
+    const anyLeft = r && r.ok && r.slots.some((s) => s && s.slot >= 0);
+    hasSave = !!anyLeft;
+    await openSlots('load');
+    toast('已删除存档 ' + slot, 'info');
+  }
+
   // ---------------- 回调：执行行动 ----------------
   async function onAction(actionId) {
     if (!state) return;
@@ -508,6 +571,11 @@ export function createController(deps) {
     onNewGame,
     onLoadGame,
     onSave,
+    onOpenSaveSlots,
+    onOpenLoadSlots,
+    onSaveSlot,
+    onLoadSlot,
+    onDeleteSlot,
     onAction,
     onAdvance,
     onResolveEvent,

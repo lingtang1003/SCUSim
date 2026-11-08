@@ -116,12 +116,40 @@ const WEEK_LINES = [
 /** 立绘（玩家可选形象）。art 为 true 时读取 ART.charDir + file。 */
 const APPEARANCES = [
   {
-    id: 'm_hoodie', name: '短发男生1', gender: '男',
-    art: true, file: 'm_hoodie.webp', c1: '#dfe9f7', c2: '#2f3f66',
+    id: 'm_short1', name: '短发男生1', gender: '男',
+    art: true, file: 'm_short1.webp', c1: '#f3ece3', c2: '#4a3b33',
+  },
+  {
+    id: 'm_short2', name: '短发男生2', gender: '男',
+    art: true, file: 'm_short2.webp', c1: '#e8f0fb', c2: '#5f7fa8',
+  },
+  {
+    id: 'm_short3', name: '短发男生3', gender: '男',
+    art: true, file: 'm_short3.webp', c1: '#e7ecf6', c2: '#22304a',
   },
   {
     id: 'f_long', name: '长发女生1', gender: '女',
-    art: true, file: 'f_long.webp', c1: '#ffe4ec', c2: '#c98fa8',
+    art: true, file: 'f_long.webp', c1: '#f6f1e8', c2: '#b9a58c',
+  },
+  {
+    id: 'f_long2', name: '长发女生2', gender: '女',
+    art: true, file: 'f_long2.webp', c1: '#eef1f4', c2: '#6b7380',
+  },
+  {
+    id: 'f_long3', name: '长发女生3', gender: '女',
+    art: true, file: 'f_long3.webp', c1: '#f2f2f4', c2: '#7d8391',
+  },
+  {
+    id: 'f_short1', name: '短发女生1', gender: '女',
+    art: true, file: 'f_short1.webp', c1: '#f7efe2', c2: '#c2ab8d',
+  },
+  {
+    id: 'f_short2', name: '短发女生2', gender: '女',
+    art: true, file: 'f_short2.webp', c1: '#eaf1fb', c2: '#7f97bb',
+  },
+  {
+    id: 'f_short3', name: '短发女生3', gender: '女',
+    art: true, file: 'f_short3.webp', c1: '#e9edf5', c2: '#3d4a63',
   },
 ];
 
@@ -805,11 +833,11 @@ export function createApp(ctx) {
     return {
       step: 1,
       name: '',
-      gender: '男',
+      gender: '女',
       collegeId: firstCollege ? firstCollege.id : '',
       attributes: { knowledge: 5, social: 5, health: 5, money: 5 },
       tags: [],
-      appearanceId: defaultAppearanceFor('男'),
+      appearanceId: defaultAppearanceFor('女'),
     };
   }
 
@@ -1178,8 +1206,14 @@ export function createApp(ctx) {
   // ---------------- 弹层：菜单抽屉 ----------------
   function openMenu() {
     const items = [
-      { label: '保存进度', hint: '写入存档', run: () => { if (callbacks.onSave) callbacks.onSave(); } },
-      { label: '读取进度', hint: '回到最近一次存档', run: () => { if (callbacks.onLoadGame) callbacks.onLoadGame(); } },
+      { label: '保存进度', hint: '写入存档', run: () => {
+        if (callbacks.onOpenSaveSlots) callbacks.onOpenSaveSlots();
+        else if (callbacks.onSave) callbacks.onSave();
+      } },
+      { label: '读取进度', hint: '选择存档读取', run: () => {
+        if (callbacks.onOpenLoadSlots) callbacks.onOpenLoadSlots();
+        else if (callbacks.onLoadGame) callbacks.onLoadGame();
+      } },
       { label: '剧情回放', hint: '重看本周的对话', run: () => showBacklog() },
       { label: '系统设置', hint: '立绘 / 动效', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
       { label: '商城', hint: '敬请期待', locked: true, run: () => showToast('商城还没开门呢', 'warning') },
@@ -1413,6 +1447,87 @@ export function createApp(ctx) {
     mountOverlay(
       modalShell('结局图鉴', body, [
         h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['关闭']),
+      ], true)
+    );
+  }
+
+  // ---------------- 弹层：存档位（保存 / 读取） ----------------
+  function formatSavedAt(ms) {
+    const t = Number(ms);
+    if (!Number.isFinite(t) || t <= 0) return '';
+    const d = new Date(t);
+    if (Number.isNaN(d.getTime())) return '';
+    const pad = (n) => (n < 10 ? '0' + n : String(n));
+    return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+
+  function showSlots(mode, slots) {
+    if (!rootEl) return;
+    closeOverlay();
+    const isLoad = mode === 'load';
+    const list = Array.isArray(slots) ? slots : [];
+    const auto = list.find((s) => s && s.slot === 0) || null;
+    const manual = list.filter((s) => s && s.slot >= 1);
+
+    const card = (s, slotNo, isAuto) => {
+      const empty = !s || !(Number(s.turn) > 0);
+      const label = isAuto ? '自动存档' : '存档 ' + slotNo;
+      const openLoad = () => {
+        if (empty) {
+          showToast(isAuto ? '还没有自动存档' : '这个存档位是空的', 'warning');
+          return;
+        }
+        if (callbacks.onLoadSlot) callbacks.onLoadSlot(s.slot);
+        else if (callbacks.onLoadGame) callbacks.onLoadGame();
+      };
+      const saveHere = () => {
+        if (callbacks.onSaveSlot) callbacks.onSaveSlot(s.slot);
+        else if (callbacks.onSave) callbacks.onSave();
+      };
+      return h('div', {
+        class: 'vn-slot' + (empty ? ' is-empty' : '')
+          + (isAuto ? ' vn-slot--auto' : '')
+          + (isLoad ? ' is-load' : ' is-save'),
+      }, [
+        h('button', {
+          class: 'vn-slot__main',
+          type: 'button',
+          onclick: isLoad ? openLoad : saveHere,
+        }, [
+          h('span', { class: 'vn-slot__no' }, [label]),
+          empty
+            ? h('span', { class: 'vn-slot__empty' }, ['空存档'])
+            : h('span', { class: 'vn-slot__name' }, [s.name || '无名']),
+          empty
+            ? null
+            : h('span', { class: 'vn-slot__meta' }, [
+                semesterLabel(s.turn) + ' · 第 ' + (s.turn || 0) + ' 周 · 金钱 ' + (s.money || 0),
+              ]),
+          empty || !s.savedAt ? null : h('span', { class: 'vn-slot__time' }, [formatSavedAt(s.savedAt)]),
+        ]),
+        !empty && !isAuto && callbacks.onDeleteSlot
+          ? h('button', {
+              class: 'vn-slot__del',
+              type: 'button',
+              onclick: (e) => {
+                if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+                callbacks.onDeleteSlot(s.slot);
+              },
+            }, ['删除'])
+          : null,
+      ]);
+    };
+
+    const body = [
+      h('p', { class: 'vn-modal__lead' }, [
+        isLoad ? '选择一个存档读取，自动存档始终保留最新进度。' : '选择一个存档位保存当前进度（会覆盖该位原有存档）。',
+      ]),
+      auto ? h('div', { class: 'vn-slot-grid vn-slot-grid--auto' }, [card(auto, 0, true)]) : null,
+      h('div', { class: 'vn-slot-grid' }, manual.map((s, i) => card(s, s.slot || i + 1, false))),
+    ];
+    mountOverlay(
+      modalShell(isLoad ? '读取存档' : '保存进度', body, [
+        h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['取消']),
       ], true)
     );
   }
@@ -1721,6 +1836,7 @@ export function createApp(ctx) {
     showError,
     showToast,
     showGallery,
+    showSlots,
     showSettings,
     showBacklog,
     openMenu,

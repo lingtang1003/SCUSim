@@ -1,4 +1,4 @@
-/* =========================================================================
+﻿/* =========================================================================
    SCUSim · 视觉小说皮肤（橙光式）
    —— 天空金调 / 玻璃拟态 / 全屏场景 + 立绘 + 对话框 + 选项条 + 菜单抽屉
    纯原生 CSS，无框架、无预处理器、无外部字体或图片依赖。
@@ -2645,7 +2645,7 @@ a:hover {
 .vn-logo__sub { color: var(--ink-2); }
 .vn-title__foot { border-top-color: var(--hair); }
 .vn-title__ver { color: var(--ink-3); }
-.vn-title .vn-menu-btn { border-bottom: 0; background: transparent; }
+.vn-title .vn-menu-btn { border-bottom: 0; border-radius: var(--r-md); background: transparent; }
 .vn-title .vn-menu-btn:hover { background: var(--red-soft); }
 .vn-title .vn-menu-btn--primary {
   background: var(--red);
@@ -2948,4 +2948,52 @@ a:hover {
 }
 .vn-event__hint.is-on { opacity: 1; transform: translateY(0); }
 
-
+/* ---- 存档位（保存 / 读取） ---- */
+.vn-slot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.vn-slot-grid--auto { grid-template-columns: 1fr; margin-bottom: 10px; }
+.vn-slot {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+.vn-slot.is-empty { background: rgba(26, 20, 20, 0.03); border-style: dashed; }
+.vn-slot__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 0;
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: background 140ms var(--ease);
+}
+.vn-slot__main:hover { background: var(--red-soft); }
+.vn-slot__no { font-size: 11px; letter-spacing: 0.08em; color: var(--ink-3); }
+.vn-slot__name { font-size: 15px; font-weight: 700; color: var(--ink); }
+.vn-slot__meta { font-size: 12px; color: var(--ink-2); }
+.vn-slot__time { font-size: 11px; color: var(--ink-3); }
+.vn-slot__empty { padding: 8px 0; font-size: 13px; color: var(--ink-3); }
+.vn-slot__del {
+  padding: 0 12px;
+  border: 0;
+  border-left: 1px solid var(--hair);
+  background: none;
+  color: var(--red);
+  font-size: 11px;
+  cursor: pointer;
+}
+.vn-slot__del:hover { background: var(--red-soft); }
+@media (max-width: 560px) {
+  .vn-slot-grid { grid-template-columns: 1fr; }
+}

@@ -12,11 +12,20 @@
  * 核心逻辑（core/events/config）不得调用本模块。
  */
 
-const SAVE_KEY = 'scusim:save';
+const SAVE_KEY = 'scusim:save'; // 自动存档（兼容旧版本）
+const SLOT_PREFIX = 'scusim:save:';
+const SLOT_COUNT = 6; // 手动存档位 1..6
 const GALLERY_KEY = 'scusim:gallery';
 const SETTINGS_KEY = 'scusim:settings';
 const SAVE_VERSION = '1.0.0';
 const SAVE_FORMAT = 'scusim';
+
+/** 存档位 → 存储键。0/未传 = 自动存档；1..6 = 手动存档位。 */
+function slotKeyOf(slot) {
+  const n = Number(slot);
+  if (!Number.isFinite(n) || n < 0 || n > SLOT_COUNT) return null;
+  return n === 0 ? SAVE_KEY : SLOT_PREFIX + n;
+}
 
 /** 将 GameState 序列化为 .scusim 文本。 */
 export function serializeSave(state) {
@@ -117,21 +126,100 @@ export function createStorage(backend) {
     });
   }
 
-  function saveGame(state) {
-    be.set(SAVE_KEY, serializeSave(state));
-    return Promise.resolve({ ok: true, message: '已保存' });
+  // ---------------- 存档位（0 = 自动存档，1..6 = 手动） ----------------
+
+  function serializeWithTime(state, savedAt) {
+    return JSON.stringify({ format: SAVE_FORMAT, version: SAVE_VERSION, savedAt, state });
   }
 
-  function loadGame() {
-    const raw = be.get(SAVE_KEY);
+  function readSlotMeta(slot) {
+    const key = slotKeyOf(slot);
+    if (!key) return null;
+    const raw = be.get(key);
+    if (!raw) return null;
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (_) {
+      return null;
+    }
+    const r = deserializeSave(parsed);
+    if (!r.ok) return null;
+    const s = r.state || {};
+    const p = s.player || {};
+    const attrs = p.attributes || {};
+    return {
+      slot: Number(slot),
+      name: p.name || '',
+      gender: p.gender || '',
+      turn: Number(s.turn) || 0,
+      money: Number(attrs.money) || 0,
+      appearance: p.appearance || '',
+      endingId: s.endingId || null,
+      savedAt: Number(parsed.savedAt) || 0,
+    };
+  }
+
+  function saveGameSlot(state, slot) {
+    const key = slotKeyOf(slot);
+    if (!key) return Promise.resolve({ ok: false, reason: 'bad_slot' });
+    be.set(key, serializeWithTime(state, Date.now()));
+    return Promise.resolve({ ok: true, slot: Number(slot) });
+  }
+
+  function loadGameSlot(slot) {
+    const key = slotKeyOf(slot);
+    if (!key) return Promise.resolve({ ok: false, reason: 'bad_slot' });
+    const raw = be.get(key);
     if (!raw) return Promise.resolve({ ok: false, reason: 'no_save' });
     const r = deserializeSave(raw);
     if (!r.ok) return Promise.resolve({ ok: false, reason: r.reason });
-    return Promise.resolve({ ok: true, state: r.state });
+    return Promise.resolve({ ok: true, state: r.state, slot: Number(slot) });
+  }
+
+  function clearSlot(slot) {
+    const key = slotKeyOf(slot);
+    if (!key) return Promise.resolve({ ok: false, reason: 'bad_slot' });
+    be.remove(key);
+    return Promise.resolve({ ok: true });
+  }
+
+  function listSlots() {
+    const slots = [readSlotMeta(0)];
+    for (let i = 1; i <= SLOT_COUNT; i += 1) slots.push(readSlotMeta(i));
+    return Promise.resolve({
+      ok: true,
+      slots,
+      count: SLOT_COUNT,
+      hasAuto: !!slots[0],
+    });
+  }
+
+  /** 读取「最新」的存档：自动存档与 6 个手动位里 savedAt 最大的那个 */
+  function loadLatest() {
+    let best = null;
+    for (let i = 0; i <= SLOT_COUNT; i += 1) {
+      const meta = readSlotMeta(i);
+      if (!meta) continue;
+      if (!best || meta.savedAt >= best.savedAt) best = meta;
+    }
+    if (!best) return Promise.resolve({ ok: false, reason: 'no_save' });
+    return loadGameSlot(best.slot);
+  }
+
+  function saveGame(state) {
+    return saveGameSlot(state, 0);
+  }
+
+  function loadGame() {
+    return loadLatest();
   }
 
   function clearSave() {
-    be.remove(SAVE_KEY);
+    for (let i = 0; i <= SLOT_COUNT; i += 1) {
+      const key = slotKeyOf(i);
+      if (key) be.remove(key);
+    }
     return Promise.resolve({ ok: true });
   }
 
@@ -190,6 +278,7 @@ export function createStorage(backend) {
 
   return {
     saveGame, loadGame, clearSave, getGallery, unlockEnding,
+    saveGameSlot, loadGameSlot, clearSlot, listSlots, loadLatest, SLOT_COUNT,
     exportSaveFile, importSaveFile, getSettings, saveSettings,
   };
 }
