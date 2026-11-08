@@ -661,7 +661,7 @@ export function createApp(ctx) {
       const text = (ui.sceneEntry && ui.sceneEntry.line) || '（时间悄悄过去了）';
       ui.speaker = player.name || '你';
       ui.text = text;
-      ui.effects = effectChips(action && action.effects);
+      ui.effects = [];
       ui.history.push({ who: ui.speaker, text: text });
     } else if (state.turn !== ui.lastTurn) {
       const first = ui.lastTurn === 0;
@@ -733,7 +733,7 @@ export function createApp(ctx) {
             },
           }, [
             h('span', { class: 'vn-menu-btn__label' }, ['继续游戏']),
-            h('span', { class: 'vn-menu-btn__hint' }, [hasSave ? '读取本机存档' : '暂无存档']),
+            h('span', { class: 'vn-menu-btn__hint' }, [hasSave ? '读取存档' : '暂无存档']),
           ]),
           h('button', {
             class: 'vn-menu-btn',
@@ -742,7 +742,7 @@ export function createApp(ctx) {
             },
           }, [
             h('span', { class: 'vn-menu-btn__label' }, ['结局图鉴']),
-            h('span', { class: 'vn-menu-btn__hint' }, ['已解锁的毕业结局']),
+            h('span', { class: 'vn-menu-btn__hint' }, ['已达成的结局']),
           ]),
           h('button', {
             class: 'vn-menu-btn',
@@ -751,7 +751,7 @@ export function createApp(ctx) {
             },
           }, [
             h('span', { class: 'vn-menu-btn__label' }, ['系统设置']),
-            h('span', { class: 'vn-menu-btn__hint' }, ['立绘 / 动效 / 存档']),
+            h('span', { class: 'vn-menu-btn__hint' }, ['立绘 / 动效']),
           ]),
         ]),
         h('div', { class: 'vn-title__foot' }, [
@@ -767,7 +767,6 @@ export function createApp(ctx) {
               },
             }),
           ]),
-          h('span', { class: 'vn-title__ver' }, ['v1.0 · 纯前端单机 · 存档在本机']),
         ]),
       ]),
     ]);
@@ -1179,7 +1178,7 @@ export function createApp(ctx) {
   // ---------------- 弹层：菜单抽屉 ----------------
   function openMenu() {
     const items = [
-      { label: '保存进度', hint: '写入本机存档', run: () => { if (callbacks.onSave) callbacks.onSave(); } },
+      { label: '保存进度', hint: '写入存档', run: () => { if (callbacks.onSave) callbacks.onSave(); } },
       { label: '读取进度', hint: '回到最近一次存档', run: () => { if (callbacks.onLoadGame) callbacks.onLoadGame(); } },
       { label: '剧情回放', hint: '重看本周的对话', run: () => showBacklog() },
       { label: '系统设置', hint: '立绘 / 动效', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
@@ -1398,16 +1397,16 @@ export function createApp(ctx) {
       return h('div', { class: 'vn-gallery__item' + (got ? '' : ' is-locked') }, [
         h('div', { class: 'vn-gallery__row' }, [
           h('b', {}, [got ? (e.name || e.id) : '？？？']),
-          h('span', { class: 'vn-gallery__flag' }, [got ? '已解锁' : '未解锁']),
+          h('span', { class: 'vn-gallery__flag' }, [got ? '已达成' : '未达成']),
         ]),
         h('p', { class: 'vn-gallery__desc' }, [
-          got ? (e.desc || '') : '继续游玩以解锁。',
+          got ? (e.desc || '') : '继续游玩以达成。',
         ]),
       ]);
     });
     const body = [
       h('p', { class: 'vn-modal__lead' }, [
-        '已解锁 ' + unlocked.length + ' / ' + list.length + ' 个结局',
+        '已达成 ' + unlocked.length + ' / ' + list.length + ' 个结局',
       ]),
       h('div', { class: 'vn-gallery' }, items),
     ];
@@ -1610,9 +1609,9 @@ export function createApp(ctx) {
       onclick: () => {
         reduceMotion = !reduceMotion;
         motionBtn.className = 'vn-switch' + (reduceMotion ? ' is-on' : '');
-        motionBtn.textContent = reduceMotion ? '已开启（减弱动效）' : '已关闭';
+        motionBtn.textContent = reduceMotion ? '已开启' : '已关闭';
       },
-    }, [reduceMotion ? '已开启（减弱动效）' : '已关闭']);
+    }, [reduceMotion ? '已开启' : '已关闭']);
 
     // 设置里换立绘也只列出与当前角色性别匹配的（没有存档时列出全部）
     const playerGender = lastState && lastState.player ? lastState.player.gender : '';
@@ -1656,7 +1655,6 @@ export function createApp(ctx) {
       ]),
       h('div', { class: 'vn-setting' }, [
         h('div', { class: 'vn-setting__label' }, ['我的立绘']),
-        h('p', { class: 'tiny muted' }, ['换装只在存档里生效，随时可以改。']),
         grid,
       ]),
     ];

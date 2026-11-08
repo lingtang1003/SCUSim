@@ -1,4 +1,4 @@
-﻿/* =========================================================================
+/* =========================================================================
    SCUSim · 视觉小说皮肤（橙光式）
    —— 天空金调 / 玻璃拟态 / 全屏场景 + 立绘 + 对话框 + 选项条 + 菜单抽屉
    纯原生 CSS，无框架、无预处理器、无外部字体或图片依赖。
@@ -199,6 +199,14 @@ a:hover {
     transition: none !important;
     animation: none !important;
   }
+}
+
+/* 设置里手动打开「减弱动效」：给 <html> 加 .reduce-motion，效果与系统设置一致 */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  transition: none !important;
+  animation: none !important;
 }
 
 /* ----------------------------- 4. 场景舞台 ------------------------------ */
@@ -924,6 +932,7 @@ a:hover {
 .vn-drawer__foot {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--sp-2);
   margin-top: auto;
   padding-top: var(--sp-3);
@@ -2623,9 +2632,9 @@ a:hover {
 
 /* ---- 标题页（白卡 + 红 CTA） ---- */
 .vn-title {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(252, 249, 248, 0.92));
-  border-color: #fff;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 #fff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5));
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 .vn-title__crest {
   background: var(--red);
@@ -2938,3 +2947,4 @@ a:hover {
   transition: opacity 160ms var(--ease), transform 160ms var(--ease);
 }
 .vn-event__hint.is-on { opacity: 1; transform: translateY(0); }
+

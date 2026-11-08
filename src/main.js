@@ -234,7 +234,7 @@ export function createController(deps) {
       return;
     }
     await storage.saveGame(state);
-    toast('进度已保存到本机', 'success');
+    toast('进度已保存', 'success');
   }
 
   // ---------------- 回调：执行行动 ----------------
@@ -274,9 +274,16 @@ export function createController(deps) {
     }
     await storage.saveGame(state);
 
-    // 月初收支反馈（SRS 3.3.1）
-    if (res.monthly && Number(res.monthly.net) !== 0) {
-      toast(`月度收支：+${res.monthly.income} / −${res.monthly.expense}`, 'info');
+    // 生活费 / 开销反馈（每次结算都提示，并带上当前金钱）
+    if (res.monthly && (Number(res.monthly.income) > 0 || Number(res.monthly.net) !== 0)) {
+      const money = Number((state.player && state.player.attributes && state.player.attributes.money) || 0);
+      const income = Number(res.monthly.income) || 0;
+      const expense = Number(res.monthly.expense) || 0;
+      const parts = [];
+      if (income > 0) parts.push(`生活费已发放 +${income}`);
+      if (expense > 0) parts.push(`开销 −${expense}`);
+      parts.push(`当前金钱 ${money}`);
+      toast(parts.join(' · '), 'info');
     }
 
     if (res.endingId) {
