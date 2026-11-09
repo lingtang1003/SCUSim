@@ -531,7 +531,6 @@ export function createApp(ctx) {
     const maxTurn = balanceOf('turns', 40);
     const apMax = balanceOf('actionPointsPerTurn', 4);
     const player = state.player || {};
-    const showSeed = view && view.seed ? String(view.seed) : '';
     return h('div', { class: 'vn-hud' }, [
       h('div', { class: 'vn-hud__group' }, [
         h('span', { class: 'vn-chip vn-chip--gold' }, [
@@ -542,7 +541,6 @@ export function createApp(ctx) {
           h('span', { class: 'vn-chip__k' }, ['行动点']),
           apDots(state.actionPoints, apMax),
         ]),
-        showSeed ? h('span', { class: 'vn-chip' }, ['种子 ' + showSeed]) : null,
       ]),
       h('div', { class: 'vn-hud__group' }, [
         h('span', { class: 'vn-loc' }, ['◈ ' + (ui.sceneEntry ? ui.sceneEntry.label : '校园')]),
