@@ -127,6 +127,13 @@ export function computeWeight(event, state, config) {
     const semester = semesterOf(state);
     if (semester < Number(tr[0]) || semester > Number(tr[1])) return 0;
   }
+  // 「只在期末周出现」的事件（期末考试周 / 期末答疑班）：
+  // 必须落在考试周，才能保证「先选复习方式，再结算成绩」的顺序。
+  if (event.examWeekOnly) {
+    const balance = (config && config.balance) || {};
+    const examTurns = Array.isArray(balance.examTurns) ? balance.examTurns : [];
+    if (examTurns.indexOf(state.turn) < 0) return 0;
+  }
   let w = Number(event.weight) || 0;
   if (w <= 0) return 0;
 
@@ -326,25 +333,9 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
     if (state.__recentEvents.length > cap) state.__recentEvents.shift();
   }
   let text = option.resultText || '';
-  // 考试类事件：只在期末周、且引擎已经算好本次成绩时「复述」成绩。
-  // 事件自己不再开考（否则会提前考一次、还会和引擎的学期结算重复写记录）。
-  const examTurns = Array.isArray(config && config.balance && config.balance.examTurns)
-    ? config.balance.examTurns
-    : [];
-  const isExamTurn = examTurns.indexOf(state.turn) >= 0;
-  if (ev.showExamResult && isExamTurn) {
-    const months = Number.isFinite(config && config.balance && config.balance.monthsPerSemester)
-      ? config.balance.monthsPerSemester
-      : 5;
-    const curSem = Math.ceil(state.turn / months);
-    const recs = (state.academics && state.academics.semesterRecords) || [];
-    const last = recs[recs.length - 1];
-    if (last && last.semester === curSem
-      && Array.isArray(last.subjects) && last.subjects.length) {
-      const scores = last.subjects.map((x) => `${x.name} ${x.score} 分`).join('、');
-      text += ` ｜ 期末成绩：${scores} ｜ 绩点 ${last.semesterGpa} ｜ 挂 ${last.failed} 门`;
-    }
-  }
+  // 考试类事件不再复述成绩：期末成绩统一由「学期结算」弹窗展示（引擎在该周结束时结算），
+  // 事件里再写一遍会出现「还没选就已经出成绩」的错觉。
+  // showExamResult 字段保留，仅作为事件语义标记，不参与文本拼接。
   // 所有事件：追加实际效果影响
   const effParts = describeChanges(applied.changes);
   if (effParts.length) text += ` ｜ 效果：${effParts.join('，')}`;

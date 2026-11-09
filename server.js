@@ -1,4 +1,4 @@
-// SCUSim 本地静态开发服务器（纯 Node，无第三方依赖）
+﻿// SCUSim 本地静态开发服务器（纯 Node，无第三方依赖）
 // 仅用于本地开发：npm run dev -> http://localhost:5173
 // 注意：它不是 Cloudflare Pages 的生产后端。
 import http from 'node:http';
@@ -36,7 +36,7 @@ const server = http.createServer(async (req, res) => {
 
     const data = await readFile(resolved);
     const mime = MIME[extname(resolved).toLowerCase()] || 'application/octet-stream';
-    res.writeHead(200, { 'Content-Type': mime });
+    // 本地开发：禁用缓存，改完代码刷新即生效，避免「改了但页面没变」\r\n    res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': 'no-store' });
     res.end(data);
   } catch (err) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -47,3 +47,4 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`SCUSim dev server running at http://localhost:${PORT}`);
 });
+

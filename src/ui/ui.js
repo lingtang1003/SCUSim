@@ -1466,8 +1466,14 @@ export function createApp(ctx) {
     closeOverlay();
     const isLoad = mode === 'load';
     const list = Array.isArray(slots) ? slots : [];
-    const auto = list.find((s) => s && s.slot === 0) || null;
-    const manual = list.filter((s) => s && s.slot >= 1);
+    // 存档位固定展示：自动存档 1 个 + 手动位 1~6（空位也要占位显示）
+    const bySlot = new Map();
+    for (const s of list) {
+      if (s && typeof s.slot === 'number') bySlot.set(s.slot, s);
+    }
+    const auto = bySlot.get(0) || null;
+    const manual = [];
+    for (let i = 1; i <= 6; i += 1) manual.push(bySlot.get(i) || { slot: i });
 
     const card = (s, slotNo, isAuto) => {
       const empty = !s || !(Number(s.turn) > 0);

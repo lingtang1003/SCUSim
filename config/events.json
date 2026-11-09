@@ -124,7 +124,7 @@
         { "id": "go", "label": "参加", "resultText": "乡音亲切，其乐融融。",
           "effects": { "attributes": { "social": 2 }, "money": -30 } },
         { "id": "no", "label": "不去", "resultText": "你错过了一次联谊。", "effects": {} } ] },
-    { "id": "ev_r14", "name": "期末考试周", "weight": 10, "termRange": [1, 40], "showExamResult": true,
+    { "id": "ev_r14", "name": "期末考试周", "weight": 10, "examWeekOnly": true, "termRange": [1, 40], "showExamResult": true,
       "text": "考试周来临，图书馆一座难求。",
       "options": [
         { "id": "review", "label": "全力复习", "resultText": "你刷夜备考，状态拉满。",
@@ -186,7 +186,7 @@
           "requires": { "moneyAtLeast": 200 },
           "denyText": "社团客气地谢绝了，展位没争取到。",
           "effects": { "flags": { "club": "赞助者" }, "money": -200 } } ] },
-    { "id": "ev_r22", "name": "期末答疑班", "weight": 7, "termRange": [5, 40], "showExamResult": true,
+    { "id": "ev_r22", "name": "期末答疑班", "weight": 7, "examWeekOnly": true, "termRange": [5, 40], "showExamResult": true,
       "text": "院办组织了期末答疑小班。",
       "options": [
         { "id": "self", "label": "自己复习", "resultText": "你按自己的节奏复习。",
