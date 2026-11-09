@@ -192,6 +192,31 @@ async function main() {
     await sleep(400);
     await cdp.shot('02-turn1-event.jpg');
 
+    // 统计 UI 弹窗被真实调用的次数（验证 showExam/showEvent 接线，而非只看 state）
+    await cdp.eval(`(() => {
+      window.__counts = { exam: 0, event: 0 };
+      const app = window.__scusim.app;
+      if (app && typeof app.showExam === 'function') {
+        const e0 = app.showExam;
+        app.showExam = function (s, done) {
+          window.__counts.exam += 1;
+          const r = e0.call(this, s, done);
+          if (typeof done === 'function') done(); // 模拟玩家点「继续」（同步关闭，保证队列推进）
+          return r;
+        };
+      }
+      if (app && typeof app.showEvent === 'function') {
+        const v0 = app.showEvent;
+        app.showEvent = function (ev, done) {
+          window.__counts.event += 1;
+          const r = v0.call(this, ev, done);
+          if (typeof done === 'function') done(); // 模拟玩家关闭事件
+          return r;
+        };
+      }
+      return true;
+    })()`);
+
     // 3) 前 10 回合
     const toTen = await cdp.eval(`(async () => {
       const S = () => window.__scusim.state;
@@ -263,6 +288,7 @@ async function main() {
         gpa: S().academics.totalGpa, warning: !!S().academics.warning,
         failed: S().academics.failedCourses,
         endingOverlays: document.querySelectorAll('.vn-ending').length,
+        counts: window.__counts,
         gallery: (function () { try { return localStorage.getItem('scusim:gallery'); } catch (e) { return null; } })(),
       };
     })()`);
@@ -274,6 +300,10 @@ async function main() {
     check('图鉴写入 localStorage 且含本次结局',
       typeof toEnd.gallery === 'string' && toEnd.gallery.includes(toEnd.endingId),
       String(toEnd.gallery));
+    check('学期结算弹窗被真实调用 ≥8 次（C 的 showExam 接线）',
+      toEnd.counts && toEnd.counts.exam >= 8, JSON.stringify(toEnd.counts));
+    check('事件弹窗被真实调用（showEvent 接线）',
+      toEnd.counts && toEnd.counts.event >= 1, JSON.stringify(toEnd.counts));
     await sleep(800); // 等结局淡入动画结束再截图
     await cdp.shot('04-ending.jpg');
 

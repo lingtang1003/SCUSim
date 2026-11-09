@@ -95,7 +95,10 @@ export function createController(deps) {
 
   function renderState(view) {
     if (!state) return;
-    const payload = { availability: computeAvailability(state) };
+    const vm = (typeof eng.buildViewModel === 'function')
+      ? eng.buildViewModel(state, config)
+      : { availability: computeAvailability(state) };
+    const payload = Object.assign({}, vm);
     if (view && view.actionId) {
       payload.actionId = view.actionId;
       payload.actionSeq = view.actionSeq;
@@ -225,6 +228,14 @@ export function createController(deps) {
     hasSave = true;
     actionSeq = 0;
     renderState();
+    // 断点续玩（设计 §11.2）：存档里若还有未结算事件，读档后立刻恢复弹窗
+    if (state.pendingEvent) {
+      const ev = state.pendingEvent;
+      queueModal((done) => {
+        if (typeof app.showEvent === 'function') app.showEvent(ev, done);
+        else done();
+      });
+    }
   }
 
   // ---------------- 回调：手动存档 ----------------
@@ -351,8 +362,24 @@ export function createController(deps) {
 
     if (res.endingId) {
       await storage.unlockEnding(res.endingId);
+      const subs = Array.isArray(res.endingSubs) ? res.endingSubs : [];
+      for (const id of subs) await storage.unlockEnding(id);
       renderState();
-      app.showEnding(endingOf(res.endingId));
+      const endingPayload = Object.assign({}, endingOf(res.endingId), {
+        subs: subs.map((id) => endingOf(id)),
+      });
+      // 终局若同时有学期结算：先弹结算，关闭后再弹结局（否则第 40 回合成绩看不到）
+      if (res.settlement) {
+        const settlement = res.settlement;
+        queueModal((done) => {
+          if (typeof app.showExam === 'function') app.showExam(settlement, done);
+          else done();
+        });
+      }
+      queueModal((done) => {
+        app.showEnding(endingPayload);
+        if (typeof done === 'function') done();
+      });
       return;
     }
 

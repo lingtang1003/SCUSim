@@ -3,6 +3,7 @@
 > 任务卡：A-W1（`docs/分工/A-核心引擎与集成.md` §2 W1）｜ 分支：`feat/a-w1`｜ 日期：W1
 > 验收人：A 自检 + B 交叉验收（用 B 的规则单测反向验证引擎接线，只提 issue 不改引擎）
 > **结论：🟡 有条件通过**——A 的部分全绿；本周机器门禁 `tests/accept/w1.mjs` 与部分能力依赖 B/D 的 W1 产物（见 §5）。
+> **W3 收口更新（见 §10）**：B 的 v2 规则已合并、C 的 `showExam` 已对接，A 侧已全部落地并通过真实浏览器 25 项 E2E；🟡 仅因为 D 的 `accept/w1.mjs` 仍未交付。
 
 ## 0. 按任务卡提示词的输出格式汇总
 
@@ -278,3 +279,39 @@ node server.js                   # 打开 http://localhost:5173/?dev=1 用调试
 
 > **本周（W1）A 的收口标准**：A 档 5 项全绿、B 档至少 6/7 两项在浏览器验证通过、C 档三项都有明确回执。
 > 达到后把本文件结论从 🟡 改为 ✅（`accept/w1` 仍由 D 的脚本决定）。
+
+---
+
+## 10. W3 收口更新（A 侧全部落地）
+
+### 10.1 状态
+
+| 项 | 结果 |
+|---|---|
+| A 档 5 项 | ✅ 全绿（队列、决议回填、dev 面板、40 回合真浏览器、仓库设置待你点） |
+| B 档 6–11 | ✅ B 的 v2 规则已合并、C 的 `showExam` 已到位、A 已删适配层并直接调用；`accept/w1` 仍缺（D） |
+| C 档 12–14 | ✅ 字段已由 B/D 补齐；`showExam` 已交付并对接成功 |
+| 门禁 | `a-engine` 56/56、`a-main` 12/12、`a-browser-e2e` 25/25、`npm test` 22+14 全绿；`verify_m1` 29/30（1 条待 D） |
+
+### 10.2 本轮新增的修复（都有测试锁定）
+
+| # | 问题 | 修复 |
+|---|---|---|
+| 1 | 配置形状与契约不一致：`threeTierBonus`（非 `tierBonus`）、`attributeClamp` 按属性数组、`tags.modifiers.attributes` | `engine.tierBonus` 双写法兼容；`state.clampAttrs` 双写法兼容；`engine.applyTagModifiers` 读 `modifiers.attributes` |
+| 2 | 三档加成此前完全不生效 | 改为读 `threeTierBonus.bonus{low,mid,high}`，9/10/19/20 四个边界用例锁定 |
+| 3 | 标签修正未接入 | `newGame` 叠加三标签并 `max(0)`，`a-engine` 断言 5/5/5/5 → 7/4/4 |
+| 4 | 第 40 回合的期末结算看不到（先返回结局分支） | `main.onAdvance` 终局也先排结算再排结局；E2E 统计结算弹窗 ≥8 次 |
+| 5 | 过渡适配层与 B 的实现双轨 | 删除适配层，`engine` 直接调 `settleMonthly/checkDebt/runFinalExam/checkWarning/rollEvent/buildPending` |
+| 6 | 读档后未结算事件丢失 | `main.onLoadGame` 用队列恢复事件弹窗 |
+
+### 10.3 仍未闭环（全部在 D / 决策侧）
+
+| 项 | 归属 | 影响 |
+|---|---|---|
+| `tests/accept/w1.mjs` + CI | D | W1 机器门禁无法闭环（A 用单测 + E2E 代偿） |
+| `schema.js` v2 校验 | D | 新字段无校验，配置错误只能靠运行时兜底 |
+| IndexedDB / `migrateSave` | D | 存档仍 localStorage 单后端，版本迁移缺 |
+| `verify_m1` 1 条用例 | D | 旧脚本 29/30（"先结算事件再行动"的行为变更） |
+| Q1 资金汇率 | 全员 | 初始钱=点数（5），而事件金额是货币尺度（−15/+1000），`小富翁 money≥50` 过早达成 |
+| Q8 月度支出 1950 vs SRS 1800 | 全员/文档 | 答辩口径不一致 |
+| Q9 `ending_warning` 不可达 | D-W3 | 永不挂科后该结局永远不会出现，重排结局时要删/换 |

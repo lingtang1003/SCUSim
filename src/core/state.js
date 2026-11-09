@@ -26,6 +26,9 @@ const DEFAULT_CLAMP = {
   money: null, // D-01：金钱是货币，不设上限、可为负
 };
 
+const DEFAULT_MIN = 0;
+const DEFAULT_MAX = 99;
+
 /**
  * 创建初始 GameState（仅结构，不做规则计算）。
  * @param {object} options { name, gender, collegeId, attributes, tags, seed? }
@@ -92,13 +95,24 @@ export function clampAttrs(state, config) {
   const cfg = (config && config.balance && config.balance.attributeClamp)
     ? config.balance.attributeClamp
     : DEFAULT_CLAMP;
+  // 兼容两种写法：
+  //   全局 { min, max }（当前 config）+ 可选按属性覆盖 { knowledge: [0,99], money: null }
+  //   纯按属性 { knowledge: [0,99], ... }
+  const globalMin = Number.isFinite(cfg.min) ? Number(cfg.min) : DEFAULT_MIN;
+  const globalMax = Number.isFinite(cfg.max) ? Number(cfg.max) : DEFAULT_MAX;
   const attrs = state.player.attributes;
   for (const key of Object.keys(DEFAULT_CLAMP)) {
     if (!(key in attrs)) continue;
     const raw = Number(attrs[key]);
     if (!Number.isFinite(raw)) { attrs[key] = 0; continue; }
-    const range = cfg[key];
     let v = Math.round(raw);
+    const perKey = cfg[key];
+    if (key === 'money' && !Array.isArray(perKey)) {
+      // D-01：money 是货币，默认不钳制（显式写成 [min,max] 时才钳制）
+      attrs[key] = v;
+      continue;
+    }
+    const range = Array.isArray(perKey) ? perKey : [globalMin, globalMax];
     if (Array.isArray(range) && range.length === 2) {
       v = Math.min(Number(range[1]), Math.max(Number(range[0]), v));
     }
