@@ -24,7 +24,7 @@
     {
       "id": "socialize", "name": "社交娱乐", "desc": "聚餐、逛街、联谊",
       "cost": 1, "requiresHealth": 0, "mainAttr": "social",
-      "effects": { "attributes": { "social": 2, "money": -5 } }
+      "effects": { "attributes": { "social": 2, "money": -10 } }
     },
     {
       "id": "rest", "name": "休息放松", "desc": "睡觉、发呆、回血",

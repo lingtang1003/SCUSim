@@ -42,7 +42,7 @@
       "text": "一食堂出了新品，排队的人很多，要不要尝鲜？",
       "options": [
         { "id": "try", "label": "尝鲜", "resultText": "味道不错，心情大好。",
-          "effects": { "attributes": { "health": 1 }, "money": -15 } },
+          "effects": { "attributes": { "health": 1 }, "money": -20 } },
         { "id": "no", "label": "算了", "resultText": "你还是吃了老三样。", "effects": {} } ] },
     { "id": "ev_r02", "name": "突击测验", "weight": 10, "termRange": [1, 8],
       "text": "老师突然宣布随堂测验，你能否稳住？",
@@ -109,7 +109,7 @@
       "text": "购物节促销，你没忍住？",
       "options": [
         { "id": "buy", "label": "下单", "resultText": "快递堆成山，钱包瘪了。",
-          "effects": { "attributes": { "social": 1 }, "money": -60 } },
+          "effects": { "attributes": { "social": 1 }, "money": -80 } },
         { "id": "hold", "label": "忍住", "resultText": "你关掉了购物车。", "effects": {} } ] },
     { "id": "ev_r12", "name": "导师约谈", "weight": 7, "termRange": [8, 32],
       "text": "导师喊你聊聊科研进展。",
@@ -122,7 +122,7 @@
       "text": "同乡会组织聚餐，参加吗？",
       "options": [
         { "id": "go", "label": "参加", "resultText": "乡音亲切，其乐融融。",
-          "effects": { "attributes": { "social": 2 }, "money": -30 } },
+          "effects": { "attributes": { "social": 2 }, "money": -40 } },
         { "id": "no", "label": "不去", "resultText": "你错过了一次联谊。", "effects": {} } ] },
     { "id": "ev_r14", "name": "期末考试周", "weight": 10, "examWeekOnly": true, "termRange": [1, 40], "showExamResult": true,
       "text": "考试周来临，图书馆一座难求。",
@@ -148,7 +148,7 @@
         { "id": "join", "label": "报名参赛", "resultText": "你带队参赛，投入精力。",
           "requires": { "gpaAtLeast": 3.0 },
           "denyText": "没有人愿意和你组队，报名失败。",
-          "effects": { "flags": { "competition": "started" }, "money": -100 } } ] },
+          "effects": { "flags": { "competition": "started" }, "money": -120 } } ] },
     { "id": "ev_r17", "name": "实习内推", "weight": 7, "termRange": [30, 40],
       "text": "学姐的公司有实习内推，机会难得。",
       "options": [
@@ -175,7 +175,7 @@
       "text": "望江校区美食节开幕，香气扑鼻。",
       "options": [
         { "id": "eat", "label": "开吃", "resultText": "你大快朵颐，心情愉悦。",
-          "effects": { "attributes": { "health": 1 }, "money": -25 } },
+          "effects": { "attributes": { "health": 1 }, "money": -35 } },
         { "id": "skip", "label": "忍住", "resultText": "你坚持减肥计划。", "effects": {} } ] },
     { "id": "ev_r21", "name": "青广社团展", "weight": 7, "termRange": [2, 24],
       "text": "青春广场办社团联展，热闹非凡。",
@@ -208,7 +208,7 @@
         { "id": "dinner", "label": "答应赴约", "resultText": "热气腾腾的晚餐，你俩从专业聊到家乡，氛围正好。",
           "requires": { "flag": { "key": "crush", "value": true } },
           "denyText": "你们还没熟到能一起吃饭。",
-          "effects": { "attributes": { "social": 2 }, "money": -120, "flags": { "crush2": true } } },
+          "effects": { "attributes": { "social": 2 }, "money": -150, "flags": { "crush2": true } } },
         { "id": "refuse", "label": "婉言拒绝", "resultText": "你借口还有作业，改天再约。",
           "requires": { "flag": { "key": "crush", "value": true } },
           "denyText": "你们还没熟到能一起吃饭。",
@@ -239,25 +239,25 @@
       "text": "打印店门口摆着历年期末/考研真题合集，复习神器。",
       "options": [
         { "id": "buy", "label": "买下真题", "resultText": "你刷完整套真题，知识点全通了。",
-          "requires": { "moneyAtLeast": 100 },
+          "requires": { "moneyAtLeast": 150 },
           "denyText": "翻遍口袋也凑不齐，只能眼馋。",
-          "effects": { "attributes": { "knowledge": 3 }, "money": -100 } },
+          "effects": { "attributes": { "knowledge": 4 }, "money": -150 } },
         { "id": "save", "label": "忍痛不买", "resultText": "你把钱包捂得更紧了。", "effects": {} } ] },
     { "id": "ev_r28", "name": "技能提升班", "weight": 6, "termRange": [6, 36],
       "text": "校外的 Python/英语技能班在招生，学成能加硬实力。",
       "options": [
         { "id": "enroll", "label": "报班学习", "resultText": "几个月的集训，你的知识储备厚实了不少。",
-          "requires": { "moneyAtLeast": 180 },
+          "requires": { "moneyAtLeast": 250 },
           "denyText": "学费交不上，只能自己啃教材。",
-          "effects": { "attributes": { "knowledge": 4 }, "money": -180 } },
+          "effects": { "attributes": { "knowledge": 5 }, "money": -250 } },
         { "id": "skip", "label": "自学成才", "resultText": "你决定自己啃书，省下一笔。", "effects": {} } ] },
     { "id": "ev_r29", "name": "健康投资", "weight": 6, "termRange": [3, 40],
       "text": "健身月卡和蛋白粉在促销，身体是革命的本钱。",
       "options": [
         { "id": "join", "label": "办张健身卡", "resultText": "规律的锻炼让你元气满满。",
-          "requires": { "moneyAtLeast": 80 },
+          "requires": { "moneyAtLeast": 150 },
           "denyText": "办卡的钱还得留着吃饭。",
-          "effects": { "attributes": { "health": 3 }, "money": -80 } },
+          "effects": { "attributes": { "health": 4 }, "money": -150 } },
         { "id": "pass", "label": "先不办", "resultText": "你决定操场跑两圈代替。", "effects": {} } ] },
     { "id": "ev_r30", "name": "竞赛组队", "weight": 7, "termRange": [11, 34],
       "text": "大创群里有同学私信你，想拉你进组一起打比赛。",
@@ -338,7 +338,7 @@
       "text": "室友提议今晚开个小火锅，AA 还是你来请客？",
       "options": [
         { "id": "aa", "label": "AA拼单", "resultText": "你出食材钱，吃得很尽兴。",
-          "effects": { "attributes": { "social": 2 }, "money": -40 } },
+          "effects": { "attributes": { "social": 2 }, "money": -60 } },
         { "id": "decline", "label": "婉拒早睡", "resultText": "你躲过一顿，早早休息。",
           "effects": { "attributes": { "health": 1 } } } ] },
     { "id": "ev_r38", "name": "占座大战", "weight": 8, "termRange": [1, 16],
@@ -366,7 +366,7 @@
       "text": "深夜群里有人喊拼单奶茶烧烤，你参加吗？",
       "options": [
         { "id": "join", "label": "一起拼单", "resultText": "你吃爽了，钱包也瘦了。",
-          "effects": { "attributes": { "social": 1 }, "money": -20 } },
+          "effects": { "attributes": { "social": 1 }, "money": -30 } },
         { "id": "skip", "label": "忍住不吃", "resultText": "你忍住，省下一笔还睡了早觉。",
           "effects": { "attributes": { "health": 1 } } } ] },
     { "id": "ev_r42", "name": "社团例会", "weight": 7, "termRange": [3, 34],
@@ -403,7 +403,7 @@
       "text": "学长学姐在群里低价甩卖二手教材。",
       "options": [
         { "id": "buy", "label": "淘几本", "resultText": "你用白菜价买到了核心教材。",
-          "effects": { "attributes": { "knowledge": 1 }, "money": -15 } },
+          "effects": { "attributes": { "knowledge": 1 }, "money": -20 } },
         { "id": "skip", "label": "省下这笔", "resultText": "你决定蹭图书馆的。", "effects": {} } ] }
   ],
   "note": "fixed 三条：社团招新(CLUB)、毕业论文(THESIS)、负债(DEBT)；random 46 条：恋爱链 ev_r23–26（邂逅→聚餐→散步→吵架→和好/分手，flags crush/crush2/romance）、花钱加属性 ev_r27–29（真题/技能班/健身卡）、链式延伸 ev_r30–36（竞赛组队→成绩、实习转正、甜蜜自习、走出失恋、保研评优、社团骨干，前置沿用 requires flag）、独立随机 ev_r37–46（宿舍火锅/占座/选课/体测/外卖/例会/分享会/体检/失眠/二手教材）；≥5 条带 requires、≥6 条写 flags、≥4 条川大特色。money 统一用顶层 effects.money。"

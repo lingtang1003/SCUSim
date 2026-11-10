@@ -12,7 +12,7 @@
   "warningFailedCourses": 3,
 
   "monthlyIncome": 2000,
-  "monthlyExpense": 1950,
+  "monthlyExpense": 2000,
   "debtThreshold": -3000,
   "debtCooldownTurns": 6,
   "attributeClamp": { "knowledge": [0, 99], "social": [0, 99], "health": [0, 99], "money": null },
