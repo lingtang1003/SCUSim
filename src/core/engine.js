@@ -155,6 +155,31 @@ function applyStudyPenalty(state, action, config, rng, healthBefore) {
   }
 }
 
+/** 期末考试（4 门 + 绩点 + 警告 + 学习计数重置）：返回给 UI 的 settlement。 */
+function finishExam(state, config, rng, semester) {
+  const exam = (typeof academy.runFinalExam === 'function')
+    ? academy.runFinalExam(state, config, rng)
+    : { ok: false, subjects: [], semesterGpa: 0, totalGpa: 0, failedThisSemester: 0 };
+  if (typeof academy.checkWarning === 'function') academy.checkWarning(state, config);
+  if (state.academics.studyActions > 0) {
+    state.academics.studyActionsBySemester = Number(state.academics.studyActions) || 0;
+  }
+  state.academics.studyActions = 0;
+  const settlement = {
+    semester,
+    turn: state.turn,
+    subjects: (exam && exam.subjects) || [],
+    semesterGpa: exam && exam.semesterGpa != null ? exam.semesterGpa : null,
+    totalGpa: state.academics.totalGpa,
+    failedCourses: state.academics.failedCourses,
+    failedThisSemester: (exam && exam.failedThisSemester) || 0,
+    warning: !!state.academics.warning,
+  };
+  pushLog(state, `学期 ${semester} 结算：总绩点 ${state.academics.totalGpa}，累计挂科 ${state.academics.failedCourses} 门`, config);
+  pushHistory(state, { type: 'exam', text: `学期 ${semester} 期末：绩点 ${state.academics.totalGpa}` }, config);
+  return settlement;
+}
+
 /** 组装待处理事件（B 的 buildPending 会带上 enabled/reason）。 */
 function buildPendingEvent(ev, state, config) {
   const pending = (typeof eventManager.buildPending === 'function')
@@ -410,29 +435,12 @@ export function advance(state, config, rng) {
     pushHistory(state, { type: 'debt', text: `负债触发：金钱 ${state.player.attributes.money}` }, config);
   }
 
-  // 学期考试 / 绩点 / 警告
+  // 上一回合遗留的待考（UI 未结算事件就推进）：先补算，避免成绩被吞
   let settlement = null;
-  if (examTurns.indexOf(state.turn) >= 0) {
-    const exam = (typeof academy.runFinalExam === 'function')
-      ? academy.runFinalExam(state, config, rng)
-      : { ok: false, subjects: [], semesterGpa: 0, totalGpa: 0, failedThisSemester: 0 };
-    if (typeof academy.checkWarning === 'function') academy.checkWarning(state, config);
-    if (state.academics.studyActions > 0) {
-      state.academics.studyActionsBySemester = Number(state.academics.studyActions) || 0;
-    }
-    state.academics.studyActions = 0;
-    settlement = {
-      semester,
-      turn: state.turn,
-      subjects: (exam && exam.subjects) || [],
-      semesterGpa: exam && exam.semesterGpa != null ? exam.semesterGpa : null,
-      totalGpa: state.academics.totalGpa,
-      failedCourses: state.academics.failedCourses,
-      failedThisSemester: (exam && exam.failedThisSemester) || 0,
-      warning: !!state.academics.warning,
-    };
-    pushLog(state, `学期 ${semester} 结算：总绩点 ${state.academics.totalGpa}，累计挂科 ${state.academics.failedCourses} 门`, config);
-    pushHistory(state, { type: 'exam', text: `学期 ${semester} 期末：绩点 ${state.academics.totalGpa}` }, config);
+  if (state.academics.pendingExam && state.academics.pendingExam.turn < state.turn) {
+    const stale = state.academics.pendingExam;
+    settlement = finishExam(state, config, rng, stale.semester);
+    delete state.academics.pendingExam;
   }
 
   // 事件（固定 > 负债 > 随机）；终局回合不再触发事件
@@ -443,10 +451,22 @@ export function advance(state, config, rng) {
     enterTurn(state, config, rng, debt && debt.triggered ? debt.eventId : null);
   }
 
+  // 学期考试：先弹「期末考试周」事件（全力复习 / 佛系应考），成绩延后到事件结算后
+  const isExamTurn = examTurns.indexOf(state.turn) >= 0;
+  if (isExamTurn) {
+    if (!isFinalTurn && state.pendingEvent && state.pendingEvent.eventId) {
+      state.academics.pendingExam = { semester, turn: state.turn };
+      pushLog(state, `学期 ${semester} 期末考试周：先做复习安排`, config);
+    } else {
+      settlement = finishExam(state, config, rng, semester);
+    }
+  }
+
   // 终局：主结局 + 副结局（SRS 6.1）
   let endingId = null;
   let endingSubs = [];
   if (isFinalTurn) {
+    if (state.academics.pendingExam) delete state.academics.pendingExam;
     const judged = judgeEnding(state, config);
     endingId = judged.main;
     endingSubs = judged.subs || [];
@@ -487,8 +507,21 @@ export function resolvePendingEvent(state, choiceId, config, rng) {
   state.pendingEvent = null;
   clampAttrs(state, config);
   pushHistory(state, { type: 'choice', eventId, text: res.message || `事件选择：${choiceId}` }, config);
+
+  // 期末考试周事件已结算：此刻再算成绩，让「全力复习 / 佛系应考」真正影响本学期结果
+  let settlement = null;
+  const pendingExam = state.academics && state.academics.pendingExam;
+  if (pendingExam && pendingExam.turn === state.turn) {
+    settlement = finishExam(state, config, rng, pendingExam.semester);
+    delete state.academics.pendingExam;
+    clampAttrs(state, config);
+  }
+
   state.rngState = rng.getState();
-  return { ok: true, state, result: res.result, message: res.message };
+  return {
+    ok: true, state, result: res.result, message: res.message,
+    settlement, endingId: null, endingSubs: [],
+  };
 }
 
 /**

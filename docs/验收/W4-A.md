@@ -41,11 +41,26 @@ $ node tests/unit/a-main.mjs
 $ node tests/unit/a-browser-e2e.mjs（Edge headless）
   PASS  学期结算弹窗被真实调用 ≥8 次（C 的 showExam 接线）
   PASS  事件弹窗被真实调用（showEvent 接线）
+  PASS  考试周顺序：先「全力复习/佛系应考」事件，后「学期结算」
   PASS  结局弹层出现
   PASS  正式访问无调试面板 / 无 __scusim
   PASS  无未捕获异常 / 无 console.error
-  总计 25 项，PASS 25，FAIL 0
+  总计 26 项，PASS 26，FAIL 0
 ```
+
+### 3.1 考试周顺序（本轮新增）
+
+```text
+第 5 回合 advance → 弹「期末考试周」事件（ev_r14：全力复习 / 佛系应考）→ 此时无成绩
+玩家选择「全力复习」→ 事件效果入账 → engine.finishExam() → main 弹「学期结算」
+（截图：docs/截图/W1-A/06-exam-week-event.jpg、07-exam-result.jpg）
+```
+
+实现：`advance` 在考试回合若弹出了事件就只记 `state.academics.pendingExam`，成绩由 `resolvePendingEvent` 计算并随返回值带回；`main.onResolveEvent` 关掉事件弹窗后把 `showExam` 排进队列。
+
+### 3.2 顺手修掉的环境 bug
+
+`server.js` 有一行被写成了 `// …\r\n    res.writeHead(200, …)` —— `writeHead` 被注释吞掉，静态文件**没有 Content-Type**，浏览器按严格 MIME 拒绝加载 ES Module，本地页面卡在「正在进入校园…」。已拆回两行并验证 `Content-Type: application/javascript`。Cloudflare Pages 不受影响，只影响本地 `node server.js`。
 
 ## 4. 未闭环（D 的 W4）
 
@@ -60,7 +75,7 @@ $ node tests/unit/a-browser-e2e.mjs（Edge headless）
 
 ```bash
 node server.js
-node tests/unit/a-browser-e2e.mjs     # 25/25，截图在 docs/截图/W1-A/
+node tests/unit/a-browser-e2e.mjs     # 26/26，截图在 docs/截图/W1-A/
 node tests/unit/a-main.mjs            # 12/12
 npm test                              # 22 + 14
 ```

@@ -26,9 +26,9 @@ node server.js                 # 浏览器 E2E 需要
 npm test                       # smoke 22 + verify_ui 14
 
 # A 的单测 / E2E
-node tests/unit/a-engine.mjs   # 56 项
+node tests/unit/a-engine.mjs   # 59 项
 node tests/unit/a-main.mjs     # 12 项（弹窗队列）
-node tests/unit/a-browser-e2e.mjs   # 25 项 + 5 张截图
+node tests/unit/a-browser-e2e.mjs   # 26 项 + 7 张截图
 
 # 其他人的单测
 node tests/unit/b-economy.mjs

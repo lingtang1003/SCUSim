@@ -341,6 +341,11 @@ export function createController(deps) {
   // ---------------- 回调：推进回合 ----------------
   async function onAdvance() {
     if (!state) return;
+    // 事件未结算时不允许跳周（考试周尤其重要：先选复习方式，再出成绩）
+    if (state.pendingEvent) {
+      toast('先处理当前事件，再进入下一周', 'warning');
+      return;
+    }
     const res = eng.advance(state, config, rng);
     if (!res.ok) {
       app.showError('无法推进：' + (res.reason || ''));
@@ -488,6 +493,14 @@ export function createController(deps) {
       eventResult: { eventId: eventId, text: res.message || '', delta: delta },
     });
     notifyModalClosed();
+    // 期末考试周：事件（复习/佛系）结算后才出成绩，这里补弹结算面板
+    if (res.settlement) {
+      const settlement = res.settlement;
+      queueModal((done) => {
+        if (typeof app.showExam === 'function') app.showExam(settlement, done);
+        else done();
+      });
+    }
   }
 
   // ---------------- 回调：换立绘 ----------------

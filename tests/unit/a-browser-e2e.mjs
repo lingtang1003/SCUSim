@@ -195,11 +195,13 @@ async function main() {
     // 统计 UI 弹窗被真实调用的次数（验证 showExam/showEvent 接线，而非只看 state）
     await cdp.eval(`(() => {
       window.__counts = { exam: 0, event: 0 };
+      window.__seq = [];
       const app = window.__scusim.app;
       if (app && typeof app.showExam === 'function') {
         const e0 = app.showExam;
         app.showExam = function (s, done) {
           window.__counts.exam += 1;
+          window.__seq.push('exam');
           const r = e0.call(this, s, done);
           if (typeof done === 'function') done(); // 模拟玩家点「继续」（同步关闭，保证队列推进）
           return r;
@@ -209,6 +211,7 @@ async function main() {
         const v0 = app.showEvent;
         app.showEvent = function (ev, done) {
           window.__counts.event += 1;
+          window.__seq.push('event:' + (ev && ev.eventId));
           const r = v0.call(this, ev, done);
           if (typeof done === 'function') done(); // 模拟玩家关闭事件
           return r;
@@ -289,6 +292,7 @@ async function main() {
         failed: S().academics.failedCourses,
         endingOverlays: document.querySelectorAll('.vn-ending').length,
         counts: window.__counts,
+        seq: (window.__seq || []).slice(0, 80),
         gallery: (function () { try { return localStorage.getItem('scusim:gallery'); } catch (e) { return null; } })(),
       };
     })()`);
@@ -304,6 +308,14 @@ async function main() {
       toEnd.counts && toEnd.counts.exam >= 8, JSON.stringify(toEnd.counts));
     check('事件弹窗被真实调用（showEvent 接线）',
       toEnd.counts && toEnd.counts.event >= 1, JSON.stringify(toEnd.counts));
+    {
+      const seq = toEnd.seq || [];
+      const firstExam = seq.indexOf('exam');
+      const firstExamEvent = seq.indexOf('event:ev_r14');
+      check('考试周顺序：先「全力复习/佛系应考」事件，后「学期结算」',
+        firstExamEvent >= 0 && firstExam > firstExamEvent,
+        JSON.stringify(seq.slice(0, 20)));
+    }
     await sleep(800); // 等结局淡入动画结束再截图
     await cdp.shot('04-ending.jpg');
 

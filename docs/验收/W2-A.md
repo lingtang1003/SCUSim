@@ -37,11 +37,11 @@ $ node tests/unit/a-engine.mjs
   PASS  drawTagCandidates: 同种子同一批（可复现）
   PASS  buildViewModel: availability 覆盖全部行动
   PASS  buildViewModel: actions 带 enabled/reason
-  总计 56 项，PASS 56，FAIL 0
+  总计 59 项，PASS 59，FAIL 0
 
 $ node tests/unit/b-events.mjs     → 事件单测全部通过
 $ npm test                        → smoke 22 / verify_ui 14 全绿
-$ node tests/unit/a-browser-e2e.mjs（真浏览器 40 回合）→ 25/25
+$ node tests/unit/a-browser-e2e.mjs（真浏览器 40 回合）→ 26/26
 ```
 
 ## 4. 未闭环（不影响 A 侧结论）

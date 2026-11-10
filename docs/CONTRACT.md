@@ -218,6 +218,18 @@ buildViewModel(state, config) -> { availability, actions[], tierInfo, flags, mon
 
 `advance().monthly` 结构：`{ ok, income, expense, net }`（income/expense 含当月兼职/消费流水）。
 
+**考试周顺序（UI 契约）**：每学期期末先弹「期末考试周」事件（`ev_r14`，选项 `全力复习` / `佛系应考`），
+玩家选择后**才**计算成绩并返回 `settlement`：
+
+```text
+advance()@考试回合  → 先 enterTurn() 触发 ev_r14；settlement = null，state.academics.pendingExam = {semester,turn}
+resolvePendingEvent() → 应用复习选项效果 → finishExam() → 返回 { settlement }
+main.onResolveEvent() → 关闭事件弹窗后 queueModal(app.showExam(settlement, done))
+```
+
+- 若 UI 未结算就推进下一周，`advance` 会在下一回合补算遗留的 `pendingExam`（成绩不会被吞，只是晚一回合）。
+- 终局回合（40）无 `ev_r14`，直接算分 → 结算弹窗 → 结局弹窗。
+
 ### 4.3 `src/core/ending.js`（A）
 
 ```js
@@ -266,7 +278,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | D-07 | 存档版本 | 单槽/多槽并存（D 已加 `saveGameSlot/listSlots`）；`SAVE_VERSION` 升级与 `migrateSave` 仍待 D | storage / main | 🟡 多槽已上线，迁移未做 |
 | D-08 | 姓名/性别 | 姓名 1–12 字；性别男/女 | UI | ⏳ C-W2 |
 | D-09 | 属性初始 | 四项 0 起分配 20 点；标签修正后再钳制 | UI / engine | 🟡 引擎侧已支持标签修正，UI 仍默认 5/5/5/5 |
-| D-10 | 结算顺序 | 回合+1 → 月初 → 负债 → 期末 → 事件（固定 > 负债 > 随机）→ 终局；**终局回合不再触发事件** | engine.advance | ✅ |
+| D-10 | 结算顺序 | 回合+1 → 月初 → 负债 → 期末（先复习事件、后出成绩）→ 事件（固定 > 负债 > 随机）→ 终局；终局回合不再触发事件 | engine.advance | ✅ |
 | D-11 | 履历/图鉴 | `history` ≤60 条结构化；图鉴跨周目唯一；**主结局与副结局都入图鉴** | state / storage / main | ✅ |
 | D-12 | 依赖 | 不引入任何第三方运行时/测试依赖 | 全组 | ✅ |
 | D-13 | 弹窗顺序 | 同回合「结算 → 事件」；终局「结算 → 结局」。由 `main.modalQueue` 串行，UI 通过 `done` / `onModalClosed` / Promise 通知关闭；UI 不通知时下一次交互隐式关闭兜底 | main / UI | ✅ 已与 C 的 `showExam(settlement, done)` 对接成功（浏览器 E2E 验证 8 次结算弹窗） |
@@ -376,7 +388,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | `src/core/engine.js` | 三档加成（`threeTierBonus.bonus`）、健康白名单、学习惩罚、pending 阻断、标签修正、`drawTagCandidates`、`buildViewModel`、`advance` 新顺序 + `monthly/settlement/endingSubs`、终局不出事件、**删除过渡适配层直接调 B** |
 | `src/core/ending.js` | 条件引擎（all/any/7 类 + negate）、`judgeEnding` 主+副结局、`sortByPriority`（`endingPriorityOrder`） |
 | `src/main.js` | 弹窗队列（结算→事件→结局，含隐式关闭兜底）、读档恢复未结算事件、副结局入图鉴、`buildViewModel` 接入、`?dev=1` 面板 + `__scusim` 句柄 |
-| `tests/unit/a-engine.mjs` | 56 条断言（全 PASS） |
+| `tests/unit/a-engine.mjs` | 59 条断言（全 PASS） |
 | `tests/unit/a-main.mjs` | 12 条断言（队列/不叠窗/隐式关闭，全 PASS） |
 | `tests/unit/a-browser-e2e.mjs` | 真实 Edge headless E2E：25 条断言 + 5 张截图（`docs/截图/W1-A/`），全 PASS |
 

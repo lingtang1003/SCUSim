@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { loadConfig } from '../../src/config/loader.js';
 import { createRng } from '../../src/core/rng.js';
 import {
-  newGame, actionAvailability, doAction, advance, getEnding,
+  newGame, actionAvailability, doAction, advance, resolvePendingEvent, getEnding,
   drawTagCandidates, buildViewModel,
 } from '../../src/core/engine.js';
 import { judgeEnding, evaluateCondition } from '../../src/core/ending.js';
@@ -186,11 +186,28 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
     `money=${s.player.attributes.money} net=${net}`);
   check('advance: 返回 monthly {income,expense,net}', r.monthly && typeof r.monthly.net === 'number');
 
+  // 考试周：先弹「全力复习 / 佛系应考」，成绩延后到事件结算之后
   const cfgExam = patch((c) => { c.balance.examTurns = [5]; });
   const se = stateWithoutPending(cfgExam);
-  for (let i = 0; i < 4; i += 1) advance(se, cfgExam, createRng(20 + i));
-  check('advance: 第 5 回合触发期末结算', se.turn === 5);
+  const resolveFirst = (s, cfg, rngSeed) => {
+    if (!s.pendingEvent) return null;
+    const opt = (s.pendingEvent.options || []).find((o) => o.enabled !== false)
+      || (s.pendingEvent.options || [])[0];
+    if (!opt) return null;
+    return resolvePendingEvent(s, opt.id, cfg, createRng(rngSeed));
+  };
+  for (let i = 0; i < 4; i += 1) {
+    advance(se, cfgExam, createRng(20 + i));
+    if (se.turn < 5) resolveFirst(se, cfgExam, 300 + i); // 每回合照常结算事件
+  }
+  check('advance: 第 5 回合进入考试周', se.turn === 5);
+  check('advance: 考试周先弹复习事件（ev_r14），不立即出成绩',
+    !!se.pendingEvent && se.pendingEvent.eventId === 'ev_r14' && se.academics.semesterRecords.length === 0,
+    JSON.stringify({ ev: se.pendingEvent && se.pendingEvent.eventId, rec: se.academics.semesterRecords.length }));
+  const examOpt = (se.pendingEvent.options || []).find((o) => o.enabled !== false) || se.pendingEvent.options[0];
+  const resolved = resolvePendingEvent(se, examOpt.id, cfgExam, createRng(30));
   const rec = se.academics.semesterRecords[se.academics.semesterRecords.length - 1];
+  check('resolvePendingEvent: 事件结算后才返回 settlement', resolved.ok === true && !!resolved.settlement);
   check('advance: 期末科目数 = 配置 subjects 数（4 门）',
     rec && rec.subjects.length === base.balance.exam.subjects.length,
     String(rec && rec.subjects.length));
@@ -198,10 +215,15 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
     rec && rec.subjects.every((x) => x.score >= base.balance.exam.passLine && x.score <= 100),
     JSON.stringify(rec && rec.subjects.map((x) => x.score)));
   check('advance: 学期结束后 studyActions 归零', se.academics.studyActions === 0, String(se.academics.studyActions));
+  check('advance: 结算后清空 pendingExam 标记', !se.academics.pendingExam);
 
   const s40 = stateWithoutPending(base, 12345);
   let guard = 0;
-  while (s40.turn < 40 && !s40.endingId && guard < 100) { guard += 1; advance(s40, base, createRng(400 + guard)); }
+  while (s40.turn < 40 && !s40.endingId && guard < 100) {
+    guard += 1;
+    advance(s40, base, createRng(400 + guard));
+    resolveFirst(s40, base, 800 + guard);
+  }
   check('advance: 40 回合后 turn 停在 40', s40.turn === 40, String(s40.turn));
   check('advance: 终局写入 endingId', typeof s40.endingId === 'string' && s40.endingId.length > 0, String(s40.endingId));
   check('advance: 8 个学期都有成绩记录', s40.academics.semesterRecords.length === 8, String(s40.academics.semesterRecords.length));
@@ -228,7 +250,15 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
     return ng.state;
   })();
   let g2 = 0;
-  while (sZero.turn < 40 && !sZero.endingId && g2 < 100) { g2 += 1; advance(sZero, base, createRng(50 + g2)); }
+  while (sZero.turn < 40 && !sZero.endingId && g2 < 100) {
+    g2 += 1;
+    advance(sZero, base, createRng(50 + g2));
+    if (sZero.pendingEvent) {
+      const opt = (sZero.pendingEvent.options || []).find((o) => o.enabled !== false)
+        || (sZero.pendingEvent.options || [])[0];
+      if (opt) resolvePendingEvent(sZero, opt.id, base, createRng(150 + g2));
+    }
+  }
   check('决赛决议: 学识 0 开局 8 学期也不挂科（failedCourses=0）',
     sZero.academics.failedCourses === 0, String(sZero.academics.failedCourses));
   check('决赛决议: 学业警告不触发（warning=false）', sZero.academics.warning === false);

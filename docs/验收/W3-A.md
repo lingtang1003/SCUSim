@@ -40,13 +40,13 @@ $ node tests/unit/a-engine.mjs
   PASS  ending: 其余命中项记为副结局
   PASS  ending: all 中任一不满足则不命中（warning 为真）
   PASS  ending: 未知类型不命中且不抛错
-  总计 56 项，PASS 56，FAIL 0
+  总计 59 项，PASS 59，FAIL 0
 
 $ node tests/unit/a-browser-e2e.mjs
   PASS  结局已判定（endingId 非空）
   PASS  结局弹层出现
   PASS  图鉴写入 localStorage 且含本次结局
-  总计 25 项，PASS 25，FAIL 0
+  总计 26 项，PASS 26，FAIL 0
 ```
 
 ## 4. 未闭环（D 的 W3）
