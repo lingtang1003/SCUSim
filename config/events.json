@@ -2,460 +2,2062 @@
   "version": "1.0.0",
   "fixed": [
     {
-      "id": "ev_fixed_club_recruit", "name": "社团招新", "code": "CLUB",
-      "trigger": { "type": "turn", "value": 1 }, "termRange": [1, 3],
+      "id": "ev_fixed_club_recruit",
+      "name": "社团招新",
+      "code": "CLUB",
+      "trigger": {
+        "type": "turn",
+        "value": 1
+      },
+      "termRange": [
+        1,
+        3
+      ],
       "text": "九月社团招新季，青春广场摆满招新摊位。你要加入吗？",
       "options": [
-        { "id": "join", "label": "加入社团", "resultText": "你加入了社团，社交圈扩大。",
-          "effects": { "attributes": { "social": 3 }, "flags": { "club": "加入了社团" } } },
-        { "id": "skip", "label": "专心学业", "resultText": "你婉拒了招新，专注课业。",
-          "effects": { "attributes": { "knowledge": 1 } } }
+        {
+          "id": "join",
+          "label": "加入社团",
+          "resultText": "你加入了社团，社交圈扩大。",
+          "effects": {
+            "attributes": {
+              "social": 3
+            },
+            "flags": {
+              "club": "加入了社团"
+            }
+          }
+        },
+        {
+          "id": "skip",
+          "label": "专心学业",
+          "resultText": "你婉拒了招新，专注课业。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
       ]
     },
     {
-      "id": "ev_fixed_thesis", "name": "毕业论文", "code": "THESIS",
-      "trigger": { "type": "turn", "value": 38 }, "termRange": [37, 39],
+      "id": "ev_fixed_thesis",
+      "name": "毕业论文",
+      "code": "THESIS",
+      "trigger": {
+        "type": "turn",
+        "value": 38
+      },
+      "termRange": [
+        37,
+        39
+      ],
       "text": "大四下，毕业论文开题与答辩逼近。你打算怎么写？",
       "options": [
-        { "id": "serious", "label": "认真钻研", "resultText": "你投入心血，论文获好评。",
-          "effects": { "attributes": { "knowledge": 4 }, "flags": { "thesis": "认真" } } },
-        { "id": "sloppy", "label": "敷衍了事", "resultText": "你匆匆拼凑，险些挂掉。",
-          "effects": { "attributes": { "health": -2 }, "flags": { "thesis": "敷衍" } } }
+        {
+          "id": "serious",
+          "label": "认真钻研",
+          "resultText": "你投入心血，论文获好评。",
+          "effects": {
+            "attributes": {
+              "knowledge": 4
+            },
+            "flags": {
+              "thesis": "认真"
+            }
+          }
+        },
+        {
+          "id": "sloppy",
+          "label": "敷衍了事",
+          "resultText": "你匆匆拼凑，险些挂掉。",
+          "effects": {
+            "attributes": {
+              "health": -2
+            },
+            "flags": {
+              "thesis": "敷衍"
+            }
+          }
+        }
       ]
     },
     {
-      "id": "ev_fixed_debt", "name": "负债危机", "code": "DEBT", "type": "debt",
-      "trigger": { "type": "debt" }, "termRange": [1, 40],
+      "id": "ev_fixed_debt",
+      "name": "负债危机",
+      "code": "DEBT",
+      "type": "debt",
+      "trigger": {
+        "type": "debt"
+      },
+      "termRange": [
+        1,
+        40
+      ],
       "text": "这个月钱不够花，眼看要负债了，你怎么办？",
       "options": [
-        { "id": "borrow", "label": "向家里求助", "resultText": "家里给你打来一笔生活费。",
-          "effects": { "money": 1000, "flags": { "debt": "borrowed" } } },
-        { "id": "parttime", "label": "拼命兼职", "resultText": "你接了好几份兼职。",
-          "effects": { "attributes": { "health": -2 }, "money": 500 } },
-        { "id": "tough", "label": "硬着头皮", "resultText": "你节衣缩食硬扛过去。",
-          "effects": { "money": -300 } }
+        {
+          "id": "borrow",
+          "label": "向家里求助",
+          "resultText": "家里给你打来一笔生活费。",
+          "effects": {
+            "money": 1000,
+            "flags": {
+              "debt": "borrowed"
+            }
+          }
+        },
+        {
+          "id": "parttime",
+          "label": "拼命兼职",
+          "resultText": "你接了好几份兼职。",
+          "effects": {
+            "attributes": {
+              "health": -2
+            },
+            "money": 500
+          }
+        },
+        {
+          "id": "tough",
+          "label": "硬着头皮",
+          "resultText": "你节衣缩食硬扛过去。",
+          "effects": {
+            "money": -300
+          }
+        }
       ]
     }
   ],
   "random": [
-    { "id": "ev_r01", "name": "食堂新菜品", "weight": 10, "termRange": [1, 8],
+    {
+      "id": "ev_r01",
+      "name": "食堂新菜品",
+      "weight": 10,
+      "termRange": [
+        1,
+        8
+      ],
       "text": "一食堂出了新品，排队的人很多，要不要尝鲜？",
       "options": [
-        { "id": "try", "label": "尝鲜", "resultText": "味道不错，心情大好。",
-          "effects": { "attributes": { "health": 1 }, "money": -20 } },
-        { "id": "no", "label": "算了", "resultText": "你还是吃了老三样。", "effects": {} } ] },
-    { "id": "ev_r02", "name": "突击测验", "weight": 10, "termRange": [1, 8],
+        {
+          "id": "try",
+          "label": "尝鲜",
+          "resultText": "味道不错，心情大好。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "money": -20
+          }
+        },
+        {
+          "id": "no",
+          "label": "算了",
+          "resultText": "你还是吃了老三样。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r02",
+      "name": "突击测验",
+      "weight": 10,
+      "termRange": [
+        1,
+        8
+      ],
       "text": "老师突然宣布随堂测验，你能否稳住？",
       "options": [
-        { "id": "calm", "label": "冷静应对", "resultText": "平时有积累，发挥稳定。",
-          "effects": { "attributes": { "knowledge": 1 } } },
-        { "id": "panic", "label": "当场慌神", "resultText": "你脑子一片空白。",
-          "effects": { "attributes": { "health": -1 } } } ] },
-    { "id": "ev_r03", "name": "校园马拉松", "weight": 8, "termRange": [2, 12],
+        {
+          "id": "calm",
+          "label": "冷静应对",
+          "resultText": "平时有积累，发挥稳定。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "panic",
+          "label": "当场慌神",
+          "resultText": "你脑子一片空白。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r03",
+      "name": "校园马拉松",
+      "weight": 8,
+      "termRange": [
+        2,
+        12
+      ],
       "text": "川大春季校园马拉松报名开始了，你要参加吗？",
       "options": [
-        { "id": "run", "label": "报名参赛", "resultText": "你坚持跑完，体魄更强。",
-          "effects": { "attributes": { "health": 2 } } },
-        { "id": "watch", "label": "围观", "resultText": "你当了啦啦队。",
-          "effects": { "attributes": { "social": 1 } } } ] },
-    { "id": "ev_r04", "name": "兼职机会", "weight": 8, "termRange": [3, 16],
+        {
+          "id": "run",
+          "label": "报名参赛",
+          "resultText": "你坚持跑完，体魄更强。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        },
+        {
+          "id": "watch",
+          "label": "围观",
+          "resultText": "你当了啦啦队。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r04",
+      "name": "兼职机会",
+      "weight": 8,
+      "termRange": [
+        3,
+        16
+      ],
       "text": "学长介绍了一个靠谱兼职，做不做？",
       "options": [
-        { "id": "take", "label": "接下", "resultText": "你赚了点零花钱。",
-          "effects": { "attributes": { "health": -1 }, "money": 3 } },
-        { "id": "refuse", "label": "拒绝", "resultText": "你选择保住学习时间。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_r05", "name": "失恋了", "weight": 6, "termRange": [6, 20],
+        {
+          "id": "take",
+          "label": "接下",
+          "resultText": "你赚了点零花钱。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            },
+            "money": 3
+          }
+        },
+        {
+          "id": "refuse",
+          "label": "拒绝",
+          "resultText": "你选择保住学习时间。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r05",
+      "name": "失恋了",
+      "weight": 6,
+      "termRange": [
+        6,
+        20
+      ],
       "text": "一段校园恋情画上句号，你如何面对？",
       "options": [
-        { "id": "sad", "label": "黯然神伤", "resultText": "你消沉了好一阵。",
-          "effects": { "attributes": { "health": -2, "social": -1 } } },
-        { "id": "move", "label": "向前看", "resultText": "你很快调整好状态。",
-          "effects": { "attributes": { "social": 1 } } } ] },
-    { "id": "ev_r06", "name": "奖学金公示", "weight": 7, "termRange": [6, 36],
+        {
+          "id": "sad",
+          "label": "黯然神伤",
+          "resultText": "你消沉了好一阵。",
+          "effects": {
+            "attributes": {
+              "health": -2,
+              "social": -1
+            }
+          }
+        },
+        {
+          "id": "move",
+          "label": "向前看",
+          "resultText": "你很快调整好状态。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r06",
+      "name": "奖学金公示",
+      "weight": 7,
+      "termRange": [
+        6,
+        36
+      ],
       "text": "国家奖学金名单公示，有你一席。",
       "options": [
-        { "id": "happy", "label": "开心领奖", "resultText": "一笔奖学金到账。",
-          "effects": { "attributes": { "knowledge": 1 }, "money": 5, "flags": { "scholarship": "won" } } } ] },
-    { "id": "ev_r07", "name": "宿舍夜聊", "weight": 9, "termRange": [1, 16],
+        {
+          "id": "happy",
+          "label": "开心领奖",
+          "resultText": "一笔奖学金到账。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "money": 5,
+            "flags": {
+              "scholarship": "won"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r07",
+      "name": "宿舍夜聊",
+      "weight": 9,
+      "termRange": [
+        1,
+        16
+      ],
       "text": "室友深夜开启哲学探讨，你加入吗？",
       "options": [
-        { "id": "join", "label": "加入", "resultText": "你们聊到天亮，感情升温。",
-          "effects": { "attributes": { "social": 2, "health": -1 } } },
-        { "id": "sleep", "label": "睡觉", "resultText": "你戴上耳机安然入睡。",
-          "effects": { "attributes": { "health": 1 } } } ] },
-    { "id": "ev_r08", "name": "感冒来袭", "weight": 8, "termRange": [1, 40],
+        {
+          "id": "join",
+          "label": "加入",
+          "resultText": "你们聊到天亮，感情升温。",
+          "effects": {
+            "attributes": {
+              "social": 2,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "sleep",
+          "label": "睡觉",
+          "resultText": "你戴上耳机安然入睡。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r08",
+      "name": "感冒来袭",
+      "weight": 8,
+      "termRange": [
+        1,
+        40
+      ],
       "text": "换季降温，你中招感冒了。",
       "options": [
-        { "id": "rest", "label": "请假休息", "resultText": "你休养几天恢复了。",
-          "effects": { "attributes": { "health": 1 } } },
-        { "id": "hard", "label": "硬撑", "resultText": "你带病上课，病情加重。",
-          "effects": { "attributes": { "health": -2 } } } ] },
-    { "id": "ev_r09", "name": "学术讲座", "weight": 7, "termRange": [3, 20],
+        {
+          "id": "rest",
+          "label": "请假休息",
+          "resultText": "你休养几天恢复了。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "hard",
+          "label": "硬撑",
+          "resultText": "你带病上课，病情加重。",
+          "effects": {
+            "attributes": {
+              "health": -2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r09",
+      "name": "学术讲座",
+      "weight": 7,
+      "termRange": [
+        3,
+        20
+      ],
       "text": "诺奖得主来川大开讲座，去听吗？",
       "options": [
-        { "id": "go", "label": "去听", "resultText": "受益匪浅。",
-          "effects": { "attributes": { "knowledge": 2 } } },
-        { "id": "skip", "label": "不去", "resultText": "你在宿舍睡大觉。",
-          "effects": { "attributes": { "health": 1 } } } ] },
-    { "id": "ev_r10", "name": "校园歌手赛", "weight": 7, "termRange": [4, 16],
+        {
+          "id": "go",
+          "label": "去听",
+          "resultText": "受益匪浅。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "skip",
+          "label": "不去",
+          "resultText": "你在宿舍睡大觉。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r10",
+      "name": "校园歌手赛",
+      "weight": 7,
+      "termRange": [
+        4,
+        16
+      ],
       "text": "十大歌手决赛门票免费领，去不去？",
       "options": [
-        { "id": "watch", "label": "去看", "resultText": "现场很燃，认识不少朋友。",
-          "effects": { "attributes": { "social": 2 } } },
-        { "id": "study", "label": "自习", "resultText": "你把时间留给图书馆。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_r11", "name": "网购剁手", "weight": 8, "termRange": [5, 36],
+        {
+          "id": "watch",
+          "label": "去看",
+          "resultText": "现场很燃，认识不少朋友。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            }
+          }
+        },
+        {
+          "id": "study",
+          "label": "自习",
+          "resultText": "你把时间留给图书馆。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r11",
+      "name": "网购剁手",
+      "weight": 8,
+      "termRange": [
+        5,
+        36
+      ],
       "text": "购物节促销，你没忍住？",
       "options": [
-        { "id": "buy", "label": "下单", "resultText": "快递堆成山，钱包瘪了。",
-          "effects": { "attributes": { "social": 1 }, "money": -80 } },
-        { "id": "hold", "label": "忍住", "resultText": "你关掉了购物车。", "effects": {} } ] },
-    { "id": "ev_r12", "name": "导师约谈", "weight": 7, "termRange": [8, 32],
+        {
+          "id": "buy",
+          "label": "下单",
+          "resultText": "快递堆成山，钱包瘪了。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "money": -80
+          }
+        },
+        {
+          "id": "hold",
+          "label": "忍住",
+          "resultText": "你关掉了购物车。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r12",
+      "name": "导师约谈",
+      "weight": 7,
+      "termRange": [
+        8,
+        32
+      ],
       "text": "导师喊你聊聊科研进展。",
       "options": [
-        { "id": "active", "label": "积极汇报", "resultText": "导师很满意，给你加任务。",
-          "effects": { "attributes": { "knowledge": 2 } } },
-        { "id": "vague", "label": "含糊应付", "resultText": "你被导师敲了警钟。",
-          "effects": { "attributes": { "health": -1 } } } ] },
-    { "id": "ev_r13", "name": "老乡聚会", "weight": 8, "termRange": [1, 32],
+        {
+          "id": "active",
+          "label": "积极汇报",
+          "resultText": "导师很满意，给你加任务。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "vague",
+          "label": "含糊应付",
+          "resultText": "你被导师敲了警钟。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r13",
+      "name": "老乡聚会",
+      "weight": 8,
+      "termRange": [
+        1,
+        32
+      ],
       "text": "同乡会组织聚餐，参加吗？",
       "options": [
-        { "id": "go", "label": "参加", "resultText": "乡音亲切，其乐融融。",
-          "effects": { "attributes": { "social": 2 }, "money": -40 } },
-        { "id": "no", "label": "不去", "resultText": "你错过了一次联谊。", "effects": {} } ] },
-    { "id": "ev_r14", "name": "期末考试周", "weight": 10, "examWeekOnly": true, "termRange": [1, 40], "showExamResult": true,
+        {
+          "id": "go",
+          "label": "参加",
+          "resultText": "乡音亲切，其乐融融。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            },
+            "money": -40
+          }
+        },
+        {
+          "id": "no",
+          "label": "不去",
+          "resultText": "你错过了一次联谊。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r14",
+      "name": "期末考试周",
+      "weight": 10,
+      "examWeekOnly": true,
+      "termRange": [
+        1,
+        40
+      ],
+      "showExamResult": true,
       "text": "考试周来临，图书馆一座难求。",
       "options": [
-        { "id": "review", "label": "全力复习", "resultText": "你刷夜备考，状态拉满。",
-          "effects": { "attributes": { "knowledge": 2, "health": -1 } } },
-        { "id": "luck", "label": "佛系应考", "resultText": "你选择相信锦鲤。",
-          "effects": { "attributes": { "health": 1 } } } ] },
-    { "id": "ev_r15", "name": "校园告白", "weight": 6, "termRange": [8, 30],
+        {
+          "id": "review",
+          "label": "全力复习",
+          "resultText": "你刷夜备考，状态拉满。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "luck",
+          "label": "佛系应考",
+          "resultText": "你选择相信锦鲤。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r15",
+      "name": "校园告白",
+      "weight": 6,
+      "termRange": [
+        8,
+        30
+      ],
       "text": "你喜欢的人就在眼前，要不要表白？",
       "options": [
-        { "id": "wait", "label": "再等等", "resultText": "你决定先观察一阵。",
-          "effects": { "attributes": { "social": 1 } } },
-        { "id": "confess", "label": "鼓起勇气", "resultText": "你表白成功，开始恋爱。",
-          "requires": { "attribute": { "key": "social", "min": 10 } },
+        {
+          "id": "wait",
+          "label": "再等等",
+          "resultText": "你决定先观察一阵。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "confess",
+          "label": "鼓起勇气",
+          "resultText": "你表白成功，开始恋爱。",
+          "requires": {
+            "attribute": {
+              "key": "social",
+              "min": 10
+            }
+          },
           "denyText": "话到嘴边又咽了回去，告白失败。",
-          "effects": { "attributes": { "social": 2 }, "flags": { "romance": "dating" } } } ] },
-    { "id": "ev_r16", "name": "科创竞赛", "weight": 7, "termRange": [10, 32],
+          "effects": {
+            "attributes": {
+              "social": 2
+            },
+            "flags": {
+              "romance": "dating"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r16",
+      "name": "科创竞赛",
+      "weight": 7,
+      "termRange": [
+        10,
+        32
+      ],
       "text": "大创竞赛开始组队，你心动了。",
       "options": [
-        { "id": "watch", "label": "围观加油", "resultText": "你给同学当观众。",
-          "effects": { "attributes": { "social": 1 } } },
-        { "id": "join", "label": "报名参赛", "resultText": "你带队参赛，投入精力。",
-          "requires": { "gpaAtLeast": 3.0 },
+        {
+          "id": "watch",
+          "label": "围观加油",
+          "resultText": "你给同学当观众。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "join",
+          "label": "报名参赛",
+          "resultText": "你带队参赛，投入精力。",
+          "requires": {
+            "gpaAtLeast": 3
+          },
           "denyText": "没有人愿意和你组队，报名失败。",
-          "effects": { "flags": { "competition": "started" }, "money": -120 } } ] },
-    { "id": "ev_r17", "name": "实习内推", "weight": 7, "termRange": [30, 40],
+          "effects": {
+            "flags": {
+              "competition": "started"
+            },
+            "money": -120
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r17",
+      "name": "实习内推",
+      "weight": 7,
+      "termRange": [
+        30,
+        40
+      ],
       "text": "学姐的公司有实习内推，机会难得。",
       "options": [
-        { "id": "refuse", "label": "先读书", "resultText": "你决定专心学业。",
-          "effects": { "attributes": { "knowledge": 1 } } },
-        { "id": "intern", "label": "接下实习", "resultText": "你入职实习，赚到经验。",
-          "requires": { "moneyAtLeast": 300 },
+        {
+          "id": "refuse",
+          "label": "先读书",
+          "resultText": "你决定专心学业。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "intern",
+          "label": "接下实习",
+          "resultText": "你入职实习，赚到经验。",
+          "requires": {
+            "moneyAtLeast": 300
+          },
           "denyText": "押金和通勤费凑不齐，只能放弃这次内推。",
-          "effects": { "attributes": { "health": -1 }, "money": 200, "flags": { "intern": "yes" } } } ] },
-    { "id": "ev_r18", "name": "华西义诊", "weight": 6, "termRange": [4, 32],
+          "effects": {
+            "attributes": {
+              "health": -1
+            },
+            "money": 200,
+            "flags": {
+              "intern": "yes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r18",
+      "name": "华西义诊",
+      "weight": 6,
+      "termRange": [
+        4,
+        32
+      ],
       "text": "华西医学院在望江校区办义诊活动。",
       "options": [
-        { "id": "help", "label": "当志愿者", "resultText": "你学到急救知识，身心舒畅。",
-          "effects": { "attributes": { "health": 2, "social": 1 } } },
-        { "id": "pass", "label": "路过", "resultText": "你赶着去上课。", "effects": {} } ] },
-    { "id": "ev_r19", "name": "江安图书馆", "weight": 8, "termRange": [2, 20],
+        {
+          "id": "help",
+          "label": "当志愿者",
+          "resultText": "你学到急救知识，身心舒畅。",
+          "effects": {
+            "attributes": {
+              "health": 2,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "路过",
+          "resultText": "你赶着去上课。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r19",
+      "name": "江安图书馆",
+      "weight": 8,
+      "termRange": [
+        2,
+        20
+      ],
       "text": "江安图书馆四楼，你常去的座位还空着。",
       "options": [
-        { "id": "study", "label": "早起占座", "resultText": "你埋头苦学一整天。",
-          "effects": { "attributes": { "knowledge": 2, "health": -1 } } },
-        { "id": "chat", "label": "偶遇聊天", "resultText": "你和研友聊起各自近况。",
-          "effects": { "attributes": { "social": 1 } } } ] },
-    { "id": "ev_r20", "name": "望江美食节", "weight": 7, "termRange": [3, 28],
+        {
+          "id": "study",
+          "label": "早起占座",
+          "resultText": "你埋头苦学一整天。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "chat",
+          "label": "偶遇聊天",
+          "resultText": "你和研友聊起各自近况。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r20",
+      "name": "望江美食节",
+      "weight": 7,
+      "termRange": [
+        3,
+        28
+      ],
       "text": "望江校区美食节开幕，香气扑鼻。",
       "options": [
-        { "id": "eat", "label": "开吃", "resultText": "你大快朵颐，心情愉悦。",
-          "effects": { "attributes": { "health": 1 }, "money": -35 } },
-        { "id": "skip", "label": "忍住", "resultText": "你坚持减肥计划。", "effects": {} } ] },
-    { "id": "ev_r21", "name": "青广社团展", "weight": 7, "termRange": [2, 24],
+        {
+          "id": "eat",
+          "label": "开吃",
+          "resultText": "你大快朵颐，心情愉悦。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "money": -35
+          }
+        },
+        {
+          "id": "skip",
+          "label": "忍住",
+          "resultText": "你坚持减肥计划。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r21",
+      "name": "青广社团展",
+      "weight": 7,
+      "termRange": [
+        2,
+        24
+      ],
       "text": "青春广场办社团联展，热闹非凡。",
       "options": [
-        { "id": "browse", "label": "逛逛看看", "resultText": "你了解了不少社团。",
-          "effects": { "attributes": { "social": 1 } } },
-        { "id": "sponsor", "label": "赞助社团", "resultText": "你慷慨解囊，社团感谢你。",
-          "requires": { "moneyAtLeast": 200 },
+        {
+          "id": "browse",
+          "label": "逛逛看看",
+          "resultText": "你了解了不少社团。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "sponsor",
+          "label": "赞助社团",
+          "resultText": "你慷慨解囊，社团感谢你。",
+          "requires": {
+            "moneyAtLeast": 200
+          },
           "denyText": "社团客气地谢绝了，展位没争取到。",
-          "effects": { "flags": { "club": "赞助者" }, "money": -200 } } ] },
-    { "id": "ev_r22", "name": "期末答疑班", "weight": 7, "examWeekOnly": true, "termRange": [5, 40], "showExamResult": true,
+          "effects": {
+            "flags": {
+              "club": "赞助者"
+            },
+            "money": -200
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r22",
+      "name": "期末答疑班",
+      "weight": 7,
+      "examWeekOnly": true,
+      "termRange": [
+        5,
+        40
+      ],
+      "showExamResult": true,
       "text": "院办组织了期末答疑小班。",
       "options": [
-        { "id": "self", "label": "自己复习", "resultText": "你按自己的节奏复习。",
-          "effects": { "attributes": { "knowledge": 1 } } },
-        { "id": "tutor", "label": "参加答疑", "resultText": "老师点拨后你茅塞顿开。",
-          "requires": { "attribute": { "key": "knowledge", "min": 15 } },
+        {
+          "id": "self",
+          "label": "自己复习",
+          "resultText": "你按自己的节奏复习。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "tutor",
+          "label": "参加答疑",
+          "resultText": "老师点拨后你茅塞顿开。",
+          "requires": {
+            "attribute": {
+              "key": "knowledge",
+              "min": 15
+            }
+          },
           "denyText": "讲义看不懂，坐着听了一节课。",
-          "effects": { "attributes": { "knowledge": 2, "social": 1 } } } ] },
-    { "id": "ev_r23", "name": "图书馆邂逅", "weight": 8, "termRange": [1, 12],
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r23",
+      "name": "图书馆邂逅",
+      "weight": 8,
+      "termRange": [
+        1,
+        12
+      ],
       "text": "早起去图书馆自习，你在一排书架前遇见了理想型——正巧，你们都要找同一本书。",
       "options": [
-        { "id": "chat", "label": "主动搭讪", "resultText": "你鼓起勇气开口，对方放下书朝你笑了笑，聊得很投缘。",
-          "effects": { "attributes": { "knowledge": -1, "social": 3 }, "flags": { "crush": true } } },
-        { "id": "ignore", "label": "默默看书", "resultText": "你把悸动压在心底，继续埋头自习。",
-          "effects": {} } ] },
-    { "id": "ev_r24", "name": "ta邀你聚餐", "weight": 6, "termRange": [2, 16],
+        {
+          "id": "chat",
+          "label": "主动搭讪",
+          "resultText": "你鼓起勇气开口，对方放下书朝你笑了笑，聊得很投缘。",
+          "effects": {
+            "attributes": {
+              "knowledge": -1,
+              "social": 3
+            },
+            "flags": {
+              "crush": true
+            }
+          }
+        },
+        {
+          "id": "ignore",
+          "label": "默默看书",
+          "resultText": "你把悸动压在心底，继续埋头自习。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r24",
+      "name": "ta邀你聚餐",
+      "weight": 6,
+      "termRange": [
+        2,
+        16
+      ],
       "text": "上次邂逅的那位约你去校外吃晚饭。",
       "options": [
-        { "id": "dinner", "label": "答应赴约", "resultText": "热气腾腾的晚餐，你俩从专业聊到家乡，氛围正好。",
-          "requires": { "flag": { "key": "crush", "value": true } },
+        {
+          "id": "dinner",
+          "label": "答应赴约",
+          "resultText": "热气腾腾的晚餐，你俩从专业聊到家乡，氛围正好。",
+          "requires": {
+            "flag": {
+              "key": "crush",
+              "value": true
+            }
+          },
           "denyText": "你们还没熟到能一起吃饭。",
-          "effects": { "attributes": { "social": 2 }, "money": -150, "flags": { "crush2": true } } },
-        { "id": "refuse", "label": "婉言拒绝", "resultText": "你借口还有作业，改天再约。",
-          "requires": { "flag": { "key": "crush", "value": true } },
+          "effects": {
+            "attributes": {
+              "social": 2
+            },
+            "money": -150,
+            "flags": {
+              "crush2": true
+            }
+          }
+        },
+        {
+          "id": "refuse",
+          "label": "婉言拒绝",
+          "resultText": "你借口还有作业，改天再约。",
+          "requires": {
+            "flag": {
+              "key": "crush",
+              "value": true
+            }
+          },
           "denyText": "你们还没熟到能一起吃饭。",
-          "effects": {} } ] },
-    { "id": "ev_r25", "name": "江安河边散步", "weight": 6, "termRange": [3, 20],
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r25",
+      "name": "江安河边散步",
+      "weight": 6,
+      "termRange": [
+        3,
+        20
+      ],
       "text": "晚饭后，ta 约你去江安河边走走。晚风微凉，气氛有些微妙。",
       "options": [
-        { "id": "date", "label": "答应，顺其自然", "resultText": "你们并肩走了很久，ta 忽然停住，问你要不要在一起。",
-          "requires": { "flag": { "key": "crush2", "value": true } },
+        {
+          "id": "date",
+          "label": "答应，顺其自然",
+          "resultText": "你们并肩走了很久，ta 忽然停住，问你要不要在一起。",
+          "requires": {
+            "flag": {
+              "key": "crush2",
+              "value": true
+            }
+          },
           "denyText": "气氛还没到那一步，邀约显得唐突。",
-          "effects": { "attributes": { "social": 2, "health": 1 }, "flags": { "romance": "dating" } } },
-        { "id": "slow", "label": "再缓缓", "resultText": "你说再想想，脚步却不由自主慢了半拍。",
-          "requires": { "flag": { "key": "crush2", "value": true } },
+          "effects": {
+            "attributes": {
+              "social": 2,
+              "health": 1
+            },
+            "flags": {
+              "romance": "dating"
+            }
+          }
+        },
+        {
+          "id": "slow",
+          "label": "再缓缓",
+          "resultText": "你说再想想，脚步却不由自主慢了半拍。",
+          "requires": {
+            "flag": {
+              "key": "crush2",
+              "value": true
+            }
+          },
           "denyText": "气氛还没到那一步，邀约显得唐突。",
-          "effects": { "attributes": { "social": 1 } } } ] },
-    { "id": "ev_r26", "name": "吵架了", "weight": 6, "termRange": [4, 30],
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r26",
+      "name": "吵架了",
+      "weight": 6,
+      "termRange": [
+        4,
+        30
+      ],
       "text": "因为一件小事，你和 ta 起了争执，气氛降到冰点。",
       "options": [
-        { "id": "makeup", "label": "先冷静，好好谈", "resultText": "你们把话摊开说清，重归于好。",
-          "requires": { "flag": { "key": "romance", "value": "dating" } },
+        {
+          "id": "makeup",
+          "label": "先冷静，好好谈",
+          "resultText": "你们把话摊开说清，重归于好。",
+          "requires": {
+            "flag": {
+              "key": "romance",
+              "value": "dating"
+            }
+          },
           "denyText": "你们还没走到会吵架的关系。",
-          "effects": { "attributes": { "social": -1, "health": -1 }, "flags": { "romance": "hehe" } } },
-        { "id": "breakup", "label": "一拍两散", "resultText": "你转身离开，这段关系就此画上句号。",
-          "requires": { "flag": { "key": "romance", "value": "dating" } },
+          "effects": {
+            "attributes": {
+              "social": -1,
+              "health": -1
+            },
+            "flags": {
+              "romance": "hehe"
+            }
+          }
+        },
+        {
+          "id": "breakup",
+          "label": "一拍两散",
+          "resultText": "你转身离开，这段关系就此画上句号。",
+          "requires": {
+            "flag": {
+              "key": "romance",
+              "value": "dating"
+            }
+          },
           "denyText": "你们还没走到会吵架的关系。",
-          "effects": { "attributes": { "social": -3 }, "flags": { "romance": null } } } ] },
-    { "id": "ev_r27", "name": "历年真题集市", "weight": 7, "termRange": [4, 34],
+          "effects": {
+            "attributes": {
+              "social": -3
+            },
+            "flags": {
+              "romance": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r27",
+      "name": "历年真题集市",
+      "weight": 10,
+      "termRange": [
+        4,
+        34
+      ],
       "text": "打印店门口摆着历年期末/考研真题合集，复习神器。",
       "options": [
-        { "id": "save", "label": "忍痛不买", "resultText": "你把钱包捂得更紧了。", "effects": {} },
-        { "id": "buy", "label": "买下真题", "resultText": "你刷完整套真题，知识点全通了。",
-          "requires": { "moneyAtLeast": 150 },
+        {
+          "id": "save",
+          "label": "忍痛不买",
+          "resultText": "你把钱包捂得更紧了。",
+          "effects": {}
+        },
+        {
+          "id": "buy",
+          "label": "买下真题",
+          "resultText": "你刷完整套真题，知识点全通了。",
+          "requires": {
+            "moneyAtLeast": 150
+          },
           "denyText": "翻遍口袋也凑不齐，只能眼馋。",
-          "effects": { "attributes": { "knowledge": 4 }, "money": -150 } } ] },
-    { "id": "ev_r28", "name": "技能提升班", "weight": 6, "termRange": [6, 36],
+          "effects": {
+            "attributes": {
+              "knowledge": 4
+            },
+            "money": -150
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r28",
+      "name": "技能提升班",
+      "weight": 10,
+      "termRange": [
+        6,
+        36
+      ],
       "text": "校外的 Python/英语技能班在招生，学成能加硬实力。",
       "options": [
-        { "id": "skip", "label": "自学成才", "resultText": "你决定自己啃书，省下一笔。", "effects": {} },
-        { "id": "enroll", "label": "报班学习", "resultText": "几个月的集训，你的知识储备厚实了不少。",
-          "requires": { "moneyAtLeast": 250 },
+        {
+          "id": "skip",
+          "label": "自学成才",
+          "resultText": "你决定自己啃书，省下一笔。",
+          "effects": {}
+        },
+        {
+          "id": "enroll",
+          "label": "报班学习",
+          "resultText": "几个月的集训，你的知识储备厚实了不少。",
+          "requires": {
+            "moneyAtLeast": 250
+          },
           "denyText": "学费交不上，只能自己啃教材。",
-          "effects": { "attributes": { "knowledge": 5 }, "money": -250 } } ] },
-    { "id": "ev_r29", "name": "健康投资", "weight": 6, "termRange": [3, 40],
+          "effects": {
+            "attributes": {
+              "knowledge": 5
+            },
+            "money": -250
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r29",
+      "name": "健康投资",
+      "weight": 10,
+      "termRange": [
+        3,
+        40
+      ],
       "text": "健身月卡和蛋白粉在促销，身体是革命的本钱。",
       "options": [
-        { "id": "pass", "label": "先不办", "resultText": "你决定操场跑两圈代替。", "effects": {} },
-        { "id": "join", "label": "办张健身卡", "resultText": "规律的锻炼让你元气满满。",
-          "requires": { "moneyAtLeast": 150 },
+        {
+          "id": "pass",
+          "label": "先不办",
+          "resultText": "你决定操场跑两圈代替。",
+          "effects": {}
+        },
+        {
+          "id": "join",
+          "label": "办张健身卡",
+          "resultText": "规律的锻炼让你元气满满。",
+          "requires": {
+            "moneyAtLeast": 150
+          },
           "denyText": "办卡的钱还得留着吃饭。",
-          "effects": { "attributes": { "health": 4 }, "money": -150 } } ] },
-    { "id": "ev_r30", "name": "竞赛组队", "weight": 7, "termRange": [11, 34],
+          "effects": {
+            "attributes": {
+              "health": 4
+            },
+            "money": -150
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r30",
+      "name": "竞赛组队",
+      "weight": 7,
+      "termRange": [
+        11,
+        34
+      ],
       "text": "大创群里有同学私信你，想拉你进组一起打比赛。",
       "options": [
-        { "id": "team", "label": "应约组队", "resultText": "你们迅速组好队，分工明确，冲劲十足。",
-          "requires": { "flag": { "key": "competition", "value": "started" } },
+        {
+          "id": "team",
+          "label": "应约组队",
+          "resultText": "你们迅速组好队，分工明确，冲劲十足。",
+          "requires": {
+            "flag": {
+              "key": "competition",
+              "value": "started"
+            }
+          },
           "denyText": "你还没报名参赛，谈不上组队。",
-          "effects": { "attributes": { "social": 2 }, "flags": { "competition": "team" } } },
-        { "id": "solo", "label": "婉拒单干", "resultText": "你想自己准备，婉拒了组队邀请。",
-          "requires": { "flag": { "key": "competition", "value": "started" } },
+          "effects": {
+            "attributes": {
+              "social": 2
+            },
+            "flags": {
+              "competition": "team"
+            }
+          }
+        },
+        {
+          "id": "solo",
+          "label": "婉拒单干",
+          "resultText": "你想自己准备，婉拒了组队邀请。",
+          "requires": {
+            "flag": {
+              "key": "competition",
+              "value": "started"
+            }
+          },
           "denyText": "你还没报名参赛，谈不上组队。",
-          "effects": {} } ] },
-    { "id": "ev_r31", "name": "竞赛成绩通知", "weight": 8, "termRange": [13, 36],
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r31",
+      "name": "竞赛成绩通知",
+      "weight": 8,
+      "termRange": [
+        13,
+        36
+      ],
       "text": "比赛结果出来了，队长在群里刷屏庆祝。",
       "options": [
-        { "id": "won", "label": "捧回奖项", "resultText": "你们拿了奖，简历上添了浓墨重彩的一笔。",
-          "requires": { "flag": { "key": "competition", "value": "team" } },
+        {
+          "id": "won",
+          "label": "捧回奖项",
+          "resultText": "你们拿了奖，简历上添了浓墨重彩的一笔。",
+          "requires": {
+            "flag": {
+              "key": "competition",
+              "value": "team"
+            }
+          },
           "denyText": "没有参赛记录，自然没有成绩。",
-          "effects": { "attributes": { "knowledge": 3 }, "money": 150, "flags": { "competition": "won" } } },
-        { "id": "part", "label": "尽力即好", "resultText": "没能拿大奖，但你也积累了实战经验。",
-          "requires": { "flag": { "key": "competition", "value": "team" } },
+          "effects": {
+            "attributes": {
+              "knowledge": 3
+            },
+            "money": 150,
+            "flags": {
+              "competition": "won"
+            }
+          }
+        },
+        {
+          "id": "part",
+          "label": "尽力即好",
+          "resultText": "没能拿大奖，但你也积累了实战经验。",
+          "requires": {
+            "flag": {
+              "key": "competition",
+              "value": "team"
+            }
+          },
           "denyText": "没有参赛记录，自然没有成绩。",
-          "effects": { "attributes": { "knowledge": 1 }, "flags": { "competition": "done" } } } ] },
-    { "id": "ev_r32", "name": "实习转正邀请", "weight": 6, "termRange": [18, 38],
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "flags": {
+              "competition": "done"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r32",
+      "name": "实习转正邀请",
+      "weight": 6,
+      "termRange": [
+        18,
+        38
+      ],
       "text": "实习公司 hr 问你毕业要不要留下转正。",
       "options": [
-        { "id": "accept", "label": "接受转正", "resultText": "你拿到 offer，收入上了一个台阶。",
-          "requires": { "flag": { "key": "intern", "value": "yes" } },
+        {
+          "id": "accept",
+          "label": "接受转正",
+          "resultText": "你拿到 offer，收入上了一个台阶。",
+          "requires": {
+            "flag": {
+              "key": "intern",
+              "value": "yes"
+            }
+          },
           "denyText": "你名下没有实习，转正无从谈起。",
-          "effects": { "money": 300, "flags": { "intern": "offered" } } },
-        { "id": "decline", "label": "婉拒深造", "resultText": "你想再闯一闯，拒绝了转正。",
-          "requires": { "flag": { "key": "intern", "value": "yes" } },
+          "effects": {
+            "money": 300,
+            "flags": {
+              "intern": "offered"
+            }
+          }
+        },
+        {
+          "id": "decline",
+          "label": "婉拒深造",
+          "resultText": "你想再闯一闯，拒绝了转正。",
+          "requires": {
+            "flag": {
+              "key": "intern",
+              "value": "yes"
+            }
+          },
           "denyText": "你名下没有实习，转正无从谈起。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_r33", "name": "甜蜜自习", "weight": 6, "termRange": [6, 40],
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r33",
+      "name": "甜蜜自习",
+      "weight": 6,
+      "termRange": [
+        6,
+        40
+      ],
       "text": "和好的这段日子，你们常约在图书馆一起自习。",
       "options": [
-        { "id": "together", "label": "一起自习", "resultText": "有人陪着，连背书都更有劲了。",
-          "requires": { "flag": { "key": "romance", "value": "hehe" } },
+        {
+          "id": "together",
+          "label": "一起自习",
+          "resultText": "有人陪着，连背书都更有劲了。",
+          "requires": {
+            "flag": {
+              "key": "romance",
+              "value": "hehe"
+            }
+          },
           "denyText": "你还没和谁熟到可以一起自习。",
-          "effects": { "attributes": { "social": 1, "knowledge": 1 } } },
-        { "id": "solo", "label": "各自专注", "resultText": "你们各自安排，晚上碰个面。",
-          "requires": { "flag": { "key": "romance", "value": "hehe" } },
+          "effects": {
+            "attributes": {
+              "social": 1,
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "solo",
+          "label": "各自专注",
+          "resultText": "你们各自安排，晚上碰个面。",
+          "requires": {
+            "flag": {
+              "key": "romance",
+              "value": "hehe"
+            }
+          },
           "denyText": "你还没和谁熟到可以一起自习。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_r34", "name": "走出失恋", "weight": 6, "termRange": [8, 40],
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r34",
+      "name": "走出失恋",
+      "weight": 6,
+      "termRange": [
+        8,
+        40
+      ],
       "text": "分手后的日子，你慢慢找回了自己的生活节奏。",
       "options": [
-        { "id": "cheer", "label": "振作起来", "resultText": "你把精力投回学习和朋友身上。",
-          "requires": { "flag": { "key": "romance", "value": null } },
+        {
+          "id": "cheer",
+          "label": "振作起来",
+          "resultText": "你把精力投回学习和朋友身上。",
+          "requires": {
+            "flag": {
+              "key": "romance",
+              "value": null
+            }
+          },
           "denyText": "你并没有失恋，谈不上走出来。",
-          "effects": { "attributes": { "social": 2, "health": 1 } } },
-        { "id": "grief", "label": "黯然消沉", "resultText": "你一时还提不起劲。",
-          "requires": { "flag": { "key": "romance", "value": null } },
+          "effects": {
+            "attributes": {
+              "social": 2,
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "grief",
+          "label": "黯然消沉",
+          "resultText": "你一时还提不起劲。",
+          "requires": {
+            "flag": {
+              "key": "romance",
+              "value": null
+            }
+          },
           "denyText": "你并没有失恋，谈不上走出来。",
-          "effects": { "attributes": { "health": -1 } } } ] },
-    { "id": "ev_r35", "name": "保研申报", "weight": 5, "termRange": [30, 40],
+          "effects": {
+            "attributes": {
+              "health": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r35",
+      "name": "保研申报",
+      "weight": 5,
+      "termRange": [
+        30,
+        40
+      ],
       "text": "大四保研申报季，你掂量着自己的绩点与科研，要不要争取名额？",
       "options": [
-        { "id": "apply", "label": "积极申报保研", "resultText": "你递交材料，全力冲击保研名额。",
-          "effects": { "attributes": { "knowledge": 2 }, "flags": { "scholarship": "pursuing", "honor": true } } },
-        { "id": "kaoyan", "label": "转战考研", "resultText": "你决定自己考，开始刷题。",
-          "effects": { "attributes": { "knowledge": 2 } } },
-        { "id": "work", "label": "直接就业", "resultText": "你把重心转向秋招。",
-          "effects": { "attributes": { "social": 1 } } } ] },
-    { "id": "ev_r36", "name": "社团骨干竞选", "weight": 6, "termRange": [4, 30],
+        {
+          "id": "apply",
+          "label": "积极申报保研",
+          "resultText": "你递交材料，全力冲击保研名额。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            },
+            "flags": {
+              "scholarship": "pursuing",
+              "honor": true
+            }
+          }
+        },
+        {
+          "id": "kaoyan",
+          "label": "转战考研",
+          "resultText": "你决定自己考，开始刷题。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "work",
+          "label": "直接就业",
+          "resultText": "你把重心转向秋招。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r36",
+      "name": "社团骨干竞选",
+      "weight": 6,
+      "termRange": [
+        4,
+        30
+      ],
       "text": "社团换届，部长问你要不要接个干事。",
       "options": [
-        { "id": "run", "label": "竞选骨干", "resultText": "你当选骨干，人脉和能力双丰收。",
-          "requires": { "flag": { "key": "club", "value": "加入了社团" } },
+        {
+          "id": "run",
+          "label": "竞选骨干",
+          "resultText": "你当选骨干，人脉和能力双丰收。",
+          "requires": {
+            "flag": {
+              "key": "club",
+              "value": "加入了社团"
+            }
+          },
           "denyText": "你还没加入社团，没有竞选资格。",
-          "effects": { "attributes": { "social": 2 }, "flags": { "club": "骨干" } } },
-        { "id": "stay", "label": "安心当社员", "resultText": "你继续当普通社员，乐得清闲。",
-          "requires": { "flag": { "key": "club", "value": "加入了社团" } },
+          "effects": {
+            "attributes": {
+              "social": 2
+            },
+            "flags": {
+              "club": "骨干"
+            }
+          }
+        },
+        {
+          "id": "stay",
+          "label": "安心当社员",
+          "resultText": "你继续当普通社员，乐得清闲。",
+          "requires": {
+            "flag": {
+              "key": "club",
+              "value": "加入了社团"
+            }
+          },
           "denyText": "你还没加入社团，没有竞选资格。",
-          "effects": { "attributes": { "social": 1 } } } ] },
-    { "id": "ev_r37", "name": "宿舍火锅", "weight": 8, "termRange": [2, 32],
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r37",
+      "name": "宿舍火锅",
+      "weight": 8,
+      "termRange": [
+        2,
+        32
+      ],
       "text": "室友提议今晚开个小火锅，AA 还是你来请客？",
       "options": [
-        { "id": "aa", "label": "AA拼单", "resultText": "你出食材钱，吃得很尽兴。",
-          "effects": { "attributes": { "social": 2 }, "money": -60 } },
-        { "id": "decline", "label": "婉拒早睡", "resultText": "你躲过一顿，早早休息。",
-          "effects": { "attributes": { "health": 1 } } } ] },
-    { "id": "ev_r38", "name": "占座大战", "weight": 8, "termRange": [1, 16],
+        {
+          "id": "aa",
+          "label": "AA拼单",
+          "resultText": "你出食材钱，吃得很尽兴。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            },
+            "money": -60
+          }
+        },
+        {
+          "id": "decline",
+          "label": "婉拒早睡",
+          "resultText": "你躲过一顿，早早休息。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r38",
+      "name": "占座大战",
+      "weight": 8,
+      "termRange": [
+        1,
+        16
+      ],
       "text": "期末周图书馆一座难求，你摸黑去占座。",
       "options": [
-        { "id": "early", "label": "天不亮就起", "resultText": "你抢到黄金位，学了个痛快。",
-          "effects": { "attributes": { "knowledge": 2, "health": -1 } } },
-        { "id": "sleep", "label": "多睡会儿", "resultText": "你睡饱了，精神不错。",
-          "effects": { "attributes": { "health": 1 } } } ] },
-    { "id": "ev_r39", "name": "选课大战", "weight": 7, "termRange": [3, 28],
+        {
+          "id": "early",
+          "label": "天不亮就起",
+          "resultText": "你抢到黄金位，学了个痛快。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "sleep",
+          "label": "多睡会儿",
+          "resultText": "你睡饱了，精神不错。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r39",
+      "name": "选课大战",
+      "weight": 7,
+      "termRange": [
+        3,
+        28
+      ],
       "text": "教务系统选课，热门课瞬间秒光。",
       "options": [
-        { "id": "rush", "label": "蹲点狂点", "resultText": "你手速惊人，抢到心仪好课。",
-          "effects": { "attributes": { "knowledge": 1, "health": -1 } } },
-        { "id": "luck", "label": "佛系随缘", "resultText": "你捡漏了一门冷门课，倒也不错。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_r40", "name": "体测来了", "weight": 8, "termRange": [4, 36],
+        {
+          "id": "rush",
+          "label": "蹲点狂点",
+          "resultText": "你手速惊人，抢到心仪好课。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "luck",
+          "label": "佛系随缘",
+          "resultText": "你捡漏了一门冷门课，倒也不错。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r40",
+      "name": "体测来了",
+      "weight": 8,
+      "termRange": [
+        4,
+        36
+      ],
       "text": "一年一度的体测通知贴在楼下，你作何打算？",
       "options": [
-        { "id": "train", "label": "认真锻炼", "resultText": "你体测顺利过关。",
-          "effects": { "attributes": { "health": 2 } } },
-        { "id": "gamble", "label": "临时抱佛脚", "resultText": "你跑得气喘吁吁，勉强及格。",
-          "effects": { "attributes": { "health": -1 } } } ] },
-    { "id": "ev_r41", "name": "深夜外卖拼单", "weight": 8, "termRange": [2, 30],
+        {
+          "id": "train",
+          "label": "认真锻炼",
+          "resultText": "你体测顺利过关。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        },
+        {
+          "id": "gamble",
+          "label": "临时抱佛脚",
+          "resultText": "你跑得气喘吁吁，勉强及格。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r41",
+      "name": "深夜外卖拼单",
+      "weight": 8,
+      "termRange": [
+        2,
+        30
+      ],
       "text": "深夜群里有人喊拼单奶茶烧烤，你参加吗？",
       "options": [
-        { "id": "join", "label": "一起拼单", "resultText": "你吃爽了，钱包也瘦了。",
-          "effects": { "attributes": { "social": 1 }, "money": -30 } },
-        { "id": "skip", "label": "忍住不吃", "resultText": "你忍住，省下一笔还睡了早觉。",
-          "effects": { "attributes": { "health": 1 } } } ] },
-    { "id": "ev_r42", "name": "社团例会", "weight": 7, "termRange": [3, 34],
+        {
+          "id": "join",
+          "label": "一起拼单",
+          "resultText": "你吃爽了，钱包也瘦了。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "money": -30
+          }
+        },
+        {
+          "id": "skip",
+          "label": "忍住不吃",
+          "resultText": "你忍住，省下一笔还睡了早觉。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r42",
+      "name": "社团例会",
+      "weight": 7,
+      "termRange": [
+        3,
+        34
+      ],
       "text": "社团每周例会，这周还去吗？",
       "options": [
-        { "id": "attend", "label": "准时参加", "resultText": "你刷了存在感，认识更多朋友。",
-          "requires": { "flag": { "key": "club", "value": "加入了社团" } },
+        {
+          "id": "attend",
+          "label": "准时参加",
+          "resultText": "你刷了存在感，认识更多朋友。",
+          "requires": {
+            "flag": {
+              "key": "club",
+              "value": "加入了社团"
+            }
+          },
           "denyText": "你不是社员，例会与你无关。",
-          "effects": { "attributes": { "social": 1 } } },
-        { "id": "skip", "label": "请假不去", "resultText": "你留在宿舍自习。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_r43", "name": "经验分享会", "weight": 7, "termRange": [4, 36],
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "skip",
+          "label": "请假不去",
+          "resultText": "你留在宿舍自习。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r43",
+      "name": "经验分享会",
+      "weight": 7,
+      "termRange": [
+        4,
+        36
+      ],
       "text": "学院办优秀学长学姐经验分享会，去听吗？",
       "options": [
-        { "id": "go", "label": "去听讲座", "resultText": "你记了满满一页干货。",
-          "effects": { "attributes": { "knowledge": 1, "social": 1 } } },
-        { "id": "skip", "label": "忙自己的", "resultText": "你错过了，但按自己节奏走。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_r44", "name": "校医院体检", "weight": 6, "termRange": [4, 34],
+        {
+          "id": "go",
+          "label": "去听讲座",
+          "resultText": "你记了满满一页干货。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "skip",
+          "label": "忙自己的",
+          "resultText": "你错过了，但按自己节奏走。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r44",
+      "name": "校医院体检",
+      "weight": 6,
+      "termRange": [
+        4,
+        34
+      ],
       "text": "校医院组织免费体检，要不要去？",
       "options": [
-        { "id": "check", "label": "去做体检", "resultText": "你发现个小问题，早调理早安心。",
-          "effects": { "attributes": { "health": 2 } } },
-        { "id": "skip", "label": "嫌麻烦", "resultText": "你放弃了，全靠年轻硬扛。",
-          "effects": { "attributes": { "health": -1 } } } ] },
-    { "id": "ev_r45", "name": "期末失眠", "weight": 7, "termRange": [5, 40],
+        {
+          "id": "check",
+          "label": "去做体检",
+          "resultText": "你发现个小问题，早调理早安心。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        },
+        {
+          "id": "skip",
+          "label": "嫌麻烦",
+          "resultText": "你放弃了，全靠年轻硬扛。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r45",
+      "name": "期末失眠",
+      "weight": 7,
+      "termRange": [
+        5,
+        40
+      ],
       "text": "临近考试你翻来覆去睡不着，压力山大。",
       "options": [
-        { "id": "talk", "label": "找人倾诉", "resultText": "朋友开导你，你轻松了不少。",
-          "effects": { "attributes": { "health": 1, "social": 1 } } },
-        { "id": "grind", "label": "接着刷题", "resultText": "你索性熬夜刷题，白天直犯困。",
-          "effects": { "attributes": { "knowledge": 1, "health": -1 } } } ] },
-    { "id": "ev_r46", "name": "二手教材市集", "weight": 8, "termRange": [2, 24],
+        {
+          "id": "talk",
+          "label": "找人倾诉",
+          "resultText": "朋友开导你，你轻松了不少。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "grind",
+          "label": "接着刷题",
+          "resultText": "你索性熬夜刷题，白天直犯困。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "health": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r46",
+      "name": "二手教材市集",
+      "weight": 8,
+      "termRange": [
+        2,
+        24
+      ],
       "text": "学长学姐在群里低价甩卖二手教材。",
       "options": [
-        { "id": "buy", "label": "淘几本", "resultText": "你用白菜价买到了核心教材。",
-          "effects": { "attributes": { "knowledge": 1 }, "money": -20 } },
-        { "id": "skip", "label": "省下这笔", "resultText": "你决定蹭图书馆的。", "effects": {} } ] },
-    { "id": "ev_c01", "name": "ACM集训队选拔", "weight": 6, "termRange": [4, 32], "college": "cs",
+        {
+          "id": "buy",
+          "label": "淘几本",
+          "resultText": "你用白菜价买到了核心教材。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "money": -20
+          }
+        },
+        {
+          "id": "skip",
+          "label": "省下这笔",
+          "resultText": "你决定蹭图书馆的。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c01",
+      "name": "ACM集训队选拔",
+      "weight": 12,
+      "termRange": [
+        4,
+        32
+      ],
+      "college": "cs",
       "text": "学院 ACM 集训队招新，周末要刷一场算法笔试。",
       "options": [
-        { "id": "grind", "label": "备战刷题", "resultText": "你泡了一周图书馆，算法题手感火热。",
-          "effects": { "attributes": { "knowledge": 3, "health": -2 } } },
-        { "id": "pass", "label": "算了不去", "resultText": "你觉得卷不动，安心上课。", "effects": {} } ] },
-    { "id": "ev_c02", "name": "电赛通宵焊板子", "weight": 6, "termRange": [4, 32], "college": "eie",
+        {
+          "id": "grind",
+          "label": "备战刷题",
+          "resultText": "你泡了一周图书馆，算法题手感火热。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "算了不去",
+          "resultText": "你觉得卷不动，安心上课。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c02",
+      "name": "电赛通宵焊板子",
+      "weight": 12,
+      "termRange": [
+        4,
+        32
+      ],
+      "college": "eie",
       "text": "电子设计竞赛赛前，你在实验室焊板子、调示波器到深夜。",
       "options": [
-        { "id": "allnighter", "label": "通宵调通", "resultText": "板子终于跑通的那一刻，你困得睁不开眼。",
-          "effects": { "attributes": { "knowledge": 2, "health": -2 } } },
-        { "id": "early", "label": "早点回宿舍", "resultText": "你把焊好的板子丢给队友，溜了。", "effects": {} } ] },
-    { "id": "ev_c03", "name": "模拟炒股大赛", "weight": 6, "termRange": [4, 34], "college": "business",
+        {
+          "id": "allnighter",
+          "label": "通宵调通",
+          "resultText": "板子终于跑通的那一刻，你困得睁不开眼。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "early",
+          "label": "早点回宿舍",
+          "resultText": "你把焊好的板子丢给队友，溜了。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c03",
+      "name": "模拟炒股大赛",
+      "weight": 12,
+      "termRange": [
+        4,
+        34
+      ],
+      "college": "business",
       "text": "学院办模拟炒股大赛，冠军奖金 500，你打算怎么操作？",
       "options": [
-        { "id": "aggressive", "label": "满仓梭哈", "resultText": "你踩中一波行情，账户翻了倍。",
-          "effects": { "attributes": { "social": 1 }, "money": 80 } },
-        { "id": "steady", "label": "稳健观望", "resultText": "你小赚一笔，落袋为安。", "effects": { "money": 20 } } ] },
-    { "id": "ev_c04", "name": "校报专栏约稿", "weight": 6, "termRange": [4, 34], "college": "literature",
+        {
+          "id": "aggressive",
+          "label": "满仓梭哈",
+          "resultText": "你踩中一波行情，账户翻了倍。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "money": 80
+          }
+        },
+        {
+          "id": "steady",
+          "label": "稳健观望",
+          "resultText": "你小赚一笔，落袋为安。",
+          "effects": {
+            "money": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c04",
+      "name": "校报专栏约稿",
+      "weight": 12,
+      "termRange": [
+        4,
+        34
+      ],
+      "college": "literature",
       "text": "校报编辑找你约一篇校园深度报道，截稿日在下周五。",
       "options": [
-        { "id": "write", "label": "熬夜写稿", "resultText": "你采访了七八个人，稿子上了头版。",
-          "effects": { "attributes": { "social": 3, "knowledge": 1, "health": -1 } } },
-        { "id": "decline", "label": "婉拒", "resultText": "你说最近太忙，下次再约。", "effects": {} } ] },
-    { "id": "ev_c05", "name": "模拟法庭开庭", "weight": 6, "termRange": [4, 34], "college": "law",
+        {
+          "id": "write",
+          "label": "熬夜写稿",
+          "resultText": "你采访了七八个人，稿子上了头版。",
+          "effects": {
+            "attributes": {
+              "social": 3,
+              "knowledge": 1,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "decline",
+          "label": "婉拒",
+          "resultText": "你说最近太忙，下次再约。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c05",
+      "name": "模拟法庭开庭",
+      "weight": 12,
+      "termRange": [
+        4,
+        34
+      ],
+      "college": "law",
       "text": "法学院模拟法庭开庭，辩护方临时缺人，问你上不上。",
       "options": [
-        { "id": "defend", "label": "上阵辩护", "resultText": "你引经据典，把对方辩手问得哑口无言。",
-          "effects": { "attributes": { "knowledge": 2, "social": 2 } } },
-        { "id": "observe", "label": "旁听学习", "resultText": "你坐在旁听席记笔记，收获不少。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_c06", "name": "第一次解剖实验", "weight": 6, "termRange": [4, 34], "college": "med",
+        {
+          "id": "defend",
+          "label": "上阵辩护",
+          "resultText": "你引经据典，把对方辩手问得哑口无言。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "social": 2
+            }
+          }
+        },
+        {
+          "id": "observe",
+          "label": "旁听学习",
+          "resultText": "你坐在旁听席记笔记，收获不少。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c06",
+      "name": "第一次解剖实验",
+      "weight": 12,
+      "termRange": [
+        4,
+        34
+      ],
+      "college": "med",
       "text": "系统解剖学实验课，你第一次面对标本，手心直冒汗。",
       "options": [
-        { "id": "focus", "label": "认真观察记录", "resultText": "你强忍住不适，把每块结构都记了下来。",
-          "effects": { "attributes": { "knowledge": 3, "health": -1 } } },
-        { "id": "bare", "label": "勉强撑着", "resultText": "你站在后排，记了个大概。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_c07", "name": "建模国赛集训", "weight": 6, "termRange": [6, 36], "college": "math",
+        {
+          "id": "focus",
+          "label": "认真观察记录",
+          "resultText": "你强忍住不适，把每块结构都记了下来。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "bare",
+          "label": "勉强撑着",
+          "resultText": "你站在后排，记了个大概。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c07",
+      "name": "建模国赛集训",
+      "weight": 12,
+      "termRange": [
+        6,
+        36
+      ],
+      "college": "math",
       "text": "数学建模国赛集训开始，三天三夜封闭跑模型，去吗？",
       "options": [
-        { "id": "join", "label": "全程参加", "resultText": "你和队友熬了三个通宵，模型终于收敛。",
-          "effects": { "attributes": { "knowledge": 3, "health": -2 } } },
-        { "id": "half", "label": "旁听两天", "resultText": "你听了两天讲座，提前撤了。",
-          "effects": { "attributes": { "knowledge": 1 } } } ] },
-    { "id": "ev_c08", "name": "外语角语伴", "weight": 6, "termRange": [4, 34], "college": "foreign",
+        {
+          "id": "join",
+          "label": "全程参加",
+          "resultText": "你和队友熬了三个通宵，模型终于收敛。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "half",
+          "label": "旁听两天",
+          "resultText": "你听了两天讲座，提前撤了。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c08",
+      "name": "外语角语伴",
+      "weight": 12,
+      "termRange": [
+        4,
+        34
+      ],
+      "college": "foreign",
       "text": "学院外语角来了几位交换生，志愿者找你当语伴。",
       "options": [
-        { "id": "chat", "label": "全程尬聊", "resultText": "你连比划带猜，和交换生聊得哈哈大笑。",
-          "effects": { "attributes": { "social": 3, "knowledge": 1 } } },
-        { "id": "bail", "label": "打个招呼就溜", "resultText": "你打了个招呼，借口有课溜了。", "effects": {} } ] }
+        {
+          "id": "chat",
+          "label": "全程尬聊",
+          "resultText": "你连比划带猜，和交换生聊得哈哈大笑。",
+          "effects": {
+            "attributes": {
+              "social": 3,
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "bail",
+          "label": "打个招呼就溜",
+          "resultText": "你打了个招呼，借口有课溜了。",
+          "effects": {}
+        }
+      ]
+    }
   ],
   "note": "fixed 三条：社团招新(CLUB)、毕业论文(THESIS)、负债(DEBT)；random 46 条：恋爱链 ev_r23–26（邂逅→聚餐→散步→吵架→和好/分手，flags crush/crush2/romance）、花钱加属性 ev_r27–29（真题/技能班/健身卡）、链式延伸 ev_r30–36（竞赛组队→成绩、实习转正、甜蜜自习、走出失恋、保研评优、社团骨干，前置沿用 requires flag）、独立随机 ev_r37–46（宿舍火锅/占座/选课/体测/外卖/例会/分享会/体检/失眠/二手教材）；≥5 条带 requires、≥6 条写 flags、≥4 条川大特色。money 统一用顶层 effects.money。"
 }

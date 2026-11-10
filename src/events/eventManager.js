@@ -109,6 +109,12 @@ export function checkFixedEvents(state, config) {
   if (lineEvent) {
     return [lineEvent].concat(result.filter((id) => id !== lineEvent));
   }
+  // 学院专属事件保证：回合12强制触发一次本院特色事件（避开考试周/剧情线窗口）
+  const collegeId = state && state.player && state.player.collegeId;
+  if (collegeId && state.turn === 12 && !(state.player.flags && state.player.flags.chain_college)) {
+    const ce = getAllEvents(config).random.find((e) => e.college === collegeId);
+    if (ce) result.unshift(ce.id);
+  }
   return result;
 }
 
@@ -348,6 +354,11 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
     if (st) {
       if (!state.player.flags) state.player.flags = {};
       state.player.flags[storylineKey(st.line)] = true;
+    }
+    // 学院专属事件：resolve 后标记，避免回合12重复强制触发
+    if (ev && ev.college) {
+      if (!state.player.flags) state.player.flags = {};
+      state.player.flags.chain_college = true;
     }
   }
   return {
