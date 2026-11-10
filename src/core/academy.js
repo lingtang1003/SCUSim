@@ -93,10 +93,16 @@ export function runFinalExam(state, config, rng) {
   const subjects = Array.isArray(exam.subjects) && exam.subjects.length ? exam.subjects : DEFAULT_EXAM.subjects;
 
   const next = (rng && typeof rng.next === 'function') ? () => rng.next() : () => 0.5;
+  const health = Number(state.player.attributes.health) || 0;
   const results = subjects.map((name) => {
     const n = next();
-    // 保底 passLine：score 恒 >= passLine(60)，学识越高分越高，封顶 100（永不挂科）
-    const raw = passLine + knowledge * kWeight * growth * (1 + (n * 2 - 1) * fluctuation);
+    // 学识饱和贡献（开根号边际递减）：学识100→40分加成，学识50→≈28，学识10→≈13
+    const knowGain = 40 * Math.sqrt(Math.max(0, knowledge) / 100);
+    // 健康调节：60为基准，偏离每点0.1（健康100→+4，健康20→-4），死读书拖分
+    const healthMod = (health - 60) * 0.1;
+    // 整体乘随机波动，保底 passLine(60)、封顶100（永不挂科）
+    const baseScore = passLine + knowGain + healthMod;
+    const raw = baseScore * (1 + (n * 2 - 1) * fluctuation);
     let score = Math.round(raw);
     score = Math.max(passLine, Math.min(100, score));
     const passed = score >= passLine;

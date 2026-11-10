@@ -19,13 +19,13 @@
 
   "exam": {
     "subjects": ["高等数学", "大学英语", "专业核心", "思想政治"],
-    "fluctuation": 0.10,
+    "fluctuation": 0.12,
     "passLine": 60,
     "base": 50,
     "knowledgeWeight": 1.0,
     "studyBonusPerAction": 3,
     "difficulty": 10,
-    "note": "单门 score = round(base + 学识×knowledgeWeight×(1±fluctuation))，夹[0,100]；base 保证低学识期正常学习也能及格，完全不学（学识<10）才挂科"
+    "note": "单门 score = round((60 + 40×sqrt(学识/100) + (健康-60)×0.1) × (1±fluctuation))，夹[60,100]；学识饱和边际递减、健康联动、永不挂科"
   },
 
   "gpaTable": [
