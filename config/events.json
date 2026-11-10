@@ -404,7 +404,58 @@
       "options": [
         { "id": "buy", "label": "淘几本", "resultText": "你用白菜价买到了核心教材。",
           "effects": { "attributes": { "knowledge": 1 }, "money": -20 } },
-        { "id": "skip", "label": "省下这笔", "resultText": "你决定蹭图书馆的。", "effects": {} } ] }
+        { "id": "skip", "label": "省下这笔", "resultText": "你决定蹭图书馆的。", "effects": {} } ] },
+    { "id": "ev_c01", "name": "ACM集训队选拔", "weight": 6, "termRange": [4, 32], "college": "cs",
+      "text": "学院 ACM 集训队招新，周末要刷一场算法笔试。",
+      "options": [
+        { "id": "grind", "label": "备战刷题", "resultText": "你泡了一周图书馆，算法题手感火热。",
+          "effects": { "attributes": { "knowledge": 3, "health": -2 } } },
+        { "id": "pass", "label": "算了不去", "resultText": "你觉得卷不动，安心上课。", "effects": {} } ] },
+    { "id": "ev_c02", "name": "电赛通宵焊板子", "weight": 6, "termRange": [4, 32], "college": "eie",
+      "text": "电子设计竞赛赛前，你在实验室焊板子、调示波器到深夜。",
+      "options": [
+        { "id": "allnighter", "label": "通宵调通", "resultText": "板子终于跑通的那一刻，你困得睁不开眼。",
+          "effects": { "attributes": { "knowledge": 2, "health": -2 } } },
+        { "id": "early", "label": "早点回宿舍", "resultText": "你把焊好的板子丢给队友，溜了。", "effects": {} } ] },
+    { "id": "ev_c03", "name": "模拟炒股大赛", "weight": 6, "termRange": [4, 34], "college": "business",
+      "text": "学院办模拟炒股大赛，冠军奖金 500，你打算怎么操作？",
+      "options": [
+        { "id": "aggressive", "label": "满仓梭哈", "resultText": "你踩中一波行情，账户翻了倍。",
+          "effects": { "attributes": { "social": 1 }, "money": 80 } },
+        { "id": "steady", "label": "稳健观望", "resultText": "你小赚一笔，落袋为安。", "effects": { "money": 20 } } ] },
+    { "id": "ev_c04", "name": "校报专栏约稿", "weight": 6, "termRange": [4, 34], "college": "literature",
+      "text": "校报编辑找你约一篇校园深度报道，截稿日在下周五。",
+      "options": [
+        { "id": "write", "label": "熬夜写稿", "resultText": "你采访了七八个人，稿子上了头版。",
+          "effects": { "attributes": { "social": 3, "knowledge": 1, "health": -1 } } },
+        { "id": "decline", "label": "婉拒", "resultText": "你说最近太忙，下次再约。", "effects": {} } ] },
+    { "id": "ev_c05", "name": "模拟法庭开庭", "weight": 6, "termRange": [4, 34], "college": "law",
+      "text": "法学院模拟法庭开庭，辩护方临时缺人，问你上不上。",
+      "options": [
+        { "id": "defend", "label": "上阵辩护", "resultText": "你引经据典，把对方辩手问得哑口无言。",
+          "effects": { "attributes": { "knowledge": 2, "social": 2 } } },
+        { "id": "observe", "label": "旁听学习", "resultText": "你坐在旁听席记笔记，收获不少。",
+          "effects": { "attributes": { "knowledge": 1 } } } ] },
+    { "id": "ev_c06", "name": "第一次解剖实验", "weight": 6, "termRange": [4, 34], "college": "med",
+      "text": "系统解剖学实验课，你第一次面对标本，手心直冒汗。",
+      "options": [
+        { "id": "focus", "label": "认真观察记录", "resultText": "你强忍住不适，把每块结构都记了下来。",
+          "effects": { "attributes": { "knowledge": 3, "health": -1 } } },
+        { "id": "bare", "label": "勉强撑着", "resultText": "你站在后排，记了个大概。",
+          "effects": { "attributes": { "knowledge": 1 } } } ] },
+    { "id": "ev_c07", "name": "建模国赛集训", "weight": 6, "termRange": [6, 36], "college": "math",
+      "text": "数学建模国赛集训开始，三天三夜封闭跑模型，去吗？",
+      "options": [
+        { "id": "join", "label": "全程参加", "resultText": "你和队友熬了三个通宵，模型终于收敛。",
+          "effects": { "attributes": { "knowledge": 3, "health": -2 } } },
+        { "id": "half", "label": "旁听两天", "resultText": "你听了两天讲座，提前撤了。",
+          "effects": { "attributes": { "knowledge": 1 } } } ] },
+    { "id": "ev_c08", "name": "外语角语伴", "weight": 6, "termRange": [4, 34], "college": "foreign",
+      "text": "学院外语角来了几位交换生，志愿者找你当语伴。",
+      "options": [
+        { "id": "chat", "label": "全程尬聊", "resultText": "你连比划带猜，和交换生聊得哈哈大笑。",
+          "effects": { "attributes": { "social": 3, "knowledge": 1 } } },
+        { "id": "bail", "label": "打个招呼就溜", "resultText": "你打了个招呼，借口有课溜了。", "effects": {} } ] }
   ],
   "note": "fixed 三条：社团招新(CLUB)、毕业论文(THESIS)、负债(DEBT)；random 46 条：恋爱链 ev_r23–26（邂逅→聚餐→散步→吵架→和好/分手，flags crush/crush2/romance）、花钱加属性 ev_r27–29（真题/技能班/健身卡）、链式延伸 ev_r30–36（竞赛组队→成绩、实习转正、甜蜜自习、走出失恋、保研评优、社团骨干，前置沿用 requires flag）、独立随机 ev_r37–46（宿舍火锅/占座/选课/体测/外卖/例会/分享会/体检/失眠/二手教材）；≥5 条带 requires、≥6 条写 flags、≥4 条川大特色。money 统一用顶层 effects.money。"
 }

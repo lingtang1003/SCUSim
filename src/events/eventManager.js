@@ -134,6 +134,8 @@ export function computeWeight(event, state, config) {
     const examTurns = Array.isArray(balance.examTurns) ? balance.examTurns : [];
     if (examTurns.indexOf(state.turn) < 0) return 0;
   }
+  // 学院专属事件：事件带 college 字段时，仅该学院玩家才会遇到
+  if (event.college && state.player && state.player.collegeId !== event.college) return 0;
   let w = Number(event.weight) || 0;
   if (w <= 0) return 0;
 
