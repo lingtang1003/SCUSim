@@ -329,6 +329,71 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
     && typeof vm.seed === 'number');
 }
 
+// ---------------- 7) 姓名规则（D-17） ----------------
+{
+  const mk = (name) => newGame({ ...OPTIONS, name }, base, createRng(1));
+  check('姓名：纯汉字合法', mk('张三').ok === true);
+  check('姓名：纯英文字母合法', mk('ZhangSan').ok === true);
+  check('姓名：中英混合合法（Li华）', mk('Li华').ok === true);
+  for (const bad of ['张三3', 'abc1', '李四!', '   ', '', 'A'.repeat(13)]) {
+    const r = mk(bad);
+    check(`姓名：非法输入被拒绝（${JSON.stringify(bad)}）`, r.ok === false && r.reason === 'name',
+      JSON.stringify({ ok: r.ok, reason: r.reason }));
+  }
+}
+
+// ---------------- 8) 连续空窗扣减（D-18） ----------------
+{
+  const cfgDecay = patch((c) => {
+    c.balance.idleDecay = {
+      everyTurns: 4,
+      resetPerYear: true,
+      knowledge: { actions: ['study'], amount: 3 },
+      health: { actions: ['exercise', 'rest'], amount: 2 },
+    };
+  });
+
+  const s = stateWithoutPending(cfgDecay);
+  const k0 = s.player.attributes.knowledge;
+  const h0 = s.player.attributes.health;
+  for (let i = 0; i < 4; i += 1) advance(s, cfgDecay, createRng(60 + i));
+  check('空窗：连续 4 周没学习 → 学识 -3', s.player.attributes.knowledge === k0 - 3, `${k0} → ${s.player.attributes.knowledge}`);
+  check('空窗：连续 4 周没锻炼/休息 → 健康 -2', s.player.attributes.health === h0 - 2, `${h0} → ${s.player.attributes.health}`);
+  check('空窗：扣减写入履历', s.history.some((h) => h.type === 'decay'));
+
+  // 中途学习 → 学识计数重置，再 3 周不扣
+  const s2 = stateWithoutPending(cfgDecay);
+  for (let i = 0; i < 3; i += 1) advance(s2, cfgDecay, createRng(70 + i));
+  s2.pendingEvent = null;
+  const okStudy = doAction(s2, 'study', cfgDecay, createRng(75));
+  const kAfterStudy = s2.player.attributes.knowledge;
+  for (let i = 0; i < 3; i += 1) advance(s2, cfgDecay, createRng(80 + i));
+  check('空窗：中途学习会重置学识计数（再 3 周不扣）',
+    okStudy.ok === true && s2.player.attributes.knowledge === kAfterStudy,
+    `${kAfterStudy} → ${s2.player.attributes.knowledge}`);
+
+  // 一学年内最多扣两次（第 4、8 周），第 11 回合跨学年重新计数
+  const s3 = stateWithoutPending(cfgDecay);
+  const k3 = s3.player.attributes.knowledge;
+  for (let i = 0; i < 9; i += 1) advance(s3, cfgDecay, createRng(90 + i));
+  check('空窗：一学年内触发两次（学识 -6）', s3.player.attributes.knowledge === k3 - 6, `${k3} → ${s3.player.attributes.knowledge}`);
+  advance(s3, cfgDecay, createRng(120));
+  check('空窗：跨学年重新计数（第 11 回合不额外扣）', s3.player.attributes.knowledge === k3 - 6, String(s3.player.attributes.knowledge));
+
+  // 下限 0
+  const s4 = stateWithoutPending(cfgDecay);
+  s4.player.attributes.knowledge = 1;
+  for (let i = 0; i < 4; i += 1) advance(s4, cfgDecay, createRng(130 + i));
+  check('空窗：属性不会被扣成负数（1 → 0）', s4.player.attributes.knowledge === 0, String(s4.player.attributes.knowledge));
+
+  // 配置缺省时不生效（旧配置/旧存档兼容）
+  const cfgOff = patch((c) => { delete c.balance.idleDecay; });
+  const s5 = stateWithoutPending(cfgOff);
+  const k5 = s5.player.attributes.knowledge;
+  for (let i = 0; i < 4; i += 1) advance(s5, cfgOff, createRng(140 + i));
+  check('空窗：未配置 idleDecay 时不扣（向后兼容）', s5.player.attributes.knowledge === k5);
+}
+
 // ---------------- 汇总 ----------------
 const total = pass + failures.length;
 console.log(`\n== a-engine 结果 ==`);

@@ -40,7 +40,7 @@ $ node tests/unit/a-engine.mjs
   PASS  ending: 其余命中项记为副结局
   PASS  ending: all 中任一不满足则不命中（warning 为真）
   PASS  ending: 未知类型不命中且不抛错
-  总计 59 项，PASS 59，FAIL 0
+  总计 76 项，PASS 76，FAIL 0
 
 $ node tests/unit/a-browser-e2e.mjs
   PASS  结局已判定（endingId 非空）

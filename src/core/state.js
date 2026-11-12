@@ -19,6 +19,21 @@ export const STATE_VERSION = '1.0.0';
 export const DEFAULT_HISTORY_LIMIT = 60;
 export const DEFAULT_LOG_LIMIT = 60;
 
+/** 姓名规则（D-17）：1–12 个字符，只允许汉字或英文字母，禁止数字与符号 */
+export const NAME_MAX_LENGTH = 12;
+export const NAME_PATTERN = /^[\u4e00-\u9fa5A-Za-z]+$/;
+
+/**
+ * 校验姓名是否合法。
+ * @param {string} name
+ * @returns {boolean}
+ */
+export function isValidName(name) {
+  const s = typeof name === 'string' ? name.trim() : '';
+  if (!s || s.length > NAME_MAX_LENGTH) return false;
+  return NAME_PATTERN.test(s);
+}
+
 const DEFAULT_CLAMP = {
   knowledge: [0, 99],
   social: [0, 99],
@@ -60,6 +75,9 @@ export function createGameState(options) {
       club: null,
       romance: 'none',
       flags: {},
+      // 连续未安排对应行动的周数（idleDecay）：{ knowledge, health }
+      idle: { knowledge: 0, health: 0 },
+      idleYear: 1,
     },
     academics: {
       semesterScores: [],

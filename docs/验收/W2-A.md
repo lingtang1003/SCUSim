@@ -37,7 +37,7 @@ $ node tests/unit/a-engine.mjs
   PASS  drawTagCandidates: 同种子同一批（可复现）
   PASS  buildViewModel: availability 覆盖全部行动
   PASS  buildViewModel: actions 带 enabled/reason
-  总计 59 项，PASS 59，FAIL 0
+  总计 76 项，PASS 76，FAIL 0
 
 $ node tests/unit/b-events.mjs     → 事件单测全部通过
 $ npm test                        → smoke 22 / verify_ui 14 全绿

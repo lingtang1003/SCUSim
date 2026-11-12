@@ -223,7 +223,16 @@ export function createController(deps) {
     rng = makeRng(seedNum >>> 0);
     const res = eng.newGame(opts, config, rng);
     if (!res.ok) {
-      app.showError('创建失败：' + (res.reason || '未知错误'));
+      const why = res.reason === 'name'
+        ? '姓名只能使用汉字或英文字母（1–12 个字符，不能包含数字）'
+        : res.reason === 'attributes'
+        ? '属性点必须正好分配完 20 点'
+        : res.reason === 'collegeId'
+        ? '请选择学院'
+        : res.reason === 'tags'
+        ? '请选择 3 个标签'
+        : '创建失败：' + (res.reason || '未知错误');
+      app.showError(why);
       return;
     }
     state = res.state;

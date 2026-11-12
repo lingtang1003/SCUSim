@@ -55,6 +55,7 @@
 | `studyPenalty` + `healthStudyPenaltyBelow` | object/number | 否 | ⏳ 可选 | engine | 低健康学习惩罚 `{dropChance,dropAmount}`；缺席则不生效 |
 | `endingPriorityOrder` | `"asc"｜"desc"` | 否 | ⏳ D-W3 | ending.sortByPriority | `asc` = 数值越小越高；缺省 `desc` 兼容现配置 |
 | `historyLimit` / `logLimit` | number | 否 | 默认 60 | state | 履历/日志环形上限 |
+| `idleDecay` | object | 否 | ✅ 已生效 | engine.applyIdleDecay | 连续空窗扣属性：`{everyTurns:4, resetPerYear:true, knowledge:{actions:['study'],amount:3}, health:{actions:['exercise','rest'],amount:2}}`；缺省则不扣（兼容旧存档） |
 
 当前实际片段（节选）：
 
@@ -156,7 +157,9 @@
     appearance: '',        // 纯展示（立绘），不参与结算
     club: null|string,
     romance: 'none'|'dating'|'married',
-    flags: {}              // 任意履历标记：scholarship / competition / intern / lastDebtTurn ...
+    flags: {},             // 任意履历标记：scholarship / competition / intern / lastDebtTurn ...
+    idle: { knowledge: 0, health: 0 },   // D-18：连续未安排对应行动的周数
+    idleYear: 1                          // D-18：resetPerYear 用的学年序号
   },
   academics: {
     semesterScores: [],    // 兼容旧字段
@@ -281,7 +284,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | **D-05** | 期末成绩（**永不挂科，已定**） | 单门 `score = round(base + 学识×knowledgeWeight×(1±fluctuation))`，再夹 `[passLine, 100]`；4 门；绩点查 `gpaTable`。**任何学识水平都不挂科** | academy / settlement / 结局可达性 | ✅ 已生效（B 实现 + A 的 8 学期回归用例锁定） |
 | D-06 | 固定事件标识 | `code:"CLUB"｜"THESIS"｜"DEBT"`，id 保留现名；缺失即致命 | schema / events | 🟡 事件已加 code；schema 校验仍待 D |
 | D-07 | 存档版本 | 单槽/多槽并存（D 已加 `saveGameSlot/listSlots`）；`SAVE_VERSION` 升级与 `migrateSave` 仍待 D | storage / main | 🟡 多槽已上线，迁移未做 |
-| D-08 | 姓名/性别 | 姓名 1–12 字；性别男/女 | UI | ⏳ C-W2 |
+| D-08 | 姓名/性别 | 姓名 1–12 字，**只允许汉字或英文字母**（数字/符号/空格一律拒绝）；性别男/女 | UI + engine | ✅ 已生效（`state.isValidName` + UI 输入过滤 + `newGame` 拒绝 `reason:'name'`） |
 | D-09 | 属性初始 | 四项 0 起分配 20 点；标签修正后再钳制 | UI / engine | 🟡 引擎侧已支持标签修正，UI 仍默认 5/5/5/5 |
 | D-10 | 结算顺序 | 回合+1 → 月初 → 负债 → 期末（先复习事件、后出成绩）→ 事件（固定 > 负债 > 随机）→ 终局；终局回合不再触发事件 | engine.advance | ✅ |
 | D-11 | 履历/图鉴 | `history` ≤60 条结构化；图鉴跨周目唯一；**主结局与副结局都入图鉴** | state / storage / main | ✅ |
@@ -289,6 +292,8 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | D-13 | 弹窗顺序 | 同回合「结算 → 事件」；终局「结算 → 结局」。由 `main.modalQueue` 串行，UI 通过 `done` / `onModalClosed` / Promise 通知关闭；UI 不通知时下一次交互隐式关闭兜底 | main / UI | ✅ 已与 C 的 `showExam(settlement, done)` 对接成功（浏览器 E2E 验证 8 次结算弹窗） |
 | **D-14** | 月度支出 | 配置为 **1950**，SRS 写 **1800**；当前以配置为准 | economy / 文档 | 🟡 待课程文档确认（建议改文档而不是改配置，因为 1950 已配合事件物价） |
 | **D-15** | 学业警告 | 永不挂科 ⇒ `failedCourses` 恒 0 ⇒ `warning` 永不触发 ⇒ `ending_warning` 不可达 | endings 配置 | 🟡 D-W3 重排结局时必须删掉/替换该结局，否则 6 结局里有 1 条永远拿不到 |
+| **D-17** | 姓名合法性 | 1–12 字符，仅 `[\u4e00-\u9fa5A-Za-z]`；UI 侧实时过滤非法字符，引擎侧 `newGame` 兜底拒绝（`reason:'name'`） | state / engine / UI | ✅ |
+| **D-18** | 连续空窗扣属性 | 连续 `everyTurns`（4）周没有「学识类」行动 → 学识 −`amount`（3）；没有「健康类」行动（锻炼/休息）→ 健康 −`amount`（2）；做了对应行动立即清零计数；每到 4 的倍数扣一次；`resetPerYear` 时每学年（10 回合）重新计数；属性下限 0 | engine.applyIdleDecay + balance.idleDecay | ✅ 已生效（4 个用例覆盖：触发/重置/学年重置/下限） |
 
 ---
 
@@ -393,7 +398,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | `src/core/engine.js` | 三档加成（`threeTierBonus.bonus`）、健康白名单、学习惩罚、pending 阻断、标签修正、`drawTagCandidates`、`buildViewModel`、`advance` 新顺序 + `monthly/settlement/endingSubs`、终局不出事件、**删除过渡适配层直接调 B** |
 | `src/core/ending.js` | 条件引擎（all/any/7 类 + negate）、`judgeEnding` 主+副结局、`sortByPriority`（`endingPriorityOrder`） |
 | `src/main.js` | 弹窗队列（结算→事件→结局，含隐式关闭兜底）、读档恢复未结算事件、副结局入图鉴、`buildViewModel` 接入、`?dev=1` 面板 + `__scusim` 句柄 |
-| `tests/unit/a-engine.mjs` | 59 条断言（全 PASS） |
+| `tests/unit/a-engine.mjs` | 76 条断言（全 PASS） |
 | `tests/unit/a-main.mjs` | 15 条断言（队列/不叠窗/隐式关闭/读档结局，全 PASS） |
 | `tests/unit/a-browser-e2e.mjs` | 真实 Edge headless E2E：25 条断言 + 5 张截图（`docs/截图/W1-A/`），全 PASS |
 

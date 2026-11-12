@@ -54,5 +54,13 @@
     "note": "属性分档加成：<10 → +0，10–19 → +1，≥20 → +2"
   },
 
+  "idleDecay": {
+    "everyTurns": 4,
+    "resetPerYear": true,
+    "knowledge": { "actions": ["study"], "amount": 3 },
+    "health": { "actions": ["exercise", "rest"], "amount": 2 },
+    "note": "连续 N 周没有对应行动则扣属性：学识 -3（学习 +2/次，4 周不学约少 8 点成长再扣 3）；健康 -2（休息 +3、锻炼 +2，另受学习/社交扣血影响）。resetPerYear=true 表示每学年（10 回合）重新计数。"
+  },
+
   "note": "数值为初值，期末公式已切换为：单门 score = round(学识 × (1 ± 波动))，绩点查 gpaTable；平衡需经 40 回合模拟调优"
 }

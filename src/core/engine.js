@@ -17,7 +17,7 @@
  *    rollEvent/buildPending）已合并，本文件直接调用；过渡适配层已删除。
  */
 
-import { createGameState, clampAttrs, pushHistory, pushLog } from './state.js';
+import { createGameState, clampAttrs, pushHistory, pushLog, isValidName } from './state.js';
 import * as economy from './economy.js';
 import * as academy from './academy.js';
 import * as eventManager from '../events/eventManager.js';
@@ -274,6 +274,9 @@ export function newGame(options, config, rng) {
   if (!options || typeof options !== 'object') return { ok: false, reason: 'options' };
   const balance = getBalance(config);
 
+  // D-17：姓名只允许汉字/英文字母（1–12 字），数字与符号一律拒绝
+  if (!isValidName(options.name)) return { ok: false, reason: 'name' };
+
   // 属性四项之和严格 === attributePointTotal（默认 20）
   const attrs = options.attributes || {};
   const sum = (Number(attrs.knowledge) || 0)
@@ -392,6 +395,20 @@ export function doAction(state, actionId, config, rng) {
 
   if (actionId === 'study') state.academics.studyActions = (Number(state.academics.studyActions) || 0) + 1;
 
+  // D-18：标记本回合做过「学识 / 健康」类行动，advance 时据此重置连续空窗计数
+  const idleCfg = getBalance(config).idleDecay;
+  if (idleCfg) {
+    if (!state.__turnFlags || typeof state.__turnFlags !== 'object') state.__turnFlags = {};
+    if (idleCfg.knowledge && Array.isArray(idleCfg.knowledge.actions)
+      && idleCfg.knowledge.actions.indexOf(actionId) >= 0) {
+      state.__turnFlags.knowledge = true;
+    }
+    if (idleCfg.health && Array.isArray(idleCfg.health.actions)
+      && idleCfg.health.actions.indexOf(actionId) >= 0) {
+      state.__turnFlags.health = true;
+    }
+  }
+
   clampAttrs(state, config);
   pushLog(state, `行动：${action.name || actionId}`, config);
   pushHistory(state, { type: 'action', actionId, text: `行动：${action.name || actionId}` }, config);
@@ -400,8 +417,61 @@ export function doAction(state, actionId, config, rng) {
 }
 
 /**
+ * D-18：连续 N 周没有对应行动 → 扣属性（配置见 balance.idleDecay）。
+ * - knowledge：本周没有任何 `knowledge.actions`（默认 study）→ 计数 +1
+ * - health：本周没有任何 `health.actions`（默认 exercise/rest）→ 计数 +1
+ * - 计数每到 `everyTurns` 的整数倍扣一次 amount，属性下限 0
+ * - `resetPerYear` 为真时，每学年（monthsPerSemester×2 回合）重新计数
+ */
+function applyIdleDecay(state, config) {
+  const balance = getBalance(config);
+  const cfg = balance.idleDecay;
+  if (!cfg) return;
+  if (!state.player.idle || typeof state.player.idle !== 'object') {
+    state.player.idle = { knowledge: 0, health: 0 };
+  }
+  const monthsPerSemester = num(balance.monthsPerSemester, MONTHS_PER_SEMESTER_DEFAULT);
+  const monthsPerYear = monthsPerSemester * 2;
+  const year = Math.max(1, Math.ceil(state.turn / monthsPerYear));
+  if (cfg.resetPerYear && state.player.idleYear !== year) {
+    state.player.idleYear = year;
+    state.player.idle = { knowledge: 0, health: 0 };
+  }
+  const flags = (state.__turnFlags && typeof state.__turnFlags === 'object') ? state.__turnFlags : {};
+  const every = Math.max(1, num(cfg.everyTurns, 4));
+  const LABEL = { knowledge: '学识', health: '健康' };
+  const WHY = { knowledge: '学习', health: '锻炼/休息' };
+  for (const attr of ['knowledge', 'health']) {
+    const rule = cfg[attr];
+    if (!rule) continue;
+    const amount = num(rule.amount, 0);
+    if (amount <= 0) continue;
+    if (flags[attr]) {
+      state.player.idle[attr] = 0;
+      continue;
+    }
+    const n = (Number(state.player.idle[attr]) || 0) + 1;
+    state.player.idle[attr] = n;
+    if (n % every !== 0) continue;
+    const attrs = state.player.attributes;
+    const before = Number(attrs[attr]) || 0;
+    const after = Math.max(0, before - amount);
+    attrs[attr] = after;
+    const applied = before - after;
+    pushLog(state, `连续 ${every} 周没有${WHY[attr]}：${LABEL[attr]} −${applied}`, config);
+    pushHistory(state, {
+      type: 'decay',
+      attribute: attr,
+      delta: -applied,
+      text: `${LABEL[attr]} −${applied}（连续 ${every} 周未安排${WHY[attr]}）`,
+    }, config);
+  }
+  state.__turnFlags = {};
+}
+
+/**
  * 推进一个回合（就地改 state）。
- * 顺序（D-10）：回合+1/AP 重置 → 月初结算 → 负债判定 → 期末成绩/绩点/警告 →
+ * 顺序（D-10）：回合+1/AP 重置 → 月初结算 → 连续空窗扣减 → 负债判定 → 期末成绩/绩点/警告 →
  *              学期学习计数重置 → 固定/负债/随机事件 → 终局结局判定。
  * @returns {{ ok, state, monthly?, settlement?, pendingEvent?, endingId?, endingSubs?, message?, reason? }}
  */
@@ -424,6 +494,9 @@ export function advance(state, config, rng) {
   if (monthly && Number(monthly.net) !== 0) {
     pushLog(state, `月度收支：+${monthly.income} / −${monthly.expense}（净 ${monthly.net > 0 ? '+' : ''}${monthly.net}）`, config);
   }
+
+  // D-18：连续空窗扣减（学识 / 健康）
+  applyIdleDecay(state, config);
 
   const semester = Math.ceil(state.turn / monthsPerSemester);
 

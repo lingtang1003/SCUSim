@@ -892,15 +892,25 @@ export function createApp(ctx) {
   }
 
   function creationNameStep() {
+    const NAME_MAX = 12;
+    const NAME_OK = /^[\u4e00-\u9fa5A-Za-z]+$/;
+    const sanitize = (raw) => String(raw || '')
+      .replace(/[^\u4e00-\u9fa5A-Za-z]/g, '')
+      .slice(0, NAME_MAX);
     const input = h('input', {
       class: 'input input--vn',
       type: 'text',
       placeholder: '例如：林晞',
       value: creation.name,
-      maxlength: '16',
+      maxlength: String(NAME_MAX),
+      autocomplete: 'off',
     });
     input.addEventListener('input', (e) => {
-      creation.name = e.target ? e.target.value : '';
+      const raw = e.target ? e.target.value : '';
+      const cleaned = sanitize(raw);
+      // 直接过滤掉数字/符号/空格，避免“能输入但提交报错”
+      if (e.target && e.target.value !== cleaned) e.target.value = cleaned;
+      creation.name = cleaned;
       const node = doc.getElementById && doc.getElementById('vn-preview-name');
       if (node) node.textContent = creation.name || '（还没有名字）';
     });
@@ -910,12 +920,21 @@ export function createApp(ctx) {
         h('label', { class: 'field__label' }, ['姓名']),
         input,
       ]),
+      h('p', { class: 'vn-form__desc' }, ['只能使用汉字或英文字母，1–12 个字符（数字与符号不可用）。']),
       h('button', {
         class: 'btn btn--primary btn--block btn--lg',
         onclick: () => {
-          const n = (creation.name || '').trim();
+          const n = String(creation.name || '').trim();
           if (!n) {
             showError('请输入姓名');
+            return;
+          }
+          if (!NAME_OK.test(n)) {
+            showError('姓名只能包含汉字或英文字母');
+            return;
+          }
+          if (n.length > NAME_MAX) {
+            showError('姓名最多 ' + NAME_MAX + ' 个字符');
             return;
           }
           creation.name = n;
