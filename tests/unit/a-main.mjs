@@ -152,6 +152,46 @@ console.log('== A · 弹窗队列单测（a-main）==');
   check('无弹窗时调用 onModalClosed 不抛错', true);
 }
 
+// ---------------- 场景 4：读最后一回合的存档（已判结局）→ 直接放结局 ----------------
+{
+  const { controller, app, calls } = makeHarness();
+  await controller.start();
+  await controller.callbacks.onNewGame({
+    name: '结局读档', gender: '男', collegeId: 'cs',
+    attributes: { knowledge: 5, social: 5, health: 5, money: 5 }, tags: ['a', 'b', 'c'], seed: 4,
+  });
+  const s = controller._getState();
+  s.turn = 40;
+  s.endingId = 'ending_ordinary';
+  await controller.callbacks.onSave();
+
+  calls.length = 0;
+  await controller.callbacks.onLoadGame();
+  const ended = calls.filter((c) => c[0] === 'ending');
+  check('读档：最后一回合存档（已有 endingId）直接弹结局',
+    ended.length === 1 && ended[0][1] === 'ending_ordinary', JSON.stringify(calls));
+  check('读档：不再弹「无法推进」错误', calls.filter((c) => c[0] === 'error').length === 0);
+}
+
+// ---------------- 场景 5：在终局按「进入下一周」→ 放结局，不再报 ended ----------------
+{
+  const { controller, calls } = makeHarness();
+  await controller.start();
+  await controller.callbacks.onNewGame({
+    name: '终局推进', gender: '男', collegeId: 'cs',
+    attributes: { knowledge: 5, social: 5, health: 5, money: 5 }, tags: ['a', 'b', 'c'], seed: 5,
+  });
+  const s = controller._getState();
+  s.turn = 40;
+  s.endingId = 'ending_academic_star';
+  calls.length = 0;
+  await controller.callbacks.onAdvance();
+  check('终局 onAdvance：弹结局而不是 reason:ended',
+    calls.some((c) => c[0] === 'ending' && c[1] === 'ending_academic_star')
+    && !calls.some((c) => c[0] === 'error'),
+    JSON.stringify(calls));
+}
+
 const total = pass + failures.length;
 console.log(`\n== a-main 结果 ==`);
 console.log(`总计 ${total} 项，PASS ${pass}，FAIL ${failures.length}`);

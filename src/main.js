@@ -173,6 +173,33 @@ export function createController(deps) {
     return (list || []).find((e) => e.id === id) || { id, name: id, desc: '' };
   }
 
+  function endingPayloadOf(mainId, subs) {
+    return Object.assign({}, endingOf(mainId), {
+      subs: (subs || []).map((id) => endingOf(id)),
+    });
+  }
+
+  /** 统一收尾：结局入图鉴 → 渲染 → 弹结局 */
+  async function showEndingFor(mainId, subs) {
+    if (!mainId) return;
+    await storage.unlockEnding(mainId);
+    for (const id of subs || []) await storage.unlockEnding(id);
+    renderState();
+    app.showEnding(endingPayloadOf(mainId, subs));
+  }
+
+  /** 已有结局的存档/重复推进：优先用引擎重算，拿不到就退回 state.endingId */
+  function judgedEndingOf(s) {
+    const fallback = { endingId: (s && s.endingId) || null, subEndings: [] };
+    if (!s || typeof eng.getEnding !== 'function') return fallback;
+    try {
+      const r = eng.getEnding(s, config);
+      return { endingId: (r && r.endingId) || fallback.endingId, subEndings: (r && r.subEndings) || [] };
+    } catch (_) {
+      return fallback;
+    }
+  }
+
   function toast(msg, kind) {
     if (app && typeof app.showToast === 'function') app.showToast(msg, kind);
     else if (app && typeof app.showError === 'function' && kind === 'danger') app.showError(msg);
@@ -228,6 +255,12 @@ export function createController(deps) {
     hasSave = true;
     actionSeq = 0;
     renderState();
+    // 存档已经判过结局（最后一回合的自动存档）：读档后直接把结局放出来
+    if (state.endingId) {
+      const judged = judgedEndingOf(state);
+      await showEndingFor(judged.endingId || state.endingId, judged.subEndings);
+      return;
+    }
     // 断点续玩（设计 §11.2）：存档里若还有未结算事件，读档后立刻恢复弹窗
     if (state.pendingEvent) {
       const ev = state.pendingEvent;
@@ -341,6 +374,22 @@ export function createController(deps) {
   // ---------------- 回调：推进回合 ----------------
   async function onAdvance() {
     if (!state) return;
+    // 已经到终局（读档回到最后一回合的存档）：直接给结局，而不是报 "无法推进：ended"
+    if (state.endingId) {
+      const judged = judgedEndingOf(state);
+      await showEndingFor(judged.endingId || state.endingId, judged.subEndings);
+      return;
+    }
+    const maxTurn = Number(config && config.balance && config.balance.turns) || 40;
+    if (state.turn >= maxTurn) {
+      const judged = judgedEndingOf(state);
+      if (!state.endingId && judged.endingId) {
+        state.endingId = judged.endingId;
+        await storage.saveGame(state);
+      }
+      await showEndingFor(judged.endingId, judged.subEndings);
+      return;
+    }
     // 事件未结算时不允许跳周（考试周尤其重要：先选复习方式，再出成绩）
     if (state.pendingEvent) {
       toast('先处理当前事件，再进入下一周', 'warning');

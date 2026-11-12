@@ -249,6 +249,11 @@ onClearSave() onOpenGallery() onOpenSettings() onOpenMenu()
 
 W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关闭弹窗后通知 main。
 
+**读档语义（D-16）**：`onLoadGame` 读到的存档若 `state.endingId` 非空（最后一回合的自动存档），main 直接调
+`eng.getEnding(state, config)` 取主/副结局 → 解锁图鉴 → 渲染 → `app.showEnding`，并结束本次读档流程；
+此时再点「进入下一周」也走同一分支，不会出现 `无法推进：ended` 的 toast。
+`onAdvance` 在 `state.turn >= balance.turns` 且未判结局时同样先补判结局。
+
 ### 4.5 其他人的 v2 目标（签名已冻结，实现由本人交付）
 
 | Owner | 函数 | 交付周 |
@@ -389,7 +394,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | `src/core/ending.js` | 条件引擎（all/any/7 类 + negate）、`judgeEnding` 主+副结局、`sortByPriority`（`endingPriorityOrder`） |
 | `src/main.js` | 弹窗队列（结算→事件→结局，含隐式关闭兜底）、读档恢复未结算事件、副结局入图鉴、`buildViewModel` 接入、`?dev=1` 面板 + `__scusim` 句柄 |
 | `tests/unit/a-engine.mjs` | 59 条断言（全 PASS） |
-| `tests/unit/a-main.mjs` | 12 条断言（队列/不叠窗/隐式关闭，全 PASS） |
+| `tests/unit/a-main.mjs` | 15 条断言（队列/不叠窗/隐式关闭/读档结局，全 PASS） |
 | `tests/unit/a-browser-e2e.mjs` | 真实 Edge headless E2E：25 条断言 + 5 张截图（`docs/截图/W1-A/`），全 PASS |
 
 ## 附录 B · 签署

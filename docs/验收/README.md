@@ -27,8 +27,8 @@ npm test                       # smoke 22 + verify_ui 14
 
 # A 的单测 / E2E
 node tests/unit/a-engine.mjs   # 59 项
-node tests/unit/a-main.mjs     # 12 项（弹窗队列）
-node tests/unit/a-browser-e2e.mjs   # 26 项 + 7 张截图
+node tests/unit/a-main.mjs     # 15 项（弹窗队列 + 读档结局）
+node tests/unit/a-browser-e2e.mjs   # 26 项 + 8 张截图
 
 # 其他人的单测
 node tests/unit/b-economy.mjs

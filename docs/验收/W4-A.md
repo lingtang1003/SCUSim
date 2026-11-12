@@ -36,7 +36,9 @@ $ node tests/unit/a-main.mjs
   PASS  onAdvance: 同回合有结算+事件时先弹结算
   PASS  结算未关闭前事件不出现（不叠窗）
   PASS  兜底: 玩家下一次交互会放行队列
-  总计 12 项，PASS 12，FAIL 0
+  PASS  读档：最后一回合存档（已有 endingId）直接弹结局
+  PASS  终局 onAdvance：弹结局而不是 reason:ended
+  总计 15 项，PASS 15，FAIL 0
 
 $ node tests/unit/a-browser-e2e.mjs（Edge headless）
   PASS  学期结算弹窗被真实调用 ≥8 次（C 的 showExam 接线）
@@ -62,6 +64,12 @@ $ node tests/unit/a-browser-e2e.mjs（Edge headless）
 
 `server.js` 有一行被写成了 `// …\r\n    res.writeHead(200, …)` —— `writeHead` 被注释吞掉，静态文件**没有 Content-Type**，浏览器按严格 MIME 拒绝加载 ES Module，本地页面卡在「正在进入校园…」。已拆回两行并验证 `Content-Type: application/javascript`。Cloudflare Pages 不受影响，只影响本地 `node server.js`。
 
+### 3.3 终局存档的读档收尾（D-16）
+
+最后一回合的自动存档里 `state.endingId` 已经写好，原实现读档后只 `renderState()`，界面停在主舞台，点「进入下一周」得到 `无法推进：ended`。
+
+修复：`onLoadGame` 检测到 `endingId` → `judgedEndingOf()`（优先 `eng.getEnding` 重算主/副结局）→ 解锁图鉴 → `showEnding`；`onAdvance` 对 `endingId` 与 `turn >= turns` 两种情况同样兜底。浏览器实测：跑满 40 回合 → 刷新页面 → 继续游戏 → 直接出现结局卡（`docs/截图/W1-A/08-ending-from-save.jpg`）。
+
 ## 4. 未闭环（D 的 W4）
 
 | 项 | 当前 | 需要 D 做什么 |
@@ -76,6 +84,6 @@ $ node tests/unit/a-browser-e2e.mjs（Edge headless）
 ```bash
 node server.js
 node tests/unit/a-browser-e2e.mjs     # 26/26，截图在 docs/截图/W1-A/
-node tests/unit/a-main.mjs            # 12/12
+node tests/unit/a-main.mjs            # 15/15
 npm test                              # 22 + 14
 ```
