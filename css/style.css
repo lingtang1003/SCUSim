@@ -2544,7 +2544,7 @@ a:hover {
   background: var(--glass-white);
   border-color: rgba(255, 255, 255, 0.95);
   color: var(--ink);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 10px 30px rgba(20, 16, 15, 0.12);
 }
 .vn-hud__name small { color: var(--ink-2); }
 .vn-hud__avatar { background: var(--red); }
@@ -2560,7 +2560,7 @@ a:hover {
   background: var(--red);
   color: #fff;
   border-color: var(--red-bright);
-  box-shadow: 0 8px 20px rgba(125, 12, 18, 0.36);
+  box-shadow: 0 12px 30px rgba(125, 12, 18, 0.2);
 }
 .vn-text { color: var(--ink); }
 .vn-next { color: rgba(26, 20, 20, 0.4); }
@@ -2682,7 +2682,11 @@ a:hover {
 }
 .vn-logo { color: var(--ink); text-shadow: none; }
 .vn-logo__sub { color: var(--ink-2); }
-.vn-title__foot { border-top-color: var(--hair); }
+.vn-title__foot {
+  border-top-color: var(--hair);
+  justify-content: center;
+  text-align: center;
+}
 .vn-title__ver { color: var(--ink-3); }
 .vn-title .vn-menu-btn { border-bottom: 0; border-radius: var(--r-md); background: transparent; }
 .vn-title .vn-menu-btn:hover { background: var(--red-soft); }
@@ -2837,7 +2841,8 @@ a:hover {
   background: var(--red); color: #fff;
   display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 18px;
-  box-shadow: 0 8px 20px rgba(179, 18, 26, 0.3);
+  /* 大范围、低透明度的柔和外发光：不要能看到阴影的圆形边界 */
+  box-shadow: 0 14px 38px rgba(179, 18, 26, 0.2), 0 4px 12px rgba(179, 18, 26, 0.1);
 }
 .vn-profile__name { font-size: 20px; font-weight: 800; letter-spacing: 0.08em; color: var(--ink); }
 .vn-profile__sub { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
@@ -3047,7 +3052,8 @@ a:hover {
 :root {
   --press: translateY(1px) scale(0.995);
   --lift: translateY(-2px);
-  --sheen: linear-gradient(100deg, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 62%);
+  /* 扫光刻意压得很淡：只在悬停时轻轻带过，不刺眼 */
+  --sheen: linear-gradient(100deg, rgba(255, 255, 255, 0) 42%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 58%);
 }
 
 @keyframes vn-fade-up {
@@ -3131,7 +3137,7 @@ a:hover {
   box-shadow: 0 12px 26px var(--red-glow);
 }
 .vn-choice:hover::before { opacity: 0; }
-.vn-choice:hover::after { opacity: 1; animation: vn-sheen-run 760ms var(--ease-out); }
+.vn-choice:hover::after { opacity: 0.9; animation: vn-sheen-run 900ms var(--ease-out); }
 .vn-choice:active { transform: var(--press); box-shadow: 0 4px 12px var(--red-glow); }
 .vn-choice:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 .vn-choice.is-locked { animation: none; box-shadow: none; }
@@ -3212,17 +3218,22 @@ a:hover {
 
 /* ---- 20.7 标题页：编号菜单（清单版式） ---- */
 .vn-menu-btn {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 14px;
-  text-align: left;
+  text-align: center;
   transition: background 200ms var(--ease-out), border-color 180ms linear,
     transform 180ms var(--ease-out), box-shadow 200ms var(--ease-out);
 }
+/* 编号只作为左侧标记，文字整体居中 */
 .vn-menu-btn__idx {
-  flex: 0 0 auto;
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
   font-family: var(--font-display);
   font-size: 0.82em;
   letter-spacing: 0.08em;
@@ -3230,7 +3241,13 @@ a:hover {
   font-variant-numeric: tabular-nums;
   transition: color 160ms linear;
 }
-.vn-menu-btn__body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.vn-menu-btn__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
 .vn-menu-btn:hover { transform: translateX(4px); }
 .vn-menu-btn:hover .vn-menu-btn__idx { color: var(--red); }
 .vn-title .vn-menu-btn { padding: 13px 16px; border-bottom: 1px solid var(--hair-soft); }
