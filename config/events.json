@@ -2057,7 +2057,1474 @@
           "effects": {}
         }
       ]
+    },
+    {
+      "id": "ev_r60",
+      "name": "高数听不懂",
+      "weight": 8,
+      "termRange": [
+        1,
+        4
+      ],
+      "text": "高数课上老师推导到第三块黑板，你只跟上了第一行。",
+      "options": [
+        {
+          "id": "ask",
+          "label": "下课堵住老师问",
+          "resultText": "老师给你讲了两遍，你终于开窍了。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "copy",
+          "label": "先抄板书再说",
+          "resultText": "你把黑板抄满了，回去慢慢啃。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r61",
+      "name": "社团面试",
+      "weight": 7,
+      "termRange": [
+        1,
+        3
+      ],
+      "text": "你心仪的社团开始招新面试，走廊里排满了人。",
+      "options": [
+        {
+          "id": "prepare",
+          "label": "准备了才艺展示",
+          "resultText": "你的展示赢得掌声，顺利入社。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            }
+          }
+        },
+        {
+          "id": "casual",
+          "label": "空手进去聊了聊",
+          "resultText": "你聊得还算投机，勉强通过。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r62",
+      "name": "师兄带你进实验室",
+      "weight": 7,
+      "termRange": [
+        3,
+        8
+      ],
+      "text": "实验室师兄问你有没有兴趣跟着做项目，从打杂开始。",
+      "options": [
+        {
+          "id": "join",
+          "label": "答应跟着干",
+          "resultText": "你在实验室泡了一学期，学到了真东西。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "think",
+          "label": "先观望",
+          "resultText": "你说再考虑考虑，师兄找了别人。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r63",
+      "name": "奖学金宣讲会",
+      "weight": 7,
+      "termRange": [
+        2,
+        6
+      ],
+      "text": "学院开奖学金宣讲会，一等奖能有五千。",
+      "options": [
+        {
+          "id": "go",
+          "label": "认真听完做规划",
+          "resultText": "你记下了评奖条件，目标明确了。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "skip",
+          "label": "觉得跟自己没关系",
+          "resultText": "你在宿舍躺了一下午。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r64",
+      "name": "兼职发传单",
+      "weight": 7,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "有人招周末发传单，一天给一百五，站街六小时。",
+      "options": [
+        {
+          "id": "work",
+          "label": "去赚这笔钱",
+          "resultText": "你站了一天，腿都站麻了。",
+          "effects": {
+            "attributes": {
+              "health": -2
+            },
+            "money": 150
+          }
+        },
+        {
+          "id": "rest",
+          "label": "周末想休息",
+          "resultText": "你睡到自然醒，回血了。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r65",
+      "name": "家教机会",
+      "weight": 7,
+      "termRange": [
+        2,
+        8
+      ],
+      "text": "邻居想请人给初中生补数学，一小时八十。",
+      "options": [
+        {
+          "id": "take",
+          "label": "接下这份家教",
+          "resultText": "你每周去两次，家长很满意。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "health": -1
+            },
+            "money": 160
+          }
+        },
+        {
+          "id": "refuse",
+          "label": "怕耽误自己学习",
+          "resultText": "你婉拒了，安心刷自己的题。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r66",
+      "name": "作业堆成山",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "三门课的同一天交作业，你只剩一个晚上。",
+      "options": [
+        {
+          "id": "allnight",
+          "label": "通宵全做完",
+          "resultText": "你在天亮前交齐了三份。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "partial",
+          "label": "挑重点做一份",
+          "resultText": "你只交了最重要的那份，另两份空着。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r67",
+      "name": "挂科预警",
+      "weight": 6,
+      "termRange": [
+        4,
+        8
+      ],
+      "text": "辅导员找你谈话，说你这门课平时分不太行。",
+      "options": [
+        {
+          "id": "fight",
+          "label": "找老师补交作业",
+          "resultText": "老师看你态度诚恳，给了补救机会。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "accept",
+          "label": "认命了",
+          "resultText": "你想着大不了补考。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r68",
+      "name": "转专业宣讲",
+      "weight": 6,
+      "termRange": [
+        1,
+        4
+      ],
+      "text": "教务处贴出转专业通知，你在犹豫要不要试试。",
+      "options": [
+        {
+          "id": "apply",
+          "label": "填表申请",
+          "resultText": "你认真准备了一轮，决定试一试。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "stay",
+          "label": "还是留下吧",
+          "resultText": "你觉得现在的专业也挺好。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r69",
+      "name": "双学位咨询",
+      "weight": 6,
+      "termRange": [
+        3,
+        8
+      ],
+      "text": "学院宣传双学位项目，读完要多上两年课。",
+      "options": [
+        {
+          "id": "sign",
+          "label": "报名第二学位",
+          "resultText": "你多了一门专业，课表挤得满满的。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "health": -2
+            },
+            "money": -150
+          }
+        },
+        {
+          "id": "pass",
+          "label": "精力不够，算了",
+          "resultText": "你决定专心把本专业读好。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r70",
+      "name": "学生会招新",
+      "weight": 7,
+      "termRange": [
+        1,
+        4
+      ],
+      "text": "学生会各部门摆摊招新，宣传单塞了你满怀。",
+      "options": [
+        {
+          "id": "join",
+          "label": "报名当干事",
+          "resultText": "你被分到了宣传部，开始写推送。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            }
+          }
+        },
+        {
+          "id": "no",
+          "label": "不感兴趣",
+          "resultText": "你把宣传单塞进了回收箱。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r71",
+      "name": "志愿活动招募",
+      "weight": 7,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "社区招募周末支教志愿者，去郊区小学带半天课。",
+      "options": [
+        {
+          "id": "go",
+          "label": "报名参加",
+          "resultText": "孩子们围着你问东问西，你心里暖暖的。",
+          "effects": {
+            "attributes": {
+              "social": 2,
+              "health": -1
+            },
+            "money": -20
+          }
+        },
+        {
+          "id": "skip",
+          "label": "这周太忙",
+          "resultText": "你选择留在学校复习。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r72",
+      "name": "田径场夜跑",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "晚上田径场人不多，风吹得很舒服。",
+      "options": [
+        {
+          "id": "run",
+          "label": "跑个五公里",
+          "resultText": "你跑完大汗淋漓，整个人都通透了。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        },
+        {
+          "id": "stroll",
+          "label": "散散步就好",
+          "resultText": "你绕着操场走了两圈。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r73",
+      "name": "食堂阿姨多打一勺",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "打饭时阿姨手一抖，又多给了你一大勺。",
+      "options": [
+        {
+          "id": "thanks",
+          "label": "连声道谢",
+          "resultText": "阿姨笑得眼睛都眯起来，下次给你更多。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "quiet",
+          "label": "默默端走",
+          "resultText": "你端着饭找了个角落坐下。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r74",
+      "name": "快递站排长队",
+      "weight": 7,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "快递站取件队伍绕了两圈，你的包裹在里面。",
+      "options": [
+        {
+          "id": "wait",
+          "label": "排队等",
+          "resultText": "你等了一小时，终于拿到手。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "later",
+          "label": "晚点再来",
+          "resultText": "你转身走了，结果晚上忘了。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r75",
+      "name": "校园网又断了",
+      "weight": 7,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "正在交作业，校园网忽然断了，网页转圈圈。",
+      "options": [
+        {
+          "id": "hotspot",
+          "label": "开手机热点",
+          "resultText": "你用流量硬撑着交完了作业。",
+          "effects": {
+            "money": -20
+          }
+        },
+        {
+          "id": "library",
+          "label": "去图书馆蹭网",
+          "resultText": "你抱着电脑跑了半栋楼。",
+          "effects": {
+            "attributes": {
+              "health": -1,
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r76",
+      "name": "手机碎屏",
+      "weight": 6,
+      "termRange": [
+        2,
+        8
+      ],
+      "text": "手机从床上掉下来，屏幕裂了一道缝。",
+      "options": [
+        {
+          "id": "fix",
+          "label": "去修一下",
+          "resultText": "换了屏幕，钱包瘦了一圈。",
+          "effects": {
+            "money": -220
+          }
+        },
+        {
+          "id": "use",
+          "label": "先凑合用",
+          "resultText": "你贴了张膜，继续用着。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r77",
+      "name": "论文查重",
+      "weight": 7,
+      "termRange": [
+        6,
+        8
+      ],
+      "text": "论文查重率 28%，导师要求降到 15% 以下。",
+      "options": [
+        {
+          "id": "rewrite",
+          "label": "连夜重写",
+          "resultText": "你熬了两个通宵，终于改到 12%。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "pay",
+          "label": "花钱找代改",
+          "resultText": "你花了点钱，第二天就过了。",
+          "effects": {
+            "money": -200
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r78",
+      "name": "保研夏令营",
+      "weight": 7,
+      "termRange": [
+        5,
+        8
+      ],
+      "text": "外校保研夏令营开始报名，需要准备一堆材料。",
+      "options": [
+        {
+          "id": "apply",
+          "label": "认真准备申请",
+          "resultText": "你把材料打磨得很漂亮，拿到了入营资格。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "local",
+          "label": "只考虑本校",
+          "resultText": "你觉得留在本校也挺好。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r79",
+      "name": "秋招宣讲会",
+      "weight": 7,
+      "termRange": [
+        6,
+        8
+      ],
+      "text": "大厂来学校宣讲，现场收简历，队伍排到门外。",
+      "options": [
+        {
+          "id": "queue",
+          "label": "排着队投简历",
+          "resultText": "你等到最后一个，简历递了上去。",
+          "effects": {
+            "attributes": {
+              "health": -1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "online",
+          "label": "网上投就行",
+          "resultText": "你回家躺床上点了几下鼠标。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r80",
+      "name": "毕业照拍摄",
+      "weight": 6,
+      "termRange": [
+        7,
+        8
+      ],
+      "text": "毕业照开拍，学士服租一天要一百块。",
+      "options": [
+        {
+          "id": "rent",
+          "label": "租一套拍个够",
+          "resultText": "你和室友在校园里拍了一下午。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            },
+            "money": -100
+          }
+        },
+        {
+          "id": "borrow",
+          "label": "借同学的穿一下",
+          "resultText": "你蹭了几张合影。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r81",
+      "name": "实习通勤两小时",
+      "weight": 7,
+      "termRange": [
+        6,
+        8
+      ],
+      "text": "实习单位在城另一头，每天通勤来回两小时。",
+      "options": [
+        {
+          "id": "subway",
+          "label": "坐地铁硬扛",
+          "resultText": "你在地铁上练出了站着睡觉的本事。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            },
+            "money": -60
+          }
+        },
+        {
+          "id": "rent",
+          "label": "在公司附近租房",
+          "resultText": "你搬了过去，通勤只要十分钟。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "money": -400
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r82",
+      "name": "房东要涨租",
+      "weight": 6,
+      "termRange": [
+        5,
+        8
+      ],
+      "text": "房东打电话说下个月房租要涨两百。",
+      "options": [
+        {
+          "id": "accept",
+          "label": "认了，续租",
+          "resultText": "你重新签了合同，每月多掏两百。",
+          "effects": {
+            "money": -200
+          }
+        },
+        {
+          "id": "move",
+          "label": "重新找房子",
+          "resultText": "你跑了一周，搬到了更远的地方。",
+          "effects": {
+            "attributes": {
+              "health": -2
+            },
+            "money": -80
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r83",
+      "name": "考研自习室抢座",
+      "weight": 7,
+      "termRange": [
+        5,
+        8
+      ],
+      "text": "考研自习室六点开门，七点就没位置了。",
+      "options": [
+        {
+          "id": "early",
+          "label": "五点起床去抢",
+          "resultText": "你抢到了窗边的位置，一坐一整天。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "corner",
+          "label": "随便找个角落",
+          "resultText": "你在走廊尽头凑合着看。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r84",
+      "name": "室友打呼噜",
+      "weight": 7,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "室友呼噜声震天，你翻来覆去一小时没睡着。",
+      "options": [
+        {
+          "id": "earplug",
+          "label": "买副耳塞",
+          "resultText": "世界终于安静了，你睡得很沉。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            },
+            "money": -15
+          }
+        },
+        {
+          "id": "wake",
+          "label": "把他叫醒",
+          "resultText": "他翻了个身，十分钟后又开始了。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r85",
+      "name": "校园歌手大赛",
+      "weight": 7,
+      "termRange": [
+        2,
+        6
+      ],
+      "text": "校园歌手大赛报名开始，室友怂恿你去试试。",
+      "options": [
+        {
+          "id": "sing",
+          "label": "上台唱一首",
+          "resultText": "你唱完台下有人喊安可。",
+          "effects": {
+            "attributes": {
+              "social": 3,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "watch",
+          "label": "当观众就好",
+          "resultText": "你在台下举着手机录了一晚上。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r86",
+      "name": "校园献血车",
+      "weight": 6,
+      "termRange": [
+        2,
+        8
+      ],
+      "text": "校门口停了辆献血车，志愿者招呼你过去。",
+      "options": [
+        {
+          "id": "donate",
+          "label": "撸袖子献血",
+          "resultText": "你献了 200cc，还领了个小礼品。",
+          "effects": {
+            "attributes": {
+              "health": -1,
+              "social": 2
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "怕针，走了",
+          "resultText": "你摆摆手快步走过。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_r87",
+      "name": "兼职被骗",
+      "weight": 6,
+      "termRange": [
+        3,
+        8
+      ],
+      "text": "网上兼职说先交押金才能接单，你交了钱对方就没影了。",
+      "options": [
+        {
+          "id": "report",
+          "label": "去报警投诉",
+          "resultText": "你折腾了一周，追回了大部分损失。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            },
+            "money": -50
+          }
+        },
+        {
+          "id": "learn",
+          "label": "当买个教训",
+          "resultText": "你把这事写进了备忘录，再不上当。",
+          "effects": {
+            "money": -120
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r88",
+      "name": "学长卖复习笔记",
+      "weight": 8,
+      "termRange": [
+        3,
+        8
+      ],
+      "text": "学长在群里卖手写复习笔记，一份五十块。",
+      "options": [
+        {
+          "id": "buy",
+          "label": "买一份",
+          "resultText": "笔记条理清楚，省了你不少功夫。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            },
+            "money": -50
+          }
+        },
+        {
+          "id": "skip",
+          "label": "自己整理",
+          "resultText": "你花了两晚自己抄了一遍。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "health": -1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_r89",
+      "name": "校门口小吃摊",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "校门口的烤肠摊生意火爆，香味飘了半条街。",
+      "options": [
+        {
+          "id": "buy",
+          "label": "来两根",
+          "resultText": "你边走边吃，幸福感爆棚。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "money": -12
+          }
+        },
+        {
+          "id": "pass",
+          "label": "忍住了",
+          "resultText": "你咽了咽口水，径直走回宿舍。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c09",
+      "name": "开源项目提交",
+      "weight": 10,
+      "termRange": [
+        3,
+        8
+      ],
+      "college": "cs",
+      "text": "你在 GitHub 上给一个开源项目提了 PR，维护者让你改三处。",
+      "options": [
+        {
+          "id": "fix",
+          "label": "认真改完合并",
+          "resultText": "PR 被合并了，你的 ID 出现在贡献者列表里。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "close",
+          "label": "嫌麻烦关了",
+          "resultText": "你随手关掉了 PR。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c10",
+      "name": "黑客松 48 小时",
+      "weight": 10,
+      "termRange": [
+        4,
+        8
+      ],
+      "college": "cs",
+      "text": "校内黑客松连办 48 小时，管饭但不管睡。",
+      "options": [
+        {
+          "id": "join",
+          "label": "组队参赛",
+          "resultText": "你们熬到最后一刻，做出了个能跑的原型。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3,
+              "social": 1,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "不熬夜了",
+          "resultText": "你选择了正常作息。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c11",
+      "name": "示波器冒烟了",
+      "weight": 10,
+      "termRange": [
+        3,
+        8
+      ],
+      "college": "eie",
+      "text": "实验课上你的示波器突然冒烟，全班都看过来。",
+      "options": [
+        {
+          "id": "own",
+          "label": "主动承认并赔",
+          "resultText": "你赔了维修费，但老师夸你有担当。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "money": -120
+          }
+        },
+        {
+          "id": "blame",
+          "label": "说是设备老化",
+          "resultText": "你侥幸推给了设备，心里有点虚。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c12",
+      "name": "芯片设计讲座",
+      "weight": 10,
+      "termRange": [
+        4,
+        8
+      ],
+      "college": "eie",
+      "text": "业内专家来讲芯片设计，会场座无虚席。",
+      "options": [
+        {
+          "id": "listen",
+          "label": "全程记笔记",
+          "resultText": "你记了十页，会后还追着问了几个问题。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "nap",
+          "label": "睡着了两小时",
+          "resultText": "你在后排睡得很香。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c13",
+      "name": "商业计划书比赛",
+      "weight": 10,
+      "termRange": [
+        3,
+        8
+      ],
+      "college": "business",
+      "text": "创业大赛要交商业计划书，你有个点子还没落地。",
+      "options": [
+        {
+          "id": "write",
+          "label": "熬夜写成方案",
+          "resultText": "你的方案进了复赛，评委很感兴趣。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "social": 2,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "drop",
+          "label": "点子留在脑子里",
+          "resultText": "你把文档存进了草稿箱。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c14",
+      "name": "企业参访",
+      "weight": 10,
+      "termRange": [
+        4,
+        8
+      ],
+      "college": "business",
+      "text": "学院组织去一家上市公司参访，需要交一百块车费。",
+      "options": [
+        {
+          "id": "go",
+          "label": "报名去看看",
+          "resultText": "你见识了真实的商业运作，收获不小。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "social": 1
+            },
+            "money": -100
+          }
+        },
+        {
+          "id": "skip",
+          "label": "不去，省钱",
+          "resultText": "你留在学校上了自习。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c15",
+      "name": "校刊摄影任务",
+      "weight": 10,
+      "termRange": [
+        3,
+        8
+      ],
+      "college": "literature",
+      "text": "校刊要拍一组校园专题照片，编辑问你能不能扛机器。",
+      "options": [
+        {
+          "id": "shoot",
+          "label": "扛机器跑一天",
+          "resultText": "你蹲守到黄昏，拍到一张绝美的图。",
+          "effects": {
+            "attributes": {
+              "social": 2,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "decline",
+          "label": "没空",
+          "resultText": "你把机会让给了别人。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c16",
+      "name": "深夜读书会",
+      "weight": 10,
+      "termRange": [
+        3,
+        8
+      ],
+      "college": "literature",
+      "text": "文学社在咖啡馆办深夜读书会，主题是诗歌。",
+      "options": [
+        {
+          "id": "read",
+          "label": "朗读一段",
+          "resultText": "你念完后，房间安静了三秒才响起掌声。",
+          "effects": {
+            "attributes": {
+              "social": 3,
+              "knowledge": 1
+            },
+            "money": -25
+          }
+        },
+        {
+          "id": "listen",
+          "label": "只当听众",
+          "resultText": "你安静听了一晚上，很受触动。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c17",
+      "name": "法律援助值班",
+      "weight": 10,
+      "termRange": [
+        4,
+        8
+      ],
+      "college": "law",
+      "text": "学院法律援助站招志愿者，给社区居民解答法律问题。",
+      "options": [
+        {
+          "id": "help",
+          "label": "报名值班",
+          "resultText": "你帮一位大爷理清了纠纷，成就感满满。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "social": 2
+            }
+          }
+        },
+        {
+          "id": "no",
+          "label": "怕答错不敢去",
+          "resultText": "你选择了继续啃教材。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c18",
+      "name": "法考备考讲座",
+      "weight": 10,
+      "termRange": [
+        5,
+        8
+      ],
+      "college": "law",
+      "text": "法考备考讲座，主讲老师说这门考试要准备两千小时。",
+      "options": [
+        {
+          "id": "start",
+          "label": "当场买下全套资料",
+          "resultText": "你抱回一摞书，决定从现在开始。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            },
+            "money": -180
+          }
+        },
+        {
+          "id": "wait",
+          "label": "明年再说",
+          "resultText": "你打算再玩半年。",
+          "effects": {}
+        }
+      ]
+    },
+    {
+      "id": "ev_c19",
+      "name": "夜班跟查房",
+      "weight": 10,
+      "termRange": [
+        5,
+        8
+      ],
+      "college": "med",
+      "text": "带教老师问你今晚要不要跟着值夜班查房。",
+      "options": [
+        {
+          "id": "follow",
+          "label": "跟着上夜班",
+          "resultText": "你守到凌晨三点，见了两台急诊。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "health": -2,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "sleep",
+          "label": "回去睡觉",
+          "resultText": "你回宿舍补了个觉。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c20",
+      "name": "社区义诊",
+      "weight": 10,
+      "termRange": [
+        3,
+        8
+      ],
+      "college": "med",
+      "text": "学院组织社区义诊，需要人帮忙量血压登记。",
+      "options": [
+        {
+          "id": "join",
+          "label": "报名帮忙",
+          "resultText": "你忙了一整天，居民们都很感激。",
+          "effects": {
+            "attributes": {
+              "social": 2,
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "这周要考试",
+          "resultText": "你选择了复习。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c21",
+      "name": "奥数辅导兼职",
+      "weight": 10,
+      "termRange": [
+        3,
+        8
+      ],
+      "college": "math",
+      "text": "培训机构找你带奥数班，课时费一小时一百二。",
+      "options": [
+        {
+          "id": "teach",
+          "label": "接下这份工作",
+          "resultText": "你讲得深入浅出，学生们很喜欢你。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "health": -1
+            },
+            "money": 240
+          }
+        },
+        {
+          "id": "refuse",
+          "label": "专心自己的数学",
+          "resultText": "你把时间留给了自己的课题。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c22",
+      "name": "数学竞赛集训",
+      "weight": 10,
+      "termRange": [
+        4,
+        8
+      ],
+      "college": "math",
+      "text": "全国大学生数学竞赛集训开始，每天六小时封闭刷题。",
+      "options": [
+        {
+          "id": "join",
+          "label": "全力投入",
+          "resultText": "你刷完了三本习题集，手感前所未有地好。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3,
+              "health": -2
+            }
+          }
+        },
+        {
+          "id": "half",
+          "label": "偶尔参加",
+          "resultText": "你去了两次就没再出现。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c23",
+      "name": "翻译兼职",
+      "weight": 10,
+      "termRange": [
+        3,
+        8
+      ],
+      "college": "foreign",
+      "text": "有人找你翻译一份产品说明书，按字数结算。",
+      "options": [
+        {
+          "id": "take",
+          "label": "接下这单",
+          "resultText": "你熬了两晚翻完，拿到了报酬。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "health": -1
+            },
+            "money": 180
+          }
+        },
+        {
+          "id": "no",
+          "label": "怕翻错不敢接",
+          "resultText": "你推掉了，继续练口语。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_c24",
+      "name": "留学申请讲座",
+      "weight": 10,
+      "termRange": [
+        4,
+        8
+      ],
+      "college": "foreign",
+      "text": "留学申请经验分享会，学长讲了一晚上 GPA 和文书。",
+      "options": [
+        {
+          "id": "go",
+          "label": "认真听完做规划",
+          "resultText": "你记下了时间节点，开始准备语言成绩。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "skip",
+          "label": "暂时不想出国",
+          "resultText": "你回宿舍追剧了。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ]
     }
   ],
-  "note": "fixed 三条：社团招新(CLUB)、毕业论文(THESIS)、负债(DEBT)；random 46 条：恋爱链 ev_r23–26（邂逅→聚餐→散步→吵架→和好/分手，flags crush/crush2/romance）、花钱加属性 ev_r27–29（真题/技能班/健身卡）、链式延伸 ev_r30–36（竞赛组队→成绩、实习转正、甜蜜自习、走出失恋、保研评优、社团骨干，前置沿用 requires flag）、独立随机 ev_r37–46（宿舍火锅/占座/选课/体测/外卖/例会/分享会/体检/失眠/二手教材）；≥5 条带 requires、≥6 条写 flags、≥4 条川大特色。money 统一用顶层 effects.money。"
+  "note": "fixed 三条：社团招新(CLUB)、毕业论文(THESIS)、负债(DEBT)；random 已扩充至约 100 条：恋爱链 ev_r23-26、花钱加属性 ev_r27-29、链式延伸 ev_r30-36、独立随机 ev_r37-46、校园生活 ev_r47-59、通用扩充 ev_r60-89、学院专属 ev_c01-c24（每院 3 条）。money 统一用顶层 effects.money。"
 }

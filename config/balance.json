@@ -5,7 +5,7 @@
   "monthsPerSemester": 5,
   "examTurns": [5, 10, 15, 20, 25, 30, 35, 40],
   "randomEventBaseChance": 0.45,
-  "recentEventCooldown": 3,
+  "recentEventCooldown": 12,
   "attributePointTotal": 20,
   "attributeKeys": ["knowledge", "social", "health", "money"],
   "healthRestrictThreshold": 3,
