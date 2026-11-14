@@ -194,13 +194,17 @@ test('Engine: doAction("study") → AP 4→3 / studyActions+1 / 效果生效 / l
   if (s.pendingEvent && s.pendingEvent.eventId) {
     resolvePendingEvent(s, s.pendingEvent.options[0].id, config, createRng(3));
   }
+  // 开局事件本身会改属性，这里断言的是「行动带来的增量」，不写死绝对值
   const beforeLog = s.log.length;
+  const k0 = s.player.attributes.knowledge;
+  const h0 = s.player.attributes.health;
+  const ap0 = s.actionPoints;
   const r = doAction(s, 'study', config, createRng(2));
   return r.ok === true
-    && s.actionPoints === 3
+    && s.actionPoints === ap0 - 1
     && s.academics.studyActions === 1
-    && s.player.attributes.knowledge === 7   // 5 + 2
-    && s.player.attributes.health === 4      // 5 - 1
+    && s.player.attributes.knowledge === k0 + 2
+    && s.player.attributes.health === h0 - 1
     && s.log.length >= beforeLog + 1;
 });
 

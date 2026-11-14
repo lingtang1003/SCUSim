@@ -22,6 +22,7 @@
 - **素材**：背景与立绘放在 `assets/bg/`、`assets/char/`，命名与规格见 [`assets/README.md`](assets/README.md)；
   目前已接入 6 张场景图 + 2 个立绘，缺图时自动回落到 CSS 渐变 / 占位框。
 - 规范与改法见 [`docs/UI_视觉与交互规范.md`](docs/UI_视觉与交互规范.md)。
+- 配色 / 组件 / 动效的设计系统见 [`docs/DESIGN.md`](docs/DESIGN.md)。
 
 ---
 

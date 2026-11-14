@@ -177,6 +177,8 @@ export function createApp(ctx) {
   let overlayStage = null;
   let overlayDismissible = true;
   let lastState = null;
+  // 场景指纹：用来判断这一帧要不要播放「场景切换」动效（不能每次操作都重放）
+  let lastSceneSig = '';
   let keysBound = false;
   let typeRaf = null;
   let eventHintEl = null;
@@ -615,6 +617,7 @@ export function createApp(ctx) {
         'vn-choice' +
         (opts.variant ? ' vn-choice--' + opts.variant : '') +
         (opts.locked ? ' is-locked' : ''),
+      style: '--i:' + (Number.isFinite(opts.index) ? opts.index : 0),
       disabled: !!opts.locked,
       title: opts.title || '',
       onclick: () => {
@@ -630,7 +633,8 @@ export function createApp(ctx) {
     const actions = listOf('actions');
     const apLeft = Number(state.actionPoints) || 0;
     const items = [];
-    for (const a of actions) {
+    for (let i = 0; i < actions.length; i += 1) {
+      const a = actions[i];
       const av = (availability && availability[a.id]) || { ok: true };
       const locked = !av.ok;
       const chips = effectChips(a.effects);
@@ -642,6 +646,7 @@ export function createApp(ctx) {
           label: a.name || a.id,
           meta: meta,
           locked: locked,
+          index: i,
           title: a.desc || a.name || a.id,
           onClick: () => {
             if (callbacks.onAction) callbacks.onAction(a.id);
@@ -724,8 +729,12 @@ export function createApp(ctx) {
     const v = view || {};
     const appearance = findAppearance(ui.appearanceId);
 
+    const sceneSig = String(ui.scene) + '|' + ((ui.sceneEntry && ui.sceneEntry.file) || '');
+    const sceneChanged = sceneSig !== lastSceneSig;
+    lastSceneSig = sceneSig;
+
     rootEl.appendChild(
-      h('div', { class: 'vn-stage' }, [
+      h('div', { class: 'vn-stage' + (sceneChanged ? ' is-scene-change' : '') }, [
         bgLayer(ui.scene, ui.sceneEntry),
         spriteLayer(appearance),
         hud(state, v),
@@ -748,8 +757,11 @@ export function createApp(ctx) {
             class: 'vn-menu-btn vn-menu-btn--primary',
             onclick: () => startCreation(),
           }, [
-            h('span', { class: 'vn-menu-btn__label' }, ['开始新游戏']),
+            h('span', { class: 'vn-menu-btn__idx' }, ['01']),
+            h('span', { class: 'vn-menu-btn__body' }, [
+              h('span', { class: 'vn-menu-btn__label' }, ['开始新游戏']),
             h('span', { class: 'vn-menu-btn__hint' }, ['从大一新生开始']),
+            ]),
           ]),
           h('button', {
             class: 'vn-menu-btn' + (hasSave ? '' : ' is-locked'),
@@ -758,8 +770,11 @@ export function createApp(ctx) {
               if (hasSave && callbacks.onLoadGame) callbacks.onLoadGame();
             },
           }, [
-            h('span', { class: 'vn-menu-btn__label' }, ['继续游戏']),
+            h('span', { class: 'vn-menu-btn__idx' }, ['02']),
+            h('span', { class: 'vn-menu-btn__body' }, [
+              h('span', { class: 'vn-menu-btn__label' }, ['继续游戏']),
             h('span', { class: 'vn-menu-btn__hint' }, [hasSave ? '读取存档' : '暂无存档']),
+            ]),
           ]),
           h('button', {
             class: 'vn-menu-btn',
@@ -767,8 +782,11 @@ export function createApp(ctx) {
               if (callbacks.onOpenGallery) callbacks.onOpenGallery();
             },
           }, [
-            h('span', { class: 'vn-menu-btn__label' }, ['结局图鉴']),
+            h('span', { class: 'vn-menu-btn__idx' }, ['03']),
+            h('span', { class: 'vn-menu-btn__body' }, [
+              h('span', { class: 'vn-menu-btn__label' }, ['结局图鉴']),
             h('span', { class: 'vn-menu-btn__hint' }, ['已达成的结局']),
+            ]),
           ]),
           h('button', {
             class: 'vn-menu-btn',
@@ -776,8 +794,11 @@ export function createApp(ctx) {
               if (callbacks.onOpenSettings) callbacks.onOpenSettings();
             },
           }, [
-            h('span', { class: 'vn-menu-btn__label' }, ['系统设置']),
+            h('span', { class: 'vn-menu-btn__idx' }, ['04']),
+            h('span', { class: 'vn-menu-btn__body' }, [
+              h('span', { class: 'vn-menu-btn__label' }, ['系统设置']),
             h('span', { class: 'vn-menu-btn__hint' }, ['立绘 / 动效']),
+            ]),
           ]),
         ]),
         h('div', { class: 'vn-title__foot' }, [

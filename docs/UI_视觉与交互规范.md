@@ -139,3 +139,29 @@ UI 内部视图状态（**不是** GameState，不参与结算、不进存档）
 4. **多存档槽位**：目前是单槽自动存档 + 手动保存。
 5. **更多立绘 / 场景**：新增人物与场景只需改 `APPEARANCES` / `SCENES` 并放图（见 `assets/README.md`）。
 
+
+
+---
+
+## 配色与动效（2026 版）
+
+**色彩体系**：红（主） · 白（面） · 黑（次）。完整定义见 [`docs/DESIGN.md`](DESIGN.md)。
+
+| 角色 | 令牌 | 用途 |
+|---|---|---|
+| 主红 | `--red` `#b3121a` | 主操作、名牌、选中、关键数字 |
+| 亮红 / 深红 | `--red-bright` / `--red-deep` | 渐变两端、描边 |
+| 白 / 暖白 | `--paper` / `--paper-2` | 面板、卡片、对话框 |
+| 墨黑 / 中墨 / 淡墨 | `--ink` / `--ink-2` / `--ink-3` | 正文 / 说明 / 占位 |
+| 发丝线 | `--hair` | 1px 分隔 |
+
+旧的 `--sky-*` / `--gold-*` / `--accent` 等令牌已全部别名到新体系，样式表里不再出现蓝色。
+
+**动效**（第 20 节，纯 CSS，零依赖）：
+
+- 场景切换：`.vn-stage.is-scene-change` → 背景 `vn-bg-in`（推近淡入 760ms）+ 立绘 `vn-sprite-in`（左侧滑入 520ms）；
+  只在场景指纹变化的那一帧挂类，普通操作不重放；
+- 选项：`vn-fade-up` 错峰入场（`--i` × 45ms），悬停整块变红 + 高光扫过；
+- 弹窗/事件/结局：`vn-zoom-in` / `vn-fade-up` 入场；
+- 抽屉：`vn-slide-in-right`；
+- 减弱动效：`html.reduce-motion` 与 `prefers-reduced-motion` 双保险，全部 animation 关闭。
