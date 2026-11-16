@@ -72,11 +72,11 @@
   --shadow-3: 0 28px 70px rgba(20, 16, 15, 0.26);
 
   /* 字体 */
-  /* 系统黑体 → 汉仪唐美人W（自托管子集）；缺字自动回落到系统黑体 */
-  --font: "UITangMei", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+  /* 正文字体 → 汉仪晓波花月圆W（子集体积更大，覆盖全部界面用字） */
+  --font: "DisplayHY", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
     system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* 原宋体位 → 汉仪晓波花月圆W */
-  --font-display: "DisplayHY", "Georgia", "Songti SC", "STSong", "Noto Serif SC", serif;
+  /* 标题字体 → 汉仪唐美人W（原正文字体，现在只用于标题类元素） */
+  --font-display: "UITangMei", "DisplayHY", "PingFang SC", "Microsoft YaHei", serif;
 
   /* 动效 */
   --ease: cubic-bezier(0.22, 0.85, 0.24, 1);
@@ -3278,9 +3278,9 @@ a:hover {
   display: grid;
   grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
   grid-template-areas:
-    "crest foot"
-    "logo  menu"
-    "sub   menu";
+    "top  menu"
+    "logo menu"
+    "sub  menu";
   align-items: start;
   column-gap: 30px;
   row-gap: 8px;
@@ -3307,14 +3307,19 @@ a:hover {
   gap: 10px;
   align-self: center;
 }
+.vn-title__top {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: 14px;                   /* 徽记与「导入存档」的距离 */
+}
 .vn-title__foot {
-  grid-area: foot;
-  justify-self: end;
-  align-self: start;
-  margin: 10px 0 0;
+  width: auto;                 /* 不再撑满整行 */
+  margin: 0;
   padding: 0;
   border-top: 0;
-  text-align: right;
+  justify-content: flex-start;
+  text-align: left;
 }
 .vn-title__foot .vn-link {
   text-decoration: none;        /* 去下划线 */
@@ -3788,11 +3793,10 @@ a:hover {
   .vn-title {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "crest"
+      "top"
       "logo"
       "sub"
-      "menu"
-      "foot";
+      "menu";
     row-gap: 10px;
     padding: 22px 20px;
   }
@@ -3801,4 +3805,39 @@ a:hover {
   .vn-logo__sub { justify-self: center; text-align: center; align-items: center; }
   .vn-title__menu { grid-template-columns: 1fr 1fr; gap: 8px; }
   .vn-title .vn-menu-btn { min-height: 66px; padding: 12px 10px; }
+}
+
+/* 指定字的白色描边（描边在字形外侧，用多重阴影模拟，兼容性最好） */
+.vn-logo__hl {
+  position: relative;
+  z-index: 1;
+  -webkit-text-stroke: 0.055em #fff;
+  paint-order: stroke fill;
+  text-shadow:
+     0.062em 0 0 #fff, -0.062em 0 0 #fff,
+     0 0.062em 0 #fff, 0 -0.062em 0 #fff,
+     0.044em 0.044em 0 #fff, -0.044em 0.044em 0 #fff,
+     0.044em -0.044em 0 #fff, -0.044em -0.044em 0 #fff;
+}
+
+
+/* =========================================================================
+   25. 宋体位（--font-display = 汉仪晓波花月圆 W）的落点
+   —— 系统黑体位（--font = 汉仪唐美人 W）负责正文/选项/对话；
+      宋体位只出现在「标题类」元素上，避免通篇手写体。
+   ========================================================================= */
+.vn-modal__title,
+.vn-form__title,
+.vn-drawer__title,
+.vn-create__title,
+.vn-ending__name,
+.vn-profile__name {
+  font-family: var(--font-display);
+  font-weight: 400;            /* 晓波花月圆只有一个字重 */
+  letter-spacing: 0.04em;
+}
+.vn-event__tag {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.06em;
 }

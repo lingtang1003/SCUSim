@@ -782,10 +782,35 @@ export function createApp(ctx) {
     return h('div', { class: 'vn-stage vn-stage--title' }, [
       bgLayer('title', ui.sceneEntry),
       h('div', { class: 'vn-title' }, [
-        h('div', { class: 'vn-title__crest' }, ['SCUSim']),
+        h('div', { class: 'vn-title__top' }, [
+          h('div', { class: 'vn-title__crest' }, ['SCUSim']),
+          h('div', { class: 'vn-title__foot' }, [
+            h('label', { class: 'vn-link' }, [
+              '导入存档',
+              h('input', {
+                type: 'file',
+                accept: '.scusim,application/json',
+                style: 'display:none;',
+                onchange: (e) => {
+                  const f = e && e.target && e.target.files && e.target.files[0];
+                  if (f && callbacks.onImport) callbacks.onImport(f);
+                },
+              }),
+            ]),
+          ]),
+        ]),
         h('h1', { class: 'vn-logo' }, [
-          h('span', { class: 'vn-logo__line' }, ['我的大学四年']),
-          h('span', { class: 'vn-logo__line vn-logo__line--accent' }, ['果然有or没问题！']),
+          h('span', { class: 'vn-logo__line' }, [
+            '我的',
+            h('span', { class: 'vn-logo__hl' }, ['大学四年']),
+          ]),
+          h('span', { class: 'vn-logo__line vn-logo__line--accent' }, [
+            '果然',
+            h('span', { class: 'vn-logo__hl' }, ['有']),
+            'or',
+            h('span', { class: 'vn-logo__hl' }, ['没问题']),
+            '！',
+          ]),
         ]),
         h('p', { class: 'vn-logo__sub' }, ['在这里度过你的大学时光']),
         h('div', { class: 'vn-title__menu' }, [
@@ -831,20 +856,6 @@ export function createApp(ctx) {
               h('span', { class: 'vn-menu-btn__label' }, ['系统设置']),
             h('span', { class: 'vn-menu-btn__hint' }, ['立绘 / 动效']),
             ]),
-          ]),
-        ]),
-        h('div', { class: 'vn-title__foot' }, [
-          h('label', { class: 'vn-link' }, [
-            '导入存档',
-            h('input', {
-              type: 'file',
-              accept: '.scusim,application/json',
-              style: 'display:none;',
-              onchange: (e) => {
-                const f = e && e.target && e.target.files && e.target.files[0];
-                if (f && callbacks.onImport) callbacks.onImport(f);
-              },
-            }),
           ]),
         ]),
       ]),

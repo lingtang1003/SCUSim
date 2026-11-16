@@ -13,20 +13,25 @@
     #app { min-height: 100vh; }
     #boot {
       position: fixed; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 14px;
+      align-items: center; justify-content: center; gap: 30px;
       background: #faf7f6;
-      color: #1a1414; letter-spacing: .24em; font-size: 15px;
+      color: #1a1414; letter-spacing: .08em; font-size: 32px;
     }
     #boot .boot__mark {
-      width: 46px; height: 46px; border-radius: 50%;
+      width: 132px; height: 132px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       background: #b3121a; color: #fff;
-      font-family: Georgia, "Songti SC", serif; font-size: 13px; letter-spacing: .06em;
-      box-shadow: 0 10px 24px rgba(179, 18, 26, .28);
+      font-family: Georgia, "Songti SC", serif; font-size: 36px; letter-spacing: .04em;
+      box-shadow: 0 18px 44px rgba(179, 18, 26, .32);
     }
-    #boot small { letter-spacing: .08em; color: #948a87; font-size: 12px; }
+    #boot .boot__title {
+      font-family: 'TitleWood', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+      font-size: clamp(34px, 4.6vw, 56px); line-height: 1.18; text-align: center;
+      letter-spacing: .02em; font-weight: 400;
+    }
+    #boot small { letter-spacing: .16em; color: #948a87; font-size: 20px; }
     #boot .boot__bar {
-      width: 96px; height: 2px; border-radius: 2px;
+      width: 260px; height: 4px; border-radius: 4px;
       background: linear-gradient(90deg, #b3121a, rgba(179, 18, 26, .15));
       animation: boot-slide 1.2s ease-in-out infinite;
       transform-origin: left center;
@@ -44,7 +49,7 @@
   <div id="app">
     <div id="boot">
       <div class="boot__mark">SCU</div>
-      <div>我的大学四年，果然有or没问题！</div>
+      <div class="boot__title">我的大学四年，果然有or没问题！</div>
       <div class="boot__bar"></div>
       <small>正在进入校园…</small>
     </div>
