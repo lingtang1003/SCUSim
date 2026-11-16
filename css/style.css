@@ -2606,11 +2606,20 @@ a:hover {
   vertical-align: 3px;
   color: var(--red);
 }
-.vn-choice:hover .vn-choice__label::before { color: #fff; }
-.vn-choice__meta { color: var(--ink-2); text-shadow: none; -webkit-text-stroke: 0; }
+.vn-choice__label::before { transition: color 120ms linear; }
+.vn-choice:hover .vn-choice__label::before {
+  color: var(--on-accent, #fff);
+  transition: color 240ms linear 420ms;
+}
+.vn-choice__meta {
+  color: var(--ink-2);
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+  transition: color 120ms linear;          /* 鼠标离开：立刻回来 */
+}
 .vn-choice:hover .vn-choice__meta {
   color: var(--on-accent-soft, rgba(255, 255, 255, 0.86));
-  transition: color 180ms linear 360ms;
+  transition: color 240ms linear 420ms;    /* 鼠标进入：跟着填充慢慢变 */
 }
 .vn-choice.is-locked { opacity: 0.5; filter: grayscale(0.35); }
 .vn-choice.is-locked .vn-choice__meta {
@@ -3147,7 +3156,7 @@ a:hover {
     transform 180ms var(--ease-out),
     box-shadow 200ms var(--ease-out),
     border-color 200ms var(--ease-out),
-    color 180ms linear 360ms;
+    color 240ms linear 420ms;
 }
 .vn-choice:hover::after {
   scale: 1.75;                     /* 一次盖满，避免末尾再补一次 */
@@ -3432,10 +3441,8 @@ a:hover {
 [data-season] .vn-event__tag,
 [data-season] .vn-switch.is-on,
 [data-season] .vn-choice--gold,
-[data-season] .vn-choice:hover,
-[data-season] .vn-choice:hover .vn-choice__label,
-[data-season] .vn-choice:hover .vn-choice__meta {
-  color: var(--on-accent);
+[data-season] .vn-choice:hover {
+  color: var(--on-accent);        /* label 继承这里，才能跟着过渡 */
 }
 
 [data-season] .vn-choice:hover {
