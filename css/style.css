@@ -1812,8 +1812,10 @@ a:hover {
 }
 
 .vn-gallery__flag {
-  font-size: var(--t-xs);
-  padding: 2px 10px;
+  font-size: var(--t-base);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 7px 18px;
   border-radius: var(--r-pill);
   color: var(--ink-2);
   background: rgba(96, 124, 168, 0.12);
@@ -3655,4 +3657,67 @@ a:hover {
   }
   .vn-choice__label { font-size: 16px; }
   .vn-choice__meta { font-size: 11px; }
+}
+
+
+/* =========================================================================
+   24. 标题页：青春动漫味的双行标题
+   —— 粗黑体、紧凑字距、第二行加一条红色荧光笔高亮；不动布局尺寸。
+   ========================================================================= */
+.vn-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font);
+  font-size: clamp(30px, 3.4vw, 44px);
+  font-weight: 800;
+  line-height: 1.16;
+  letter-spacing: 0.01em;
+  text-align: center;
+  color: var(--ink);
+  transform: rotate(-1.2deg);
+}
+.vn-logo__line {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+.vn-logo__line--accent {
+  /* 荧光笔横扫：字底三分之一处压一条略带斜切的强调色 */
+  padding: 0 6px;
+  background-image: linear-gradient(
+    180deg,
+    transparent 70%,
+    color-mix(in srgb, var(--red) 22%, transparent) 70%,
+    color-mix(in srgb, var(--red) 22%, transparent) 96%,
+    transparent 96%
+  );
+  background-repeat: no-repeat;
+  border-radius: 4px;
+}
+.vn-logo__sub {
+  margin-top: 10px;
+  font-size: clamp(13px, 1.15vw, 16px);
+  letter-spacing: 0.18em;
+  color: var(--ink-2);
+}
+
+/* 徽记改成文字 logo：SCUSim */
+.vn-title__crest {
+  width: auto;
+  min-width: 0;
+  padding: 10px 16px;
+  border-radius: 14px;
+  font-family: var(--font);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  transform: rotate(-3deg);
+}
+
+@media (max-width: 880px) {
+  .vn-logo { font-size: clamp(24px, 6vw, 32px); }
+  .vn-logo__sub { letter-spacing: 0.12em; }
 }

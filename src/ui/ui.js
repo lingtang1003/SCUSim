@@ -781,9 +781,12 @@ export function createApp(ctx) {
     return h('div', { class: 'vn-stage vn-stage--title' }, [
       bgLayer('title', ui.sceneEntry),
       h('div', { class: 'vn-title' }, [
-        h('div', { class: 'vn-title__crest' }, ['SCU']),
-        h('h1', { class: 'vn-logo' }, ['川大校园生活模拟器']),
-        h('p', { class: 'vn-logo__sub' }, ['SCUSim · 从入学到毕业的四十个星期']),
+        h('div', { class: 'vn-title__crest' }, ['SCUSim']),
+        h('h1', { class: 'vn-logo' }, [
+          h('span', { class: 'vn-logo__line' }, ['我的大学四年']),
+          h('span', { class: 'vn-logo__line vn-logo__line--accent' }, ['果然有or没问题！']),
+        ]),
+        h('p', { class: 'vn-logo__sub' }, ['在这里度过你的大学时光']),
         h('div', { class: 'vn-title__menu' }, [
           h('button', {
             class: 'vn-menu-btn vn-menu-btn--primary',
