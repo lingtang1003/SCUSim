@@ -2614,7 +2614,7 @@ a:hover {
 .vn-choice__label::before { transition: color 120ms linear; }
 .vn-choice:hover .vn-choice__label::before {
   color: var(--on-accent, #fff);
-  transition: color 240ms linear 420ms;
+  transition: color 300ms linear 800ms;
 }
 .vn-choice__meta {
   color: var(--ink-2);
@@ -2624,7 +2624,7 @@ a:hover {
 }
 .vn-choice:hover .vn-choice__meta {
   color: var(--on-accent-soft, rgba(255, 255, 255, 0.86));
-  transition: color 240ms linear 420ms;    /* 鼠标进入：跟着填充慢慢变 */
+  transition: color 300ms linear 800ms;    /* 鼠标进入：跟着填充慢慢变 */
 }
 .vn-choice.is-locked { opacity: 0.5; filter: grayscale(0.35); }
 .vn-choice.is-locked .vn-choice__meta {
@@ -3149,7 +3149,7 @@ a:hover {
   border-radius: 47%;              /* 接近圆形但略带方角：转起来就是起伏的波面 */
   rotate: 0deg;
   /* 鼠标离开：快速退掉（240ms）；进入的时长写在 :hover 里 */
-  transition: transform 240ms cubic-bezier(0.4, 0, 0.6, 1);
+  transition: transform 480ms cubic-bezier(0.4, 0, 0.6, 1);
 }
 .vn-choice > * { position: relative; z-index: 1; }
 .vn-choice:hover {
@@ -3162,12 +3162,12 @@ a:hover {
     transform 180ms var(--ease-out),
     box-shadow 200ms var(--ease-out),
     border-color 200ms var(--ease-out),
-    color 240ms linear 420ms;
+    color 300ms linear 800ms;
 }
 .vn-choice:hover::after {
   transform: translate(-50%, -50%) scale(1.75);   /* 一次盖满 */
   /* 鼠标进入：慢慢涨满（700ms，缓入缓出） */
-  transition: transform 700ms cubic-bezier(0.4, 0, 0.6, 1);
+  transition: transform 1400ms cubic-bezier(0.4, 0, 0.6, 1);
   animation: vn-wave-spin 6s linear infinite;
 }
 @keyframes vn-wave-spin {
