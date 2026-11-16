@@ -3837,8 +3837,7 @@ a:hover {
 .vn-form__title,
 .vn-drawer__title,
 .vn-create__title,
-.vn-ending__name,
-.vn-profile__name {
+.vn-ending__name {
   font-family: var(--font-display);
   font-weight: 400;            /* 晓波花月圆只有一个字重 */
   letter-spacing: 0.04em;
@@ -3879,4 +3878,47 @@ body { font-synthesis: none; }
 .vn-drawer__title,
 .vn-create__title {
   -webkit-text-stroke: 0.014em currentColor;
+}
+
+
+/* =========================================================================
+   27. 关闭按钮：用两条线画 ×，保证严格居中（字符 × 的字面重心偏下偏左）
+   ========================================================================= */
+.vn-icon--close {
+  position: relative;
+  font-size: 0;                 /* 隐藏原字符 */
+  line-height: 0;
+  padding: 0;
+}
+.vn-icon--close::before,
+.vn-icon--close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 13px;
+  height: 1.8px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.vn-icon--close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+
+/* 角色信息里的玩家姓名：用正文字体（晓波花月圆），不用标题的手写体 */
+.vn-profile__name {
+  font-family: 'DisplayHY', var(--font);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+
+/* 创建角色里的表单小标题（你的名字 / 学院 / 属性 …）用正文字体 */
+.vn-form__title {
+  font-family: 'DisplayHY', var(--font);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  -webkit-text-stroke: 0;      /* 也不再描粗 */
 }
