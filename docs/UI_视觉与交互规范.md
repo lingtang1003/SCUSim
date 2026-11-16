@@ -165,3 +165,15 @@ UI 内部视图状态（**不是** GameState，不参与结算、不进存档）
 - 弹窗/事件/结局：`vn-zoom-in` / `vn-fade-up` 入场；
 - 抽屉：`vn-slide-in-right`；
 - 减弱动效：`html.reduce-motion` 与 `prefers-reduced-motion` 双保险，全部 animation 关闭。
+
+### 季节配色（游戏内）
+
+标题页 / 创建角色保持红白黑；进入游戏后 `#app[data-season]` 由 `state.turn` 决定：
+
+| 回合（学年内） | 1–3 | 4–6 | 7–9 | 10 |
+|---|---|---|---|---|
+| 季节 | 秋 | 冬 | 春 | 夏 |
+| 主题键 | `autumn` | `winter` | `spring` | `summer` |
+
+强调色、浅色阶、纸色一起换，选项/菜单/弹窗/名牌/进度条自动跟随；
+换季有 320ms 的颜色过渡。色值见 [`DESIGN.md`](DESIGN.md) 第 10 节。

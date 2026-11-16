@@ -2529,7 +2529,7 @@ a:hover {
 .vn-ap { background: rgba(26, 20, 20, 0.18); box-shadow: none; }
 .vn-ap.is-on { background: var(--red); box-shadow: 0 0 8px rgba(179, 18, 26, 0.45); }
 .vn-loc {
-  background: var(--glass-white);
+  background: color-mix(in srgb, var(--red-50) 70%, var(--paper));
   border-color: rgba(255, 255, 255, 0.95);
   color: var(--ink);
 }
@@ -2551,7 +2551,11 @@ a:hover {
 
 /* ---- 对话框（白纸 + 红名牌） ---- */
 .vn-dialogue__box {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 246, 245, 0.96));
+  background: linear-gradient(
+    180deg,
+    var(--paper) 0%,
+    color-mix(in srgb, var(--red-100) 52%, var(--paper)) 100%
+  );
   border-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38), inset 0 1px 0 #fff;
 }
@@ -3097,7 +3101,12 @@ a:hover {
   isolation: isolate;
   border-radius: 14px;
   border: 1px solid var(--hair);
-  background: #fff;
+  background: linear-gradient(
+    180deg,
+    var(--paper) 0%,
+    var(--paper) 46%,
+    color-mix(in srgb, var(--red-100) 62%, var(--paper)) 100%
+  );
   color: var(--ink);
   box-shadow: 0 1px 2px rgba(20, 16, 15, 0.08);
   transition:
@@ -3115,7 +3124,7 @@ a:hover {
   left: 0;
   top: 9px;
   bottom: 9px;
-  width: 3px;
+  width: 4px;
   border-radius: 0 3px 3px 0;
   background: var(--red);
   transition: opacity 180ms linear;
@@ -3291,3 +3300,262 @@ a:hover {
     animation: none !important;
   }
 }
+
+
+/* =========================================================================
+   21. 季节配色（只作用于游戏内；标题页 / 创建角色始终是红白黑）
+   取色直接来自四张参考图：
+     春 #f2fff2 / #a7d3a2 / #ffecc5 / #fed4d8
+     夏 #f0fff4 / #d9ff9c / #aee8ff / #19c7d7
+     秋 #aa333c / #fbd3ac / #9aab64 / #3c5227
+     冬 #775537 / #fbe29d / #c0ddda / #f1f1f1
+   —— 每个季节只覆盖「强调色阶 + 表面色阶 + 强调上的文字色」，
+      组件规则继续用 var(--red*) / var(--paper*)，自动跟着换。
+   ========================================================================= */
+
+[data-season="spring"] {
+  --red-50: #f2fff2;
+  --red-100: #fed4d8;        /* 樱花粉：卡片/对话框的浅色wash */
+  --red-200: #ffecc5;        /* 奶油：描边与浅底 */
+  --red: #a7d3a2;            /* 鼠尾草绿 */
+  --red-bright: #fed4d8;     /* 樱花粉（悬停） */
+  --red-deep: #6f9b6a;
+  --red-soft: rgba(167, 211, 162, 0.28);
+  --red-glow: rgba(111, 155, 106, 0.28);
+  --on-accent: #22301f;
+  --on-accent-soft: rgba(34, 48, 31, 0.74);
+  --paper-2: #f6fff6;
+  --paper-3: #ffecc5;        /* 奶油 */
+  --paper-4: #f2ddc4;
+  --hair: rgba(111, 155, 106, 0.18);
+  --hair-soft: rgba(111, 155, 106, 0.1);
+  --up: #2f4a28;
+  --down: #b8505c;
+  --down-bg: rgba(254, 212, 216, 0.5);
+}
+
+[data-season="summer"] {
+  --red-50: #f0fff4;
+  --red-100: #e2fbf6;
+  --red-200: #c9f2f4;
+  --red: #19c7d7;            /* 汽水青 */
+  --red-bright: #d9ff9c;     /* 柠檬绿（悬停） */
+  --red-deep: #0f8e9a;
+  --red-soft: rgba(25, 199, 215, 0.22);
+  --red-glow: rgba(15, 142, 154, 0.26);
+  --on-accent: #03333a;
+  --on-accent-soft: rgba(3, 51, 58, 0.72);
+  --paper-2: #f4fffa;
+  --paper-3: #aee8ff;        /* 天空蓝 */
+  --paper-4: #d5eef0;
+  --hair: rgba(15, 142, 154, 0.18);
+  --hair-soft: rgba(15, 142, 154, 0.1);
+  --up: #134b53;
+  --down: #d95d6a;
+  --down-bg: rgba(217, 93, 106, 0.14);
+}
+
+[data-season="autumn"] {
+  --red-50: #fdf6ee;
+  --red-100: #fbd3ac;        /* 浅橙 */
+  --red-200: #f0dcc4;
+  --red: #aa333c;            /* 赭红 */
+  --red-bright: #c14a53;
+  --red-deep: #3c5227;       /* 深苔绿 */
+  --red-soft: rgba(170, 51, 60, 0.14);
+  --red-glow: rgba(170, 51, 60, 0.28);
+  --on-accent: #ffffff;
+  --on-accent-soft: rgba(255, 255, 255, 0.84);
+  --paper-2: #fdf8f1;
+  --paper-3: #f8e8d5;
+  --paper-4: #eddcc6;
+  --hair: rgba(60, 82, 39, 0.18);
+  --hair-soft: rgba(60, 82, 39, 0.1);
+  --up: #3c5227;
+  --down: #aa333c;
+  --down-bg: rgba(251, 211, 172, 0.55);
+}
+
+[data-season="winter"] {
+  --red-50: #f7f4ef;
+  --red-100: #c0ddda;        /* 雾青 */
+  --red-200: #e3eeec;
+  --red: #775537;            /* 旧铜 */
+  --red-bright: #8f6a45;
+  --red-deep: #5a4029;
+  --red-soft: rgba(119, 85, 55, 0.14);
+  --red-glow: rgba(90, 64, 41, 0.26);
+  --on-accent: #fbe29d;      /* 奶油黄字 */
+  --on-accent-soft: rgba(251, 226, 157, 0.8);
+  --paper-2: #f4f4f2;        /* 贝壳白 */
+  --paper-3: #e8f0ef;
+  --paper-4: #dbe6e5;
+  --hair: rgba(119, 85, 55, 0.18);
+  --hair-soft: rgba(119, 85, 55, 0.1);
+  --up: #2b444c;
+  --down: #8f4a4a;
+  --down-bg: rgba(143, 74, 74, 0.14);
+}
+
+/* 强调底上的文字：跟着季节的「可读色」走（春秋用深色、秋用白、冬用奶油黄） */
+[data-season] .vn-speaker,
+[data-season] .btn--primary,
+[data-season] .vn-chip--gold,
+[data-season] .vn-hud__avatar,
+[data-season] .vn-step.is-current,
+[data-season] .vn-counter.is-ok,
+[data-season] .vn-ending__rank,
+[data-season] .vn-event__tag,
+[data-season] .vn-switch.is-on,
+[data-season] .vn-choice--gold,
+[data-season] .vn-choice:hover,
+[data-season] .vn-choice:hover .vn-choice__label,
+[data-season] .vn-choice:hover .vn-choice__meta {
+  color: var(--on-accent);
+}
+
+[data-season] .vn-choice:hover {
+  background: linear-gradient(180deg, var(--red-bright), var(--red));
+  border-color: var(--red-deep);
+}
+
+[data-season] .vn-choice:hover .vn-choice__meta { color: var(--on-accent-soft); }
+
+/* 换季过渡：颜色渐变过去，避免硬切 */
+[data-season] .vn-stage,
+[data-season] .vn-dialogue__box,
+[data-season] .vn-choice,
+[data-season] .vn-chip,
+[data-season] .vn-loc,
+[data-season] .vn-hud__name,
+[data-season] .vn-icon,
+[data-season] .vn-speaker,
+[data-season] .vn-modal,
+[data-season] .vn-slot {
+  transition-property: background, background-color, border-color, color, box-shadow;
+  transition-duration: 320ms;
+  transition-timing-function: var(--ease-out);
+}
+
+/* 季节化的 HUD / 场景氛围 */
+[data-season] .vn-chip {
+  background: color-mix(in srgb, var(--red-50) 72%, var(--paper));
+  border-color: color-mix(in srgb, var(--red-200) 60%, transparent);
+  color: var(--ink);
+}
+[data-season] .vn-chip--glass {
+  background: color-mix(in srgb, var(--red-50) 55%, var(--glass-white));
+}
+[data-season] .vn-hud__name,
+[data-season] .vn-icon,
+[data-season] .vn-loc {
+  border-color: color-mix(in srgb, var(--red-200) 55%, transparent);
+}
+/* 场景四周压一层季节色薄雾：一眼能看出季节，但不盖住画面 */
+[data-season] .vn-bg__veil {
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--red) 22%, transparent) 0%,
+      transparent 26%,
+      transparent 62%,
+      color-mix(in srgb, var(--red-deep) 30%, transparent) 100%
+    );
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+
+/* ---- 22. 自绘下拉（学院选择）：悬停高亮是圆角，不再是系统灰条 ---- */
+.vn-picker {
+  position: relative;
+}
+.vn-picker__field {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--t-base);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms linear, box-shadow 200ms var(--ease-out), background 200ms linear;
+}
+.vn-picker__field:hover {
+  border-color: color-mix(in srgb, var(--red) 45%, transparent);
+  box-shadow: 0 6px 16px rgba(20, 16, 15, 0.08);
+}
+.vn-picker__field[aria-expanded="true"] {
+  border-color: var(--red);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--red) 14%, transparent);
+}
+.vn-picker__caret {
+  color: var(--ink-3);
+  font-size: 14px;
+  line-height: 1;
+  transition: transform 180ms var(--ease-out), color 160ms linear;
+}
+.vn-picker__field[aria-expanded="true"] .vn-picker__caret {
+  transform: rotate(180deg);
+  color: var(--red);
+}
+.vn-picker__list {
+  position: absolute;
+  z-index: 40;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  max-height: 240px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: 16px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  box-shadow: 0 20px 46px rgba(20, 16, 15, 0.18);
+}
+.vn-picker.is-open .vn-picker__list {
+  display: flex;
+  animation: vn-fade-up 160ms var(--ease-out) both;
+}
+.vn-picker__opt {
+  border: 0;
+  background: transparent;
+  padding: 10px 12px;
+  border-radius: 10px;          /* 悬停灰框 → 圆角色块 */
+  font: inherit;
+  font-size: var(--t-base);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background 140ms linear, color 140ms linear;
+}
+.vn-picker__opt:hover,
+.vn-picker__opt:focus-visible {
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+  border-radius: 10px;
+  outline: none;
+}
+.vn-picker__opt.is-current {
+  color: var(--red);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--red) 8%, transparent);
+}
+.vn-picker__opt.is-current:hover {
+  background: color-mix(in srgb, var(--red) 16%, transparent);
+}
+.vn-picker__list::-webkit-scrollbar { width: 6px; }
+.vn-picker__list::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--ink) 18%, transparent);
+  border-radius: 3px;
+}
+.vn-picker__list::-webkit-scrollbar-track { background: transparent; }

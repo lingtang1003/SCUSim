@@ -437,6 +437,21 @@ export function createApp(ctx) {
     return SEASON_CYCLE[(t - 1) % SEASON_CYCLE.length];
   }
 
+  /** 季节 → 主题键（CSS 里 [data-season="..."] 覆盖强调色阶） */
+  const SEASON_THEME = { 春: 'spring', 夏: 'summer', 秋: 'autumn', 冬: 'winter' };
+
+  function applySeasonTheme(turn) {
+    if (!rootEl || !rootEl.dataset) return;
+    const key = SEASON_THEME[seasonOf(turn)];
+    if (key) rootEl.dataset.season = key;
+    else delete rootEl.dataset.season;
+  }
+
+  /** 标题页 / 创建角色：回到红白黑，不吃季节配色 */
+  function clearSeasonTheme() {
+    if (rootEl && rootEl.dataset) delete rootEl.dataset.season;
+  }
+
   function weekLine(turn) {
     const i = Math.max(0, (Number(turn) || 1) - 1) % WEEK_LINES.length;
     return WEEK_LINES[i];
@@ -729,6 +744,7 @@ export function createApp(ctx) {
     const v = view || {};
     const appearance = findAppearance(ui.appearanceId);
 
+    applySeasonTheme(state.turn);
     const sceneSig = String(ui.scene) + '|' + ((ui.sceneEntry && ui.sceneEntry.file) || '');
     const sceneChanged = sceneSig !== lastSceneSig;
     lastSceneSig = sceneSig;
@@ -822,6 +838,7 @@ export function createApp(ctx) {
   function renderTitle(hasSave) {
     closeOverlay();
     stopTypewriter();
+    clearSeasonTheme();
     clearRoot();
     ui.scene = 'title';
     titleSeq += 1;
@@ -842,8 +859,12 @@ export function createApp(ctx) {
     keysBound = true;
     doc.addEventListener('keydown', (e) => {
       if (!e || e.key == null) return;
-      if (e.key === 'Escape' && overlayEl && overlayDismissible) closeOverlay();
+      if (e.key === 'Escape') {
+        closeAllPickers();
+        if (overlayEl && overlayDismissible) closeOverlay();
+      }
     });
+    doc.addEventListener('click', () => closeAllPickers());
   }
 
   // ---------------- 创建角色 ----------------
@@ -993,18 +1014,92 @@ export function createApp(ctx) {
     ]);
   }
 
-  function creationCollegeStep() {
-    const colleges = listOf('colleges');
-    const select = h(
-      'select',
-      { class: 'select input--vn' },
-      colleges.map((c) =>
-        h('option', { value: c.id, selected: c.id === creation.collegeId }, [c.name])
+  /** 自绘下拉：原生 <select> 的悬停高亮由系统画，没法加圆角，所以自己做一个 */
+  function picker(field) {
+    const options = field.options || [];
+    const current = options.find((o) => o.value === field.value) || options[0];
+    const list = h(
+      'div',
+      { class: 'vn-picker__list', role: 'listbox' },
+      options.map((o) =>
+        h('button', {
+          type: 'button',
+          role: 'option',
+          class: 'vn-picker__opt' + (current && o.value === current.value ? ' is-current' : ''),
+          'aria-selected': current && o.value === current.value ? 'true' : 'false',
+          onclick: (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
+            wrap.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+            if (field.onChange) field.onChange(o.value);
+          },
+        }, [o.label])
       )
     );
-    select.addEventListener('change', (e) => {
-      creation.collegeId = e.target ? e.target.value : creation.collegeId;
-      renderCreation();
+    const trigger = h('button', {
+      type: 'button',
+      class: 'vn-picker__field',
+      'aria-haspopup': 'listbox',
+      'aria-expanded': 'false',
+      onclick: (e) => {
+        if (e && e.stopPropagation) e.stopPropagation();
+        const open = wrap.classList.contains('is-open');
+        closeAllPickers();
+        if (!open) {
+          wrap.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+          positionList(list, trigger);
+        }
+      },
+    }, [
+      h('span', { class: 'vn-picker__value' }, [current ? current.label : '请选择']),
+      h('span', { class: 'vn-picker__caret', 'aria-hidden': 'true' }, ['⌄']),
+    ]);
+    const wrap = h('div', { class: 'vn-picker' }, [trigger, list]);
+    return wrap;
+  }
+
+  /**
+   * 浮层定位：面板带 backdrop-filter，fixed 的包含块会变成面板而不是视口，
+   * 所以先用 left/top=0 探一次原点，再按差值摆放。
+   */
+  function positionList(list, trigger) {
+    if (!trigger || typeof trigger.getBoundingClientRect !== 'function') return;
+    const view = (doc && doc.defaultView) || null;
+    const vh = (view && view.innerHeight) || 800;
+    const r = trigger.getBoundingClientRect();
+    list.style.position = 'fixed';
+    list.style.width = r.width + 'px';
+    list.style.left = '0px';
+    list.style.top = '0px';
+    const origin = list.getBoundingClientRect();
+    list.style.left = Math.round(r.left - origin.left) + 'px';
+    list.style.top = Math.round(r.bottom + 8 - origin.top) + 'px';
+    const room = vh - r.bottom - 24;
+    list.style.maxHeight = Math.max(160, Math.min(280, room)) + 'px';
+  }
+
+  function closeAllPickers() {
+    if (!rootEl || typeof rootEl.querySelectorAll !== 'function') return;
+    try {
+      const open = rootEl.querySelectorAll('.vn-picker.is-open');
+      for (const el of open) {
+        el.classList.remove('is-open');
+        const t = el.querySelector('.vn-picker__field');
+        if (t && t.setAttribute) t.setAttribute('aria-expanded', 'false');
+      }
+    } catch (_) {}
+  }
+
+  function creationCollegeStep() {
+    const colleges = listOf('colleges');
+    const select = picker({
+      value: creation.collegeId,
+      options: colleges.map((c) => ({ value: c.id, label: c.name })),
+      onChange: (v) => {
+        creation.collegeId = v;
+        renderCreation();
+      },
     });
     const cur = findCollege(creation.collegeId);
     return h('div', { class: 'vn-form' }, [
@@ -1237,6 +1332,7 @@ export function createApp(ctx) {
   }
 
   function startCreation() {
+    clearSeasonTheme();
     creation = makeCreationState();
     renderCreation();
   }
