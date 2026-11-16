@@ -2614,7 +2614,7 @@ a:hover {
 .vn-choice__label::before { transition: color 120ms linear; }
 .vn-choice:hover .vn-choice__label::before {
   color: var(--on-accent, #fff);
-  transition: color 300ms linear 800ms;
+  transition: color 220ms linear;
 }
 .vn-choice__meta {
   color: var(--ink-2);
@@ -2624,7 +2624,7 @@ a:hover {
 }
 .vn-choice:hover .vn-choice__meta {
   color: var(--on-accent-soft, rgba(255, 255, 255, 0.86));
-  transition: color 300ms linear 800ms;    /* 鼠标进入：跟着填充慢慢变 */
+  transition: color 220ms linear;    /* 早点转色，避免同色被填满时看不见 */
 }
 .vn-choice.is-locked { opacity: 0.5; filter: grayscale(0.35); }
 .vn-choice.is-locked .vn-choice__meta {
@@ -3124,7 +3124,7 @@ a:hover {
     transform 180ms var(--ease-out),
     box-shadow 200ms var(--ease-out),
     background 200ms var(--ease-out),
-    border-color 200ms var(--ease-out),
+    border-color 480ms var(--ease-out),
     color 160ms linear;
   animation: vn-fade-up 380ms var(--ease-out) both;
   animation-delay: calc(var(--i, 0) * 45ms);
@@ -3152,7 +3152,7 @@ a:hover {
 }
 .vn-choice > * { position: relative; z-index: 1; }
 .vn-choice:hover {
-  border-color: var(--red-deep);
+  border-color: var(--red);        /* 与填充同色：不会在填满时留一圈浅色描边 */
   color: var(--on-accent, #fff);
   transform: var(--lift);
   box-shadow: 0 12px 26px var(--red-glow);
@@ -3161,7 +3161,7 @@ a:hover {
     transform 180ms var(--ease-out),
     box-shadow 200ms var(--ease-out),
     border-color 200ms var(--ease-out),
-    color 300ms linear 800ms;
+    color 220ms linear;
 }
 .vn-choice:hover::after {
   transform: translate(-50%, -50%) scale(1.75);   /* 一次盖满 */
@@ -3513,7 +3513,7 @@ a:hover {
 }
 
 [data-season] .vn-choice:hover {
-  border-color: var(--red-deep);
+  border-color: var(--red);
 }
 
 [data-season] .vn-choice:hover .vn-choice__meta { color: var(--on-accent-soft); }
