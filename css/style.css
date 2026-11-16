@@ -2692,8 +2692,8 @@ a:hover {
 
 /* ---- 标题页（白卡 + 红 CTA） ---- */
 .vn-title {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5));
-  border-color: rgba(255, 255, 255, 0.6);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.86));
+  border-color: rgba(255, 255, 255, 0.85);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 .vn-title__crest {
@@ -3147,8 +3147,8 @@ a:hover {
   background: var(--red);          /* 纯色填充，不用渐变 */
   border-radius: 47%;              /* 接近圆形但略带方角：转起来就是起伏的波面 */
   rotate: 0deg;
-  /* 0.7s、缓入缓出：稳一点，不会「一下就填满」 */
-  transition: scale 700ms cubic-bezier(0.4, 0, 0.6, 1);
+  /* 鼠标离开：快速退掉（240ms）；进入的时长写在 :hover 里 */
+  transition: scale 240ms cubic-bezier(0.4, 0, 0.6, 1);
 }
 .vn-choice > * { position: relative; z-index: 1; }
 .vn-choice:hover {
@@ -3165,6 +3165,8 @@ a:hover {
 }
 .vn-choice:hover::after {
   scale: 1.75;                     /* 一次盖满，避免末尾再补一次 */
+  /* 鼠标进入：慢慢涨满（700ms，缓入缓出） */
+  transition: scale 700ms cubic-bezier(0.4, 0, 0.6, 1);
   animation: vn-wave-spin 6s linear infinite;
 }
 @keyframes vn-wave-spin {
@@ -3353,7 +3355,7 @@ a:hover {
   align-items: flex-end;
   padding-bottom: 34px;
 }
-.vn-title__crest { font-family: var(--font-display); letter-spacing: 0.14em; transform: rotate(-3deg); border-radius: 10px; }
+.vn-title__crest { font-family: 'DisplayHY', var(--font); letter-spacing: 0.14em; transform: rotate(-3deg); border-radius: 10px; }
 .vn-logo { font-family: var(--font-display); letter-spacing: 0.02em; line-height: 1.16; }
 .vn-logo__sub { letter-spacing: 0.06em; }
 
@@ -3774,7 +3776,7 @@ a:hover {
   min-width: 0;
   padding: 9px 14px;
   border-radius: 13px;
-  font-family: var(--font-display);
+  font-family: 'DisplayHY', var(--font);
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.08em;
