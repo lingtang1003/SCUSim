@@ -3284,8 +3284,12 @@ a:hover {
     "logo menu"
     "sub  menu";
   align-items: start;
+  align-content: center;
   column-gap: 30px;
-  row-gap: 8px;
+  row-gap: 10px;
+  /* 卡片更高，接近满屏的 3/4 视觉占比 */
+  min-height: clamp(460px, 60vh, 660px);
+  padding-block: 40px;
   backdrop-filter: blur(16px) saturate(1.05);
   -webkit-backdrop-filter: blur(16px) saturate(1.05);
 }
@@ -3862,3 +3866,16 @@ body { font-synthesis: none; }
 .vn-dialogue__box,
 .vn-modal,
 .vn-drawer { font-weight: 400; }
+
+
+/* 晓波花月圆只有一个「细」字重，官网样张偏粗一点；
+   这里给标题页按钮文字加极细描边（0.02em），笔画略加厚但不糊 */
+.vn-title .vn-menu-btn__label {
+  -webkit-text-stroke: 0.022em currentColor;
+}
+.vn-modal__title,
+.vn-form__title,
+.vn-drawer__title,
+.vn-create__title {
+  -webkit-text-stroke: 0.014em currentColor;
+}
