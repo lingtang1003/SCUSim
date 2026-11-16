@@ -3276,15 +3276,14 @@ a:hover {
   width: min(1060px, 92vw);
   padding: 26px 30px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
   grid-template-areas:
-    "crest menu"
+    "crest foot"
     "logo  menu"
-    "sub   menu"
-    "foot  foot";
+    "sub   menu";
   align-items: start;
-  column-gap: 32px;
-  row-gap: 6px;
+  column-gap: 30px;
+  row-gap: 8px;
   backdrop-filter: blur(16px) saturate(1.05);
   -webkit-backdrop-filter: blur(16px) saturate(1.05);
 }
@@ -3294,7 +3293,13 @@ a:hover {
   margin-bottom: 6px;
 }
 .vn-logo { grid-area: logo; text-align: left; align-items: flex-start; transform: rotate(-1deg); }
-.vn-logo__sub { grid-area: sub; text-align: left; margin-top: 2px; }
+.vn-logo__sub {
+  grid-area: sub;
+  justify-self: start;
+  text-align: left;
+  margin: 4px 0 0;
+  padding: 0;
+}
 .vn-title__menu {
   grid-area: menu;
   display: grid;
@@ -3302,15 +3307,31 @@ a:hover {
   gap: 10px;
   align-self: center;
 }
-.vn-title__foot { grid-area: foot; margin-top: 14px; }
+.vn-title__foot {
+  grid-area: foot;
+  justify-self: end;
+  align-self: start;
+  margin: 10px 0 0;
+  padding: 0;
+  border-top: 0;
+  text-align: right;
+}
+.vn-title__foot .vn-link {
+  text-decoration: none;        /* 去下划线 */
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+}
+.vn-title__foot .vn-link:hover { color: var(--red); }
 .vn-title .vn-menu-btn {
   border: 1px solid var(--hair);
-  border-radius: 14px;
-  padding: 14px 12px;
+  border-radius: 16px;
+  padding: 18px 14px;
   background: #fff;
   justify-content: center;
-  min-height: 78px;
+  min-height: 96px;
 }
+.vn-title .vn-menu-btn__label { font-size: 24px; letter-spacing: 0.02em; }
+.vn-title .vn-menu-btn__hint { font-size: 15px; }
 .vn-title .vn-menu-btn--primary {
   background: var(--red);
   border-color: var(--red-deep);
@@ -3705,14 +3726,14 @@ a:hover {
 .vn-logo {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 2px;
   font-family: 'TitleWood', var(--font);
-  font-size: clamp(30px, 3.4vw, 44px);
+  font-size: clamp(34px, 4.1vw, 56px);
   font-weight: 400;                 /* 该字体只有一个字重，粗度由字形本身给出 */
-  line-height: 1.16;
+  line-height: 1.14;
   letter-spacing: 0.01em;
-  text-align: center;
+  text-align: left;
   color: var(--ink);
   transform: rotate(-1.2deg);
 }
@@ -3723,13 +3744,13 @@ a:hover {
 }
 .vn-logo__line--accent {
   /* 荧光笔横扫：字底三分之一处压一条略带斜切的强调色 */
-  padding: 0 6px;
+  padding: 0;
   background-image: linear-gradient(
     180deg,
-    transparent 70%,
-    color-mix(in srgb, var(--red) 22%, transparent) 70%,
-    color-mix(in srgb, var(--red) 22%, transparent) 96%,
-    transparent 96%
+    transparent 34%,
+    color-mix(in srgb, var(--red-bright) 52%, transparent) 34%,
+    color-mix(in srgb, var(--red-bright) 52%, transparent) 80%,
+    transparent 80%
   );
   background-repeat: no-repeat;
   border-radius: 4px;
