@@ -75,6 +75,7 @@ const BG = {
   metroPlatform: { art: 'metro-platform.jpg', label: '地铁 8 号线 · 站台', line: '（8 号线的站台一眼望不到头，显示屏跳着下一班的时间）' },
   metroEscalator: { art: 'metro-escalator.jpg', label: '地铁 8 号线 · 扶梯', line: '（扶梯慢慢往上，你把今天的工牌塞回口袋）' },
   gate: { art: 'gate.jpg', label: '国立四川大学 · 校门', line: '（老校门的砖缝里长着草，牌匾上的字被雨洗得发亮）' },
+  gateScu: { art: 'gate-scu.jpg', label: '四川大学 · 大红门', line: '（从大红门走进川大，抬头就是那块牌匾）' },
 };
 
 /**
@@ -82,7 +83,7 @@ const BG = {
  * 键名即 CSS 类名后缀（素材缺失时用对应渐变兜底）。
  */
 const SCENES = {
-  title: { files: [BG.gate] },
+  title: { files: [BG.gateScu] },
   campus: { files: [BG.avenue, BG.magnolia, BG.plaza, BG.duskRoad, BG.lawn, BG.river] },
   classroom: { files: [BG.library, BG.classScreen, BG.classSunlit, BG.classEmpty, BG.classPodium, BG.corridor] },
   clubroom: { files: [BG.activityWall, BG.plaza, BG.corridor] },

@@ -1,0 +1,5 @@
+/* 自托管字体（子集化，均只含界面用到的字） */
+@font-face{font-family:'UITangMei';font-style:normal;font-weight:400;font-display:swap;src:url('ui-tangmei.woff2') format('woff2');}
+@font-face{font-family:'TitleWood';font-style:normal;font-weight:400;font-display:swap;src:url('title-wood.woff2') format('woff2');}
+@font-face{font-family:'SubtitleChild';font-style:normal;font-weight:400;font-display:swap;src:url('sub-child.woff2') format('woff2');}
+@font-face{font-family:'DisplayHY';font-style:normal;font-weight:400;font-display:swap;src:url('display-hy.woff2') format('woff2');}

@@ -25,7 +25,7 @@ assets/
 
 | 行动 / 时机 | 场景键（CSS 类名后缀） | 池内图片 |
 |---|---|---|
-| 标题页（封面） | `title` | `gate`（老校门，固定） |
+| 标题页（封面） | `title` | `gateScu`（四川大学大红门，固定） |
 | 每周开场、新游戏第一幕、推进回合后 | `campus` | `avenue` / `magnolia` / `plaza-flowerbed` / `dusk-road` / `lawn-pavilion` / `river-bridge` |
 | 行动「上课学习」 | `classroom` | `library` / `classroom-sunlit` / `classroom-empty` / `classroom-podium` / `corridor` / `classroom-screen`（仅各上学期第 1 周） |
 | 行动「社团活动」 | `clubroom` | `activity-wall` / `plaza-flowerbed` / `corridor` |
@@ -35,7 +35,7 @@ assets/
 | 行动「休息放松」 | `dorm` | `dusk-road` / `river-bridge` / `lawn-pavilion` / `avenue` |
 | 事件弹层 | `event` | 无独立图（沿用当前场景 + 压暗模糊） |
 
-### 21 张图一览
+### 22 张图一览
 
 | 文件 | 地点标签（HUD 右上） | 会出现在 |
 |---|---|---|
@@ -59,7 +59,8 @@ assets/
 | `magnolia.jpg` | 校园 · 玉兰道 | 每周开场 |
 | `metro-platform.jpg` | 地铁 8 号线 · 站台 | 兼职赚钱 |
 | `metro-escalator.jpg` | 地铁 8 号线 · 扶梯 | 兼职赚钱 |
-| `gate.jpg` | 国立四川大学 · 校门 | 标题页（封面） |
+| `gate.jpg` | 国立四川大学 · 校门 | 备用封面 |
+| `gate-scu.jpg` | 四川大学 · 大红门 | **标题页（封面）** |
 
 > **事件弹层没有独立背景**：`event` 池为空，出现事件时沿用当前场景 + 压暗模糊。
 

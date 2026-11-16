@@ -50,8 +50,14 @@
 | 说明 | `--t-sm` | 14 / 400 | 选项数值、卡片副标题 |
 | 标签 | `--t-xs` | 12 / 600（字距 .06em） | 印章、步骤、状态胶囊 |
 
-- 中文正文 `--font`（PingFang / 微软雅黑 回退链）；标题用**粗黑体**（`.vn-logo` 双行 + 荧光笔高亮），
+- 字体全部自托管、子集化（`assets/fonts/`，合计约 453 KB）：
+  - 主标题 **汉仪铸字木头人 W**（手绘方块感）
+  - 副标题 **汉仪铸字儿童乐园 W**（圆润卡通）
+  - 正文/UI **汉仪唐美人 W**（`--font`，行书味道，替代系统黑体）
+  - 装饰位 **汉仪晓波花月圆 W**（`--font-display`，替代宋体，用于徽记等）
+  - 缺字按字体栈回落系统字体，不会出现方框
   历史衬线 `--font-display` 只留给装饰性用途。
+- 徽记 `SCUSim` 用衬线 `--font-display`（沿用初代 `SCU` 的字形），轻微倾斜 -3°
 - 红色大标题不描边、不加投影；白字红底时才用 `rgba(255,255,255,.28)` 的内高光。
 
 ## 4. Component Stylings
@@ -142,7 +148,7 @@
    在 `render()` 里比对指纹后挂类（参考 `.vn-stage.is-scene-change`）；
 5. 改完必须跑 `node tests/smoke.mjs`、`tests/verify_ui.mjs`、`tests/verify_m1.mjs` 与 `tests/unit/*`。
 
-> 红线：`src/ui/ui.js` 只读 GameState，不碰 DOM 之外的存储/随机数；`css/` 不引外部字体与图片。
+> 红线：`src/ui/ui.js` 只读 GameState，不碰 DOM 之外的存储/随机数；`css/` 不引外部 CDN 资源（标题字体自托管在 `assets/fonts/`，OFL 授权，见该目录 README）。
 
 ---
 
