@@ -3147,7 +3147,6 @@ a:hover {
   pointer-events: none;
   background: var(--red);          /* 纯色填充，不用渐变 */
   border-radius: 47%;              /* 接近圆形但略带方角：转起来就是起伏的波面 */
-  rotate: 0deg;
   /* 鼠标离开：快速退掉（240ms）；进入的时长写在 :hover 里 */
   transition: transform 480ms cubic-bezier(0.4, 0, 0.6, 1);
 }
@@ -3166,13 +3165,8 @@ a:hover {
 }
 .vn-choice:hover::after {
   transform: translate(-50%, -50%) scale(1.75);   /* 一次盖满 */
-  /* 鼠标进入：慢慢涨满（700ms，缓入缓出） */
+  /* 鼠标进入：慢慢涨满（1400ms，缓入缓出） */
   transition: transform 1400ms cubic-bezier(0.4, 0, 0.6, 1);
-  animation: vn-wave-spin 6s linear infinite;
-}
-@keyframes vn-wave-spin {
-  from { rotate: 0deg; }
-  to { rotate: 360deg; }
 }
 .vn-choice:active { transform: var(--press); box-shadow: 0 4px 12px var(--red-glow); }
 .vn-choice:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
