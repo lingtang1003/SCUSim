@@ -3925,3 +3925,23 @@ body { font-synthesis: none; }
 .reduce-motion .vn-choice:hover::after {
   transition: transform 1400ms cubic-bezier(0.4, 0, 0.6, 1) !important;
 }
+
+
+/* =========================================================================
+   28. 「进入下一周」这块 CTA 本身就是强调色，
+       ::after 的波浪层铺上去也还是同一个色，等于把 hover 的变化盖掉了。
+       这里关掉它的波浪层，改用底色变亮 + 上浮 + 更重的投影来做悬停反馈。
+   ========================================================================= */
+.vn-choice--gold::after { display: none; }
+.vn-choice--gold:hover {
+  background: var(--red-bright);
+  border-color: var(--red-deep);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 32px color-mix(in srgb, var(--red) 42%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+.vn-choice--gold:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--red) 32%, transparent);
+}
