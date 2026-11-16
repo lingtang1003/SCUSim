@@ -57,8 +57,10 @@
   - **标题字体** **汉仪唐美人 W**（`--font-display`，手写行书）：弹窗标题、表单标题、抽屉标题、
     创建角色标题、结局名、角色信息名、事件标签，以及徽记 SCUSim
 
-  - 标题里的「大学四年 / 有 / 没问题」套 `.vn-logo__hl`：`-webkit-text-stroke: .055em #fff` + `paint-order: stroke fill`
+  - 标题里的「有 / 没问题」套 `.vn-logo__hl`（「我的大学四年」不带描边）：`-webkit-text-stroke: .055em #fff` + `paint-order: stroke fill`
     + 8 向白色 `text-shadow` 兜底，做出贴纸式白描边
+  - **四支字体都只有一个字重（400）**：全站 `font-synthesis: none`，并把这些常用组件显式设为 400，
+    否则浏览器会用「合成粗体」把细笔画抹成一团（看起来就像没换字体）
   - 缺字按字体栈回落系统字体，不会出现方框
   历史衬线 `--font-display` 只留给装饰性用途。
 - 徽记 `SCUSim` 固定用 **汉仪晓波花月圆 W**（`'DisplayHY'`，不随标题位互换），轻微倾斜 -3°

@@ -800,10 +800,7 @@ export function createApp(ctx) {
           ]),
         ]),
         h('h1', { class: 'vn-logo' }, [
-          h('span', { class: 'vn-logo__line' }, [
-            '我的',
-            h('span', { class: 'vn-logo__hl' }, ['大学四年']),
-          ]),
+          h('span', { class: 'vn-logo__line' }, ['我的大学四年']),
           h('span', { class: 'vn-logo__line vn-logo__line--accent' }, [
             '果然',
             h('span', { class: 'vn-logo__hl' }, ['有']),

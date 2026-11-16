@@ -3843,3 +3843,22 @@ a:hover {
   font-weight: 400;
   letter-spacing: 0.06em;
 }
+
+
+/* =========================================================================
+   26. 关闭「合成粗体」
+   —— 汉仪这几支字体都只有一个字重（400）。浏览器遇到 font-weight: 600/700
+      会自己加粗（fake bold），细笔画被抹成一团，看起来就像系统黑体。
+      这里统一关掉合成，字重回到字形本身的粗细。
+   ========================================================================= */
+body { font-synthesis: none; }
+.vn-menu-btn__label,
+.vn-choice__label,
+.vn-gallery__flag,
+.vn-chip,
+.vn-loc,
+.vn-ap,
+.vn-text,
+.vn-dialogue__box,
+.vn-modal,
+.vn-drawer { font-weight: 400; }
