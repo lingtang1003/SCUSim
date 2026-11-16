@@ -3141,14 +3141,15 @@ a:hover {
   top: var(--my, 100%);
   width: 150%;
   aspect-ratio: 1 / 1;
-  translate: -50% -50%;
-  scale: 0;
+  /* 用 transform 而不是独立的 scale 属性：兼容性更好，过渡一定生效 */
+  transform: translate(-50%, -50%) scale(0);
+  will-change: transform;
   pointer-events: none;
   background: var(--red);          /* 纯色填充，不用渐变 */
   border-radius: 47%;              /* 接近圆形但略带方角：转起来就是起伏的波面 */
   rotate: 0deg;
   /* 鼠标离开：快速退掉（240ms）；进入的时长写在 :hover 里 */
-  transition: scale 240ms cubic-bezier(0.4, 0, 0.6, 1);
+  transition: transform 240ms cubic-bezier(0.4, 0, 0.6, 1);
 }
 .vn-choice > * { position: relative; z-index: 1; }
 .vn-choice:hover {
@@ -3164,9 +3165,9 @@ a:hover {
     color 240ms linear 420ms;
 }
 .vn-choice:hover::after {
-  scale: 1.75;                     /* 一次盖满，避免末尾再补一次 */
+  transform: translate(-50%, -50%) scale(1.75);   /* 一次盖满 */
   /* 鼠标进入：慢慢涨满（700ms，缓入缓出） */
-  transition: scale 700ms cubic-bezier(0.4, 0, 0.6, 1);
+  transition: transform 700ms cubic-bezier(0.4, 0, 0.6, 1);
   animation: vn-wave-spin 6s linear infinite;
 }
 @keyframes vn-wave-spin {
@@ -3287,9 +3288,9 @@ a:hover {
   align-content: center;
   column-gap: 30px;
   row-gap: 10px;
-  /* 卡片更高，接近满屏的 3/4 视觉占比 */
-  min-height: clamp(460px, 60vh, 660px);
-  padding-block: 40px;
+  /* 高度收一点：比内容略高，但不再占满大半屏 */
+  min-height: clamp(330px, 44vh, 500px);
+  padding-block: 30px;
   backdrop-filter: blur(16px) saturate(1.05);
   -webkit-backdrop-filter: blur(16px) saturate(1.05);
 }
