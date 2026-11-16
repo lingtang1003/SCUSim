@@ -1927,7 +1927,7 @@ a:hover {
 
 .btn--primary {
   color: #fff;
-  background: linear-gradient(180deg, var(--red-bright), var(--red));
+  background: var(--red);
   border-color: rgba(255, 255, 255, 0.6);
   text-shadow: 0 1px 4px rgba(20, 40, 70, 0.3);
 }
@@ -2258,7 +2258,7 @@ a:hover {
 }
 
 .vn-toast--danger {
-  background: linear-gradient(180deg, var(--red), var(--red-deep));
+  background: var(--red-deep);
 }
 
 .vn-toast--success {
@@ -2610,7 +2610,7 @@ a:hover {
 .vn-choice__meta { color: var(--ink-2); text-shadow: none; -webkit-text-stroke: 0; }
 .vn-choice:hover .vn-choice__meta {
   color: var(--on-accent-soft, rgba(255, 255, 255, 0.86));
-  transition: color 170ms linear 190ms;
+  transition: color 180ms linear 360ms;
 }
 .vn-choice.is-locked { opacity: 0.5; filter: grayscale(0.35); }
 .vn-choice.is-locked .vn-choice__meta {
@@ -3130,11 +3130,11 @@ a:hover {
   translate: -50% -50%;
   scale: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, var(--red-bright) 0%, var(--red) 55%, var(--red-deep) 100%);
+  background: var(--red);          /* 纯色填充，不用渐变 */
   border-radius: 47%;              /* 接近圆形但略带方角：转起来就是起伏的波面 */
   rotate: 0deg;
-  /* 0.5s、缓入缓出：比原来的 ease-out 更稳，不会「一下就填满」 */
-  transition: scale 500ms cubic-bezier(0.4, 0, 0.6, 1);
+  /* 0.7s、缓入缓出：稳一点，不会「一下就填满」 */
+  transition: scale 700ms cubic-bezier(0.4, 0, 0.6, 1);
 }
 .vn-choice > * { position: relative; z-index: 1; }
 .vn-choice:hover {
@@ -3147,10 +3147,10 @@ a:hover {
     transform 180ms var(--ease-out),
     box-shadow 200ms var(--ease-out),
     border-color 200ms var(--ease-out),
-    color 170ms linear 190ms;
+    color 180ms linear 360ms;
 }
 .vn-choice:hover::after {
-  scale: 1.5;                      /* 足够覆盖到任意角落 */
+  scale: 1.75;                     /* 一次盖满，避免末尾再补一次 */
   animation: vn-wave-spin 6s linear infinite;
 }
 @keyframes vn-wave-spin {
@@ -3161,11 +3161,11 @@ a:hover {
 .vn-choice:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 .vn-choice.is-locked { animation: none; box-shadow: none; }
 .vn-choice--gold {
-  background: linear-gradient(180deg, var(--red-bright), var(--red-deep));
+  background: var(--red);
   border-color: var(--red-deep);
   color: #fff;
 }
-.vn-choice--gold:hover { background: linear-gradient(180deg, var(--red-bright), var(--red)); filter: brightness(1.04); }
+.vn-choice--gold:hover { background: var(--red-bright); filter: none; }
 
 /* ---- 20.3 通用按钮：立体感 + 按压 ---- */
 .btn {
@@ -3180,13 +3180,13 @@ a:hover {
 .btn:hover { transform: var(--lift); box-shadow: 0 8px 18px rgba(20, 16, 15, 0.14); }
 .btn:active { transform: var(--press); box-shadow: 0 2px 6px rgba(20, 16, 15, 0.16); }
 .btn--primary {
-  background: linear-gradient(180deg, var(--red-bright) 0%, var(--red) 55%, var(--red-deep) 100%);
+  background: var(--red);
   border-color: var(--red-deep);
   color: #fff;
   box-shadow: 0 6px 16px var(--red-glow), inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 .btn--primary:hover {
-  background: linear-gradient(180deg, var(--red-bright) 0%, var(--red-bright) 60%, var(--red) 100%);
+  background: var(--red-bright);
   box-shadow: 0 10px 24px var(--red-glow), inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 .btn--primary:active { box-shadow: 0 3px 10px var(--red-glow), inset 0 2px 6px rgba(0, 0, 0, 0.22); }
@@ -3226,7 +3226,7 @@ a:hover {
 /* ---- 20.6 开关：红底滑块 ---- */
 .vn-switch { border-radius: var(--r-pill); transition: background 200ms var(--ease-out), color 160ms linear, border-color 200ms linear; }
 .vn-switch.is-on {
-  background: linear-gradient(180deg, var(--red-bright), var(--red));
+  background: var(--red);
   border-color: var(--red-deep);
   color: #fff;
   box-shadow: 0 6px 14px var(--red-glow), inset 0 1px 0 rgba(255, 255, 255, 0.28);

@@ -23,7 +23,7 @@
 
 | 界面 | 入口 | 结构 | 关键类名 |
 |---|---|---|---|
-| 标题页 | 启动 / 返回标题 | 徽记 + 标题 + 竖排菜单 + 导入存档 | `.vn-title` `.vn-menu-btn` |
+| 标题页 | 启动 / 返回主页 | 徽记 + 标题 + 竖排菜单 + 导入存档 | `.vn-title` `.vn-menu-btn` |
 | 创建角色（6 步） | 开始新游戏 | 左：立绘预览 + 角色摘要；右：步骤表单 | `.vn-create` `.vn-step` `.vn-opt` `.vn-tag` |
 | 主舞台 | 新游戏 / 读档 | 背景层 + 立绘 + HUD + 选项条（2 列 × 3 行）+ 对话框 | `.vn-stage` `.vn-sprite` `.vn-hud` `.vn-choices` `.vn-dialogue` |
 | 事件弹层 | 回合触达事件 | 暗化场景 + 事件名 + 选项 + 对话框正文 | `.vn-event` `.vn-choices--event` |

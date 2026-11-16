@@ -646,8 +646,9 @@ export function createApp(ctx) {
         (opts.variant ? ' vn-choice--' + opts.variant : '') +
         (opts.locked ? ' is-locked' : ''),
       style: '--i:' + (Number.isFinite(opts.index) ? opts.index : 0),
+      /* 只在进入卡片那一刻定起点；移动中改写会让填充「重启」第二次 */
       onpointerenter: trackPointer,
-      onpointermove: trackPointer,
+      onpointerdown: trackPointer,
       disabled: !!opts.locked,
       title: opts.title || '',
       onclick: () => {
@@ -1292,7 +1293,7 @@ export function createApp(ctx) {
             onclick: () => {
               if (callbacks.onOpenMenu) callbacks.onOpenMenu();
             },
-          }, ['返回标题']),
+          }, ['返回主页']),
       h('span', { class: 'tiny muted' }, ['第 ' + creation.step + ' / 6 步']),
     ]);
   }
@@ -1397,7 +1398,7 @@ export function createApp(ctx) {
               closeOverlay();
               if (callbacks.onOpenMenu) callbacks.onOpenMenu();
             },
-          }, ['返回标题']),
+          }, ['返回主页']),
           h('button', {
             class: 'vn-link',
             onclick: () => {
@@ -1476,7 +1477,7 @@ export function createApp(ctx) {
               closeOverlay();
               if (callbacks.onOpenMenu) callbacks.onOpenMenu();
             },
-          }, ['返回标题']),
+          }, ['返回主页']),
           h('button', {
             class: 'btn btn--secondary btn--block',
             onclick: () => {
