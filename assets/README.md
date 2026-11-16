@@ -25,7 +25,7 @@ assets/
 
 | 行动 / 时机 | 场景键（CSS 类名后缀） | 池内图片 |
 |---|---|---|
-| 标题页（封面） | `title` | `gateScu`（四川大学大红门，固定） |
+| 标题页（封面） | `title` | `gateScu`（望江 · 北门，固定） |
 | 每周开场、新游戏第一幕、推进回合后 | `campus` | `avenue` / `magnolia` / `plaza-flowerbed` / `dusk-road` / `lawn-pavilion` / `river-bridge` |
 | 行动「上课学习」 | `classroom` | `library` / `classroom-sunlit` / `classroom-empty` / `classroom-podium` / `corridor` / `classroom-screen`（仅各上学期第 1 周） |
 | 行动「社团活动」 | `clubroom` | `activity-wall` / `plaza-flowerbed` / `corridor` |
@@ -39,28 +39,28 @@ assets/
 
 | 文件 | 地点标签（HUD 右上） | 会出现在 |
 |---|---|---|
-| `library.jpg` | 图书馆 · 自习区 | 上课学习 |
+| `library.jpg` | 江安 · 图书馆 | 上课学习 |
 | `classroom-screen.jpg` | 第一教学楼 · 教室（投影「欢迎你，新同学」） | 上课学习（**仅第 1/11/21/31 周，即各个「上学期」的第一周**） |
-| `classroom-empty.jpg` | 第一教学楼 · 空教室 | 上课学习 |
-| `classroom-podium.jpg` | 第一教学楼 · 讲台 | 上课学习 |
-| `classroom-sunlit.jpg` | 第一教学楼 · 午后教室 | 上课学习 |
-| `corridor.jpg` | 第一教学楼 · 走廊 | 上课学习、社团活动 |
-| `activity-wall.jpg` | 社团活动室 · 展板墙 | 社团活动 |
-| `plaza-flowerbed.jpg` | 学生活动中心 · 广场 | 社团活动、每周开场 |
-| `field-track.jpg` | 东区操场 · 田径场 | 体育锻炼 |
-| `gym-badminton.jpg` | 体育馆 · 羽毛球馆 | 体育锻炼 |
-| `lawn-pavilion.jpg` | 校园 · 草坪小亭 | 体育锻炼、休息放松、每周开场 |
-| `canteen.jpg` | 食堂 · 二层 | 社交娱乐 |
+| `classroom-empty.jpg` | 教学楼 · 空教室 | 上课学习 |
+| `classroom-podium.jpg` | 教学楼 · 讲台旁 | 上课学习 |
+| `classroom-sunlit.jpg` | 教学楼 · 午后教室 | 上课学习 |
+| `corridor.jpg` | 教学楼 · 走廊 | 上课学习、社团活动 |
+| `activity-wall.jpg` | 活动室 · 展板墙 | 社团活动 |
+| `plaza-flowerbed.jpg` | 江安 · 商业街 | 社团活动、每周开场 |
+| `field-track.jpg` | 江安 · 二号体育场 | 体育锻炼 |
+| `gym-badminton.jpg` | 江安 · 体育馆 | 体育锻炼 |
+| `lawn-pavilion.jpg` | 江安 · 不高山 | 体育锻炼、休息放松、每周开场 |
+| `canteen.jpg` | 江安 · 东园食堂 | 社交娱乐 |
 | `hotpot.jpg` | 校外 · 火锅店 | 社交娱乐 |
-| `bar-live.jpg` | 校外 · 驻唱酒吧 | 社交娱乐 |
-| `dusk-road.jpg` | 校园 · 回宿舍的路 | 休息放松、每周开场 |
-| `river-bridge.jpg` | 江安河 · 栈桥 | 休息放松、每周开场 |
-| `avenue.jpg` | 校园 · 林荫道 | 每周开场、休息放松 |
-| `magnolia.jpg` | 校园 · 玉兰道 | 每周开场 |
+| `bar-live.jpg` | 校外 · 酒吧 | 社交娱乐 |
+| `dusk-road.jpg` | 江安 · 环行大道 | 休息放松、每周开场 |
+| `river-bridge.jpg` | 江安 · 长桥 | 休息放松、每周开场 |
+| `avenue.jpg` | 江安 · 回宿舍的路 | 每周开场、休息放松 |
+| `magnolia.jpg` | 江安 · 文科楼路边 | 每周开场 |
 | `metro-platform.jpg` | 地铁 8 号线 · 站台 | 兼职赚钱 |
 | `metro-escalator.jpg` | 地铁 8 号线 · 扶梯 | 兼职赚钱 |
-| `gate.jpg` | 国立四川大学 · 校门 | 备用封面 |
-| `gate-scu.jpg` | 四川大学 · 大红门（1920×1080） | **标题页（封面）** |
+| `gate.jpg` | 江安 · 东门 | 备用封面 |
+| `gate-scu.jpg` | 望江 · 北门（1920×1080） | **标题页（封面）** |
 
 > **事件弹层没有独立背景**：`event` 池为空，出现事件时沿用当前场景 + 压暗模糊。
 
