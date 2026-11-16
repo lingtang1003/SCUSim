@@ -3115,21 +3115,26 @@ a:hover {
   animation: vn-fade-up 380ms var(--ease-out) both;
   animation-delay: calc(var(--i, 0) * 45ms);
 }
-/* 悬停：强调色像液体一样从下往上「涨」满整张卡（旋转的大圆角块 = 波浪边） */
+/*
+ * 悬停：强调色以「波浪」从鼠标进入点扩散、铺满整张卡。
+ * --mx / --my 由 ui.js 在 pointermove 时写入（相对卡片的百分比）。
+ */
 .vn-choice::after {
   content: "";
   position: absolute;
   z-index: 0;
-  left: 50%;
-  top: 108%;
-  width: 122%;
+  left: var(--mx, 50%);
+  top: var(--my, 100%);
+  width: 150%;
   aspect-ratio: 1 / 1;
-  margin-left: -61%;
+  translate: -50% -50%;
+  scale: 0;
   pointer-events: none;
-  background: var(--red);          /* 纯色，不做渐变 */
-  border-radius: 43%;              /* 圆角方块旋转时，边缘就是起伏的波面 */
+  background: linear-gradient(180deg, var(--red-bright) 0%, var(--red) 55%, var(--red-deep) 100%);
+  border-radius: 47%;              /* 接近圆形但略带方角：转起来就是起伏的波面 */
   rotate: 0deg;
-  transition: top 620ms var(--ease-out);
+  /* 0.5s、缓入缓出：比原来的 ease-out 更稳，不会「一下就填满」 */
+  transition: scale 500ms cubic-bezier(0.4, 0, 0.6, 1);
 }
 .vn-choice > * { position: relative; z-index: 1; }
 .vn-choice:hover {
@@ -3145,8 +3150,8 @@ a:hover {
     color 170ms linear 190ms;
 }
 .vn-choice:hover::after {
-  top: -180%;
-  animation: vn-wave-spin 5s linear infinite;
+  scale: 1.5;                      /* 足够覆盖到任意角落 */
+  animation: vn-wave-spin 6s linear infinite;
 }
 @keyframes vn-wave-spin {
   from { rotate: 0deg; }
@@ -3317,6 +3322,10 @@ a:hover {
    ========================================================================= */
 
 [data-season="spring"] {
+  /* 文字：取色卡里的鼠尾草绿，压深到可读 */
+  --ink: color-mix(in srgb, #a7d3a2 58%, #1b2118);
+  --ink-2: color-mix(in srgb, #a7d3a2 46%, #1b2118);
+  --ink-3: color-mix(in srgb, #a7d3a2 34%, #1b2118);
   --red-50: #f2fff2;
   --red-100: #fed4d8;        /* 樱花粉：卡片/对话框的浅色wash */
   --red-200: #ffecc5;        /* 奶油：描边与浅底 */
@@ -3338,6 +3347,10 @@ a:hover {
 }
 
 [data-season="summer"] {
+  /* 文字：取色卡里的汽水青，压深到可读 */
+  --ink: color-mix(in srgb, #19c7d7 62%, #062126);
+  --ink-2: color-mix(in srgb, #19c7d7 48%, #062126);
+  --ink-3: color-mix(in srgb, #19c7d7 36%, #062126);
   --red-50: #f0fff4;
   --red-100: #e2fbf6;
   --red-200: #c9f2f4;
@@ -3359,6 +3372,10 @@ a:hover {
 }
 
 [data-season="autumn"] {
+  /* 文字：直接用色卡里的深苔绿 */
+  --ink: #3c5227;
+  --ink-2: color-mix(in srgb, #3c5227 78%, #ffffff);
+  --ink-3: color-mix(in srgb, #3c5227 52%, #ffffff);
   --red-50: #fdf6ee;
   --red-100: #fbd3ac;        /* 浅橙 */
   --red-200: #f0dcc4;
@@ -3380,6 +3397,10 @@ a:hover {
 }
 
 [data-season="winter"] {
+  /* 文字：直接用色卡里的旧铜 */
+  --ink: #775537;
+  --ink-2: color-mix(in srgb, #775537 80%, #ffffff);
+  --ink-3: color-mix(in srgb, #775537 55%, #ffffff);
   --red-50: #f7f4ef;
   --red-100: #c0ddda;        /* 雾青 */
   --red-200: #e3eeec;

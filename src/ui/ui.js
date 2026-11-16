@@ -626,6 +626,19 @@ export function createApp(ctx) {
     return '当前不可用';
   }
 
+  /** 记录指针进入卡片的位置（百分比），让填充从鼠标处扩散 */
+  function trackPointer(e) {
+    const el = e && e.currentTarget;
+    if (!el || typeof el.getBoundingClientRect !== 'function') return;
+    const r = el.getBoundingClientRect();
+    if (!r || !r.width || !r.height) return;
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    const clamp = (v) => Math.max(0, Math.min(100, v));
+    el.style.setProperty('--mx', clamp(x).toFixed(1) + '%');
+    el.style.setProperty('--my', clamp(y).toFixed(1) + '%');
+  }
+
   function choiceButton(opts) {
     return h('button', {
       class:
@@ -633,6 +646,8 @@ export function createApp(ctx) {
         (opts.variant ? ' vn-choice--' + opts.variant : '') +
         (opts.locked ? ' is-locked' : ''),
       style: '--i:' + (Number.isFinite(opts.index) ? opts.index : 0),
+      onpointerenter: trackPointer,
+      onpointermove: trackPointer,
       disabled: !!opts.locked,
       title: opts.title || '',
       onclick: () => {
