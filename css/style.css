@@ -2596,7 +2596,7 @@ a:hover {
   filter: none;
 }
 .vn-choice:hover {
-  background: var(--red);
+  /* 不要在这里直接铺底色：铺了就会盖住 ::after 的波浪填充，看起来像「瞬间满」 */
   border-color: var(--red);
   color: #fff;
   box-shadow: 0 6px 16px color-mix(in srgb, var(--red) 32%, transparent);
@@ -3142,7 +3142,7 @@ a:hover {
   width: 150%;
   aspect-ratio: 1 / 1;
   /* 用 transform 而不是独立的 scale 属性：兼容性更好，过渡一定生效 */
-  transform: translate(-50%, -50%) scale(0);
+  transform: translate(-50%, -50%) scale(0.001);   /* 不用 0：极少数内核会跳过 0 → 非 0 的过渡 */
   will-change: transform;
   pointer-events: none;
   background: var(--red);          /* 纯色填充，不用渐变 */
@@ -3921,4 +3921,13 @@ body { font-synthesis: none; }
   font-weight: 400;
   letter-spacing: 0.02em;
   -webkit-text-stroke: 0;      /* 也不再描粗 */
+}
+
+
+/* 减弱动效仍保留选项卡的填充过渡（其余动效照旧关闭） */
+.reduce-motion .vn-choice::after {
+  transition: transform 1400ms cubic-bezier(0.4, 0, 0.6, 1) !important;
+}
+.reduce-motion .vn-choice:hover::after {
+  transition: transform 1400ms cubic-bezier(0.4, 0, 0.6, 1) !important;
 }
