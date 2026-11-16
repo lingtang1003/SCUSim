@@ -3256,19 +3256,6 @@ a:hover {
   transition: background 200ms var(--ease-out), border-color 180ms linear,
     transform 180ms var(--ease-out), box-shadow 200ms var(--ease-out);
 }
-/* 编号只作为左侧标记，文字整体居中 */
-.vn-menu-btn__idx {
-  position: absolute;
-  left: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-family: var(--font-display);
-  font-size: 0.82em;
-  letter-spacing: 0.08em;
-  color: var(--ink-3);
-  font-variant-numeric: tabular-nums;
-  transition: color 160ms linear;
-}
 .vn-menu-btn__body {
   display: flex;
   flex-direction: column;
@@ -3277,12 +3264,9 @@ a:hover {
   min-width: 0;
 }
 .vn-menu-btn:hover { transform: translateX(4px); }
-.vn-menu-btn:hover .vn-menu-btn__idx { color: var(--red); }
 .vn-title .vn-menu-btn { padding: 13px 16px; border-bottom: 1px solid var(--hair-soft); }
 .vn-title .vn-menu-btn:last-of-type { border-bottom: 0; }
-.vn-title .vn-menu-btn--primary .vn-menu-btn__idx { color: rgba(255, 255, 255, 0.7); }
 .vn-title .vn-menu-btn--primary:hover { transform: translateX(0) var(--lift); }
-.vn-title .vn-menu-btn--primary:hover .vn-menu-btn__idx { color: rgba(255, 255, 255, 0.9); }
 
 /* 标题：衬线大字 + 红色印章 */
 .vn-title {

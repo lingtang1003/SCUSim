@@ -792,7 +792,6 @@ export function createApp(ctx) {
             class: 'vn-menu-btn vn-menu-btn--primary',
             onclick: () => startCreation(),
           }, [
-            h('span', { class: 'vn-menu-btn__idx' }, ['01']),
             h('span', { class: 'vn-menu-btn__body' }, [
               h('span', { class: 'vn-menu-btn__label' }, ['开始新游戏']),
             h('span', { class: 'vn-menu-btn__hint' }, ['从大一新生开始']),
@@ -805,7 +804,6 @@ export function createApp(ctx) {
               if (hasSave && callbacks.onLoadGame) callbacks.onLoadGame();
             },
           }, [
-            h('span', { class: 'vn-menu-btn__idx' }, ['02']),
             h('span', { class: 'vn-menu-btn__body' }, [
               h('span', { class: 'vn-menu-btn__label' }, ['继续游戏']),
             h('span', { class: 'vn-menu-btn__hint' }, [hasSave ? '读取存档' : '暂无存档']),
@@ -817,7 +815,6 @@ export function createApp(ctx) {
               if (callbacks.onOpenGallery) callbacks.onOpenGallery();
             },
           }, [
-            h('span', { class: 'vn-menu-btn__idx' }, ['03']),
             h('span', { class: 'vn-menu-btn__body' }, [
               h('span', { class: 'vn-menu-btn__label' }, ['结局图鉴']),
             h('span', { class: 'vn-menu-btn__hint' }, ['已达成的结局']),
@@ -829,7 +826,6 @@ export function createApp(ctx) {
               if (callbacks.onOpenSettings) callbacks.onOpenSettings();
             },
           }, [
-            h('span', { class: 'vn-menu-btn__idx' }, ['04']),
             h('span', { class: 'vn-menu-btn__body' }, [
               h('span', { class: 'vn-menu-btn__label' }, ['系统设置']),
             h('span', { class: 'vn-menu-btn__hint' }, ['立绘 / 动效']),
