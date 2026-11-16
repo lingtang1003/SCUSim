@@ -65,6 +65,29 @@ function findEvent(config, eventId) {
     || null;
 }
 
+/** 按 code 找固定事件（CLUB / THESIS / DEBT） */
+function findFixedByCode(config, code) {
+  const fixed = (config && config.events && Array.isArray(config.events.fixed))
+    ? config.events.fixed
+    : [];
+  return fixed.find((e) => e && e.code === code) || null;
+}
+
+/**
+ * RTM-4.5：毕业论文判定（学识 + 绩点）。
+ * 由「毕业论文」事件结算后触发；若事件被跳过，则终局回合兜底判定一次。
+ * @returns {{ok:boolean, score:number, level:string}|null}
+ */
+function judgeThesisOnce(state, config) {
+  if (!state || !state.academics) return null;
+  if (state.academics.thesis) return state.academics.thesis;
+  if (typeof academy.judgeThesis !== 'function') return null;
+  const r = academy.judgeThesis(state, config);
+  pushLog(state, `毕业论文判定：${r.level}（综合 ${r.score}）`, config);
+  pushHistory(state, { type: 'thesis', text: `毕业论文${r.level}（综合 ${r.score}）` }, config);
+  return r;
+}
+
 // ═══════════════ 规则辅助 ═══════════════
 
 /**
@@ -540,6 +563,8 @@ export function advance(state, config, rng) {
   let endingSubs = [];
   if (isFinalTurn) {
     if (state.academics.pendingExam) delete state.academics.pendingExam;
+    // RTM-4.5 兜底：若论文事件被跳过（旧存档/异常路径），毕业前必须判定一次
+    judgeThesisOnce(state, config);
     const judged = judgeEnding(state, config);
     endingId = judged.main;
     endingSubs = judged.subs || [];
@@ -590,10 +615,17 @@ export function resolvePendingEvent(state, choiceId, config, rng) {
     clampAttrs(state, config);
   }
 
+  // RTM-4.5：毕业论文事件结算后做「学识 + 绩点」判定
+  let thesis = null;
+  const thesisEvent = findFixedByCode(config, 'THESIS');
+  if (thesisEvent && thesisEvent.id === eventId) {
+    thesis = judgeThesisOnce(state, config);
+  }
+
   state.rngState = rng.getState();
   return {
     ok: true, state, result: res.result, message: res.message,
-    settlement, endingId: null, endingSubs: [],
+    settlement, thesis, endingId: null, endingSubs: [],
   };
 }
 

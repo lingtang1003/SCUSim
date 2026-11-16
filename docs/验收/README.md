@@ -26,7 +26,7 @@ node server.js                 # 浏览器 E2E 需要
 npm test                       # smoke 22 + verify_ui 14
 
 # A 的单测 / E2E
-node tests/unit/a-engine.mjs   # 76 项
+node tests/unit/a-engine.mjs   # 83 项
 node tests/unit/a-main.mjs     # 15 项（弹窗队列 + 读档结局）
 node tests/unit/a-browser-e2e.mjs   # 26 项 + 9 张截图
 
@@ -47,6 +47,8 @@ node tests/verify_m1.mjs       # 29/30（1 条待 D 更新）
 | W3 | [W3-A](W3-A.md) | — | — | — |
 | W4 | [W4-A](W4-A.md) | — | — | — |
 | W5 | — | — | — | — |
+
+> 需求核查：**[A-RTM对照表](A-RTM对照表.md)**（18 项 RTM 逐条对照 A 侧实现与证据）
 
 ## 当前阻塞（A 维护）
 

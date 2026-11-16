@@ -559,6 +559,11 @@ export function createController(deps) {
         else done();
       });
     }
+    // 毕业论文判定（RTM-4.5）：学识 + 绩点综合结果
+    if (res.thesis) {
+      const th = res.thesis;
+      toast(`毕业论文：${th.level}（综合 ${th.score}）`, th.level === '未通过' ? 'danger' : 'success');
+    }
   }
 
   // ---------------- 回调：换立绘 ----------------

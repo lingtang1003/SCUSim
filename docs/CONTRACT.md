@@ -201,7 +201,7 @@ newGame(options, config, rng) -> { ok, state?, message?, reason? }      // 含�
 actionAvailability(state, actionId, config) -> { ok, reason? }          // unknown_action|AP|health
 doAction(state, actionId, config, rng) -> { ok, state, message?, reason? }  // 另含 pending_event
 advance(state, config, rng) -> { ok, state, monthly?, settlement?, pendingEvent?, endingId?, endingSubs?, message?, reason? }
-resolvePendingEvent(state, choiceId, config, rng) -> { ok, state, result?, message?, reason? }
+resolvePendingEvent(state, choiceId, config, rng) -> { ok, state, result?, message?, reason?, settlement?, thesis? }
 getEnding(state, config) -> { ok, endingId, subEndings[] }
 drawTagCandidates(config, rng, count=6) -> string[]                    // W2：随机刷 6 个不重复标签
 buildViewModel(state, config) -> { availability, actions[], tierInfo, flags, monthly, debtThreshold, seed }  // W2：给 UI 的只读视图
@@ -294,6 +294,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | **D-15** | 学业警告 | 永不挂科 ⇒ `failedCourses` 恒 0 ⇒ `warning` 永不触发 ⇒ `ending_warning` 不可达 | endings 配置 | 🟡 D-W3 重排结局时必须删掉/替换该结局，否则 6 结局里有 1 条永远拿不到 |
 | **D-17** | 姓名合法性 | 1–12 字符，仅 `[\u4e00-\u9fa5A-Za-z]`；UI 侧实时过滤非法字符，引擎侧 `newGame` 兜底拒绝（`reason:'name'`） | state / engine / UI | ✅ |
 | **D-18** | 连续空窗扣属性 | 连续 `everyTurns`（4）周没有「学识类」行动 → 学识 −`amount`（3）；没有「健康类」行动（锻炼/休息）→ 健康 −`amount`（2）；做了对应行动立即清零计数；每到 4 的倍数扣一次；`resetPerYear` 时每学年（10 回合）重新计数；属性下限 0 | engine.applyIdleDecay + balance.idleDecay | ✅ 已生效（4 个用例覆盖：触发/重置/学年重置/下限） |
+| **D-19** | 毕业论文判定 | `ev_fixed_thesis`（code `THESIS`，turn 38）结算后调 `academy.judgeThesis`，写 `academics.thesis{score,level}` 与履历；事件被跳过时终局回合兜底判定；`main` toast 反馈等级 | engine.resolvePendingEvent / advance | ✅ 已生效（a-engine 4 条用例） |
 
 ---
 
@@ -398,7 +399,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | `src/core/engine.js` | 三档加成（`threeTierBonus.bonus`）、健康白名单、学习惩罚、pending 阻断、标签修正、`drawTagCandidates`、`buildViewModel`、`advance` 新顺序 + `monthly/settlement/endingSubs`、终局不出事件、**删除过渡适配层直接调 B** |
 | `src/core/ending.js` | 条件引擎（all/any/7 类 + negate）、`judgeEnding` 主+副结局、`sortByPriority`（`endingPriorityOrder`） |
 | `src/main.js` | 弹窗队列（结算→事件→结局，含隐式关闭兜底）、读档恢复未结算事件、副结局入图鉴、`buildViewModel` 接入、`?dev=1` 面板 + `__scusim` 句柄 |
-| `tests/unit/a-engine.mjs` | 76 条断言（全 PASS） |
+| `tests/unit/a-engine.mjs` | 83 条断言（全 PASS） |
 | `tests/unit/a-main.mjs` | 15 条断言（队列/不叠窗/隐式关闭/读档结局，全 PASS） |
 | `tests/unit/a-browser-e2e.mjs` | 真实 Edge headless E2E：25 条断言 + 5 张截图（`docs/截图/W1-A/`），全 PASS |
 

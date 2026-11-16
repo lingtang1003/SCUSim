@@ -291,7 +291,7 @@ node server.js                   # 打开 http://localhost:5173/?dev=1 用调试
 | A 档 5 项 | ✅ 全绿（队列、决议回填、dev 面板、40 回合真浏览器、仓库设置待你点） |
 | B 档 6–11 | ✅ B 的 v2 规则已合并、C 的 `showExam` 已到位、A 已删适配层并直接调用；`accept/w1` 仍缺（D） |
 | C 档 12–14 | ✅ 字段已由 B/D 补齐；`showExam` 已交付并对接成功 |
-| 门禁 | `a-engine` 76/76、`a-main` 15/15、`a-browser-e2e` 26/26、`npm test` 22+14 全绿；`verify_m1` 29/30（1 条待 D） |
+| 门禁 | `a-engine` 83/83、`a-main` 15/15、`a-browser-e2e` 26/26、`npm test` 22+14 全绿；`verify_m1` 29/30（1 条待 D） |
 
 ### 10.2 本轮新增的修复（都有测试锁定）
 
@@ -308,6 +308,7 @@ node server.js                   # 打开 http://localhost:5173/?dev=1 用调试
 | 9 | 读「最后一回合（已判结局）」的存档后再点进入下一周，只弹 `无法推进：ended`，看不到结局 | `main.onLoadGame` 检测 `state.endingId` → `judgedEndingOf()` 取主/副结局 → 解锁图鉴 → 直接 `showEnding`；`onAdvance` 同样兜底（`a-main` 新增 3 条用例，浏览器实测重开页面→继续游戏→结局卡） |
 | 10 | 姓名允许数字/符号/16 字 | `state.isValidName`（1–12 字，仅汉字/英文字母）+ UI 输入实时过滤 + `newGame` 拒绝 `reason:'name'`；`a-engine` 补 9 条用例 | 
 | 11 | 长期不学习/不锻炼会一直涨属性 | `balance.idleDecay` + `engine.applyIdleDecay`：连续 4 周没学习 → 学识 −3；连续 4 周没锻炼/休息 → 健康 −2；做了对应行动清零；每学年重新计数；下限 0（`a-engine` 补 7 条用例） |
+| 12 | RTM-4.5 毕业论文只有 `judgeThesis` 定义、从未被调用 | `resolvePendingEvent` 在 `ev_fixed_thesis` 结算后判定（学识+绩点），终局兜底再判一次；`main` toast 等级；`a-engine` 补 4 条用例；对照表见 `docs/验收/A-RTM对照表.md` |
 
 ### 10.3 仍未闭环（全部在 D / 决策侧）
 

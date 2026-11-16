@@ -23,6 +23,7 @@ import {
   drawTagCandidates, buildViewModel,
 } from '../../src/core/engine.js';
 import { judgeEnding, evaluateCondition } from '../../src/core/ending.js';
+import { computeWeight } from '../../src/events/eventManager.js';
 import { clampAttrs, pushHistory, pushLog, createGameState } from '../../src/core/state.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -392,6 +393,76 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
   const k5 = s5.player.attributes.knowledge;
   for (let i = 0; i < 4; i += 1) advance(s5, cfgOff, createRng(140 + i));
   check('空窗：未配置 idleDecay 时不扣（向后兼容）', s5.player.attributes.knowledge === k5);
+}
+
+// ---------------- 9) RTM 补测：学院偏向 / 负债 / 毕业论文 ----------------
+{
+  // RTM-1.2：学院偏向确实改变事件权重（B 的 computeWeight 读 state.player.collegeId）
+  const s1 = stateWithoutPending(base);
+  s1.player.collegeId = 'cs';
+  s1.turn = 20; // 落在 ev_r16 的 termRange [10,32] 内
+  const s2 = stateWithoutPending(base);
+  s2.player.collegeId = 'business';
+  s2.turn = 20;
+  const ev16 = base.events.random.find((e) => e.id === 'ev_r16');
+  const w1 = computeWeight(ev16, s1, base);
+  const w2 = computeWeight(ev16, s2, base);
+  check('RTM-1.2 学院偏向影响事件权重（cs ≠ business）', w1 !== w2, `${w1} vs ${w2}`);
+
+  // RTM-3.3：金钱 ≤ 阈值时优先弹负债事件，选项可改变金钱
+  const sd = stateWithoutPending(base);
+  sd.player.attributes.money = -3050; // +50 月度净额后正好 -3000
+  sd.turn = 6;
+  advance(sd, base, createRng(33)); // → 第 7 回合（无固定/考试/剧情事件）
+  check('RTM-3.3 负债触发时优先弹负债事件',
+    !!sd.pendingEvent && sd.pendingEvent.eventId === 'ev_fixed_debt',
+    JSON.stringify(sd.pendingEvent && sd.pendingEvent.eventId));
+  const debtOpt = (sd.pendingEvent.options || []).find((o) => o.id === 'borrow')
+    || (sd.pendingEvent.options || [])[0];
+  const moneyBefore = sd.player.attributes.money;
+  const rDebt = resolvePendingEvent(sd, debtOpt.id, base, createRng(34));
+  check('RTM-3.3 负债选项结算后金钱变化并写 flags',
+    rDebt.ok === true && sd.player.attributes.money !== moneyBefore
+    && !!sd.player.flags && !!sd.player.flags.debt,
+    JSON.stringify({ ok: rDebt.ok, money: sd.player.attributes.money, flags: sd.player.flags }));
+
+  // RTM-4.5：毕业论文事件结算后按「学识 + 绩点」判定
+  const st = stateWithoutPending(base);
+  const resolveFirstOpt = (s, seed) => {
+    if (!s.pendingEvent) return null;
+    const o = (s.pendingEvent.options || []).find((x) => x.enabled !== false)
+      || (s.pendingEvent.options || [])[0];
+    if (!o) return null;
+    return resolvePendingEvent(s, o.id, base, createRng(seed));
+  };
+  let guard = 0;
+  while (st.turn < 38 && guard < 80) {
+    guard += 1;
+    advance(st, base, createRng(200 + guard));
+    if (st.turn < 38) resolveFirstOpt(st, 300 + guard);
+  }
+  check('RTM-4.5 第 38 回合弹出毕业论文事件',
+    st.turn === 38 && !!st.pendingEvent && st.pendingEvent.eventId === 'ev_fixed_thesis',
+    JSON.stringify({ turn: st.turn, ev: st.pendingEvent && st.pendingEvent.eventId }));
+  const thesisRes = resolveFirstOpt(st, 999);
+  check('RTM-4.5 事件结算后返回论文判定结果（score/level）',
+    !!thesisRes && !!thesisRes.thesis
+    && typeof thesisRes.thesis.score === 'number'
+    && typeof thesisRes.thesis.level === 'string',
+    JSON.stringify(thesisRes && thesisRes.thesis));
+  check('RTM-4.5 判定结果写入 academics.thesis 与履历',
+    !!st.academics.thesis && typeof st.academics.thesis.level === 'string'
+    && st.history.some((h) => h.type === 'thesis'),
+    JSON.stringify(st.academics.thesis));
+
+  // 兜底：论文事件被跳过时，终局前仍会判一次
+  const sf = stateWithoutPending(base, 77);
+  sf.turn = 39;
+  sf.academics.thesis = null;
+  sf.pendingEvent = null;
+  advance(sf, base, createRng(1234)); // → 40 终局
+  check('RTM-4.5 终局兜底：未判论文也会在毕业前判定',
+    sf.turn === 40 && !!sf.academics.thesis, JSON.stringify(sf.academics.thesis));
 }
 
 // ---------------- 汇总 ----------------
