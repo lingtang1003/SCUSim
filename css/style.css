@@ -4236,3 +4236,11 @@ body { font-synthesis: none; }
   /* 窄屏放不下四个胶囊时允许换行 */
   .vn-create__summary .vn-create__attrs { flex-wrap: wrap; }
 }
+
+
+/* 「果然」微微向右倾斜 */
+.vn-logo__tilt {
+  display: inline-block;
+  transform: rotate(4deg);
+  transform-origin: 50% 80%;
+}

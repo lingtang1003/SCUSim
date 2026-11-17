@@ -813,7 +813,7 @@ export function createApp(ctx) {
             h('span', { class: 'vn-logo__line-big' }, ['大学四年']),
           ]),
           h('span', { class: 'vn-logo__line vn-logo__line--accent' }, [
-            '果然',
+            h('span', { class: 'vn-logo__tilt' }, ['果然']),
             h('span', { class: 'vn-logo__hl' }, ['有']),
             'or',
             h('span', { class: 'vn-logo__hl' }, ['没问题']),
@@ -2003,8 +2003,10 @@ export function createApp(ctx) {
           onclick: () => {
             ui.reduceMotion = reduceMotion;
             closeOverlay();
-            if (callbacks.onChangeAppearance) callbacks.onChangeAppearance(appearanceId);
+            // 先落盘设置，再同步立绘（两个函数都会写 scusim:settings，
+            // 顺序反了会让后写的旧值把动效开关盖回去）
             if (onSave) onSave({ reduceMotion: reduceMotion, appearance: appearanceId, bgmVolume: bgmVolume, sfxVolume: sfxVolume });
+            if (callbacks.onChangeAppearance) callbacks.onChangeAppearance(appearanceId);
           },
         }, ['保存']),
         h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['取消']),

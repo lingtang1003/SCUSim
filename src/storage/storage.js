@@ -268,12 +268,20 @@ export function createStorage(backend) {
     }
   }
 
+  // 串行化：saveSettings 是「读—改—写」，并发调用会互相覆盖
+  // （例如保存设置的同时又在换立绘，后者读到旧值就把音量/动效写回去了）
+  let settingsQueue = Promise.resolve();
   function saveSettings(settings) {
-    return getSettings().then(({ settings: cur }) => {
-      const merged = { ...cur, ...(settings || {}) };
-      be.set(SETTINGS_KEY, JSON.stringify(merged));
-      return { ok: true };
-    });
+    const task = settingsQueue.then(() =>
+      getSettings().then(({ settings: cur }) => {
+        const merged = { ...cur, ...(settings || {}) };
+        be.set(SETTINGS_KEY, JSON.stringify(merged));
+        return { ok: true };
+      })
+    );
+    // 即使这一次失败，也不能卡住后续调用
+    settingsQueue = task.catch(() => ({ ok: false }));
+    return task;
   }
 
   return {
