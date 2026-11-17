@@ -3994,8 +3994,8 @@ body { font-synthesis: none; }
   gap: 8px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: color-mix(in srgb, var(--red-50) 70%, #fff);
-  border: 1px solid var(--hair-soft);
+  background: #fff;
+  border: 1px solid var(--hair);
 }
 .vn-setting__row {
   display: flex;
