@@ -4317,3 +4317,12 @@ body { font-synthesis: none; }
 .vn-drawer__foot .vn-link:hover {
   text-decoration: none;
 }
+
+
+/* 第一行的三个词之间拉开一点间距（「我的」位置不动） */
+.vn-logo__line-big {
+  margin-left: 0.14em;
+}
+.vn-logo__gap {
+  margin-left: 0.14em;
+}

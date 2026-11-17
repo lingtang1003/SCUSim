@@ -812,7 +812,7 @@ export function createApp(ctx) {
             '我的',
             h('span', { class: 'vn-logo__line-big' }, [
               h('span', { class: 'vn-logo__hl vn-logo__hl--red' }, ['大学']),
-              '四年',
+              h('span', { class: 'vn-logo__gap' }, ['四年']),
             ]),
           ]),
           h('span', { class: 'vn-logo__line vn-logo__line--accent' }, [

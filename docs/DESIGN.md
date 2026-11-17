@@ -60,6 +60,7 @@
   - 第二行的「or」包一层 `.vn-logo__small`：`font-size: .76em` + `vertical-align: .12em`，比中文小一档并略微上抬，夹在「有」和「没问题」之间
 - 第二行的「果然」单独包一层 `.vn-logo__tilt`：`font-size: 1.08em`、`translateX(-7px) rotate(5deg)`、`transform-origin: 50% 80%`：
   比后面的「有」略大、整体左移贴住荧光笔色带起点、向右微倾
+- 第一行的三段「我的 / 大学 / 四年」之间各留 `0.14em` 间距（`.vn-logo__line-big` 与 `.vn-logo__gap` 的 `margin-left`），「我的」与像素小人的位置不受影响
 - 第一行整体右移 14px（`.vn-logo__line:first-child { padding-left: 14px }`），和第二行形成轻微错位，也让「年」更靠近像素小人
 - 第一行「我的大学四年」里，**「大学四年」比「我的」大 1.14 倍**（`.vn-logo__line-big`），
   字号差制造节奏，但共用同一基线
