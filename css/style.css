@@ -4299,3 +4299,21 @@ body { font-synthesis: none; }
 .vn-logo__hl--red {
   color: var(--red);
 }
+
+
+/* 图鉴里的结局名：比说明文字明显大一号 */
+.vn-gallery__name {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1.25;
+}
+
+
+/* 抽屉底部的三个链接：不要下划线 */
+.vn-drawer__foot .vn-link {
+  text-decoration: none;
+}
+.vn-drawer__foot .vn-link:hover {
+  text-decoration: none;
+}

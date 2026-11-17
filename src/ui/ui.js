@@ -1432,8 +1432,14 @@ export function createApp(ctx) {
           h('button', {
             class: 'vn-link',
             onclick: () => {
-              closeOverlay();
-              if (callbacks.onClearSave) callbacks.onClearSave();
+              showConfirm({
+                title: '清除存档',
+                message: '是否确认清除全部存档？包括现在正在进行的游戏。图鉴中已达成的结局不会消失。',
+                confirmLabel: '确认清除',
+                onConfirm: () => {
+                  if (callbacks.onClearSave) callbacks.onClearSave();
+                },
+              });
             },
           }, ['清除存档']),
         ]),
@@ -1607,7 +1613,7 @@ export function createApp(ctx) {
       const got = unlocked.indexOf(e.id) >= 0;
       return h('div', { class: 'vn-gallery__item' + (got ? '' : ' is-locked') }, [
         h('div', { class: 'vn-gallery__row' }, [
-          h('b', {}, [got ? (e.name || e.id) : '？？？']),
+          h('b', { class: 'vn-gallery__name' }, [got ? (e.name || e.id) : '？？？']),
           h('span', { class: 'vn-gallery__flag' }, [got ? '已达成' : '未达成']),
         ]),
         h('p', { class: 'vn-gallery__desc' }, [
@@ -2023,6 +2029,32 @@ export function createApp(ctx) {
   }
 
   // ---------------- 提示 ----------------
+  /** 通用确认弹层：确认后执行 onConfirm，取消则什么都不做 */
+  function showConfirm(opts) {
+    if (!rootEl) return;
+    const o = opts || {};
+    mountOverlay(
+      modalShell(
+        o.title || '确认',
+        [h('p', { class: 'vn-modal__lead' }, [o.message || ''])],
+        [
+          h('button', {
+            class: 'btn btn--primary btn--block',
+            onclick: () => {
+              closeOverlay();
+              if (o.onConfirm) o.onConfirm();
+            },
+          }, [o.confirmLabel || '确认']),
+          h('button', {
+            class: 'btn btn--secondary btn--block',
+            onclick: () => closeOverlay(),
+          }, [o.cancelLabel || '取消']),
+        ],
+        true
+      )
+    );
+  }
+
   function showToast(msg, kind) {
     if (!msg || !rootEl) return;
     const toast = h('div', { class: 'vn-toast' + (kind ? ' vn-toast--' + kind : '') }, [String(msg)]);
