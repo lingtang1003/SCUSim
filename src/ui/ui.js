@@ -815,7 +815,7 @@ export function createApp(ctx) {
           h('span', { class: 'vn-logo__line vn-logo__line--accent' }, [
             h('span', { class: 'vn-logo__tilt' }, ['果然']),
             h('span', { class: 'vn-logo__hl' }, ['有']),
-            'or',
+            h('span', { class: 'vn-logo__small' }, ['or']),
             h('span', { class: 'vn-logo__hl vn-logo__big' }, ['没问题']),
             '！',
           ]),

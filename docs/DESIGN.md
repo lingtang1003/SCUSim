@@ -57,7 +57,8 @@
   - **标题字体** **汉仪唐美人 W**（`--font-display`，手写行书）：弹窗标题、表单标题、抽屉标题、
     创建角色大标题、结局名、事件标签，以及徽记 SCUSim（角色信息姓名、创建页表单小标题用正文字体）
 
-  - 第二行的「果然」单独包一层 `.vn-logo__tilt`：`font-size: 1.08em`、`translateX(-7px) rotate(5deg)`、`transform-origin: 50% 80%`：
+  - 第二行的「or」包一层 `.vn-logo__small`：`font-size: .76em`，比中文小一档，夹在「有」和「没问题」之间
+- 第二行的「果然」单独包一层 `.vn-logo__tilt`：`font-size: 1.08em`、`translateX(-7px) rotate(5deg)`、`transform-origin: 50% 80%`：
   比后面的「有」略大、整体左移贴住荧光笔色带起点、向右微倾
 - 第一行「我的大学四年」里，**「大学四年」比「我的」大 1.14 倍**（`.vn-logo__line-big`），
   字号差制造节奏，但共用同一基线
