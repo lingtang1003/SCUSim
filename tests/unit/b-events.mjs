@@ -124,10 +124,11 @@ console.log('== B · 事件单测 ==');
     && s.player.attributes.knowledge === 8 - 1
     && s.player.attributes.social === 8 + 3, JSON.stringify(r23));
   const r24 = resolveEvent(s, 'ev_r24', 'dinner', config, null);
-  check('恋爱链: 聚餐 → crush2 + 社交+2/金钱-120', r24.ok === true
+  check('恋爱链: 聚餐 → crush2 + 社交+2/金钱-150/好感+12', r24.ok === true
     && s.player.flags.crush2 === true
     && s.player.attributes.social === 11 + 2
-    && s.player.attributes.money === 300 - 120, JSON.stringify(r24));
+    && s.player.attributes.money === 300 - 150
+    && s.player.relations.linyu.affinity === 10 + 12, JSON.stringify(r24));
   const r25 = resolveEvent(s, 'ev_r25', 'date', config, null);
   check('恋爱链: 散步确认 → romance=dating', r25.ok === true
     && s.player.flags.romance === 'dating' && s.player.romance === 'dating', JSON.stringify(r25));
@@ -145,8 +146,10 @@ console.log('== B · 事件单测 ==');
 
   const s3 = state(['chill']);
   const r24x = resolveEvent(s3, 'ev_r24', 'dinner', config, null);
-  check('恋爱链: 未邂逅时聚餐被前置拦截', r24x.ok === false
-    && r24x.reason === 'requirement', JSON.stringify(r24x));
+  // v2.1：恋爱链改成剧情线（storyline）驱动，事件本身不再写 requires，
+  // 「先邂逅才能聚餐」由 config/storylines.json 的 gate 控制（见 verify_characters）
+  check('恋爱链: 事件本身不再拦截（前置交给剧情线 gate）', r24x.ok === true
+    && s3.player.relations.linyu.affinity === 12, JSON.stringify(r24x));
 }
 
 // --- 随机事件去重：同一随机事件短间隔内不重复触发 ---

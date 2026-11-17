@@ -441,6 +441,10 @@ export function createController(deps) {
     }
     await storage.saveGame(state);
 
+    if (Array.isArray(res.brokenLines) && res.brokenLines.length) {
+      toast('有一条剧情线断在这里了', 'warning');
+    }
+
     // 生活费 / 开销反馈（每次结算都提示，并带上当前金钱）
     if (res.monthly && (Number(res.monthly.income) > 0 || Number(res.monthly.net) !== 0)) {
       const money = Number((state.player && state.player.attributes && state.player.attributes.money) || 0);
@@ -506,6 +510,30 @@ export function createController(deps) {
   // ---------------- 事件选项：前置不足时的说明文案 ----------------
   const ATTR_NAME = { knowledge: '学识', social: '社交', health: '健康', money: '金钱' };
 
+  /** 好感快照（结算前后对比，UI 用它显示「▲ 江叙 好感 +8」）。 */
+  function snapshotRelations(s) {
+    const out = {};
+    const rels = (s && s.player && s.player.relations) || {};
+    for (const id of Object.keys(rels)) out[id] = Number(rels[id].affinity) || 0;
+    return out;
+  }
+
+  function diffRelations(before, s) {
+    const rels = (s && s.player && s.player.relations) || {};
+    const chars = (config && config.characters && config.characters.list) || [];
+    const nameOf = (id) => {
+      const c = chars.find((x) => x.id === id);
+      return c ? c.name : id;
+    };
+    const out = [];
+    for (const id of Object.keys(rels)) {
+      const prev = Number.isFinite(Number(before[id])) ? Number(before[id]) : 0;
+      const now = Number(rels[id].affinity) || 0;
+      if (now !== prev) out.push({ charId: id, name: nameOf(id), delta: now - prev });
+    }
+    return out;
+  }
+
   function findEventOption(eventId, choiceId) {
     const ev = config && config.events;
     const all = [].concat(
@@ -560,6 +588,7 @@ export function createController(deps) {
     if (!state || !state.pendingEvent) return;
     const eventId = state.pendingEvent.eventId;
     const before = Object.assign({}, (state.player && state.player.attributes) || {});
+    const relBefore = snapshotRelations(state);
     const res = eng.resolvePendingEvent(state, choiceId, config, rng);
     if (!res.ok) {
       // 不满足前置：把原因和可能的后果说清楚，而不是一句「选择无效」
@@ -576,11 +605,17 @@ export function createController(deps) {
       const d = (Number(after[k]) || 0) - (Number(before[k]) || 0);
       if (d !== 0) delta[k] = d;
     }
+    const relationDelta = diffRelations(relBefore, state);
     await storage.saveGame(state);
     renderState({
-      eventResult: { eventId: eventId, text: res.message || '', delta: delta },
+      eventResult: { eventId: eventId, text: res.message || '', delta: delta, relationDelta: relationDelta },
     });
     notifyModalClosed();
+    // 剧情线状态变化给个明确反馈（走完 / 中断）
+    if (res.line && res.line.finished) {
+      toast(res.line.status === 'done' ? '这条线走完了' : '这条线断在这里了',
+        res.line.status === 'done' ? 'success' : 'warning');
+    }
     // 期末考试周：事件（复习/佛系）结算后才出成绩，这里补弹结算面板
     if (res.settlement) {
       const settlement = res.settlement;

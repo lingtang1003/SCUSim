@@ -39,6 +39,8 @@ function ctxOf(state) {
     tags: (state && state.player && Array.isArray(state.player.tags)) ? state.player.tags : [],
     flags: (state && state.player && state.player.flags) || {},
     history: (state && Array.isArray(state.eventHistory)) ? state.eventHistory : [],
+    relations: (state && state.player && state.player.relations) || {},
+    storylines: (state && state.storylines) || {},
   };
 }
 
@@ -96,6 +98,25 @@ export function evaluateCondition(cond, state, config) {
     case 'eventDone': {
       const target = cond.eventId !== undefined ? cond.eventId : cond.value;
       hit = c.history.indexOf(target) >= 0;
+      break;
+    }
+    case 'relationAtLeast': {
+      const charId = cond.charId !== undefined ? cond.charId : cond.key;
+      const rel = c.relations[charId];
+      hit = !!rel && num(rel.affinity, -Infinity) >= num(cond.value, Infinity);
+      break;
+    }
+    case 'lineStatus': {
+      const lineId = cond.lineId !== undefined ? cond.lineId : cond.key;
+      const entry = c.storylines[lineId];
+      const status = entry ? String(entry.status) : 'idle';
+      hit = String(cond.status || 'done') === status;
+      break;
+    }
+    case 'lineDone': {
+      const lineId = cond.lineId !== undefined ? cond.lineId : cond.value;
+      const entry = c.storylines[lineId];
+      hit = !!entry && entry.status === 'done';
       break;
     }
     case 'default': {

@@ -264,10 +264,10 @@ test('Engine: resolvePendingEvent 无效 choiceId → {ok:false, reason}', () =>
 });
 
 // ---------------- 8) Engine.getEnding ----------------
-test('Engine: getEnding knowledge>=30 → ending_academic_star', () => {
+test('Engine: getEnding knowledge>=75 → ending_academic_star', () => {
   const ng = newGame(validOptions, config, createRng(1));
   const s = ng.state;
-  s.player.attributes.knowledge = 40;
+  s.player.attributes.knowledge = 80;   // v2.1 结局阈值：学术之星改为 75
   const r = getEnding(s, config);
   return r.ok === true && r.endingId === 'ending_academic_star';
 });

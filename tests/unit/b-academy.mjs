@@ -42,13 +42,17 @@ function rngStub(nextValue) {
 
 console.log('== B · 学业单测 ==');
 
-// --- runFinalExam：rng 恒 0 → score = knowledge × (1 - fluctuation) ---
+// --- runFinalExam：rng 恒 0 → 按公式 ×(1-fluctuation)，且永不挂科 ---
 {
   const s = baseState(10);
   const res = runFinalExam(s, config, rngStub(0));
   const passLine = Number.isFinite(exam.passLine) ? exam.passLine : 60;
-  const expected = Math.round(passLine + 10 * 0.6 * (1 - fluctuation));
-  check('runFinalExam: rng=0 → score=round(60+10×0.6×0.9)=65（保底及格）',
+  // 公式（与 src/core/academy.js 一致，参数来自 config）：
+  //   score = clamp(round((passLine + 40×√(学识/100) + (健康-60)×0.1) × (1±波动)), passLine, 100)
+  const health = Number(s.player.attributes.health) || 0;
+  const rawBase = passLine + 40 * Math.sqrt(Math.max(0, 10) / 100) + (health - 60) * 0.1;
+  const expected = Math.max(passLine, Math.min(100, Math.round(rawBase * (1 - fluctuation))));
+  check('runFinalExam: rng=0 → 按公式取低值（且不低于及格线）',
     res.ok === true && res.subjects.every((x) => x.score === expected),
     `expected=${expected}, scores=${res.subjects.map((x) => x.score).join(',')}`);
   check('runFinalExam: 永不低于及格线 60', res.subjects.every((x) => x.score >= passLine),
@@ -64,13 +68,15 @@ console.log('== B · 学业单测 ==');
     `totalGpa=${s.academics.totalGpa}`);
 }
 
-// --- runFinalExam：rng 恒 0.999999 → score ≈ knowledge × (1 + fluctuation) ---
+// --- runFinalExam：rng 恒 0.999999 → 按公式 ×(1+fluctuation) ---
 {
   const s = baseState(10);
   const res = runFinalExam(s, config, rngStub(0.999999));
   const passLine2 = Number.isFinite(exam.passLine) ? exam.passLine : 60;
-  const expected = Math.round(passLine2 + 10 * 0.6 * (1 + fluctuation));
-  check('runFinalExam: rng≈1 → score=round(60+10×0.6×1.1)=67',
+  const health2 = Number(s.player.attributes.health) || 0;
+  const rawBase2 = passLine2 + 40 * Math.sqrt(Math.max(0, 10) / 100) + (health2 - 60) * 0.1;
+  const expected = Math.max(passLine2, Math.min(100, Math.round(rawBase2 * (1 + fluctuation))));
+  check('runFinalExam: rng≈1 → 按公式取高值',
     res.subjects.every((x) => x.score === expected),
     `expected=${expected}, scores=${res.subjects.map((x) => x.score).join(',')}`);
 }

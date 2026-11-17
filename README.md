@@ -196,26 +196,54 @@ npx wrangler pages deploy . --project-name scusim
 
 ---
 
-## 八、已知占位 / 待团队拍板
+## 八、角色系统（v2.1）
 
-以下为 M5 阶段仍未敲定的数值与字段，留待策划 / 数值同学确认（**不影响部署与运行**）：
+40 个星期里，除了刷属性，你还会遇见 6 个人——**全部是同校学生（同级 / 学长学姐），没有任何师生线**，也**不限玩家性别**。
 
-1. **属性 0 起 20 点**：`balance.attributePointTotal = 20`，创建角色默认四项各 5（总和 20）；属性下限是否允许 0、UI 初始分配初值待定。
-2. **月度经济 no-op**：`economy.monthlyEconomy()` 当前“缺字段按 0（no-op）”，即月度收支尚未真正扣减；`monthlyIncome` / `monthlyExpense` 字段**待补**。
-3. **随机事件原始 weight**：`balance.randomEventBaseChance = 0.35` 为基础概率；各随机事件的 `weight` 为原始权重，归一化与抽取口径待定。
-4. **结局仅 3 类 condition**：引擎只支持 `attributeAtLeast` / `warningTrue` / `default` 三类判定；恋爱等其它结局类型**不进 v1**。
-5. **恋爱结局不进 v1**：`endings.json` 当前无恋爱线结局，属 v1 范围外。
+| 角色 | 学院 · 年级 | 一句话 |
+|---|---|---|
+| 江叙 | 计算机学院 · 大三 | 独立游戏社技术担当，白天睡觉晚上写代码 |
+| 顾迟 | 法学院 · 大三 | 校辩论队队长，说话像在开庭 |
+| 林予 | 文学与新闻学院 · 大二 | 校报摄影兼写手，写诗但不给人看 |
+| 苏晚 | 艺术学院 · 大二 | 钢琴专业，怕吵、怕生、怕上台 |
+| 周野 | 体育学院 · 大二 | 田径队，跑完十公里还能再跑十公里 |
+| 唐棠 | 外国语学院 · 大三 | 学生会外联 / 话剧社台柱 |
 
-### 字段命名提示（供数值同学参考）
+- **第 2 回合的迎新晚会**是全局分支点：6 个选项 +「一个人待着」，选谁就开启谁的剧情线（一局只走一条）。
+- 每条线 3–4 步、按回合窗口强制推进，门槛是好感（8 / 20 / 38）；最后一步决定 `done` 还是 `broken`。
+- 好感 0–100，阶段 陌生 → 熟识 → 朋友 → 知己 → 恋人；HUD 有剧情线进度，右上 ♡ 或菜单「关系」看人物卡。
+- 事件改成**台词分段演出**（旁白 / 角色台词交替 + 表情），选项上提示好感变化，结算后对话框下方出现「▲ 林予 好感 +10」。
+- 结局从 6 条扩到 **18 条**：6 条角色真结局 + 6 条「温暖 / 遗憾」结局 + 6 条学业生活结局；`priority` 升序，角色线优先。
+- 全部配置驱动：`config/characters.json`、`config/storylines.json`、`config/events-characters.json`（内容分片，loader 合并）。
+  删掉这三张表，角色系统自动关闭，游戏回到 v2.0 行为。
 
-- 已存在：`balance.randomEventBaseChance`、`balance.exam.difficulty`、`balance.exam.*`（base / knowledgeWeight / studyBonusPerAction / passLine）。
-- 待补：`monthlyIncome`、`monthlyExpense`（月度经济）。
-- `endings.condition.type` 枚举：`attributeAtLeast` / `warningTrue` / `default`。
+> 设计、字段表、加角色的 8 步流程、立绘规格见 [`docs/角色系统.md`](docs/角色系统.md)；契约增量见 `docs/CONTRACT.md` 附录 C。
+> 立绘放在 `media/characters/`（玩家自己的立绘仍在 `assets/char/`）。
 
 ---
 
-## 九、其它 / 参考文档
+## 九、已知占位 / 待团队拍板
+
+以下为仍未敲定的数值与字段，留待策划 / 数值同学确认（**不影响部署与运行**）：
+
+1. **属性 0 起 20 点**：`balance.attributePointTotal = 20`，创建角色默认四项各 5（总和 20）；属性下限是否允许 0、UI 初始分配初值待定。
+2. **金钱语义（Q1）**：`balance.walletPerMoneyPoint` 仍未定；事件金额是「元」量级、属性是「点」量级，两套并存。
+3. **月度收支净额为 0**：`monthlyIncome = monthlyExpense = 2000`，经济压力还没真正建立起来。
+4. **角色表情差分**：目前用 CSS 滤镜模拟（smile / sad / shy / surprise），正式差分图到位后按 `lines[].emotion` 切图。
+5. **两名配角的立绘**：周野 / 唐棠先用剪影卡，放好正式图后改 `characters.json` 的 `portrait.file` 即可。
+
+### 字段命名提示（供数值同学参考）
+
+- 已存在：`balance.randomEventBaseChance`、`balance.exam.*`、`balance.affinityMax`、`balance.endingPriorityOrder`。
+- 待补：`walletPerMoneyPoint`（金钱语义）。
+- `endings.condition.type` 枚举：`attributeAtLeast` / `gpaAtLeast` / `warningTrue` / `flagEquals` / `tagIncludes` / `collegeIs` /
+  `eventDone` / `relationAtLeast` / `lineStatus` / `lineDone` / `all` / `any` / `default`。
+
+---
+
+## 十、其它 / 参考文档
 
 - 本地静态服务器（`server.js`）仅用于开发，不随生产部署；生产环境只读静态文件。
 - 更完整的方案与架构见 `docs/开发方案.md`、`docs/架构任务分解.md`（非部署产物，可忽略）。
 - 设计约束（无构建、无框架、相对路径）见 `docs/开发方案.md` §1 / §5。
+- 角色系统见 [`docs/角色系统.md`](docs/角色系统.md)；剧情化优化路线见 [`docs/剧情化优化路线.md`](docs/剧情化优化路线.md)。

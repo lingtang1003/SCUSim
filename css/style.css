@@ -4458,6 +4458,216 @@ body { font-synthesis: none; }
 }
 
 
+/* =========================================================================
+   37. 角色系统（v2.1）：NPC 立绘 / 台词演出 / 好感 / 关系面板
+   ========================================================================= */
+
+/* 37.1 NPC 立绘：右下角半身像（玩家立绘在左，角色在右） */
+.vn-npc {
+  position: absolute;
+  right: 1.5%;
+  bottom: 0;
+  z-index: var(--z-sprite);
+  width: min(420px, 30vw);
+  height: min(80vh, 720px);
+  pointer-events: none;
+}
+.vn-npc__card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 26px 26px 10px 10px;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: 0 26px 60px rgba(20, 16, 15, 0.34);
+  -webkit-mask-image: linear-gradient(180deg, #000 82%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(180deg, #000 82%, rgba(0, 0, 0, 0) 100%);
+}
+.vn-npc__art {
+  position: absolute;
+  inset: 0;
+  background-position: 50% 8%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: filter 0.4s var(--ease-out), transform 0.6s var(--ease-out);
+}
+/* 表情差分：目前用滤镜模拟；有正式差分图时按情绪切 file 即可 */
+.vn-npc--smile .vn-npc__art { filter: saturate(1.06) brightness(1.04); }
+.vn-npc--sad .vn-npc__art { filter: saturate(0.66) brightness(0.94); }
+.vn-npc--shy .vn-npc__art { filter: saturate(1.12) hue-rotate(-6deg) brightness(1.05); }
+.vn-npc--surprise .vn-npc__art { transform: scale(1.03); }
+.vn-npc__plate {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  padding: 5px 18px;
+  border-radius: var(--r-pill);
+  background: var(--red);
+  color: #fff;
+  font-size: var(--t-xs);
+  letter-spacing: 0.18em;
+  box-shadow: 0 8px 20px var(--red-glow);
+  white-space: nowrap;
+}
+/* 没有立绘的配角：剪影卡（放好正式图后改 characters.json 的 portrait.file） */
+.vn-npc__silhouette {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 80% at 50% 18%, rgba(20, 16, 15, 0.92), rgba(20, 16, 15, 0.72) 60%, rgba(20, 16, 15, 0.46));
+}
+.vn-npc__initial {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 92px);
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.06em;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* 37.2 事件里的角色立绘：贴在事件卡右侧 */
+.vn-event__npc {
+  position: absolute;
+  right: 2%;
+  bottom: 10%;
+  width: min(320px, 24vw);
+  height: min(54vh, 540px);
+  z-index: 2;
+  pointer-events: none;
+}
+.vn-event__npc .vn-npc {
+  position: static;
+  width: 100%;
+  height: 100%;
+}
+
+/* 37.3 台词演出：选项等台词播完再出现 */
+.vn-dialogue__box--event { cursor: pointer; }
+.vn-choices--event.is-waiting {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.28s var(--ease-out), transform 0.28s var(--ease-out);
+}
+/* 迎新晚会这类多选一律两列网格，避免 7 个选项把屏幕撑爆 */
+.vn-choices--event.is-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: min(680px, 86vw);
+}
+.vn-choices--event.is-grid .vn-choice { min-height: 68px; }
+
+/* 37.4 HUD 上的剧情线胶囊 */
+.vn-chip--line {
+  background: var(--red-soft);
+  color: var(--red);
+  border-color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 37.5 关系面板 */
+.vn-rel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+}
+.vn-rel { min-width: 0; }
+.vn-rel__card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 26px rgba(20, 16, 15, 0.08);
+}
+.vn-rel__art {
+  position: relative;
+  height: 168px;
+  background-color: var(--paper-3);
+  background-position: 50% 12%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.vn-rel__art.is-silhouette {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 90% at 50% 10%, rgba(20, 16, 15, 0.9), rgba(20, 16, 15, 0.62));
+}
+.vn-rel__initial {
+  font-family: var(--font-display);
+  font-size: 56px;
+  color: rgba(255, 255, 255, 0.9);
+}
+.vn-rel__body {
+  padding: 10px 12px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.vn-rel__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.vn-rel__name { font-size: 18px; letter-spacing: 0.04em; }
+.vn-rel__stage {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  background: var(--red-soft);
+  color: var(--red);
+  white-space: nowrap;
+}
+.vn-rel__role { margin: 0; font-size: 12px; color: var(--ink-3); }
+.vn-rel__bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--paper-3);
+  overflow: hidden;
+}
+.vn-rel__bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--red), var(--red-bright));
+  transition: width 0.4s var(--ease-out);
+}
+.vn-rel__meta { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.vn-rel.is-unmet .vn-rel__art { filter: grayscale(1) brightness(0.92); opacity: 0.55; }
+.vn-rel.is-unmet .vn-rel__name { color: var(--ink-3); }
+
+/* 37.6 小屏：事件里不显示 NPC，立绘让位给选项 */
+@media (max-width: 879px) {
+  .vn-npc { width: min(300px, 32vw); height: min(62vh, 540px); }
+  .vn-event__npc { display: none; }
+  .vn-choices--event.is-grid {
+    grid-template-columns: 1fr;
+    width: min(560px, 88vw);
+    max-height: 50vh;
+    overflow: auto;
+  }
+}
+@media (max-width: 560px) {
+  .vn-npc { display: none; }
+  .vn-rel-grid { grid-template-columns: 1fr 1fr; }
+  .vn-rel__art { height: 120px; }
+}
+
+/* 37.7 关闭动效时，立绘与选项不做过渡 */
+.reduce-motion .vn-npc__art,
+.reduce-motion .vn-choices--event,
+.reduce-motion .vn-rel__bar i {
+  transition: none !important;
+}
+
+
 /* 图鉴卡片：去掉 1px 边框（在白底上就是一条「分界线」），只留投影 */
 .vn-gallery__item {
   border-color: transparent;
@@ -4475,7 +4685,7 @@ body { font-synthesis: none; }
 
 
 /* =========================================================================
-   37. 校园地图（右上角地点 → 打开）
+   38. 校园地图（右上角地点 → 打开）
    ========================================================================= */
 .vn-loc--btn {
   border: 0;
@@ -4566,7 +4776,7 @@ body { font-synthesis: none; }
 
 
 /* =========================================================================
-   38. 地图舞台：回合开始、还没选地点时铺满整屏的校园地图
+   39. 地图舞台：回合开始、还没选地点时铺满整屏的校园地图
    —— 地图按原图比例等比放大到盖住视口（不拉伸），图钉挂在这块画布上
    ========================================================================= */
 .vn-stage--map {

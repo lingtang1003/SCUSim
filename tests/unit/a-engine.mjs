@@ -38,6 +38,11 @@ function check(name, cond, detail = '') {
 
 const reader = { read: (path) => readFile(join(root, 'config', `${path}.json`), 'utf8') };
 const base = await loadConfig(reader);
+// 地点系统（v2.1）：本文件只验证引擎规则本身，把地点的「可做行动」限制关掉，
+// 免得每个用例都要先 moveToLocation（地点规则由 tests/verify_locations.mjs 专测）。
+if (base.locations && Array.isArray(base.locations.list)) {
+  for (const l of base.locations.list) delete l.activities;
+}
 
 const OPTIONS = {
   name: '引擎生', gender: '男', collegeId: 'cs',
@@ -56,6 +61,8 @@ function stateWithoutPending(cfg = base, seed = 7) {
   const ng = newGame(OPTIONS, cfg, createRng(seed));
   if (!ng.ok) throw new Error('newGame 失败: ' + ng.reason);
   ng.state.pendingEvent = null;
+  // 新局默认停在校园地图（location=null）；本文件要直接测行动，先落在地点上
+  ng.state.player.location = 'dorm';
   return ng.state;
 }
 
@@ -267,16 +274,27 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
 
 // ---------------- 5) ending 条件引擎 ----------------
 {
-  const s = createGameState(OPTIONS);
-  s.player.attributes.knowledge = 40;
-  const desc = getEnding(s, base);
-  check('ending: 未配置方向时保持 desc 兼容（学识 40 → 学术之星）',
-    desc.endingId === 'ending_academic_star', String(desc.endingId));
+  // 方向：用两条同样的 default 结局测「desc 取大 / asc 取小」，不依赖真实结局表
+  const cfgDir = patch((c) => {
+    delete c.balance.endingPriorityOrder;
+    c.endings.list = [
+      { id: 'P10', name: '十', priority: 10, condition: { type: 'default' } },
+      { id: 'P90', name: '九十', priority: 90, condition: { type: 'default' } },
+    ];
+  });
+  const sDir = createGameState(OPTIONS);
+  check('ending: 未配置方向时保持 desc 兼容（priority 大者优先 → P90）',
+    getEnding(sDir, cfgDir).endingId === 'P90', String(getEnding(sDir, cfgDir).endingId));
 
-  const cfgAsc = patch((c) => { c.balance.endingPriorityOrder = 'asc'; });
-  const asc = getEnding(s, cfgAsc);
-  check('ending: endingPriorityOrder=asc 时按「越小越高」命中（→ 平凡四年）',
-    asc.endingId === 'ending_ordinary', String(asc.endingId));
+  const cfgDirAsc = patch((c) => {
+    c.balance.endingPriorityOrder = 'asc';
+    c.endings.list = [
+      { id: 'P10', name: '十', priority: 10, condition: { type: 'default' } },
+      { id: 'P90', name: '九十', priority: 90, condition: { type: 'default' } },
+    ];
+  });
+  check('ending: endingPriorityOrder=asc 时按「越小越高」命中（→ P10）',
+    getEnding(sDir, cfgDirAsc).endingId === 'P10', String(getEnding(sDir, cfgDirAsc).endingId));
 
   const cfgCustom = patch((c) => {
     c.balance.endingPriorityOrder = 'asc';
@@ -366,6 +384,8 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
   const s2 = stateWithoutPending(cfgDecay);
   for (let i = 0; i < 3; i += 1) advance(s2, cfgDecay, createRng(70 + i));
   s2.pendingEvent = null;
+  // 地点系统：每次 advance 后回到校园地图，测行动前先落地
+  s2.player.location = 'dorm';
   const okStudy = doAction(s2, 'study', cfgDecay, createRng(75));
   const kAfterStudy = s2.player.attributes.knowledge;
   for (let i = 0; i < 3; i += 1) advance(s2, cfgDecay, createRng(80 + i));

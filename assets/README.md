@@ -1,4 +1,4 @@
-﻿# 美术素材（背景 / 立绘）
+# 美术素材（背景 / 立绘）
 
 UI 是**视觉小说形态**：全屏背景 + 左下立绘 + 底部对话框 + 中央选项条。
 图片都放在本目录，文件名与 `src/ui/ui.js` 顶部的 `SCENES` / `APPEARANCES` 一一对应。
@@ -154,6 +154,24 @@ APPEARANCES.push({
 - [ ] 文件名与上表完全一致（全小写）
 - [ ] 桌面 1600×1000 与手机 390×844 下，关键画面不被对话框/选项遮住
 - [ ] 控制台无 404
+
+---
+
+## 7. 角色（NPC）立绘 → `media/characters/`
+
+玩家自己的立绘仍在 `assets/char/`；**剧情角色的立绘在 `media/characters/`**（角色系统见 `docs/角色系统.md`）。
+
+| 项 | 规格 |
+|---|---|
+| 尺寸 | 810×1080（3:4 竖版） |
+| 格式 / 体积 | WebP，约 70–90 KB |
+| 构图 | 头部占上半幅，肩线约 70%；**底部 8% 会被裁掉**（去掉原图水印与边缘） |
+| 背景 | 纯色即可：UI 用圆角卡片 + 底部渐隐，不做透明抠图 |
+| 命名 | `<charId>.webp`（与 `config/characters.json` 的 id 一致，如 `linyu.webp`） |
+| 表情差分 | 预留 `<charId>_<emotion>.webp`；当前用 CSS 滤镜模拟，不需要额外文件 |
+
+当前已有：`jiangxu / guchi / linyu / suwan`。周野、唐棠先用剪影卡（`portrait.silhouette: true`），
+放好正式图后只要改 `characters.json` 里那一行 `portrait.file`。
 
 
 

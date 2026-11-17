@@ -21,6 +21,8 @@ import { createGameState, clampAttrs, pushHistory, pushLog, isValidName } from '
 import * as economy from './economy.js';
 import * as academy from './academy.js';
 import * as eventManager from '../events/eventManager.js';
+import * as relation from './relation.js';
+import * as storyline from './storyline.js';
 import { judgeEnding, evaluateEnding } from './ending.js';
 
 const MAX_TURN_DEFAULT = 40;
@@ -213,13 +215,21 @@ function buildPendingEvent(ev, state, config) {
   return pending;
 }
 
-/** 进入某回合：固定事件 > 负债事件 > 随机事件，同刻至多一个 pendingEvent（D-10）。 */
+/** 进入某回合：固定事件 > 负债事件 > 剧情线 > 随机事件，同刻至多一个 pendingEvent（D-10）。 */
 function enterTurn(state, config, rng, priorityEventId) {
   if (state.pendingEvent && state.pendingEvent.eventId) return;
   const fixedIds = (typeof eventManager.checkFixedEvents === 'function')
     ? eventManager.checkFixedEvents(state, config)
     : [];
   let eventId = (Array.isArray(fixedIds) && fixedIds[0]) || priorityEventId || null;
+  let forcedLine = null;
+  if (!eventId && typeof storyline.dueEvent === 'function') {
+    const due = storyline.dueEvent(state, config);
+    if (due && due.eventId) {
+      eventId = due.eventId;
+      forcedLine = due.lineId;
+    }
+  }
   if (!eventId) {
     const roll = (typeof eventManager.rollEvent === 'function')
       ? eventManager.rollEvent(state, config, rng)
@@ -228,8 +238,22 @@ function enterTurn(state, config, rng, priorityEventId) {
   }
   if (!eventId) return;
   const ev = findEvent(config, eventId);
-  if (!ev) return;
+  if (!ev) {
+    if (forcedLine) storyline.markBroken(state, forcedLine, config);
+    return;
+  }
+  // 防卡：一个选项都点不了的事件不弹（剧情线步骤则直接判定中断，避免每回合重复派发）
+  const available = (typeof eventManager.availableOptions === 'function')
+    ? eventManager.availableOptions(ev, state, config)
+    : [];
+  if (Array.isArray(available) && available.length && !available.some((a) => a.enabled)) {
+    pushLog(state, `事件「${ev.name || ev.id}」没有可用的选项，跳过`, config);
+    if (forcedLine) storyline.markBroken(state, forcedLine, config);
+    return;
+  }
   state.pendingEvent = buildPendingEvent(ev, state, config);
+  // 事件带角色 → 标记已遇见（关系面板从剪影变成彩色）
+  if (ev.charId) relation.markMet(state, ev.charId, config);
   pushLog(state, `触发事件：${ev.name || ev.id}`, config);
   pushHistory(state, { type: 'event', eventId: ev.id, text: `触发事件：${ev.name || ev.id}` }, config);
 }
@@ -263,6 +287,9 @@ export function drawTagCandidates(config, rng, count = TAG_CANDIDATE_COUNT) {
  */
 export function buildViewModel(state, config) {
   const balance = getBalance(config);
+  // 旧存档没有 relations/storylines：读取视图前幂等补全（不改变已有数据）
+  relation.ensureRelations(state, config);
+  storyline.ensureStorylines(state, config);
   const availability = {};
   const actions = getActions(config).map((a) => {
     const av = actionAvailability(state, a.id, config);
@@ -283,6 +310,8 @@ export function buildViewModel(state, config) {
     monthly: null,
     debtThreshold: num(balance.debtThreshold, -3000),
     seed: state.seed,
+    relations: relation.listRelations(state, config),
+    line: storyline.activeLineSummary(state, config),
   };
 }
 
@@ -353,6 +382,11 @@ export function newGame(options, config, rng) {
 
   state.seed = Number.isFinite(options.seed) ? options.seed : rng.getState();
   clampAttrs(state, config);
+
+  // v2.1：初始化角色好感与剧情线（缺配置时各自为空操作）
+  relation.initRelations(state, config);
+  storyline.initStorylines(state, config);
+
   pushHistory(state, {
     type: 'creation',
     text: `角色创建：${state.player.name} · ${state.player.collegeId}`,
@@ -580,6 +614,13 @@ export function advance(state, config, rng) {
   // D-18：连续空窗扣减（学识 / 健康）
   applyIdleDecay(state, config);
 
+  // v2.1：好感跌破底线 → 剧情线中断（本局错过这条线）
+  const brokenLines = storyline.checkBreak(state, config);
+  for (const id of brokenLines) {
+    pushLog(state, `剧情线中断：${id}`, config);
+    pushHistory(state, { type: 'storyline', lineId: id, text: `剧情线中断：${id}` }, config);
+  }
+
   const semester = Math.ceil(state.turn / monthsPerSemester);
 
   // 负债判定（SRS 3.3.3）：触发则作为本回合优先事件
@@ -641,6 +682,7 @@ export function advance(state, config, rng) {
     pendingEvent: state.pendingEvent,
     endingId,
     endingSubs,
+    brokenLines,
     message: `推进至第 ${state.turn} 回合（学期 ${semester}）`,
   };
 }
@@ -663,6 +705,22 @@ export function resolvePendingEvent(state, choiceId, config, rng) {
   }
   state.pendingEvent = null;
   clampAttrs(state, config);
+
+  // v2.1：推进剧情线（选择的 next 分支 / 步进 / 收束），并同步恋爱状态
+  const line = storyline.onEventResolved(state, eventId, choiceId, config);
+  if (line) {
+    pushHistory(state, {
+      type: 'storyline',
+      lineId: line.lineId,
+      status: line.status,
+      text: line.finished
+        ? `剧情线「${line.lineId}」${line.status === 'done' ? '走完了' : '中断了'}`
+        : `剧情线「${line.lineId}」推进到第 ${line.stepIndex + 2} 步`,
+    }, config);
+  }
+  relation.syncRomance(state, config);
+  const brokenLines = storyline.checkBreak(state, config);
+
   pushHistory(state, { type: 'choice', eventId, text: res.message || `事件选择：${choiceId}` }, config);
 
   // 期末考试周事件已结算：此刻再算成绩，让「全力复习 / 佛系应考」真正影响本学期结果
@@ -684,7 +742,7 @@ export function resolvePendingEvent(state, choiceId, config, rng) {
   state.rngState = rng.getState();
   return {
     ok: true, state, result: res.result, message: res.message,
-    settlement, thesis, endingId: null, endingSubs: [],
+    settlement, thesis, line, brokenLines, endingId: null, endingSubs: [],
   };
 }
 

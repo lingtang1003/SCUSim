@@ -201,6 +201,8 @@ export function createApp(ctx) {
     speaker: '',
     text: '',
     effects: [],
+    npc: '',
+    npcEmotion: 'neutral',
     consumedSeq: 0,
     lastTurn: 0,
     history: [],
@@ -320,6 +322,66 @@ export function createApp(ctx) {
     if (!ev) return null;
     const all = [].concat(ev.fixed || [], ev.random || []);
     return all.find((e) => e.id === id) || null;
+  }
+
+  // ---------------- 角色（v2.1）：静态表只读，好感读 state ----------------
+  function allEvents() {
+    const ev = config && config.events;
+    if (!ev) return [];
+    return [].concat(ev.fixed || [], ev.random || []);
+  }
+
+  function charactersList() {
+    return listOf('characters').filter((c) => c && typeof c.id === 'string');
+  }
+
+  function findCharacter(charId) {
+    if (!charId) return null;
+    return charactersList().find((c) => c.id === charId) || null;
+  }
+
+  /** 该角色在剧情里出现过几次（关系面板的「片段」计数）。 */
+  function eventsOfCharacter(charId) {
+    if (!charId) return 0;
+    return allEvents().filter((e) => e && e.charId === charId).length;
+  }
+
+  /** 事件立绘：有图用图，没图画剪影卡（配角占位）。 */
+  function npcLayer(charId, emotion) {
+    const ch = findCharacter(charId);
+    if (!ch) return null;
+    const file = (ch.portrait && ch.portrait.file) || '';
+    const silhouette = !file || (ch.portrait && ch.portrait.silhouette);
+    const emo = emotion || 'neutral';
+    const art = silhouette
+      ? null
+      : h('div', {
+          class: 'vn-npc__art',
+          style: 'background-image:url("' + file + '")',
+        });
+    return h('div', {
+      class: 'vn-npc vn-npc--' + emo + (silhouette ? ' vn-npc--silhouette' : ''),
+      'aria-hidden': 'true',
+    }, [
+      h('div', { class: 'vn-npc__card' }, [
+        art,
+        silhouette
+          ? h('div', { class: 'vn-npc__silhouette' }, [
+              h('span', { class: 'vn-npc__initial' }, [String(ch.name || '?').slice(0, 1)]),
+            ])
+          : null,
+        h('div', { class: 'vn-npc__plate' }, [String(ch.name || '')]),
+      ]),
+    ]);
+  }
+
+  /** 关系变化标签（对话框下方：▲ 江叙 好感 +8）。 */
+  function relationChips(delta) {
+    if (!Array.isArray(delta) || !delta.length) return [];
+    return delta.map((d) => ({
+      kind: 'relation',
+      text: '▲ ' + (d.name || d.charId) + ' 好感' + (Number(d.delta) > 0 ? '+' : '') + Number(d.delta),
+    }));
   }
 
   function findCollege(id) {
@@ -563,6 +625,7 @@ export function createApp(ctx) {
     const maxTurn = balanceOf('turns', 40);
     const apMax = balanceOf('actionPointsPerTurn', 4);
     const player = state.player || {};
+    const line = view && view.line;
     return h('div', { class: 'vn-hud' }, [
       h('div', { class: 'vn-hud__group' }, [
         h('span', { class: 'vn-chip vn-chip--gold' }, [
@@ -573,6 +636,11 @@ export function createApp(ctx) {
           h('span', { class: 'vn-chip__k' }, ['行动点']),
           apDots(state.actionPoints, apMax),
         ]),
+        line
+          ? h('span', { class: 'vn-chip vn-chip--line', title: line.name }, [
+              '♡ ' + line.name + ' · ' + line.step + '/' + line.total,
+            ])
+          : null,
       ]),
       h('div', { class: 'vn-hud__group' }, [
         !locationOf(state) ? null : h('button', {
@@ -588,6 +656,12 @@ export function createApp(ctx) {
           if (loc) return loc.name;
           return ui.sceneEntry ? ui.sceneEntry.label : '校园';
         })()]),
+        h('button', {
+          class: 'vn-icon',
+          title: '关系',
+          'aria-label': '查看关系',
+          onclick: () => showRelations(),
+        }, ['♡']),
         h('button', {
           class: 'vn-icon',
           title: '保存进度',
@@ -760,11 +834,13 @@ export function createApp(ctx) {
     const eventResult = view && view.eventResult;
 
     if (eventResult) {
-      // 事件选项结算：结果文本已由引擎追加「｜ 效果：…」，对话框只显示正文，不再重复挂数值标签
+      // 事件选项结算：结果文本已由引擎追加「｜ 效果：…」，对话框只显示正文，
+      // 好感变化单独用标签呈现（▲ 江叙 好感 +8），比塞进句子里清楚
       const def = findEventById(eventResult.eventId) || {};
       ui.speaker = def.name || '事件';
       ui.text = eventResult.text || '（这件事就这样过去了）';
-      ui.effects = [];
+      ui.effects = relationChips(eventResult.relationDelta);
+      if (def.charId) ui.npc = def.charId;
       ui.history.push({ who: ui.speaker, text: ui.text });
     } else if (actionId && seq && seq !== ui.consumedSeq) {
       ui.consumedSeq = seq;
@@ -789,6 +865,7 @@ export function createApp(ctx) {
             : '（拖着行李箱走进校门，「川大」两个字在阳光下发亮）')
         : weekLine(state.turn);
       ui.effects = [];
+      ui.npc = '';
       ui.history.push({ who: ui.speaker, text: ui.text });
     }
     if (ui.history.length > 200) ui.history.splice(0, ui.history.length - 200);
@@ -1444,6 +1521,7 @@ export function createApp(ctx) {
         else if (callbacks.onLoadGame) callbacks.onLoadGame();
       } },
       { label: '剧情回放', hint: '重看本周的对话', run: () => showBacklog() },
+      { label: '关系', hint: '好感 / 剧情线', run: () => showRelations() },
       { label: '设置', hint: '立绘 / 动效 / 声音', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
       { label: '商城', hint: '敬请期待', locked: true, run: () => showToast('商城还没开门呢', 'warning') },
     ];
@@ -1505,38 +1583,105 @@ export function createApp(ctx) {
     mountOverlay(scrim);
   }
 
-  // ---------------- 弹层：事件（VN 对话 + 选项） ----------------
+  // ---------------- 弹层：事件（VN 台词逐段播放 + 选项） ----------------
   function showEvent(ev) {
     if (!ev || !rootEl) return;
     closeOverlay();
     const def = findEventById(ev.eventId) || {};
     const title = def.name || ev.eventId || '事件';
-    const body = def.text || '';
+    // 有 lines 就按台词段播放（旁白 / 角色台词交替），否则退回单段 text
+    const rawLines = Array.isArray(def.lines) && def.lines.length
+      ? def.lines
+      : [{ speaker: title, text: def.text || '' }];
+    const lines = rawLines.map((l) => ({
+      speaker: (l && l.speaker) || '',
+      text: (l && l.text) || '',
+      emotion: (l && l.emotion) || 'neutral',
+    }));
     const options = Array.isArray(ev.options) && ev.options.length
       ? ev.options
       : (Array.isArray(def.options) ? def.options : []);
     // 前置不足时的说明条（默认隐藏，由 showHint 填入）
     const hintEl = h('p', { class: 'vn-event__hint' }, ['']);
+    const npcWrap = h('div', { class: 'vn-event__npc' }, []);
+    const textEl = h('p', { class: 'vn-text' });
+    const speakerEl = h('div', { class: 'vn-speaker' });
+    const nextEl = h('div', { class: 'vn-next is-on' }, ['▼ 点击继续']);
+
+    const choiceWrap = h('div', {
+      class: 'vn-choices vn-choices--event'
+        + (def.layout === 'grid' ? ' is-grid' : '')
+        + (lines.length > 1 ? ' is-waiting' : ''),
+    }, options.map((o) => {
+      const hints = Array.isArray(o.hints) ? o.hints : [];
+      const meta = hints.map((x) => x.text || ('↑ ' + (x.name || x.charId) + ' 好感+' + x.delta)).join(' · ');
+      const locked = o.enabled === false;
+      return choiceButton({
+        label: o.label || o.id,
+        meta: locked ? (o.reason || '暂时没法选') : meta,
+        locked,
+        title: locked ? (o.reason || '') : '',
+        onClick: () => {
+          if (callbacks.onResolveEvent) callbacks.onResolveEvent(o.id);
+        },
+      });
+    }));
+
+    const EMOTIONS = ['neutral', 'smile', 'sad', 'shy', 'surprise'];
+    function setEmotion(emo) {
+      const npcEl = npcWrap.firstChild;
+      if (!npcEl || !npcEl.classList) return;
+      for (const e of EMOTIONS) npcEl.classList.remove('vn-npc--' + e);
+      npcEl.classList.add('vn-npc--' + (emo || 'neutral'));
+    }
+
+    let idx = 0;
+    function paint(i) {
+      const line = lines[Math.max(0, Math.min(lines.length - 1, i))];
+      speakerEl.textContent = line.speaker || '';
+      speakerEl.style.display = line.speaker ? '' : 'none';
+      typeText(textEl, line.text);
+      if (def.charId) setEmotion(line.emotion);
+    }
+    function revealChoices() {
+      choiceWrap.classList.remove('is-waiting');
+      nextEl.classList.remove('is-on');
+    }
+    function advance() {
+      if (idx < lines.length - 1) {
+        idx += 1;
+        paint(idx);
+        return;
+      }
+      revealChoices();
+    }
+
+    if (def.charId) {
+      const layer = npcLayer(def.charId, lines[0].emotion);
+      if (layer) npcWrap.appendChild(layer);
+    }
 
     const node = h('div', { class: 'vn-event' }, [
       h('div', { class: 'vn-event__scrim' }),
+      npcWrap,
       h('div', { class: 'vn-event__inner' }, [
         h('div', { class: 'vn-event__tag' }, ['✦ ' + title]),
-        h('div', { class: 'vn-choices vn-choices--event' }, options.map((o) =>
-          choiceButton({
-            label: o.label || o.id,
-            onClick: () => {
-              if (callbacks.onResolveEvent) callbacks.onResolveEvent(o.id);
-            },
-          })
-        )),
+        choiceWrap,
         hintEl,
-        dialogueBox(title, body, []),
+        h('div', { class: 'vn-dialogue' }, [
+          h('div', { class: 'vn-dialogue__box vn-dialogue__box--event', onclick: advance }, [
+            speakerEl,
+            textEl,
+            nextEl,
+          ]),
+        ]),
       ]),
     ]);
     eventHintEl = hintEl;
     mountOverlay(node, null, false);
     markStageEvent(true);
+    paint(0);
+    if (lines.length <= 1) revealChoices();
   }
 
   // ---------------- 弹层：结局 ----------------
@@ -1861,6 +2006,63 @@ export function createApp(ctx) {
         h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['取消']),
       ], true)
     );
+  }
+
+  // ---------------- 弹层：关系（人物卡 + 好感 + 剧情片段） ----------------
+  function showRelations() {
+    if (!rootEl) return;
+    closeOverlay();
+    const state = lastState || {};
+    const rels = (state.player && state.player.relations) || {};
+    const seen = Array.isArray(state.eventHistory) ? state.eventHistory : [];
+    const chars = charactersList();
+    const max = balanceOf('affinityMax', 100);
+    const rows = chars.map((c) => {
+      const rel = rels[c.id] || { affinity: 0, met: false };
+      const stages = Array.isArray(c.stages) ? c.stages : [];
+      const stage = stages.filter((s) => Number(s.at) <= Number(rel.affinity)).pop()
+        || stages[0] || { name: '陌生' };
+      const total = eventsOfCharacter(c.id);
+      const got = allEvents().filter((e) => e && e.charId === c.id && seen.indexOf(e.id) >= 0).length;
+      const file = (c.portrait && c.portrait.file) || '';
+      const silhouette = !file || (c.portrait && c.portrait.silhouette);
+      const pct = Math.max(0, Math.min(100, (Number(rel.affinity) || 0) / max * 100));
+      return h('div', { class: 'vn-rel' + (rel.met ? '' : ' is-unmet') }, [
+        h('div', { class: 'vn-rel__card' }, [
+          h('div', {
+            class: 'vn-rel__art' + (silhouette ? ' is-silhouette' : ''),
+            style: silhouette ? '' : 'background-image:url("' + file + '")',
+          }, silhouette
+            ? [h('span', { class: 'vn-rel__initial' }, [String(c.name || '?').slice(0, 1)])]
+            : []),
+          h('div', { class: 'vn-rel__body' }, [
+            h('div', { class: 'vn-rel__row' }, [
+              h('b', { class: 'vn-rel__name' }, [rel.met ? c.name : '？？？']),
+              h('span', { class: 'vn-rel__stage' }, [rel.met ? stage.name : '未遇见']),
+            ]),
+            h('p', { class: 'vn-rel__role' }, [rel.met ? (c.role || '') : '还没在校园里遇见。']),
+            h('div', { class: 'vn-rel__bar' }, [
+              h('i', { style: 'width:' + pct + '%' }),
+            ]),
+            h('div', { class: 'vn-rel__meta' }, [
+              '好感 ' + (rel.met ? (Number(rel.affinity) || 0) : 0) + ' / ' + max
+                + (total ? ' · 片段 ' + got + '/' + total : ''),
+            ]),
+          ]),
+        ]),
+      ]);
+    });
+    const body = [
+      h('p', { class: 'vn-modal__lead' }, [
+        '好感来自剧情线里的选择。一局只能认真走近一个人——选了谁，就在迎新晚会那一晚。',
+      ]),
+      chars.length
+        ? h('div', { class: 'vn-rel-grid' }, rows)
+        : h('p', { class: 'tiny muted' }, ['这一局没有可攻略的角色。']),
+    ];
+    mountOverlay(modalShell('关系', body, [
+      h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['关闭']),
+    ], 'xl'));
   }
 
   // ---------------- 弹层：角色信息（点 HUD 姓名牌打开） ----------------
@@ -2240,6 +2442,7 @@ export function createApp(ctx) {
     showHint,
     showExam,
     showEnding,
+    showRelations,
     showError,
     showToast,
     showGallery,

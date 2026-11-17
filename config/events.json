@@ -860,18 +860,26 @@
     },
     {
       "id": "ev_r23",
+      "charId": "linyu",
       "name": "图书馆邂逅",
-      "weight": 8,
+      "weight": 6,
+      "storylineOnly": true,
+      "once": true,
       "termRange": [
         1,
         12
       ],
-      "text": "早起去图书馆自习，你在一排书架前遇见了理想型——正巧，你们都要找同一本书。",
+      "text": "早起去图书馆自习，你在书架前遇见了她——正巧，你们都要找同一本书。",
+      "lines": [
+        { "speaker": "旁白", "text": "早上八点的图书馆四楼，阳光斜着落在书架之间。" },
+        { "speaker": "林予", "emotion": "neutral", "text": "……你也来找这本？" },
+        { "speaker": "旁白", "text": "她压着一顶旧贝雷帽，指腹蹭着书脊，没有看你。" }
+      ],
       "options": [
         {
           "id": "chat",
-          "label": "主动搭讪",
-          "resultText": "你鼓起勇气开口，对方放下书朝你笑了笑，聊得很投缘。",
+          "label": "主动搭话",
+          "resultText": "你刚开口就有点后悔，但她先笑了。你们从这本书聊到校报，聊到闭馆音乐响起来。",
           "effects": {
             "attributes": {
               "knowledge": -1,
@@ -879,84 +887,89 @@
             },
             "flags": {
               "crush": true
+            },
+            "relation": {
+              "linyu": 10
             }
           }
         },
         {
           "id": "ignore",
           "label": "默默看书",
-          "resultText": "你把悸动压在心底，继续埋头自习。",
+          "resultText": "你把悸动压回书页里。她取走了另一本，脚步声在楼梯间慢慢消失。",
           "effects": {}
         }
       ]
     },
     {
       "id": "ev_r24",
-      "name": "ta邀你聚餐",
+      "charId": "linyu",
+      "name": "林予邀你吃饭",
       "weight": 6,
+      "storylineOnly": true,
+      "once": true,
       "termRange": [
         2,
         16
       ],
-      "text": "上次邂逅的那位约你去校外吃晚饭。",
+      "text": "上次在书架前遇见的那个人，约你去校外吃晚饭。",
+      "lines": [
+        { "speaker": "旁白", "text": "手机在桌上震了一下，是个没备注的号码。" },
+        { "speaker": "林予", "emotion": "shy", "text": "看到一家小店，红油抄手。……你要不要一起？" },
+        { "speaker": "旁白", "text": "消息发出来三秒，她又补了一句：「不去也没关系。」" }
+      ],
       "options": [
         {
           "id": "dinner",
           "label": "答应赴约",
-          "resultText": "热气腾腾的晚餐，你俩从专业聊到家乡，氛围正好。",
-          "requires": {
-            "flag": {
-              "key": "crush",
-              "value": true
-            }
-          },
-          "denyText": "你们还没熟到能一起吃饭。",
+          "resultText": "热气腾腾的一碗端上来，你们从专业聊到家乡，油碟被调得一团糟。",
           "effects": {
             "attributes": {
               "social": 2
             },
-            "money": -120,
+            "money": -150,
             "flags": {
               "crush2": true
+            },
+            "relation": {
+              "linyu": 12
             }
           }
         },
         {
           "id": "refuse",
           "label": "婉言拒绝",
-          "resultText": "你借口还有作业，改天再约。",
-          "requires": {
-            "flag": {
-              "key": "crush",
-              "value": true
+          "resultText": "你说还有作业没写完。她回了个「好」，那边的输入状态亮了很久，又灭了。",
+          "effects": {
+            "relation": {
+              "linyu": 4
             }
-          },
-          "denyText": "你们还没熟到能一起吃饭。",
-          "effects": {}
+          }
         }
       ]
     },
     {
       "id": "ev_r25",
+      "charId": "linyu",
       "name": "江安河边散步",
       "weight": 6,
+      "storylineOnly": true,
+      "once": true,
       "termRange": [
         3,
         20
       ],
-      "text": "晚饭后，ta 约你去江安河边走走。晚风微凉，气氛有些微妙。",
+      "text": "晚饭后，她约你去江安河边走走。晚风微凉，气氛有些微妙。",
+      "lines": [
+        { "speaker": "旁白", "text": "江安河把晚霞揉碎了，桥栏杆还是温的。" },
+        { "speaker": "林予", "emotion": "neutral", "text": "我写的稿子，编辑说太冷了。……你觉得呢？" },
+        { "speaker": "旁白", "text": "她停下来，转过身，忽然说：「我好像有点喜欢你。」" }
+      ],
       "options": [
         {
           "id": "date",
-          "label": "答应，顺其自然",
-          "resultText": "你们并肩走了很久，ta 忽然停住，问你要不要在一起。",
-          "requires": {
-            "flag": {
-              "key": "crush2",
-              "value": true
-            }
-          },
-          "denyText": "气氛还没到那一步，邀约显得唐突。",
+          "label": "「那就试试吧。」",
+          "resultText": "她愣了两秒，然后低头笑出声，把脸埋进围巾里。",
           "effects": {
             "attributes": {
               "social": 2,
@@ -964,23 +977,22 @@
             },
             "flags": {
               "romance": "dating"
+            },
+            "relation": {
+              "linyu": 14
             }
           }
         },
         {
           "id": "slow",
-          "label": "再缓缓",
-          "resultText": "你说再想想，脚步却不由自主慢了半拍。",
-          "requires": {
-            "flag": {
-              "key": "crush2",
-              "value": true
-            }
-          },
-          "denyText": "气氛还没到那一步，邀约显得唐突。",
+          "label": "「再缓缓。」",
+          "resultText": "你说再想想，脚步却不由自主慢了半拍。她嗯了一声，一路没再说话。",
           "effects": {
             "attributes": {
               "social": 1
+            },
+            "relation": {
+              "linyu": 8
             }
           }
         }
@@ -988,25 +1000,26 @@
     },
     {
       "id": "ev_r26",
+      "charId": "linyu",
       "name": "吵架了",
       "weight": 6,
+      "storylineOnly": true,
+      "once": true,
       "termRange": [
         4,
         30
       ],
-      "text": "因为一件小事，你和 ta 起了争执，气氛降到冰点。",
+      "text": "因为一件小事，你和她起了争执，气氛降到冰点。",
+      "lines": [
+        { "speaker": "旁白", "text": "她说她要去外地实习三个月，是在订好机票之后才告诉你的。" },
+        { "speaker": "林予", "emotion": "sad", "text": "我以为……你会替我高兴。" },
+        { "speaker": "旁白", "text": "话说出口两个人都后悔了。风从走廊尽头灌进来。" }
+      ],
       "options": [
         {
           "id": "makeup",
           "label": "先冷静，好好谈",
-          "resultText": "你们把话摊开说清，重归于好。",
-          "requires": {
-            "flag": {
-              "key": "romance",
-              "value": "dating"
-            }
-          },
-          "denyText": "你们还没走到会吵架的关系。",
+          "resultText": "你把话摊开说清，她也把没说出口的委屈说了。最后你们在走廊尽头抱了一下。",
           "effects": {
             "attributes": {
               "social": -1,
@@ -1014,26 +1027,25 @@
             },
             "flags": {
               "romance": "hehe"
+            },
+            "relation": {
+              "linyu": 18
             }
           }
         },
         {
           "id": "breakup",
           "label": "一拍两散",
-          "resultText": "你转身离开，这段关系就此画上句号。",
-          "requires": {
-            "flag": {
-              "key": "romance",
-              "value": "dating"
-            }
-          },
-          "denyText": "你们还没走到会吵架的关系。",
+          "resultText": "你转身离开。这段关系就这样画上句号，谁都没有回头。",
           "effects": {
             "attributes": {
               "social": -3
             },
             "flags": {
               "romance": null
+            },
+            "relation": {
+              "linyu": -10
             }
           }
         }
