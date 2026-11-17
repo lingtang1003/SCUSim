@@ -863,7 +863,7 @@ export function createApp(ctx) {
           }, [
             h('span', { class: 'vn-menu-btn__body' }, [
               h('span', { class: 'vn-menu-btn__label' }, ['系统设置']),
-            h('span', { class: 'vn-menu-btn__hint' }, ['立绘 / 动效']),
+            h('span', { class: 'vn-menu-btn__hint' }, ['立绘 / 动效 / 声音']),
             ]),
           ]),
         ]),
@@ -1384,7 +1384,7 @@ export function createApp(ctx) {
         else if (callbacks.onLoadGame) callbacks.onLoadGame();
       } },
       { label: '剧情回放', hint: '重看本周的对话', run: () => showBacklog() },
-      { label: '系统设置', hint: '立绘 / 动效', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
+      { label: '系统设置', hint: '立绘 / 动效 / 声音', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
       { label: '商城', hint: '敬请期待', locked: true, run: () => showToast('商城还没开门呢', 'warning') },
     ];
     const scrim = h('div', {
@@ -1579,7 +1579,11 @@ export function createApp(ctx) {
         }
       },
     }, [
-      h('div', { class: 'vn-modal' + (wide ? ' vn-modal--wide' : '') }, [
+      h('div', {
+        class:
+          'vn-modal' +
+          (wide === 'xl' ? ' vn-modal--xl' : wide ? ' vn-modal--wide' : ''),
+      }, [
         h('div', { class: 'vn-modal__head' }, [
           h('h3', { class: 'vn-modal__title' }, [title]),
           h('button', { class: 'vn-icon vn-icon--close', onclick: () => closeOverlay() }, ['×']),
@@ -1931,14 +1935,16 @@ export function createApp(ctx) {
       ? resolveAppearanceId(s.appearance)
       : chosen;
 
+    // 语义：这一项就是「动效」。reduceMotion = true 表示动效关闭。
     const motionBtn = h('button', {
-      class: 'vn-switch' + (reduceMotion ? ' is-on' : ''),
+      class: 'vn-switch' + (reduceMotion ? '' : ' is-on'),
       onclick: () => {
         reduceMotion = !reduceMotion;
-        motionBtn.className = 'vn-switch' + (reduceMotion ? ' is-on' : '');
-        motionBtn.textContent = reduceMotion ? '已开启' : '已关闭';
+        const on = !reduceMotion;
+        motionBtn.className = 'vn-switch' + (on ? ' is-on' : '');
+        motionBtn.textContent = on ? '已开启' : '已关闭';
       },
-    }, [reduceMotion ? '已开启' : '已关闭']);
+    }, [reduceMotion ? '已关闭' : '已开启']);
 
     // 设置里换立绘也只列出与当前角色性别匹配的（没有存档时列出全部）
     const playerGender = lastState && lastState.player ? lastState.player.gender : '';
@@ -1977,16 +1983,13 @@ export function createApp(ctx) {
 
     const body = [
       h('div', { class: 'vn-setting' }, [
-        h('div', { class: 'vn-setting__label' }, ['减弱动效']),
+        h('div', { class: 'vn-setting__label' }, ['动效']),
         motionBtn,
       ]),
       h('div', { class: 'vn-setting-group' }, [
         h('div', { class: 'vn-setting-group__title' }, ['声音']),
         bgmRow,
         sfxRow,
-        h('p', { class: 'vn-setting__note' }, [
-          '拖动即生效；音乐文件放到 assets/audio/ 后自动播放。',
-        ]),
       ]),
       h('div', { class: 'vn-setting' }, [
         h('div', { class: 'vn-setting__label' }, ['我的立绘']),
@@ -2005,7 +2008,7 @@ export function createApp(ctx) {
           },
         }, ['保存']),
         h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['取消']),
-      ], true)
+      ], 'xl')
     );
   }
 

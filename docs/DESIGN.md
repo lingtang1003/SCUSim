@@ -173,6 +173,17 @@
    填充退去/填满都会露出一圈白边。做法是悬停时把 `border-color` 设成填充色 `var(--red)`，
    离开时边框用 480ms 慢慢回去，和填充同步。
 
+### 设置面板的字体
+
+分组标题与滑块标签（动效 / 声音 / 背景音乐 / 音效 / 我的立绘）统一用标题字体 `var(--font-display)`（汉仪唐美人 W），
+与弹窗标题「系统设置」同一支笔触；数值（60%）仍用正文字体，避免数字被写意化。
+
+### 弹窗尺寸
+
+`modalShell(title, body, foot, wide)` 的第四个参数：`true` → `--wide`（660px），`'xl'` → `--xl`（780px，系统设置用）。
+`.vn-modal__body` 是 `flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden`，
+只纵向滚动、页脚常驻；滚动条 8px 细条（`scrollbar-width: thin` + webkit 伪元素）。
+
 ### 滚动容器里的卡片阴影
 
 `.vn-modal__body` / `.vn-tag-grid` 是 `overflow: auto`，卡片投影会在容器边缘被裁成直线。
@@ -186,7 +197,7 @@
 
 1. **起始值别用 `scale(0)`**：个别内核会认为元素“没有尺寸”，直接跳过过渡 → 表现为瞬间填满。
    用 `scale(0.001)`，肉眼同样是零，但过渡一定触发。
-2. **「减弱动效」会吃掉过渡**：`.reduce-motion * { transition: none !important }` 是全站规则。
+2. **关掉「动效」会吃掉过渡**：`.reduce-motion * { transition: none !important }` 是全站规则。
    选项卡填充是这条规则的例外（`.reduce-motion .vn-choice::after` 用更高优先级恢复），
    其余动效（弹窗、抽屉、打字机）仍然跟随该设置关闭。
 

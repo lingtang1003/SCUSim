@@ -31,7 +31,7 @@
 | 菜单抽屉 | HUD ☰ | 右侧玻璃面板：保存/读取/回放/设置/商城 | `.vn-drawer` `.vn-scrim` |
 | 剧情回放 | HUD 📖 / 抽屉 | 对话历史 + 行动记录 | `.vn-modal` `.vn-backlog` |
 | 结局图鉴 | 标题页 | 已解锁/未解锁列表 | `.vn-gallery` |
-| 系统设置 | 标题页 / 抽屉 | 减弱动效 + 换立绘 | `.vn-setting` `.vn-switch` |
+| 系统设置 | 标题页 / 抽屉 | 动效开关 + 音量 + 换立绘 | `.vn-setting` `.vn-switch` `.vn-slider__input` |
 
 ---
 
@@ -97,7 +97,7 @@ UI 内部视图状态（**不是** GameState，不参与结算、不进存档）
 
 - 所有可点击元素都是原生 `<button>`；`aria-label` 标注图标按钮（💾 / 📖 / ☰）。
 - `Esc` 关闭任意弹层（菜单抽屉 / 弹层 / 设置）。
-- 设置里的「减弱动效」= `documentElement.classList += reduce-motion`，
+- 设置里的「动效」开关（默认开启）= 关掉时 `documentElement.classList += reduce-motion`，
   UI 的打字机与 CSS 动画都会同时关掉；系统级 `prefers-reduced-motion` 也尊重。
 - 焦点环：`focus-visible` 双层高亮，深色场景上仍清晰。
 - 对话框正文 `19px / 1.95`，正文最小高度 2.6em，避免单行时抖动。
@@ -164,7 +164,7 @@ UI 内部视图状态（**不是** GameState，不参与结算、不进存档）
 - 选项：`vn-fade-up` 错峰入场（`--i` × 45ms），悬停整块变红 + 高光扫过；
 - 弹窗/事件/结局：`vn-zoom-in` / `vn-fade-up` 入场；
 - 抽屉：`vn-slide-in-right`；
-- 减弱动效：`html.reduce-motion` 与 `prefers-reduced-motion` 双保险，全部 animation 关闭。
+- 动效关闭：`html.reduce-motion` 与 `prefers-reduced-motion` 双保险，全部 animation 关闭（选项卡填充例外，见 DESIGN.md）。
 
 ### 季节配色（游戏内）
 
