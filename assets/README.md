@@ -170,8 +170,9 @@ APPEARANCES.push({
 | 命名 | `<charId>.webp`（与 `config/characters.json` 的 id 一致，如 `linyu.webp`） |
 | 表情差分 | 预留 `<charId>_<emotion>.webp`；当前用 CSS 滤镜模拟，不需要额外文件 |
 
-当前已有：`jiangxu / guchi / linyu / suwan`。周野、唐棠先用剪影卡（`portrait.silhouette: true`），
-放好正式图后只要改 `characters.json` 里那一行 `portrait.file`。
+当前 6 名角色都有立绘：`jiangxu / guchi / linyu / suwan / zhouye / tangtang`。
+如果之后新加一个角色、暂时没有图，把 `characters.json` 里 `portrait.file` 留空并设 `portrait.silhouette: true`，
+UI 会画剪影卡兜底；放好正式图后改回 `file` 即可。
 
 
 
