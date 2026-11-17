@@ -1716,17 +1716,19 @@ export function createApp(ctx) {
     ]);
   }
 
-  /** 地图舞台：还没选地点时的整屏地图 */
+  /** 地图舞台：还没选地点时的整屏地图（图片按比例铺满，图钉跟着画布走） */
   function mapStage(state) {
     const list = listOf('locations');
     const conf = (config && config.locations) || {};
     const mapArt = conf.mapArt || '';
     return h('div', { class: 'vn-map-stage' }, [
       h('div', {
-        class: 'vn-map-stage__art',
-        style: mapArt ? 'background-image:url("assets/map/' + mapArt + '")' : null,
-      }),
-      h('div', { class: 'vn-map-stage__pins' }, list.map((l) => mapPin(l, state))),
+        class: 'vn-map-stage__canvas',
+        style: 'aspect-ratio:' + (conf.mapAspect || '1036 / 583')
+          + (mapArt ? ';background-image:url("assets/map/' + mapArt + '")' : ''),
+      }, [
+        h('div', { class: 'vn-map-stage__pins' }, list.map((l) => mapPin(l, state))),
+      ]),
       h('div', { class: 'vn-map-stage__hint' }, ['选择今天要去的地方']),
     ]);
   }

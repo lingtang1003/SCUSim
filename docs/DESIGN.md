@@ -322,7 +322,7 @@
    任何新操作（行动 / 推进 / 移动 / 回主菜单）都会 `clearAutoAdvance()`，避免重复推进。
 5. **健康不足去不了**：地图上锁定的图钉显示「健康 N」并给出 toast，不会移动。
 
-配置：`config/locations.json`（`mapArt` / `default` / `list[{id,name,scene,x,y,requiresHealth,activities,line}]`）。
+配置：`config/locations.json`（`mapArt` / `mapAspect` / `default` / `list[{id,name,scene,x,y,requiresHealth,activities,line}]`）。
 引擎 API：`currentLocation`（空 location → null、未知 id → 回落宿舍）/ `canEnterLocation` /
 `moveToLocation` / `availableActivities`（在地图上返回 `[]`）。
 测试：`tests/verify_locations.mjs`（19 项）。

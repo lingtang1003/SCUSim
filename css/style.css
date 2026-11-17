@@ -4495,13 +4495,13 @@ body { font-synthesis: none; }
   border-radius: 18px;
   overflow: hidden;
   background: #eef3e6;
-  aspect-ratio: 1440 / 1018;
+  aspect-ratio: 1036 / 583;
   box-shadow: inset 0 0 0 1px var(--hair);
 }
 .vn-map__art {
   position: absolute;
   inset: 0;
-  background-size: contain;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
   filter: saturate(0.92) brightness(1.02);
@@ -4566,31 +4566,31 @@ body { font-synthesis: none; }
 
 
 /* =========================================================================
-   38. 地图舞台：回合开始、还没选地点时的整屏地图
+   38. 地图舞台：回合开始、还没选地点时铺满整屏的校园地图
+   —— 地图按原图比例等比放大到盖住视口（不拉伸），图钉挂在这块画布上
    ========================================================================= */
 .vn-stage--map {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 84px 4vw 4vw;
+  padding: 0;
   background: #0f1210;
 }
 .vn-map-stage {
-  position: relative;
-  width: min(1180px, 92vw);
-  aspect-ratio: 1440 / 1018;
-  max-height: calc(100vh - 150px);
-  border-radius: 22px;
-  overflow: hidden;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-  background: #eef3e6;
-}
-.vn-map-stage__art {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #eef3e6;
+}
+.vn-map-stage__canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  filter: saturate(0.95);
+  background-position: center;
 }
 .vn-map-stage__pins {
   position: absolute;
@@ -4599,22 +4599,37 @@ body { font-synthesis: none; }
 .vn-map-stage__hint {
   position: absolute;
   left: 50%;
-  top: 14px;
+  top: 18px;
   transform: translateX(-50%);
-  padding: 6px 16px;
+  padding: 7px 18px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 6px 18px rgba(20, 16, 15, 0.18);
-  font-size: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 6px 18px rgba(20, 16, 15, 0.2);
+  font-size: 15px;
   letter-spacing: 0.08em;
   color: var(--ink);
   pointer-events: none;
+  z-index: 5;
 }
-.vn-stage--map .vn-map__pin .vn-map__dot {
+.vn-stage--map .vn-map__dot {
   width: 20px;
   height: 20px;
 }
 .vn-stage--map .vn-map__name {
   font-size: 13px;
   padding: 2px 9px;
+}
+
+
+/* 地图顶部加一层很淡的遮罩，保证 HUD 文字压在地图上也读得清 */
+.vn-stage--map::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 132px;
+  background: linear-gradient(180deg, rgba(12, 14, 12, 0.42), rgba(12, 14, 12, 0));
+  pointer-events: none;
+  z-index: 4;
 }
