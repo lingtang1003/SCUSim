@@ -984,7 +984,7 @@ export function createApp(ctx) {
     const input = h('input', {
       class: 'input input--vn',
       type: 'text',
-      placeholder: '例如：林晞',
+      placeholder: '例如：林夕',
       value: creation.name,
       maxlength: String(NAME_MAX),
       autocomplete: 'off',
