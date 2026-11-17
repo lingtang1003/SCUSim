@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#faf7f6" />
   <meta name="description" content="SCUSim · 我的大学四年，果然有or没问题！：视觉小说式的校园养成，40 个星期，从入学到毕业。" />
   <title>SCUSim · 我的大学四年，果然有or没问题！</title>
+  <!-- 预加载两支正文字体：和 CSS 并行下载，避免先显示系统字体再切换 -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/display-hy.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/ui-tangmei.woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     /* 首屏底色（JS 起来之前的 1 帧）：红白主题，避免蓝金闪一下 */

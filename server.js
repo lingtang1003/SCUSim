@@ -18,8 +18,20 @@ const MIME = {
   '.css': 'text/css; charset=utf-8',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
-  '.map': 'application/json; charset=utf-8'
+  '.map': 'application/json; charset=utf-8',
+  '.woff2': 'font/woff2',
+  '.woff': 'font/woff',
+  '.ttf': 'font/ttf',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.mp3': 'audio/mpeg',
+  '.ogg': 'audio/ogg'
 };
+
+/** 代码类文件不缓存（改完刷新即生效）；字体/图片/音频缓存一天，避免每次刷新重下。 */
+const NO_STORE_EXT = new Set(['.html', '.js', '.mjs', '.css', '.json', '.map']);
 
 const server = http.createServer(async (req, res) => {
   try {
@@ -37,7 +49,9 @@ const server = http.createServer(async (req, res) => {
     const data = await readFile(resolved);
     const mime = MIME[extname(resolved).toLowerCase()] || 'application/octet-stream';
     // 本地开发：禁用缓存，改完代码刷新即生效，避免「改了但页面没变」
-    res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': 'no-store' });
+    const ext = extname(resolved).toLowerCase();
+    const cache = NO_STORE_EXT.has(ext) ? 'no-store' : 'public, max-age=86400';
+    res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': cache });
     res.end(data);
   } catch (err) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });

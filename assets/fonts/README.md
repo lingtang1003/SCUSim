@@ -6,8 +6,8 @@
 |---|---|---|---|
 | `display-hy.woff2` | 汉仪晓波花月圆 W | **正文 / UI**（`--font`：HUD、选项、对话、按钮、存档内容） | 181 KB |
 | `ui-tangmei.woff2` | 汉仪唐美人 W | **标题**（`--font-display`：弹窗/表单/抽屉/创建页标题、结局名、事件标签、徽记） | 430 KB |
-| `title-wood.woff2` | 汉仪铸字木头人 W | 主标题「我的大学四年 / 果然有or没问题！」 | 6.7 KB |
-| `sub-child.woff2` | 汉仪铸字儿童乐园 W | 副标题「在这里度过你的大学时光」 | 6.9 KB |
+| `title-wood.woff2` | 汉仪铸字木头人 W | 主标题（已内联进 `title.css` 的 data URI） | 6.7 KB |
+| `sub-child.woff2` | 汉仪铸字儿童乐园 W | 副标题（已内联进 `title.css`） | 6.9 KB |
 | `title.css` | — | 四个 `@font-face`，被 `css/style.css` 顶部 `@import` 引入 | — |
 
 ## 说明
@@ -24,3 +24,16 @@ python -m pip install fonttools brotli
 python -m fontTools.subset 原字体.ttf --text-file=charset.txt --flavor=woff2 \
   --no-hinting --desubroutinize --output-file=assets/fonts/xxx.woff2
 ```
+
+
+## 加载策略（避免“字体还在加载”）
+
+| 手段 | 效果 |
+|---|---|
+| 两支标题字体**内联**成 `data:` URI | 不产生网络请求，标题永不闪 |
+| 两支正文字体 `<link rel="preload">` | 与 CSS 并行下载，先于首次绘制 |
+| `font-display: block` | 字体未就绪时不显示回退字形，避免“先黑体再变花月圆”的跳变 |
+| 服务端 `Cache-Control: max-age=86400` | 刷新不重下（dev 服务器原本是 `no-store`，所以每次都重新下载） |
+| 子集化 | 只含界面实际用字，合计 ~620 KB |
+
+> 网页字体本质是资源，第一次访问必然要下载一次；能做到的是**只下一次**、且**不闪烁**。
