@@ -4456,3 +4456,19 @@ body { font-synthesis: none; }
 .vn-step-btn:disabled::after {
   background: var(--ink-3);
 }
+
+
+/* 图鉴卡片：去掉 1px 边框（在白底上就是一条「分界线」），只留投影 */
+.vn-gallery__item {
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(20, 16, 15, 0.08);
+}
+.vn-gallery__item.is-locked {
+  box-shadow: 0 1px 4px rgba(20, 16, 15, 0.05);   /* 未达成也要看得出是卡片 */
+}
+
+
+/* 对话框：去掉内侧那圈细线（::after 的 inset 描边） */
+.vn-dialogue__box::after {
+  display: none;
+}

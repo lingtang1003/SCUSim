@@ -1669,8 +1669,21 @@ export function createApp(ctx) {
         else if (callbacks.onLoadGame) callbacks.onLoadGame();
       };
       const saveHere = () => {
-        if (callbacks.onSaveSlot) callbacks.onSaveSlot(s.slot);
-        else if (callbacks.onSave) callbacks.onSave();
+        const doSave = () => {
+          if (callbacks.onSaveSlot) callbacks.onSaveSlot(s.slot);
+          else if (callbacks.onSave) callbacks.onSave();
+        };
+        // 手动存档位已有内容 → 先确认；自动存档始终直接覆盖
+        if (!empty && !isAuto) {
+          showConfirm({
+            title: '保存进度',
+            message: '是否覆盖当前存档？',
+            confirmLabel: '覆盖',
+            onConfirm: doSave,
+          });
+          return;
+        }
+        doSave();
       };
       return h('div', {
         class: 'vn-slot' + (empty ? ' is-empty' : '')
@@ -1707,14 +1720,11 @@ export function createApp(ctx) {
     };
 
     const body = [
-      h('p', { class: 'vn-modal__lead' }, [
-        isLoad ? '选择一个存档读取，自动存档始终保留最新进度。' : '选择一个存档位保存当前进度（会覆盖该位原有存档）。',
-      ]),
       auto ? h('div', { class: 'vn-slot-grid vn-slot-grid--auto' }, [card(auto, 0, true)]) : null,
       h('div', { class: 'vn-slot-grid' }, manual.map((s, i) => card(s, s.slot || i + 1, false))),
     ];
     mountOverlay(
-      modalShell(isLoad ? '读取存档' : '保存进度', body, [
+      modalShell(isLoad ? '读取进度' : '保存进度', body, [
         h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['取消']),
       ], true)
     );
