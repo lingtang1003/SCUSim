@@ -29,8 +29,8 @@
   --paper-4: #e9e1e0;
 
   /* 黑：文字阶 */
-  --ink: var(--ink);
-  --ink-1: var(--ink);
+  --ink: #1a1414;
+  --ink-1: #1a1414;
   --ink-2: #4d4543;
   --ink-3: #8f8582;
   --ink-inv: #ffffff;
@@ -2501,9 +2501,6 @@ a:hover {
   --red-bright: #d81b25;
   --red-deep: #7d0c12;
   --red-soft: rgba(179, 18, 26, 0.1);
-  --ink: var(--ink);
-  --ink-2: var(--ink-2);
-  --ink-3: var(--ink-3);
   --paper: #ffffff;
   --paper-2: #faf7f6;
   --hair: rgba(26, 20, 20, 0.12);
@@ -4132,7 +4129,7 @@ body { font-synthesis: none; }
 .vn-modal__body {
   flex: 1 1 auto;           /* 让内容区自己滚动，页脚始终可见 */
   min-height: 0;
-  padding: 12px 14px 6px;   /* 给卡片阴影留空间，替代负外边距 */
+  padding: 12px 20px 8px;   /* 左右各 20px：够 22px 模糊的卡片投影衰减 */
   overflow-x: hidden;       /* 去掉左右滚动条 */
   overflow-y: auto;
   scrollbar-width: thin;
@@ -4420,4 +4417,42 @@ body { font-synthesis: none; }
      0.044em 0.044em 0 #fff, -0.044em 0.044em 0 #fff,
      0.044em -0.044em 0 #fff, -0.044em -0.044em 0 #fff,
      0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
+}
+
+
+/* =========================================================================
+   36. 加减按钮：用两条线画 +/−，保证视觉居中
+   （字形「＋/−」在自定义字体里重心偏低，flex 居中永远差一两像素）
+   ========================================================================= */
+.vn-step-btn {
+  position: relative;
+  font-size: 0;          /* 隐藏原字符 */
+  color: transparent;
+  line-height: 0;
+}
+.vn-step-btn::before,
+.vn-step-btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 1.8px;
+  border-radius: 2px;
+  background: var(--ink);
+  transform: translate(-50%, -50%);
+}
+.vn-step-btn::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.vn-step-btn[data-kind="minus"]::after {
+  display: none;
+}
+.vn-step-btn:hover::before,
+.vn-step-btn:hover::after {
+  background: #fff;
+}
+.vn-step-btn:disabled::before,
+.vn-step-btn:disabled::after {
+  background: var(--ink-3);
 }

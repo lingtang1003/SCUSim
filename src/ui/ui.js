@@ -1170,6 +1170,8 @@ export function createApp(ctx) {
       const val = Number(creation.attributes[m.key]) || 0;
       const minus = h('button', {
         class: 'vn-step-btn',
+        'data-kind': 'minus',
+        'aria-label': '减一',
         onclick: () => {
           if (val > 0) {
             creation.attributes[m.key] = val - 1;
@@ -1179,6 +1181,8 @@ export function createApp(ctx) {
       }, ['−']);
       const plus = h('button', {
         class: 'vn-step-btn',
+        'data-kind': 'plus',
+        'aria-label': '加一',
         onclick: () => {
           if (remain > 0) {
             creation.attributes[m.key] = val + 1;
@@ -1215,7 +1219,7 @@ export function createApp(ctx) {
     const tags = listOf('tags');
     const selected = creation.tags;
     return h('div', { class: 'vn-form' }, [
-      h('h2', { class: 'vn-form__title' }, ['性格标签']),
+      h('h2', { class: 'vn-form__title' }, ['标签']),
       h('p', { class: 'vn-form__desc' }, ['定义你的大学四年。']),
       h('div', { class: 'vn-tag-grid' }, tags.map((t) => {
         const sel = selected.indexOf(t.id) >= 0;
@@ -1265,7 +1269,7 @@ export function createApp(ctx) {
       creation.appearanceId = list[0].id;
     }
     return h('div', { class: 'vn-form' }, [
-      h('h2', { class: 'vn-form__title' }, ['选择立绘']),
+      h('h2', { class: 'vn-form__title' }, ['立绘']),
       h('p', { class: 'vn-form__desc' }, ['选一个你喜欢的形象。']),
       h('div', { class: 'vn-opt-grid' }, list.map((app) => {
         const sel = creation.appearanceId === app.id;

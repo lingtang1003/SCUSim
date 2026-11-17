@@ -253,7 +253,17 @@
 
 `modalShell(title, body, foot, wide)` 的第四个参数：`true` → `--wide`（660px），`'xl'` → `--xl`（780px，系统设置用）。
 `.vn-modal__body` 是 `flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden`，
-只纵向滚动、页脚常驻；滚动条 8px 细条（`scrollbar-width: thin` + webkit 伪元素）。
+只纵向滚动、页脚常驻；左右内边距 20px，给卡片 22px 的投影留出衰减空间；
+滚动条 8px 细条（`scrollbar-width: thin` + webkit 伪元素）。
+
+### 自定义属性不能自引用
+
+`--ink: var(--ink)` 这种写法会让该变量在计算时「循环依赖」而失效，凡是 `color: var(--ink)` 都会变成未定义、
+回退到继承色。加减按钮的 +/− 用 `background: var(--ink)` 画线，失效后就是透明的（看不见）。
+修正：`--ink: #1a1414`，并删掉皮肤块里的同类自引用。
+
+顺带把 `.vn-step-btn` 的 +/− 改成两条 `::before/::after` 线（12×1.8px，`data-kind="minus"` 隐藏竖线），
+不再依赖字形在圆圈里居中。
 
 ### 滚动容器里的卡片阴影
 
