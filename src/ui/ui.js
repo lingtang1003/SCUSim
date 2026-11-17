@@ -1143,10 +1143,7 @@ export function createApp(ctx) {
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['学院']),
       h('p', { class: 'vn-form__desc' }, ['每个学院的气质不太一样。']),
-      h('div', { class: 'field' }, [
-        h('label', { class: 'field__label' }, ['学院']),
-        select,
-      ]),
+      h('div', { class: 'field' }, [select]),
       cur ? h('div', { class: 'vn-form__note' }, ['「' + cur.name + '」— ' + (cur.desc || '')]) : null,
       h('button', {
         class: 'btn btn--primary btn--block btn--lg',

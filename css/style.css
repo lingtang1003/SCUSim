@@ -4214,3 +4214,25 @@ body { font-synthesis: none; }
   line-height: 0.92;
   letter-spacing: 0.01em;
 }
+
+
+/* 创建角色预览里的四个属性胶囊：始终排成一行 */
+.vn-create__summary .vn-create__attrs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  margin-top: 2px;
+}
+.vn-create__summary .vn-create__attr {
+  padding: 3px 7px;
+  font-size: 12px;
+  white-space: nowrap;
+  letter-spacing: 0;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+@media (max-width: 980px) {
+  /* 窄屏放不下四个胶囊时允许换行 */
+  .vn-create__summary .vn-create__attrs { flex-wrap: wrap; }
+}
