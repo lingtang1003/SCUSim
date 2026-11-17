@@ -1000,10 +1000,7 @@ export function createApp(ctx) {
     });
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['你的名字']),
-      h('div', { class: 'field' }, [
-        h('label', { class: 'field__label' }, ['姓名']),
-        input,
-      ]),
+      h('div', { class: 'field' }, [input]),
       h('p', { class: 'vn-form__desc' }, ['只能使用汉字或英文字母，1–12 个字符（数字与符号不可用）。']),
       h('button', {
         class: 'btn btn--primary btn--block btn--lg',
@@ -1033,7 +1030,7 @@ export function createApp(ctx) {
     const options = ['男', '女'];
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['性别']),
-      h('p', { class: 'vn-form__desc' }, ['选择你的性别，这将决定可选立绘的范围。']),
+      h('p', { class: 'vn-form__desc' }, ['这将决定可选立绘的范围。']),
       h('div', { class: 'vn-opt-grid' }, options.map((g) =>
         h('button', {
           class: 'vn-opt vn-opt--plain' + (creation.gender === g ? ' is-selected' : ''),
