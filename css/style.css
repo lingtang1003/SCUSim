@@ -3270,7 +3270,7 @@ a:hover {
 
 /* 标题：衬线大字 + 红色印章 */
 .vn-title {
-  width: min(1060px, 92vw);
+  width: min(1120px, 92vw);
   padding: 26px 30px;
   display: grid;
   grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
@@ -3280,7 +3280,7 @@ a:hover {
     "sub  menu";
   align-items: start;
   align-content: center;
-  column-gap: 30px;
+  column-gap: 24px;
   row-gap: 10px;
   /* 高度收一点：比内容略高，但不再占满大半屏 */
   min-height: clamp(330px, 44vh, 500px);
@@ -3918,15 +3918,6 @@ body { font-synthesis: none; }
 }
 
 
-/* 减弱动效仍保留选项卡的填充过渡（其余动效照旧关闭） */
-.reduce-motion .vn-choice::after {
-  transition: transform 1400ms cubic-bezier(0.4, 0, 0.6, 1) !important;
-}
-.reduce-motion .vn-choice:hover::after {
-  transition: transform 1400ms cubic-bezier(0.4, 0, 0.6, 1) !important;
-}
-
-
 /* =========================================================================
    28. 「进入下一周」这块 CTA 本身就是强调色，
        ::after 的波浪层铺上去也还是同一个色，等于把 hover 的变化盖掉了。
@@ -3994,8 +3985,8 @@ body { font-synthesis: none; }
   gap: 8px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: color-mix(in srgb, var(--red-50) 70%, #fff);
-  border: 1px solid var(--hair-soft);
+  background: #fff;
+  border: 1px solid var(--hair);
 }
 .vn-setting__row {
   display: flex;
@@ -4077,16 +4068,16 @@ body { font-synthesis: none; }
 }
 /* 女生：站在「大学四年」右侧（整只落在第一行的高度带里） */
 .vn-mascot--girl {
-  left: 36.5%;
-  bottom: 178px;
-  height: 190px;
+  left: 36.2%;
+  bottom: 166px;
+  height: 205px;
   transform: rotate(-15deg);
 }
 /* 男生：站在「没问题！」右侧（落在第二行的高度带里） */
 .vn-mascot--boy {
-  left: 44.3%;
-  bottom: 34px;
-  height: 150px;
+  left: 42.8%;
+  bottom: 30px;
+  height: 152px;
   transform: rotate(13deg);
 }
 /* 悬停：摆正 + 放大 + 上浮，回弹曲线让动作更明显 */
@@ -4123,8 +4114,9 @@ body { font-synthesis: none; }
   margin: 0;
 }
 .vn-tag-grid {
-  padding: 12px 0;      /* 只在纵向留白，避免横向多出滚动条 */
-  margin: -12px 0;
+  padding: 12px 14px;   /* 四周都留出投影的呼吸空间 */
+  margin: -12px -14px;  /* 用负外边距抵消，卡片位置不变 */
+  overflow-x: hidden;   /* 横向不出现滚动条 */
   scroll-padding: 12px;
 }
 
@@ -4238,9 +4230,194 @@ body { font-synthesis: none; }
 }
 
 
-/* 「果然」微微向右倾斜 */
+/* 「果然」：略大一号、微微右倾、整体往左挪一点 */
 .vn-logo__tilt {
   display: inline-block;
-  transform: rotate(4deg);
+  font-size: 1.08em;
+  line-height: 0.95;
+  transform: translateX(-7px) rotate(5deg);
   transform-origin: 50% 80%;
+}
+
+
+/* 标题两行 + 副标题：一层很淡的投影，让字从白卡上浮起来 */
+.vn-logo {
+  text-shadow: 0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
+}
+.vn-logo__hl {
+  /* 白描边在前、投影放最后，投影才会落在描边外圈之下 */
+  text-shadow:
+     0.062em 0 0 #fff, -0.062em 0 0 #fff,
+     0 0.062em 0 #fff, 0 -0.062em 0 #fff,
+     0.044em 0.044em 0 #fff, -0.044em 0.044em 0 #fff,
+     0.044em -0.044em 0 #fff, -0.044em -0.044em 0 #fff,
+     0 4px 12px rgba(20, 16, 15, 0.26);
+}
+.vn-logo__sub {
+  text-shadow:
+     0.085em 0 0 #fff, -0.085em 0 0 #fff,
+     0 0.085em 0 #fff, 0 -0.085em 0 #fff,
+     0.06em 0.06em 0 #fff, -0.06em 0.06em 0 #fff,
+     0.06em -0.06em 0 #fff, -0.06em -0.06em 0 #fff,
+     0 3px 9px rgba(20, 16, 15, 0.24);
+}
+
+
+/* 「没问题」三个字再放大一点 */
+.vn-logo__big {
+  display: inline-block;
+  font-size: 1.1em;
+  line-height: 0.95;
+}
+
+
+/* 「or」小一号，夹在两个中文词之间做连接 */
+.vn-logo__small {
+  display: inline-block;
+  font-size: 0.76em;
+  line-height: 1;
+  vertical-align: 0.12em;   /* 往上抬一点，和中文的视觉中线对齐 */
+  margin: 0 0.04em;
+}
+
+
+/* 第一行整体右移一点，和左边距拉开呼吸 */
+.vn-logo__line:first-child {
+  padding-left: 14px;
+}
+
+
+/* 第一行里的「大学」：红色 + 同样的白描边 */
+.vn-logo__hl--red {
+  color: var(--red);
+}
+
+
+/* 图鉴里的结局名：比说明文字明显大一号 */
+.vn-gallery__name {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1.25;
+}
+
+
+/* 抽屉底部的三个链接：不要下划线 */
+.vn-drawer__foot .vn-link {
+  text-decoration: none;
+}
+.vn-drawer__foot .vn-link:hover {
+  text-decoration: none;
+}
+
+
+/* 第一行的三个词之间拉开一点间距（「我的」位置不动） */
+.vn-logo__line-big {
+  margin-left: 0.14em;
+}
+.vn-logo__gap {
+  margin-left: 0.14em;
+}
+
+
+/* 图鉴条目：标题往上收一点，别在卡片里显得偏下 */
+.vn-gallery__item {
+  padding-top: 8px;
+  padding-bottom: 10px;
+}
+.vn-gallery__row {
+  align-items: flex-start;
+}
+.vn-gallery__name {
+  margin-top: -1px;
+}
+.vn-gallery__flag {
+  margin-top: 1px;
+}
+
+
+/* 第二行：投影换成白色，像压印在纸带上的白边 */
+.vn-logo__line--accent {
+  text-shadow: 0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
+}
+.vn-logo__line--accent .vn-logo__hl {
+  text-shadow:
+     0.062em 0 0 #fff, -0.062em 0 0 #fff,
+     0 0.062em 0 #fff, 0 -0.062em 0 #fff,
+     0.044em 0.044em 0 #fff, -0.044em 0.044em 0 #fff,
+     0.044em -0.044em 0 #fff, -0.044em -0.044em 0 #fff,
+     0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
+}
+
+
+/* =========================================================================
+   35. 步骤条三态：已填写（浅红）/ 正在填写（正红）/ 未填写（灰）
+   ========================================================================= */
+.vn-step {
+  color: var(--ink-3);
+  background: rgba(26, 20, 20, 0.05);
+  border-color: transparent;
+}
+.vn-step i {
+  background: rgba(26, 20, 20, 0.18);
+  color: #fff;
+}
+/* 已填写 */
+.vn-step.is-done {
+  color: var(--red-deep);
+  background: color-mix(in srgb, var(--red) 11%, #fff);
+  border-color: color-mix(in srgb, var(--red) 26%, transparent);
+}
+.vn-step.is-done i {
+  background: var(--red);
+  color: #fff;
+}
+/* 正在填写 */
+.vn-step.is-current {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--red) 28%, transparent);
+}
+.vn-step.is-current i {
+  background: rgba(255, 255, 255, 0.32);
+  color: #fff;
+}
+
+
+/* 第一行（我的 / 大学 / 四年）的投影同样改成白色 */
+.vn-logo__line:first-child {
+  text-shadow: 0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
+}
+.vn-logo__line:first-child .vn-logo__hl {
+  text-shadow:
+     0.062em 0 0 #fff, -0.062em 0 0 #fff,
+     0 0.062em 0 #fff, 0 -0.062em 0 #fff,
+     0.044em 0.044em 0 #fff, -0.044em 0.044em 0 #fff,
+     0.044em -0.044em 0 #fff, -0.044em -0.044em 0 #fff,
+     0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
+}
+
+
+/* 图鉴：标题与说明靠近一点（徽章做小，行高不再被它撑开） */
+.vn-gallery__flag {
+  padding: 4px 13px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.vn-gallery__desc {
+  margin-top: 2px;
+}
+
+
+/* 第二行整行都加白描边（果然 / or / ！ 也一起） */
+.vn-logo__line--accent {
+  -webkit-text-stroke: 0.048em #fff;
+  paint-order: stroke fill;
+  text-shadow:
+     0.062em 0 0 #fff, -0.062em 0 0 #fff,
+     0 0.062em 0 #fff, 0 -0.062em 0 #fff,
+     0.044em 0.044em 0 #fff, -0.044em 0.044em 0 #fff,
+     0.044em -0.044em 0 #fff, -0.044em -0.044em 0 #fff,
+     0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
 }

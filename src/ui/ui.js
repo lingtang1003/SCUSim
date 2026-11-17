@@ -810,13 +810,16 @@ export function createApp(ctx) {
         h('h1', { class: 'vn-logo' }, [
           h('span', { class: 'vn-logo__line' }, [
             '我的',
-            h('span', { class: 'vn-logo__line-big' }, ['大学四年']),
+            h('span', { class: 'vn-logo__line-big' }, [
+              h('span', { class: 'vn-logo__hl vn-logo__hl--red' }, ['大学']),
+              h('span', { class: 'vn-logo__gap' }, ['四年']),
+            ]),
           ]),
           h('span', { class: 'vn-logo__line vn-logo__line--accent' }, [
             h('span', { class: 'vn-logo__tilt' }, ['果然']),
             h('span', { class: 'vn-logo__hl' }, ['有']),
-            'or',
-            h('span', { class: 'vn-logo__hl' }, ['没问题']),
+            h('span', { class: 'vn-logo__small' }, ['or']),
+            h('span', { class: 'vn-logo__hl vn-logo__big' }, ['没问题']),
             '！',
           ]),
         ]),
@@ -832,7 +835,7 @@ export function createApp(ctx) {
           }, [
             h('span', { class: 'vn-menu-btn__body' }, [
               h('span', { class: 'vn-menu-btn__label' }, ['开始新游戏']),
-            h('span', { class: 'vn-menu-btn__hint' }, ['从大一新生开始']),
+            h('span', { class: 'vn-menu-btn__hint' }, ['从大一开始']),
             ]),
           ]),
           h('button', {
@@ -854,7 +857,7 @@ export function createApp(ctx) {
             },
           }, [
             h('span', { class: 'vn-menu-btn__body' }, [
-              h('span', { class: 'vn-menu-btn__label' }, ['结局图鉴']),
+              h('span', { class: 'vn-menu-btn__label' }, ['图鉴']),
             h('span', { class: 'vn-menu-btn__hint' }, ['已达成的结局']),
             ]),
           ]),
@@ -865,8 +868,8 @@ export function createApp(ctx) {
             },
           }, [
             h('span', { class: 'vn-menu-btn__body' }, [
-              h('span', { class: 'vn-menu-btn__label' }, ['系统设置']),
-            h('span', { class: 'vn-menu-btn__hint' }, ['立绘 / 动效 / 声音']),
+              h('span', { class: 'vn-menu-btn__label' }, ['设置']),
+            h('span', { class: 'vn-menu-btn__hint' }, ['动效 / 声音']),
             ]),
           ]),
         ]),
@@ -879,6 +882,7 @@ export function createApp(ctx) {
     stopTypewriter();
     clearSeasonTheme();
     clearRoot();
+    lastState = null;   // 回到标题页就没有「当前角色」，设置里不再提供换立绘
     ui.scene = 'title';
     titleSeq += 1;
     ui.sceneEntry = pickScene('title', titleSeq, 0);
@@ -996,10 +1000,7 @@ export function createApp(ctx) {
     });
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['你的名字']),
-      h('div', { class: 'field' }, [
-        h('label', { class: 'field__label' }, ['姓名']),
-        input,
-      ]),
+      h('div', { class: 'field' }, [input]),
       h('p', { class: 'vn-form__desc' }, ['只能使用汉字或英文字母，1–12 个字符（数字与符号不可用）。']),
       h('button', {
         class: 'btn btn--primary btn--block btn--lg',
@@ -1029,7 +1030,7 @@ export function createApp(ctx) {
     const options = ['男', '女'];
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['性别']),
-      h('p', { class: 'vn-form__desc' }, ['选择你的性别，这将决定可选立绘的范围。']),
+      h('p', { class: 'vn-form__desc' }, ['这将决定可选立绘的范围。']),
       h('div', { class: 'vn-opt-grid' }, options.map((g) =>
         h('button', {
           class: 'vn-opt vn-opt--plain' + (creation.gender === g ? ' is-selected' : ''),
@@ -1192,11 +1193,9 @@ export function createApp(ctx) {
     });
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['属性']),
-      h('p', { class: 'vn-form__desc' }, [
-        '把 ' + TOTAL_POINTS + ' 点分到四项上，分配完才能继续。',
-      ]),
+      h('p', { class: 'vn-form__desc' }, ['原来初入大学的你是这样的。']),
       h('div', { class: 'vn-attr-list' }, rows),
-      h('div', { class: 'vn-counter' + (remain === 0 ? ' is-ok' : '') }, [
+      h('div', { class: 'vn-counter' + (remain > 0 ? ' is-ok' : '') }, [
         '剩余 ' + remain + ' 点',
       ]),
       h('button', {
@@ -1217,7 +1216,7 @@ export function createApp(ctx) {
     const selected = creation.tags;
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['性格标签']),
-      h('p', { class: 'vn-form__desc' }, ['挑 ' + REQUIRED_TAGS + ' 个词，定义你的大学四年。']),
+      h('p', { class: 'vn-form__desc' }, ['定义你的大学四年。']),
       h('div', { class: 'vn-tag-grid' }, tags.map((t) => {
         const sel = selected.indexOf(t.id) >= 0;
         return h('button', {
@@ -1238,7 +1237,7 @@ export function createApp(ctx) {
           h('small', {}, [t.desc || '']),
         ]);
       })),
-      h('div', { class: 'vn-counter' + (selected.length === REQUIRED_TAGS ? ' is-ok' : '') }, [
+      h('div', { class: 'vn-counter' + (selected.length < REQUIRED_TAGS ? ' is-ok' : '') }, [
         '已选 ' + selected.length + ' / ' + REQUIRED_TAGS,
       ]),
       h('button', {
@@ -1384,7 +1383,7 @@ export function createApp(ctx) {
         else if (callbacks.onLoadGame) callbacks.onLoadGame();
       } },
       { label: '剧情回放', hint: '重看本周的对话', run: () => showBacklog() },
-      { label: '系统设置', hint: '立绘 / 动效 / 声音', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
+      { label: '设置', hint: '立绘 / 动效 / 声音', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
       { label: '商城', hint: '敬请期待', locked: true, run: () => showToast('商城还没开门呢', 'warning') },
     ];
     const scrim = h('div', {
@@ -1428,12 +1427,18 @@ export function createApp(ctx) {
           h('button', {
             class: 'vn-link',
             onclick: () => {
-              closeOverlay();
-              if (callbacks.onClearSave) callbacks.onClearSave();
+              showConfirm({
+                title: '清除存档',
+                message: '是否确认清除全部存档？包括现在正在进行的游戏。图鉴中已达成的结局不会消失。',
+                confirmLabel: '确认清除',
+                onConfirm: () => {
+                  if (callbacks.onClearSave) callbacks.onClearSave();
+                },
+              });
             },
           }, ['清除存档']),
         ]),
-        h('div', { class: 'vn-drawer__credit' }, ['SCUSim · 校园生活模拟器']),
+        h('div', { class: 'vn-drawer__credit' }, ['SCUSim · 模拟你的大学四年']),
       ]),
     ]);
     mountOverlay(scrim);
@@ -1603,7 +1608,7 @@ export function createApp(ctx) {
       const got = unlocked.indexOf(e.id) >= 0;
       return h('div', { class: 'vn-gallery__item' + (got ? '' : ' is-locked') }, [
         h('div', { class: 'vn-gallery__row' }, [
-          h('b', {}, [got ? (e.name || e.id) : '？？？']),
+          h('b', { class: 'vn-gallery__name' }, [got ? (e.name || e.id) : '？？？']),
           h('span', { class: 'vn-gallery__flag' }, [got ? '已达成' : '未达成']),
         ]),
         h('p', { class: 'vn-gallery__desc' }, [
@@ -1981,6 +1986,8 @@ export function createApp(ctx) {
       return node;
     }));
 
+    // 立绘只在对局中可换：标题页没有角色，换立绘没有意义
+    const canPickAppearance = !!lastState;
     const body = [
       h('div', { class: 'vn-setting' }, [
         h('div', { class: 'vn-setting__label' }, ['动效']),
@@ -1991,10 +1998,12 @@ export function createApp(ctx) {
         bgmRow,
         sfxRow,
       ]),
-      h('div', { class: 'vn-setting' }, [
-        h('div', { class: 'vn-setting__label' }, ['我的立绘']),
-        grid,
-      ]),
+      canPickAppearance
+        ? h('div', { class: 'vn-setting' }, [
+            h('div', { class: 'vn-setting__label' }, ['我的立绘']),
+            grid,
+          ])
+        : null,
     ];
     mountOverlay(
       modalShell('系统设置', body, [
@@ -2015,6 +2024,32 @@ export function createApp(ctx) {
   }
 
   // ---------------- 提示 ----------------
+  /** 通用确认弹层：确认后执行 onConfirm，取消则什么都不做 */
+  function showConfirm(opts) {
+    if (!rootEl) return;
+    const o = opts || {};
+    mountOverlay(
+      modalShell(
+        o.title || '确认',
+        [h('p', { class: 'vn-modal__lead' }, [o.message || ''])],
+        [
+          h('button', {
+            class: 'btn btn--primary btn--block',
+            onclick: () => {
+              closeOverlay();
+              if (o.onConfirm) o.onConfirm();
+            },
+          }, [o.confirmLabel || '确认']),
+          h('button', {
+            class: 'btn btn--secondary btn--block',
+            onclick: () => closeOverlay(),
+          }, [o.cancelLabel || '取消']),
+        ],
+        true
+      )
+    );
+  }
+
   function showToast(msg, kind) {
     if (!msg || !rootEl) return;
     const toast = h('div', { class: 'vn-toast' + (kind ? ' vn-toast--' + kind : '') }, [String(msg)]);
