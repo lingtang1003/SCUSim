@@ -111,7 +111,10 @@
     {
       "id": "ending_warning", "name": "学业警示", "priority": 18,
       "desc": "绩点掉到了线下。辅导员的电话打来时，你正躺在宿舍看天花板。",
-      "condition": { "type": "gpaAtLeast", "value": 2.0, "negate": true }
+      "condition": { "type": "all", "conditions": [
+        { "type": "gpaAtLeast", "value": 2.0, "negate": true },
+        { "type": "eventDone", "eventId": "ev_r14" }
+      ] }
     },
     {
       "id": "ending_ordinary", "name": "平凡四年", "priority": 99,

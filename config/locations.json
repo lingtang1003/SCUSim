@@ -1,0 +1,107 @@
+{
+  "version": "1.0.0",
+  "note": "地点表：x/y 是校园地图上的百分比坐标；scene 对应 ui.js 里的场景池；activities 列出该地点可做的行动（id 来自 actions.json）；requiresHealth 是进入门槛（健康不足就去不了）",
+  "mapArt": "jiang-an-map.jpg",
+  "default": "dorm",
+  "list": [
+    {
+      "id": "dorm",
+      "name": "宿舍",
+      "scene": "dorm",
+      "x": 17,
+      "y": 63,
+      "requiresHealth": 0,
+      "activities": ["rest"],
+      "desc": "回宿舍躺一会儿，恢复健康。",
+      "line": "（推开门，室友的键盘声和床铺的味道一起涌上来）"
+    },
+    {
+      "id": "library",
+      "name": "图书馆",
+      "scene": "classroom",
+      "x": 47,
+      "y": 38,
+      "requiresHealth": 0,
+      "activities": ["study"],
+      "desc": "安静的自习区，学识 +2。",
+      "line": "（图书馆的空调声很低，翻书声一层一层）"
+    },
+    {
+      "id": "college",
+      "name": "教学楼",
+      "scene": "classroom",
+      "x": 38,
+      "y": 54,
+      "requiresHealth": 0,
+      "activities": ["study"],
+      "desc": "上课、自习都在这儿。",
+      "line": "（走廊尽头的门虚掩着，夕阳把地砖照成一条光带）"
+    },
+    {
+      "id": "clubroom",
+      "name": "社团活动室",
+      "scene": "clubroom",
+      "x": 59,
+      "y": 33,
+      "requiresHealth": 0,
+      "activities": ["club"],
+      "desc": "社团的人都在，社交 +2。",
+      "line": "（活动室的展板又换了一版，胶水味还没散）"
+    },
+    {
+      "id": "street",
+      "name": "商业街",
+      "scene": "street",
+      "x": 71,
+      "y": 60,
+      "requiresHealth": 2,
+      "activities": ["socialize"],
+      "desc": "火锅、奶茶、KTV，钱包和健康都得掂量。",
+      "line": "（商业街的灯牌全亮着，炸串的味道飘了一条街）"
+    },
+    {
+      "id": "track",
+      "name": "二号体育场",
+      "scene": "track",
+      "x": 31,
+      "y": 79,
+      "requiresHealth": 2,
+      "activities": ["exercise"],
+      "desc": "跑两圈，健康 +2。",
+      "line": "（塑胶跑道被晒得发软，远处有人在对墙练球）"
+    },
+    {
+      "id": "gym",
+      "name": "体育馆",
+      "scene": "track",
+      "x": 63,
+      "y": 50,
+      "requiresHealth": 5,
+      "activities": ["exercise"],
+      "desc": "羽毛球馆，健康 +2；身体太虚进不去。",
+      "line": "（体育馆里全是球鞋摩擦地板的声音）"
+    },
+    {
+      "id": "metro",
+      "name": "地铁 8 号线",
+      "scene": "store",
+      "x": 84,
+      "y": 72,
+      "requiresHealth": 3,
+      "activities": ["parttime"],
+      "desc": "去打工，金钱 +30、健康 −1。",
+      "line": "（站台的风把衣角吹起来，报站声一遍一遍）"
+    },
+    {
+      "id": "bridge",
+      "name": "江安长桥",
+      "scene": "campus",
+      "x": 50,
+      "y": 67,
+      "requiresHealth": 0,
+      "activities": ["rest"],
+      "desc": "吹吹风，恢复健康。",
+      "line": "（长桥上的风带着水汽，栏杆是温的）"
+    }
+  ]
+}

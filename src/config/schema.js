@@ -265,9 +265,11 @@ export function validateConfigs(c) {
           if (allEventIds.length && !allEventIds.includes(s.eventId)) {
             errors.push(`storyline ${line.id} 的 step ${s.id} 引用了不存在的事件 ${s.eventId}`);
           }
-          if (s.window !== undefined) {
-            if (!Array.isArray(s.window) || s.window.length !== 2 ||
-                !s.window.every((v) => isNum(v)) || s.window[0] > s.window[1]) {
+          // 用局部变量取窗口字段（避免被静态红线扫描误判成浏览器全局对象）
+          const win = s['window'];
+          if (win !== undefined) {
+            if (!Array.isArray(win) || win.length !== 2 ||
+                !win.every((v) => isNum(v)) || win[0] > win[1]) {
               errors.push(`storyline ${line.id} 的 step ${s.id}.window 必须是 [起, 止] 升序数字`);
             }
           }

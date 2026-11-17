@@ -40,7 +40,7 @@ function check(name, cond, detail = '') {
   }
 }
 
-const FILES = ['balance', 'colleges', 'tags', 'actions', 'events', 'endings', 'characters', 'storylines', 'events-characters'];
+const FILES = ['balance', 'colleges', 'tags', 'actions', 'events', 'endings', 'locations', 'characters', 'storylines', 'events-characters'];
 const reader = {
   read: async (name) => {
     if (!FILES.includes(name)) throw new Error('no such config: ' + name);

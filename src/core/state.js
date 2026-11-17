@@ -72,6 +72,8 @@ export function createGameState(options) {
       tags: Array.isArray(o.tags) ? o.tags.slice(0, 3) : [],
       // 纯展示字段（立绘），不参与任何结算；由 main 在创建/换装时写入
       appearance: typeof o.appearance === 'string' ? o.appearance : '',
+      // 当前所在地点（config/locations.json 的 id），默认宿舍
+      location: 'dorm',
       club: null,
       romance: 'none',
       flags: {},

@@ -9,10 +9,10 @@
 
 import { validateConfigs } from './schema.js';
 
-const FILES = ['balance', 'colleges', 'tags', 'actions', 'events', 'endings'];
+const FILES = ['balance', 'colleges', 'tags', 'actions', 'events', 'endings', 'locations'];
 /**
  * v2.1 可选配置：读取失败（文件不存在 / fetch 404 / 注入 reader 不认这个 key）时静默跳过，
- * 对应系统自动降级关闭，不影响前六份必需配置的加载。
+ * 对应系统自动降级关闭，不影响必需配置（含 locations）的加载。
  */
 const OPTIONAL_FILES = ['characters', 'storylines', 'events-characters'];
 

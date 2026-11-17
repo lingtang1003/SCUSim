@@ -225,9 +225,21 @@
 ### 图鉴条目
 
 结局名 `.vn-gallery__name` 用 20px（说明文字 13–14px），形成「标题—说明」的对比；
+卡片 `border-color: transparent`（1px 的 `--hair` 白底上就是一条「分界线」），靠投影分层：
+已达成 `0 2px 8px rgba(20,16,15,.08)`、未达成 `0 1px 4px rgba(20,16,15,.05)`；
 条目上内边距 8px、行内 `align-items: flex-start`，标题不会在卡里显得偏下；
 徽章缩到 `padding: 4px 13px / 13px`，说明的 `margin-top` 只留 2px，两行字靠得更近。
 右侧 `已达成 / 未达成` 是胶囊徽章，未达成整卡 `opacity: .6`。
+
+### 存档位
+
+保存 / 读取面板都没有说明句（标题下面直接是槽位），标题分别为「保存进度」「读取进度」；点已有内容的手动存档位时先弹 `showConfirm()`：
+标题「保存进度」、正文「是否覆盖当前存档？」，确认后才写盘。自动存档按设计始终直接覆盖，不弹确认。
+
+### 弹层是单层的
+
+`mountOverlay()` 挂新弹窗前会先把旧的那层从 DOM 移除。否则「列表 → 确认 → 列表」这种嵌套流程里，
+旧弹窗会残留在下面，关掉最上层后仍看得见一层、点取消也没反应。
 
 ### 危险操作的二次确认
 
@@ -248,6 +260,11 @@
 | 已填写 `.is-done` | 浅红底（`--red` 11%）+ 深红字 + 红色数字点 |
 | 正在填写 `.is-current` | 正红底 + 白字 + 红色投影 |
 | 未填写（默认） | 5% 墨色底 + `--ink-3` 灰字 + 灰色数字点 |
+
+### 对话框的内侧线
+
+`.vn-dialogue__box::after` 原本是 `inset: 6px` 的一圈细描边（`--red` 12%），在浅色底上像一条多余的线，
+现在 `display: none`；对话框只保留背景渐变 + 外投影。
 
 ### 弹窗尺寸
 
@@ -289,6 +306,27 @@
 2. **关掉「动效」会吃掉过渡**：`.reduce-motion * { transition: none !important }` 是全站规则。
    选项卡填充**不再是例外**（之前为了调试临时开过口子，已移除）：关掉动效后填充立即到位，
    弹窗、抽屉、打字机、季节换色等动效也一并关闭。
+## 9.y 地点与行动（地图循环）
+
+每一回合都是「先看地图，再选地点」：
+
+1. **回合开始停在地图**：`player.location = null` 表示还没选地点，舞台渲染成
+   `.vn-stage--map`——整屏 `assets/map/jiang-an-map.jpg` + 图钉，**没有立绘、没有对话框、地点胶囊也不显示**，
+   只有顶部 HUD（周数 / 学期 / 行动点 / 菜单）和一句「选择今天要去的地方」。
+2. **点图钉前往**（`engine.moveToLocation`）：不消耗行动点；健康 < `requiresHealth` 时拒绝并 toast。
+   到达后恢复常规舞台：立绘 + 对话框（播该地点的 `line`）+ 该地点的活动。
+3. **活动按地点过滤**：`locations[].activities` 是 `actions.json` 的 id 子集，
+   `actionAvailability` 对不在当前地点的行动返回 `reason: 'not_here'`，健康 < 3 时只能锻炼/休息。
+4. **行动点耗尽 → 自动进入下一周**：`onAction` 结束后若 `actionPoints <= 0`，toast 提示并
+   `setTimeout(1100)` 调 `onAdvance()`；`advance()` 会清空 `location`，于是回到地图。
+   任何新操作（行动 / 推进 / 移动 / 回主菜单）都会 `clearAutoAdvance()`，避免重复推进。
+5. **健康不足去不了**：地图上锁定的图钉显示「健康 N」并给出 toast，不会移动。
+
+配置：`config/locations.json`（`mapArt` / `default` / `list[{id,name,scene,x,y,requiresHealth,activities,line}]`）。
+引擎 API：`currentLocation`（空 location → null、未知 id → 回落宿舍）/ `canEnterLocation` /
+`moveToLocation` / `availableActivities`（在地图上返回 `[]`）。
+测试：`tests/verify_locations.mjs`（19 项）。
+
 ## 9.x 声音（背景音乐 / 音效）
 
 - **两路音量**：背景音乐、音效各自 0–100，存在设置里（`scusim:settings`），与存档无关；
