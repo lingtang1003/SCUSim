@@ -4843,3 +4843,16 @@ body { font-synthesis: none; }
   pointer-events: none;
   z-index: 4;
 }
+
+
+/* =========================================================================
+   40. 选项卡去掉 1px 描边：填充层被 overflow 裁在 padding box，
+       border-box 上的底色会在红填充外面留一圈白边
+   ========================================================================= */
+.vn-choice {
+  border-width: 0;
+  background-clip: padding-box;
+}
+.vn-choice--gold {
+  border-width: 0;
+}

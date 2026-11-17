@@ -261,6 +261,12 @@
 | 正在填写 `.is-current` | 正红底 + 白字 + 红色投影 |
 | 未填写（默认） | 5% 墨色底 + `--ink-3` 灰字 + 灰色数字点 |
 
+### 选项卡填充后的白边
+
+`.vn-choice::after` 的波浪填充被 `overflow: hidden` 裁在 **padding box**，而卡片的浅色渐变是按
+`border-box` 铺的，于是那 1px 描边下面还是浅色 → 红填充外面出现一圈白边。
+修法：`.vn-choice { border-width: 0; background-clip: padding-box; }`（`--gold` 同）。
+
 ### 对话框的内侧线
 
 `.vn-dialogue__box::after` 原本是 `inset: 6px` 的一圈细描边（`--red` 12%），在浅色底上像一条多余的线，
