@@ -3270,7 +3270,7 @@ a:hover {
 
 /* 标题：衬线大字 + 红色印章 */
 .vn-title {
-  width: min(1060px, 92vw);
+  width: min(1120px, 92vw);
   padding: 26px 30px;
   display: grid;
   grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
@@ -3280,7 +3280,7 @@ a:hover {
     "sub  menu";
   align-items: start;
   align-content: center;
-  column-gap: 30px;
+  column-gap: 24px;
   row-gap: 10px;
   /* 高度收一点：比内容略高，但不再占满大半屏 */
   min-height: clamp(330px, 44vh, 500px);
@@ -4077,16 +4077,16 @@ body { font-synthesis: none; }
 }
 /* 女生：站在「大学四年」右侧（整只落在第一行的高度带里） */
 .vn-mascot--girl {
-  left: 36.5%;
-  bottom: 166px;
-  height: 205px;
+  left: 37.8%;
+  bottom: 190px;
+  height: 180px;
   transform: rotate(-15deg);
 }
 /* 男生：站在「没问题！」右侧（落在第二行的高度带里） */
 .vn-mascot--boy {
-  left: 44.0%;
+  left: 47.2%;
   bottom: 30px;
-  height: 152px;
+  height: 132px;
   transform: rotate(13deg);
 }
 /* 悬停：摆正 + 放大 + 上浮，回弹曲线让动作更明显 */
@@ -4268,4 +4268,12 @@ body { font-synthesis: none; }
      0.06em 0.06em 0 #fff, -0.06em 0.06em 0 #fff,
      0.06em -0.06em 0 #fff, -0.06em -0.06em 0 #fff,
      0 3px 9px rgba(20, 16, 15, 0.24);
+}
+
+
+/* 「没问题」三个字再放大一点 */
+.vn-logo__big {
+  display: inline-block;
+  font-size: 1.1em;
+  line-height: 0.95;
 }
