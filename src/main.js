@@ -21,6 +21,7 @@ import { createStorage } from './storage/storage.js';
 import * as engine from './core/engine.js';
 import { createRng } from './core/rng.js';
 import { createApp } from './ui/ui.js';
+import { createAudio } from './audio/audio.js';
 
 /**
  * 创建控制器（依赖注入）。
@@ -39,6 +40,7 @@ export function createController(deps) {
   let hasSave = false;
   let app = null;
   let appearanceId = '';
+  const audio = createAudio({ doc });
   let actionSeq = 0;
 
   // ---------------- 弹窗队列（D-13：学期结算先、事件后） ----------------
@@ -107,6 +109,7 @@ export function createController(deps) {
       payload.eventResult = view.eventResult;
     }
     app.render(state, payload);
+    audio.playBgm('campus');
     mountDevPanel();
   }
 
@@ -356,6 +359,7 @@ export function createController(deps) {
   // ---------------- 回调：执行行动 ----------------
   async function onAction(actionId) {
     if (!state) return;
+    audio.playSfx('choice');
     // 弹窗未关时先让队列前进（UI 未必回调 done，这里给一个隐式关闭兜底）
     if (modalBusy) notifyModalClosed();
     // 设计 §11.1#9：存在待处理事件时先结算事件（引擎侧同样兜底拦截）
@@ -383,6 +387,7 @@ export function createController(deps) {
   // ---------------- 回调：推进回合 ----------------
   async function onAdvance() {
     if (!state) return;
+    audio.playSfx('click');
     // 已经到终局（读档回到最后一回合的存档）：直接给结局，而不是报 "无法推进：ended"
     if (state.endingId) {
       const judged = judgedEndingOf(state);
@@ -630,6 +635,7 @@ export function createController(deps) {
     state = null;
     hasSave = false;
     if (app.mount) app.mount(rootEl, { hasSave: false });
+    audio.playBgm('theme');
   }
 
   // ---------------- 回调：打开图鉴 ----------------
@@ -652,8 +658,10 @@ export function createController(deps) {
     if (doc && doc.documentElement && doc.documentElement.classList) {
       doc.documentElement.classList.toggle('reduce-motion', !!settings.reduceMotion);
     }
+    audio.apply(settings);
     app.showSettings(settings, async (newSettings) => {
       const merged = newSettings || {};
+      audio.apply(merged);
       await storage.saveSettings(merged);
       if (doc && doc.documentElement && doc.documentElement.classList) {
         doc.documentElement.classList.toggle('reduce-motion', !!merged.reduceMotion);
@@ -668,6 +676,7 @@ export function createController(deps) {
   function onOpenMenu() {
     resetModals();
     if (app.mount) app.mount(rootEl, { hasSave });
+    audio.playBgm('theme');
   }
 
   const callbacks = {
@@ -688,6 +697,7 @@ export function createController(deps) {
     onClearSave,
     onOpenGallery,
     onOpenSettings,
+    onAudioChange(settings) { audio.apply(settings || {}); },
     onOpenMenu,
     onModalClosed: notifyModalClosed,
   };
@@ -700,10 +710,12 @@ export function createController(deps) {
     if (doc && doc.documentElement && doc.documentElement.classList && pref && pref.ok) {
       doc.documentElement.classList.toggle('reduce-motion', !!pref.settings.reduceMotion);
     }
+    if (pref && pref.ok && pref.settings) audio.apply(pref.settings);
     app = makeApp({ config, callbacks, doc, appearance: appearanceId });
     const r = await storage.loadGame();
     hasSave = r.ok;
     app.mount(rootEl, { hasSave });
+    audio.playBgm('theme');
     mountDevPanel();
     // 仅 ?dev=1：暴露只读调试句柄，供浏览器 E2E / 手工调试驱动（正式访问不存在）
     if (devModeEnabled() && typeof globalThis !== 'undefined') {
@@ -713,6 +725,7 @@ export function createController(deps) {
         get app() { return app; },
         callbacks,
         controller,
+        audio,
         _setState(s) { state = s; },
       };
     }

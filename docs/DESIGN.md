@@ -173,6 +173,11 @@
    填充退去/填满都会露出一圈白边。做法是悬停时把 `border-color` 设成填充色 `var(--red)`，
    离开时边框用 480ms 慢慢回去，和填充同步。
 
+### 滚动容器里的卡片阴影
+
+`.vn-modal__body` / `.vn-tag-grid` 是 `overflow: auto`，卡片投影会在容器边缘被裁成直线。
+做法：给网格加 `padding: 14px; margin: -12px;`（视觉位置不变，阴影多了 14px 呼吸空间），滚动容器再加 `scroll-padding: 12px`。
+
 ### 填充动效的坑（五处）
 
 3. **hover 别再铺整块底色**：旧红白皮肤里 `.vn-choice:hover { background: var(--red) }` 会瞬间把卡片染红，
@@ -184,6 +189,16 @@
 2. **「减弱动效」会吃掉过渡**：`.reduce-motion * { transition: none !important }` 是全站规则。
    选项卡填充是这条规则的例外（`.reduce-motion .vn-choice::after` 用更高优先级恢复），
    其余动效（弹窗、抽屉、打字机）仍然跟随该设置关闭。
+
+## 9.x 声音（背景音乐 / 音效）
+
+- **两路音量**：背景音乐、音效各自 0–100，存在设置里（`scusim:settings`），与存档无关；
+- **滑块即时生效**：拖动就改 `<audio>.volume`，点保存才写入 localStorage；
+- **模块**：`src/audio/audio.js`，纯逻辑、顶层不碰 DOM，Node 可测（`tests/verify_audio.mjs` 33 项）；
+- **资源约定**（没放文件就静默）：
+  - `assets/audio/bgm/theme.mp3` 标题页 · `bgm/campus.mp3` 游戏内
+  - `assets/audio/sfx/click.mp3` 按钮 · `sfx/choice.mp3` 选项 · `sfx/toast.mp3` 提示
+- **降级**：浏览器禁止自动播放时静默失败，首次点击后恢复；`Audio` 不存在时全部 no-op。
 
 ## 10. 季节配色（游戏内）
 

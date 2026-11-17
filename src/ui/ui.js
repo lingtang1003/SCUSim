@@ -818,6 +818,10 @@ export function createApp(ctx) {
           ]),
         ]),
         h('p', { class: 'vn-logo__sub' }, ['在这里度过你的大学时光']),
+        h('div', { class: 'vn-title__mascots', 'aria-hidden': 'true' }, [
+          h('img', { class: 'vn-mascot vn-mascot--girl', src: 'assets/mascot/girl.png', alt: '' }),
+          h('img', { class: 'vn-mascot vn-mascot--boy', src: 'assets/mascot/boy.png', alt: '' }),
+        ]),
         h('div', { class: 'vn-title__menu' }, [
           h('button', {
             class: 'vn-menu-btn vn-menu-btn--primary',
@@ -1885,6 +1889,43 @@ export function createApp(ctx) {
     closeOverlay();
     const s = settings || { seedDisplay: false, reduceMotion: false, lastSaveAt: 0 };
     let reduceMotion = !!s.reduceMotion;
+    // ---- 声音（0–100）----
+    let bgmVolume = Number.isFinite(Number(s.bgmVolume)) ? Math.max(0, Math.min(100, Math.round(Number(s.bgmVolume)))) : 60;
+    let sfxVolume = Number.isFinite(Number(s.sfxVolume)) ? Math.max(0, Math.min(100, Math.round(Number(s.sfxVolume)))) : 80;
+
+    function sliderRow(label, value, onChange) {
+      const valueEl = h('span', { class: 'vn-slider__value' }, [value + '%']);
+      const input = h('input', {
+        class: 'vn-slider__input',
+        type: 'range',
+        min: '0',
+        max: '100',
+        step: '5',
+        value: String(value),
+        'aria-label': label,
+        oninput: (e) => {
+          const v = Number(e && e.target ? e.target.value : value);
+          valueEl.textContent = v + '%';
+          onChange(v);
+        },
+      });
+      return h('div', { class: 'vn-setting vn-setting--slider' }, [
+        h('div', { class: 'vn-setting__row' }, [
+          h('div', { class: 'vn-setting__label' }, [label]),
+          valueEl,
+        ]),
+        input,
+      ]);
+    }
+
+    // 拖动即时生效（不必先点保存）
+    function pushAudio() {
+      if (callbacks.onAudioChange) callbacks.onAudioChange({ bgmVolume, sfxVolume });
+    }
+
+    const bgmRow = sliderRow('背景音乐', bgmVolume, (v) => { bgmVolume = v; pushAudio(); });
+    const sfxRow = sliderRow('音效', sfxVolume, (v) => { sfxVolume = v; pushAudio(); });
+
     const chosen = resolveAppearanceId(ui.appearanceId);
     let appearanceId = typeof s.appearance === 'string' && s.appearance
       ? resolveAppearanceId(s.appearance)
@@ -1939,6 +1980,14 @@ export function createApp(ctx) {
         h('div', { class: 'vn-setting__label' }, ['减弱动效']),
         motionBtn,
       ]),
+      h('div', { class: 'vn-setting-group' }, [
+        h('div', { class: 'vn-setting-group__title' }, ['声音']),
+        bgmRow,
+        sfxRow,
+        h('p', { class: 'vn-setting__note' }, [
+          '拖动即生效；音乐文件放到 assets/audio/ 后自动播放。',
+        ]),
+      ]),
       h('div', { class: 'vn-setting' }, [
         h('div', { class: 'vn-setting__label' }, ['我的立绘']),
         grid,
@@ -1952,7 +2001,7 @@ export function createApp(ctx) {
             ui.reduceMotion = reduceMotion;
             closeOverlay();
             if (callbacks.onChangeAppearance) callbacks.onChangeAppearance(appearanceId);
-            if (onSave) onSave({ reduceMotion: reduceMotion, appearance: appearanceId });
+            if (onSave) onSave({ reduceMotion: reduceMotion, appearance: appearanceId, bgmVolume: bgmVolume, sfxVolume: sfxVolume });
           },
         }, ['保存']),
         h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['取消']),

@@ -3969,3 +3969,150 @@ body { font-synthesis: none; }
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 10px 28px rgba(20, 16, 15, 0.16);
 }
+
+
+/* =========================================================================
+   30. 设置面板 · 声音
+   ========================================================================= */
+.vn-setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--hair);
+}
+.vn-setting-group__title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+.vn-setting--slider {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--red-50) 70%, #fff);
+  border: 1px solid var(--hair-soft);
+}
+.vn-setting__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.vn-slider__value {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.vn-setting__note {
+  margin: 2px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+.vn-slider__input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+}
+.vn-slider__input:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.vn-slider__input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--red) 22%, var(--paper-3));
+}
+.vn-slider__input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--red) 40%, transparent);
+}
+.vn-slider__input::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--red) 22%, var(--paper-3));
+}
+.vn-slider__input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 2px solid #fff;
+}
+
+
+/* =========================================================================
+   31. 标题页的两个像素小人（白描边 + 红投影，轻微旋转）
+   ========================================================================= */
+.vn-title__mascots {
+  position: absolute;
+  left: 36.6%;
+  bottom: 22px;
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  pointer-events: none;
+  user-select: none;
+}
+.vn-mascot {
+  display: block;
+  width: auto;
+  height: 150px;
+  image-rendering: -webkit-optimize-contrast;
+}
+.vn-mascot--girl {
+  transform: rotate(-7deg);
+  transition: transform 320ms var(--ease-out);
+}
+.vn-mascot--boy {
+  height: 130px;
+  margin-left: -14px;
+  transform: rotate(6deg) translateY(4px);
+  transition: transform 320ms var(--ease-out);
+}
+.vn-title:hover .vn-mascot--girl { transform: rotate(-4deg) translateY(-3px); }
+.vn-title:hover .vn-mascot--boy { transform: rotate(3deg) translateY(1px); }
+
+@media (max-width: 980px) {
+  .vn-title__mascots {
+    position: static;
+    order: 5;
+    justify-content: center;
+    margin-top: 6px;
+  }
+  .vn-mascot { height: 96px; }
+  .vn-mascot--boy { height: 84px; }
+}
+
+
+/* =========================================================================
+   32. 滚动容器里的卡片：给阴影留出呼吸空间
+   —— .vn-modal__body / .vn-tag-grid 是 overflow:auto，
+      卡片阴影会在容器边缘被裁成一条直线。给网格加内边距、再用负外边距抵消，
+      视觉位置不变，阴影就不再被切。
+   ========================================================================= */
+.vn-opt-grid {
+  padding: 14px;
+  margin: -12px;
+}
+.vn-tag-grid {
+  padding: 14px;
+  margin: -12px;
+  scroll-padding: 12px;
+}
