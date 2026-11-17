@@ -1524,7 +1524,6 @@ export function createApp(ctx) {
         else if (callbacks.onLoadGame) callbacks.onLoadGame();
       } },
       { label: '剧情回放', hint: '重看本周的对话', run: () => showBacklog() },
-      { label: '关系', hint: '好感 / 剧情线', run: () => showRelations() },
       { label: '设置', hint: '立绘 / 动效 / 声音', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
       { label: '商城', hint: '敬请期待', locked: true, run: () => showToast('商城还没开门呢', 'warning') },
     ];
@@ -1864,17 +1863,19 @@ export function createApp(ctx) {
     ]);
   }
 
-  /** 地图舞台：还没选地点时的整屏地图 */
+  /** 地图舞台：还没选地点时的整屏地图（图片按比例铺满，图钉跟着画布走） */
   function mapStage(state) {
     const list = listOf('locations');
     const conf = (config && config.locations) || {};
     const mapArt = conf.mapArt || '';
     return h('div', { class: 'vn-map-stage' }, [
       h('div', {
-        class: 'vn-map-stage__art',
-        style: mapArt ? 'background-image:url("assets/map/' + mapArt + '")' : null,
-      }),
-      h('div', { class: 'vn-map-stage__pins' }, list.map((l) => mapPin(l, state))),
+        class: 'vn-map-stage__canvas',
+        style: 'aspect-ratio:' + (conf.mapAspect || '1036 / 583')
+          + (mapArt ? ';background-image:url("assets/map/' + mapArt + '")' : ''),
+      }, [
+        h('div', { class: 'vn-map-stage__pins' }, list.map((l) => mapPin(l, state))),
+      ]),
       h('div', { class: 'vn-map-stage__hint' }, ['选择今天要去的地方']),
     ]);
   }

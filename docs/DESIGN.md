@@ -261,6 +261,12 @@
 | 正在填写 `.is-current` | 正红底 + 白字 + 红色投影 |
 | 未填写（默认） | 5% 墨色底 + `--ink-3` 灰字 + 灰色数字点 |
 
+### 选项卡填充后的白边
+
+`.vn-choice::after` 的波浪填充被 `overflow: hidden` 裁在 **padding box**，而卡片的浅色渐变是按
+`border-box` 铺的，于是那 1px 描边下面还是浅色 → 红填充外面出现一圈白边。
+修法：`.vn-choice { border-width: 0; background-clip: padding-box; }`（`--gold` 同）。
+
 ### 对话框的内侧线
 
 `.vn-dialogue__box::after` 原本是 `inset: 6px` 的一圈细描边（`--red` 12%），在浅色底上像一条多余的线，
@@ -322,7 +328,7 @@
    任何新操作（行动 / 推进 / 移动 / 回主菜单）都会 `clearAutoAdvance()`，避免重复推进。
 5. **健康不足去不了**：地图上锁定的图钉显示「健康 N」并给出 toast，不会移动。
 
-配置：`config/locations.json`（`mapArt` / `default` / `list[{id,name,scene,x,y,requiresHealth,activities,line}]`）。
+配置：`config/locations.json`（`mapArt` / `mapAspect` / `default` / `list[{id,name,scene,x,y,requiresHealth,activities,line}]`）。
 引擎 API：`currentLocation`（空 location → null、未知 id → 回落宿舍）/ `canEnterLocation` /
 `moveToLocation` / `availableActivities`（在地图上返回 `[]`）。
 测试：`tests/verify_locations.mjs`（19 项）。
