@@ -230,7 +230,7 @@ npx wrangler pages deploy . --project-name scusim
 2. **金钱语义（Q1）**：`balance.walletPerMoneyPoint` 仍未定；事件金额是「元」量级、属性是「点」量级，两套并存。
 3. **月度收支净额为 0**：`monthlyIncome = monthlyExpense = 2000`，经济压力还没真正建立起来。
 4. **角色表情差分**：目前用 CSS 滤镜模拟（smile / sad / shy / surprise），正式差分图到位后按 `lines[].emotion` 切图。
-5. **两名配角的立绘**：周野 / 唐棠先用剪影卡，放好正式图后改 `characters.json` 的 `portrait.file` 即可。
+5. **立绘规格**：6 张统一 810×1080 WebP（63–89 KB）；后续换图按同规格覆盖 `media/characters/<id>.webp` 即可，不用改代码。
 
 ### 字段命名提示（供数值同学参考）
 

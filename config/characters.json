@@ -86,10 +86,10 @@
       "name": "周野",
       "gender": "男",
       "role": "体育学院 · 大二",
-      "college": "med",
+      "college": "",
       "title": "东区操场第 4 道",
       "intro": "田径队的直球选手，笑起来没心没肺。跑完十公里还能再跑十公里。",
-      "portrait": { "file": "", "silhouette": true },
+      "portrait": { "file": "media/characters/zhouye.webp", "silhouette": false },
       "initialAffinity": 0,
       "stages": [
         { "at": 0, "id": "stranger", "name": "陌生" },
@@ -109,7 +109,7 @@
       "college": "foreign",
       "title": "话剧社的万能替补",
       "intro": "学生会外联部长，话剧社台柱。谁都能聊，谁都看不透。",
-      "portrait": { "file": "", "silhouette": true },
+      "portrait": { "file": "media/characters/tangtang.webp", "silhouette": false },
       "initialAffinity": 0,
       "stages": [
         { "at": 0, "id": "stranger", "name": "陌生" },

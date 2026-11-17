@@ -154,7 +154,7 @@ for (const c of withArt) {
   }
 }
 check('A: 有立绘的角色文件都存在', artOk, artMissing.join(','));
-check('A: 至少 4 名角色有正式立绘', withArt.length >= 4, '=' + withArt.length);
+check('A: 6 名角色都有正式立绘（不再是剪影占位）', withArt.length === chars.length, '=' + withArt.length);
 
 // 剧情线：步骤事件都存在、窗口合法、next 指向合法
 const S = config.storylines.lines || [];
