@@ -26,12 +26,12 @@ assets/
 | 行动 / 时机 | 场景键（CSS 类名后缀） | 池内图片 |
 |---|---|---|
 | 标题页（封面） | `title` | `gateScu`（望江 · 北门，固定） |
-| 每周开场、新游戏第一幕、推进回合后 | `campus` | `avenue` / `magnolia` / `plaza-flowerbed` / `dusk-road` / `lawn-pavilion` / `river-bridge` |
+| 每周开场、新游戏第一幕、推进回合后 | `campus` | `avenue` / `magnolia` / `plaza-flowerbed` / `plaza-street` / `dusk-road` / `lawn-pavilion` / `river-bridge` |
 | 行动「上课学习」 | `classroom` | `library` / `classroom-sunlit` / `classroom-empty` / `classroom-podium` / `corridor` / `classroom-screen`（仅各上学期第 1 周） |
-| 行动「社团活动」 | `clubroom` | `activity-wall` / `plaza-flowerbed` / `corridor` |
+| 行动「社团活动」 | `clubroom` | `activity-wall` / `plaza-flowerbed` / `plaza-street` / `corridor` |
 | 行动「体育锻炼」 | `track` | `field-track` / `gym-badminton` / `lawn-pavilion` |
 | 行动「兼职赚钱」 | `store` | `metro-platform` / `metro-escalator` |
-| 行动「社交娱乐」 | `street` | `hotpot` / `bar-live` / `canteen` |
+| 行动「社交娱乐」 | `street` | `hotpot` / `bar-live` / `canteen` / `canteen-west` |
 | 行动「休息放松」 | `dorm` | `dusk-road` / `river-bridge` / `lawn-pavilion` / `avenue` |
 | 事件弹层 | `event` | 无独立图（沿用当前场景 + 压暗模糊） |
 
@@ -46,11 +46,11 @@ assets/
 | `classroom-sunlit.jpg` | 教学楼 · 午后教室 | 上课学习 |
 | `corridor.jpg` | 教学楼 · 走廊 | 上课学习、社团活动 |
 | `activity-wall.jpg` | 活动室 · 展板墙 | 社团活动 |
-| `plaza-flowerbed.jpg` | 江安 · 商业街 | 社团活动、每周开场 |
 | `field-track.jpg` | 江安 · 二号体育场 | 体育锻炼 |
 | `gym-badminton.jpg` | 江安 · 体育馆 | 体育锻炼 |
 | `lawn-pavilion.jpg` | 江安 · 不高山 | 体育锻炼、休息放松、每周开场 |
 | `canteen.jpg` | 江安 · 东园食堂 | 社交娱乐 |
+| `plaza-flowerbed.jpg` | 江安 · 商业街（花坛机位） | 社团活动、每周开场 |
 | `hotpot.jpg` | 校外 · 火锅店 | 社交娱乐 |
 | `bar-live.jpg` | 校外 · 酒吧 | 社交娱乐 |
 | `dusk-road.jpg` | 江安 · 环行大道 | 休息放松、每周开场 |
@@ -59,6 +59,9 @@ assets/
 | `magnolia.jpg` | 江安 · 文科楼路边 | 每周开场 |
 | `metro-platform.jpg` | 地铁 8 号线 · 站台 | 兼职赚钱 |
 | `metro-escalator.jpg` | 地铁 8 号线 · 扶梯 | 兼职赚钱 |
+| `plaza-street.jpg` | 江安 · 商业街（蓝花+长椅机位，1440×810） | 社团活动、每周开场 |
+| `canteen-west.jpg` | 江安 · 西园食堂（1440×810） | 社交娱乐 |
+| `create-welcome.jpg` | 江安 · 迎新展板（1440×810） | **创建角色背景** |
 | `gate.jpg` | 江安 · 东门 | 备用封面 |
 | `gate-scu.jpg` | 望江 · 北门（1920×1080） | **标题页（封面）** |
 

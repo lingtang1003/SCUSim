@@ -3945,3 +3945,27 @@ body { font-synthesis: none; }
   transform: translateY(0);
   box-shadow: 0 6px 16px color-mix(in srgb, var(--red) 32%, transparent);
 }
+
+
+/* =========================================================================
+   29. 创建角色：预览卡去掉白底，立绘直接浮在迎新展板的背景上
+   ========================================================================= */
+.vn-create__preview {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 0;
+}
+.vn-create__preview-stage {
+  background: transparent;
+  overflow: visible;
+}
+.vn-create__summary {
+  margin-top: -18px;
+  padding: 16px 18px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 28px rgba(20, 16, 15, 0.16);
+}

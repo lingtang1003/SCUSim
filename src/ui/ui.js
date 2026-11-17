@@ -74,6 +74,13 @@ const BG = {
   magnolia: { art: 'magnolia.jpg', label: '江安 · 文科楼路边', line: '（玉兰开得正好，花瓣落在楼前的台阶上）' },
   metroPlatform: { art: 'metro-platform.jpg', label: '地铁 8 号线 · 站台', line: '（8 号线的站台一眼望不到头，显示屏跳着下一班的时间）' },
   metroEscalator: { art: 'metro-escalator.jpg', label: '地铁 8 号线 · 扶梯', line: '（扶梯慢慢往上，你把今天的工牌塞回口袋）' },
+  plazaStreet: { art: 'plaza-street.jpg', label: '江安 · 商业街' },
+  canteenWest: { art: 'canteen-west.jpg', label: '江安 · 西园食堂' },
+  createWelcome: {
+    art: 'create-welcome.jpg',
+    label: '江安 · 迎新展板',
+    line: '（红色的迎新展板立在校门口，白字被太阳照得发亮）',
+  },
   gate: { art: 'gate.jpg', label: '江安 · 东门', line: '（东门外的车流一直没停，门柱被晒得发烫）' },
   gateScu: { art: 'gate-scu.jpg', label: '望江 · 北门', line: '（从北门走进望江，抬头就是那块牌匾）' },
 };
@@ -84,13 +91,14 @@ const BG = {
  */
 const SCENES = {
   title: { files: [BG.gateScu] },
-  campus: { files: [BG.avenue, BG.magnolia, BG.plaza, BG.duskRoad, BG.lawn, BG.river] },
+  campus: { files: [BG.avenue, BG.magnolia, BG.plaza, BG.plazaStreet, BG.duskRoad, BG.lawn, BG.river] },
   classroom: { files: [BG.library, BG.classScreen, BG.classSunlit, BG.classEmpty, BG.classPodium, BG.corridor] },
-  clubroom: { files: [BG.activityWall, BG.plaza, BG.corridor] },
+  clubroom: { files: [BG.activityWall, BG.plaza, BG.plazaStreet, BG.corridor] },
   track: { files: [BG.field, BG.gym, BG.lawn] },
   store: { files: [BG.metroPlatform, BG.metroEscalator] },
-  street: { files: [BG.hotpot, BG.bar, BG.canteen] },
+  street: { files: [BG.hotpot, BG.bar, BG.canteen, BG.canteenWest] },
   dorm: { files: [BG.duskRoad, BG.river, BG.lawn, BG.avenue] },
+  create: { files: [BG.createWelcome] },
   event: { files: [] },
 };
 
@@ -924,7 +932,6 @@ export function createApp(ctx) {
     const art = spriteArtStyle(app);
     return h('aside', { class: 'vn-create__preview' }, [
       h('div', { class: 'vn-create__preview-stage' }, [
-        bgLayer('campus', pickScene('campus', 3, 1)),
         h('div', { class: 'vn-preview-sprite' }, [
           art
             ? h('div', { class: 'vn-sprite__art', style: art })
@@ -1339,7 +1346,7 @@ export function createApp(ctx) {
     }
     rootEl.appendChild(
       h('div', { class: 'vn-stage vn-stage--creation' }, [
-        bgLayer('campus', pickScene('campus', 5, 2)),
+        bgLayer('create', BG.createWelcome),
         h('div', { class: 'vn-create' }, [
           creationPreview(),
           h('section', { class: 'vn-create__panel' }, [
