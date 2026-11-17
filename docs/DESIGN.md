@@ -200,9 +200,19 @@
 修正：storage 里用一条 Promise 队列串行化，并且 UI 侧先 `onSave` 再 `onChangeAppearance`。
 回归测试 `tests/verify_settings.mjs`。
 
-### 第二行改用白色投影
+### 第二行整行白描边
 
-`.vn-logo__line--accent`（果然有 or 没问题！）的 `text-shadow` 换成白色两层：`0 2px 6px #fff, 0 6px 18px rgba(255,255,255,.92)`；
+`.vn-logo__line--accent` 直接带 `-webkit-text-stroke: .048em #fff` + `paint-order: stroke fill`
+和 8 向白色 text-shadow，于是「果然 / 有 / or / 没问题 / ！」每个字都有白边；
+`.vn-logo__hl` 的那套（.062em）会在这两个词上再叠一层，看起来更厚一点，是有意的节奏差。
+
+### 标题的投影
+
+两行标题都是**深色投影**（`0 4px 12px rgba(20,16,15,.26), 0 1px 2px rgba(20,16,15,.14)`），
+白描边单独由 `-webkit-text-stroke` + 8 向白色 text-shadow 负责；
+带白描边的字（大学 / 有 / 没问题 / 整行第二行）把投影写在 shadow 列表最后一项，投影落在白边之外。
+
+`.vn-logo__line--accent`（果然有 or 没问题！）的 `text-shadow` 换成白色两层：`0 3px 14px rgba(255,255,255,.5)`；
 带白描边的 `.vn-logo__hl` 在同样位置把阴影也替换成白色，描边列表保持 8 向。
 第一行（我的 / 大学 / 四年）同样改成白色投影，标题整体不再有灰色硬影。
 
@@ -225,6 +235,12 @@
 「是否确认清除全部存档？包括现在正在进行的游戏。图鉴中已达成的结局不会消失。」，
 按钮为 `确认清除`（主红）/ `取消`（次要）。抽屉底部三个链接去掉了下划线。
 
+### 剩余点数胶囊
+
+`.vn-counter` 默认灰底黑字；`remain > 0` 时加 `.is-ok` 变成红底白字（还有点数没分配 = 需要处理），
+`remain === 0` 回到灰色（已完成）。「下一步」按钮在 `remain !== 0` 时禁用并降透明度。
+性格标签那一步的「已选 N / 3」同 rules：未选满为红、选满变灰。
+
 ### 创建步骤条的三态
 
 | 状态 | 视觉 |
@@ -242,7 +258,9 @@
 ### 滚动容器里的卡片阴影
 
 `.vn-modal__body` / `.vn-tag-grid` 是 `overflow: auto`，卡片投影会在容器边缘被裁成直线。
-做法：给网格加 `padding: 14px; margin: -12px;`（视觉位置不变，阴影多了 14px 呼吸空间），滚动容器再加 `scroll-padding: 12px`。
+做法：给滚动容器加 `padding: 12px 14px` + `margin: -12px -14px` 抵消（视觉位置不变），
+并 `overflow-x: hidden` 防止出现横向滚动条；`overflow-y: auto` 会顺带把 `overflow-x` 变成 auto，
+所以横向留白必须靠内边距补。滚动容器再加 `scroll-padding: 12px`。
 
 ### 选项卡是扁平白卡
 

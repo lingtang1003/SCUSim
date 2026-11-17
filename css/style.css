@@ -4114,8 +4114,9 @@ body { font-synthesis: none; }
   margin: 0;
 }
 .vn-tag-grid {
-  padding: 12px 0;      /* 只在纵向留白，避免横向多出滚动条 */
-  margin: -12px 0;
+  padding: 12px 14px;   /* 四周都留出投影的呼吸空间 */
+  margin: -12px -14px;  /* 用负外边距抵消，卡片位置不变 */
+  overflow-x: hidden;   /* 横向不出现滚动条 */
   scroll-padding: 12px;
 }
 
@@ -4337,7 +4338,7 @@ body { font-synthesis: none; }
 
 /* 第二行：投影换成白色，像压印在纸带上的白边 */
 .vn-logo__line--accent {
-  text-shadow: 0 2px 6px #fff, 0 6px 18px rgba(255, 255, 255, 0.92);
+  text-shadow: 0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
 }
 .vn-logo__line--accent .vn-logo__hl {
   text-shadow:
@@ -4345,7 +4346,7 @@ body { font-synthesis: none; }
      0 0.062em 0 #fff, 0 -0.062em 0 #fff,
      0.044em 0.044em 0 #fff, -0.044em 0.044em 0 #fff,
      0.044em -0.044em 0 #fff, -0.044em -0.044em 0 #fff,
-     0 2px 6px #fff, 0 6px 18px rgba(255, 255, 255, 0.92);
+     0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
 }
 
 
@@ -4386,7 +4387,7 @@ body { font-synthesis: none; }
 
 /* 第一行（我的 / 大学 / 四年）的投影同样改成白色 */
 .vn-logo__line:first-child {
-  text-shadow: 0 2px 6px #fff, 0 6px 18px rgba(255, 255, 255, 0.92);
+  text-shadow: 0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
 }
 .vn-logo__line:first-child .vn-logo__hl {
   text-shadow:
@@ -4394,7 +4395,7 @@ body { font-synthesis: none; }
      0 0.062em 0 #fff, 0 -0.062em 0 #fff,
      0.044em 0.044em 0 #fff, -0.044em 0.044em 0 #fff,
      0.044em -0.044em 0 #fff, -0.044em -0.044em 0 #fff,
-     0 2px 6px #fff, 0 6px 18px rgba(255, 255, 255, 0.92);
+     0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
 }
 
 
@@ -4406,4 +4407,17 @@ body { font-synthesis: none; }
 }
 .vn-gallery__desc {
   margin-top: 2px;
+}
+
+
+/* 第二行整行都加白描边（果然 / or / ！ 也一起） */
+.vn-logo__line--accent {
+  -webkit-text-stroke: 0.048em #fff;
+  paint-order: stroke fill;
+  text-shadow:
+     0.062em 0 0 #fff, -0.062em 0 0 #fff,
+     0 0.062em 0 #fff, 0 -0.062em 0 #fff,
+     0.044em 0.044em 0 #fff, -0.044em 0.044em 0 #fff,
+     0.044em -0.044em 0 #fff, -0.044em -0.044em 0 #fff,
+     0 4px 12px rgba(20, 16, 15, 0.26), 0 1px 2px rgba(20, 16, 15, 0.14);
 }

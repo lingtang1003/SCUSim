@@ -1193,11 +1193,9 @@ export function createApp(ctx) {
     });
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['属性']),
-      h('p', { class: 'vn-form__desc' }, [
-        '把 ' + TOTAL_POINTS + ' 点分到四项上，分配完才能继续。',
-      ]),
+      h('p', { class: 'vn-form__desc' }, ['原来初入大学的你是这样的。']),
       h('div', { class: 'vn-attr-list' }, rows),
-      h('div', { class: 'vn-counter' + (remain === 0 ? ' is-ok' : '') }, [
+      h('div', { class: 'vn-counter' + (remain > 0 ? ' is-ok' : '') }, [
         '剩余 ' + remain + ' 点',
       ]),
       h('button', {
@@ -1218,7 +1216,7 @@ export function createApp(ctx) {
     const selected = creation.tags;
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['性格标签']),
-      h('p', { class: 'vn-form__desc' }, ['挑 ' + REQUIRED_TAGS + ' 个词，定义你的大学四年。']),
+      h('p', { class: 'vn-form__desc' }, ['定义你的大学四年。']),
       h('div', { class: 'vn-tag-grid' }, tags.map((t) => {
         const sel = selected.indexOf(t.id) >= 0;
         return h('button', {
@@ -1239,7 +1237,7 @@ export function createApp(ctx) {
           h('small', {}, [t.desc || '']),
         ]);
       })),
-      h('div', { class: 'vn-counter' + (selected.length === REQUIRED_TAGS ? ' is-ok' : '') }, [
+      h('div', { class: 'vn-counter' + (selected.length < REQUIRED_TAGS ? ' is-ok' : '') }, [
         '已选 ' + selected.length + ' / ' + REQUIRED_TAGS,
       ]),
       h('button', {
@@ -1440,7 +1438,7 @@ export function createApp(ctx) {
             },
           }, ['清除存档']),
         ]),
-        h('div', { class: 'vn-drawer__credit' }, ['SCUSim · 校园生活模拟器']),
+        h('div', { class: 'vn-drawer__credit' }, ['SCUSim · 模拟你的大学四年']),
       ]),
     ]);
     mountOverlay(scrim);
