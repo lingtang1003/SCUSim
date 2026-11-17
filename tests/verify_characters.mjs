@@ -380,6 +380,10 @@ const artEl = evNode ? byClass(evNode, 'vn-npc__art')[0] : null;
 check('H: 立绘背景指向 linyu.webp',
   !!artEl && String(artEl.attr_style || '').includes('linyu.webp'),
   artEl ? artEl.attr_style : 'no art');
+check('H: 立绘走 cutout 模式（透明底、不套白卡）',
+  !!evNode && byClass(evNode, 'vn-npc--cutout').length === 1);
+check('H: cutout 不画名牌（名牌在对话框上）',
+  !!evNode && byClass(evNode, 'vn-npc__plate').length === 0);
 check('H: 台词播放中选项处于等待态（is-waiting）',
   !!evNode && byClass(evNode, 'is-waiting').length === 1);
 

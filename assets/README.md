@@ -164,15 +164,18 @@ APPEARANCES.push({
 | 项 | 规格 |
 |---|---|
 | 尺寸 | 810×1080（3:4 竖版） |
-| 格式 / 体积 | WebP，约 70–90 KB |
-| 构图 | 头部占上半幅，肩线约 70%；**底部 8% 会被裁掉**（去掉原图水印与边缘） |
-| 背景 | 纯色即可：UI 用圆角卡片 + 底部渐隐，不做透明抠图 |
+| 格式 / 体积 | WebP **带透明通道**，约 55–100 KB |
+| 构图 | 头肩半身，底边对齐画布底边、水平居中；**底部 10% 会被裁掉**（去掉原图水印与边缘） |
+| 背景 | **透明**：配置里 `portrait.cutout: true`，UI 不套白卡、不裁底、不画名牌，立绘直接站在场景上 |
 | 命名 | `<charId>.webp`（与 `config/characters.json` 的 id 一致，如 `linyu.webp`） |
 | 表情差分 | 预留 `<charId>_<emotion>.webp`；当前用 CSS 滤镜模拟，不需要额外文件 |
 
-当前 6 名角色都有立绘：`jiangxu / guchi / linyu / suwan / zhouye / tangtang`。
+当前 6 名角色都有立绘：`jiangxu / guchi / linyu / suwan / zhouye / tangtang`，全部是带 alpha 的 cutout。
+这批图是从白底合成图自动抠出来的（收到的源文件是 RGB、没有 alpha），
+生产脚本：`tools/_cutout.py`（边界连通填充 + 边缘柔化 + 去白边）。
+
 如果之后新加一个角色、暂时没有图，把 `characters.json` 里 `portrait.file` 留空并设 `portrait.silhouette: true`，
-UI 会画剪影卡兜底；放好正式图后改回 `file` 即可。
+UI 会画剪影卡兜底；放好正式图后改回 `file` 并把 `cutout` 设为 `true` 即可。
 
 
 

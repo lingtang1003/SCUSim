@@ -352,6 +352,8 @@ export function createApp(ctx) {
     if (!ch) return null;
     const file = (ch.portrait && ch.portrait.file) || '';
     const silhouette = !file || (ch.portrait && ch.portrait.silhouette);
+    // cutout：透明底立绘，直接贴到场景上（不套白卡、不裁底、不画名牌）
+    const cutout = !silhouette && !!(ch.portrait && ch.portrait.cutout);
     const emo = emotion || 'neutral';
     const art = silhouette
       ? null
@@ -359,8 +361,9 @@ export function createApp(ctx) {
           class: 'vn-npc__art',
           style: 'background-image:url("' + file + '")',
         });
+    const mods = (silhouette ? ' vn-npc--silhouette' : '') + (cutout ? ' vn-npc--cutout' : '');
     return h('div', {
-      class: 'vn-npc vn-npc--' + emo + (silhouette ? ' vn-npc--silhouette' : ''),
+      class: 'vn-npc vn-npc--' + emo + mods,
       'aria-hidden': 'true',
     }, [
       h('div', { class: 'vn-npc__card' }, [
@@ -370,7 +373,7 @@ export function createApp(ctx) {
               h('span', { class: 'vn-npc__initial' }, [String(ch.name || '?').slice(0, 1)]),
             ])
           : null,
-        h('div', { class: 'vn-npc__plate' }, [String(ch.name || '')]),
+        cutout ? null : h('div', { class: 'vn-npc__plate' }, [String(ch.name || '')]),
       ]),
     ]);
   }
@@ -2024,11 +2027,12 @@ export function createApp(ctx) {
       const got = allEvents().filter((e) => e && e.charId === c.id && seen.indexOf(e.id) >= 0).length;
       const file = (c.portrait && c.portrait.file) || '';
       const silhouette = !file || (c.portrait && c.portrait.silhouette);
+      const cutout = !silhouette && !!(c.portrait && c.portrait.cutout);
       const pct = Math.max(0, Math.min(100, (Number(rel.affinity) || 0) / max * 100));
       return h('div', { class: 'vn-rel' + (rel.met ? '' : ' is-unmet') }, [
         h('div', { class: 'vn-rel__card' }, [
           h('div', {
-            class: 'vn-rel__art' + (silhouette ? ' is-silhouette' : ''),
+            class: 'vn-rel__art' + (silhouette ? ' is-silhouette' : '') + (cutout ? ' is-cutout' : ''),
             style: silhouette ? '' : 'background-image:url("' + file + '")',
           }, silhouette
             ? [h('span', { class: 'vn-rel__initial' }, [String(c.name || '?').slice(0, 1)])]

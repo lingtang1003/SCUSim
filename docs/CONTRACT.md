@@ -427,6 +427,7 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | `name` / `gender` / `role` / `title` / `intro` | string | name 必填 | UI | 展示信息（`role` 用于关系面板） |
 | `college` | string | 否 | UI | 学院（展示用） |
 | `portrait.file` | string | 否 | UI | 立绘相对路径；空或 `silhouette:true` 时画剪影卡 |
+| `portrait.cutout` | boolean | 否 | UI | `true` = 透明底立绘，不套白卡/不裁底/不画名牌，直接贴场景 |
 | `portrait.silhouette` | boolean | 否 | UI | 强制剪影 |
 | `initialAffinity` | number | 否 | relation | 初始好感（默认 0） |
 | `stages[]` | `{at,id,name}` | 是 | relation | 阶段阈值，**首档 at 必须 0、升序** |

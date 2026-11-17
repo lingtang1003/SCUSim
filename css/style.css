@@ -4527,6 +4527,36 @@ body { font-synthesis: none; }
   text-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
+/* 37.1b 透明底立绘（cutout）：不套白卡、不裁底、不画名牌，直接站在场景里 */
+.vn-npc--cutout { width: min(460px, 34vw); height: min(84vh, 760px); }
+.vn-npc--cutout .vn-npc__card {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.vn-npc--cutout .vn-npc__art {
+  background-size: contain;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 22px 26px rgba(20, 16, 15, 0.38));
+}
+.vn-event__npc .vn-npc--cutout { height: 100%; }
+/* 事件弹层里的立绘底下没有对话框挡着，给最后一段加一点渐隐，避免看到「截断的胸口」 */
+.vn-event__npc .vn-npc--cutout .vn-npc__art {
+  -webkit-mask-image: linear-gradient(180deg, #000 86%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(180deg, #000 86%, rgba(0, 0, 0, 0) 100%);
+}
+.vn-rel__art.is-cutout {
+  background-color: transparent;
+  background-size: contain;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 8px 14px rgba(20, 16, 15, 0.18));
+}
+
 /* 37.2 事件里的角色立绘：贴在事件卡右侧 */
 .vn-event__npc {
   position: absolute;
