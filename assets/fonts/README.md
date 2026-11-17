@@ -32,7 +32,7 @@ python -m fontTools.subset 原字体.ttf --text-file=charset.txt --flavor=woff2 
 |---|---|
 | 两支标题字体**内联**成 `data:` URI | 不产生网络请求，标题永不闪 |
 | 两支正文字体 `<link rel="preload">` | 与 CSS 并行下载，先于首次绘制 |
-| `font-display: block` | 字体未就绪时不显示回退字形，避免“先黑体再变花月圆”的跳变 |
+| `font-display: fallback` | 100ms 极短阻塞期，之后先用回退字形显示（避免文字长时间空白），字体到位再替换 |
 | 服务端 `Cache-Control: max-age=86400` | 刷新不重下（dev 服务器原本是 `no-store`，所以每次都重新下载） |
 | 子集化 | 只含界面实际用字，合计 ~620 KB |
 

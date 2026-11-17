@@ -57,7 +57,9 @@
   - **标题字体** **汉仪唐美人 W**（`--font-display`，手写行书）：弹窗标题、表单标题、抽屉标题、
     创建角色大标题、结局名、事件标签，以及徽记 SCUSim（角色信息姓名、创建页表单小标题用正文字体）
 
-  - 标题里的「有 / 没问题」套 `.vn-logo__hl`（「我的大学四年」不带描边）：`-webkit-text-stroke: .055em #fff` + `paint-order: stroke fill`
+  - 第一行「我的大学四年」里，**「大学四年」比「我的」大 1.14 倍**（`.vn-logo__line-big`），
+  字号差制造节奏，但共用同一基线
+- 标题里的「有 / 没问题」套 `.vn-logo__hl`（「我的大学四年」不带描边）：`-webkit-text-stroke: .055em #fff` + `paint-order: stroke fill`
     + 8 向白色 `text-shadow` 兜底，做出贴纸式白描边
   - **四支字体都只有一个字重（400）**：全站 `font-synthesis: none`，并把这些常用组件显式设为 400，
     否则浏览器会用「合成粗体」把细笔画抹成一团（看起来就像没换字体）
@@ -188,6 +190,12 @@
 
 `.vn-modal__body` / `.vn-tag-grid` 是 `overflow: auto`，卡片投影会在容器边缘被裁成直线。
 做法：给网格加 `padding: 14px; margin: -12px;`（视觉位置不变，阴影多了 14px 呼吸空间），滚动容器再加 `scroll-padding: 12px`。
+
+### 选项卡是扁平白卡
+
+`.vn-choice` 平时**没有描边、没有投影**（`border-color: transparent; box-shadow: none`），
+只剩白色圆角纸片；投影只在悬停时出现（`0 10px 24px var(--red-glow)`）。
+原因：1px 的 `--hair` 边框叠在照片上会形成一圈明显的“界线”，和背景交界很生硬。
 
 ### 填充动效的坑（五处）
 

@@ -808,7 +808,10 @@ export function createApp(ctx) {
           ]),
         ]),
         h('h1', { class: 'vn-logo' }, [
-          h('span', { class: 'vn-logo__line' }, ['我的大学四年']),
+          h('span', { class: 'vn-logo__line' }, [
+            '我的',
+            h('span', { class: 'vn-logo__line-big' }, ['大学四年']),
+          ]),
           h('span', { class: 'vn-logo__line vn-logo__line--accent' }, [
             '果然',
             h('span', { class: 'vn-logo__hl' }, ['有']),
@@ -817,7 +820,7 @@ export function createApp(ctx) {
             '！',
           ]),
         ]),
-        h('p', { class: 'vn-logo__sub' }, ['在这里度过你的大学时光']),
+        h('p', { class: 'vn-logo__sub' }, ['在这里度过你的大学时光~']),
         h('div', { class: 'vn-title__mascots', 'aria-hidden': 'true' }, [
           h('img', { class: 'vn-mascot vn-mascot--girl', src: 'assets/mascot/girl.png', alt: '' }),
           h('img', { class: 'vn-mascot vn-mascot--boy', src: 'assets/mascot/boy.png', alt: '' }),
