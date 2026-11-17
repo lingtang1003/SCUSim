@@ -292,6 +292,12 @@ export function createApp(ctx) {
   }
 
   function mountOverlay(node, onClose, dismissible) {
+    // 同一时刻只保留一层弹窗：挂新的先移除旧的，避免「确认」后旧弹窗残留在 DOM 里关不掉
+    if (overlayEl && overlayEl.parentNode) {
+      overlayEl.parentNode.removeChild(overlayEl);
+      overlayEl = null;
+      overlayClose = null;
+    }
     overlayEl = node;
     overlayClose = onClose || null;
     overlayDismissible = dismissible !== false;
