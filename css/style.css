@@ -4084,7 +4084,7 @@ body { font-synthesis: none; }
 }
 /* 男生：站在「没问题！」右侧（落在第二行的高度带里） */
 .vn-mascot--boy {
-  left: 41.0%;
+  left: 42.8%;
   bottom: 30px;
   height: 152px;
   transform: rotate(13deg);
@@ -4292,4 +4292,10 @@ body { font-synthesis: none; }
 /* 第一行整体右移一点，和左边距拉开呼吸 */
 .vn-logo__line:first-child {
   padding-left: 14px;
+}
+
+
+/* 第一行里的「大学」：红色 + 同样的白描边 */
+.vn-logo__hl--red {
+  color: var(--red);
 }

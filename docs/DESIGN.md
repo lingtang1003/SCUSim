@@ -63,6 +63,8 @@
 - 第一行整体右移 14px（`.vn-logo__line:first-child { padding-left: 14px }`），和第二行形成轻微错位，也让「年」更靠近像素小人
 - 第一行「我的大学四年」里，**「大学四年」比「我的」大 1.14 倍**（`.vn-logo__line-big`），
   字号差制造节奏，但共用同一基线
+- 第一行的「大学」用 `.vn-logo__hl--red`：`color: var(--red)` + 与「有 / 没问题」同款白描边，
+  让两个关键词左右呼应
 - 标题里的「有 / 没问题」套 `.vn-logo__hl`（「我的大学四年」不带描边）：`-webkit-text-stroke: .055em #fff` + `paint-order: stroke fill`
     + 8 向白色 `text-shadow` 兜底，做出贴纸式白描边
   - **四支字体都只有一个字重（400）**：全站 `font-synthesis: none`，并把这些常用组件显式设为 400，

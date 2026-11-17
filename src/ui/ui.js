@@ -810,7 +810,10 @@ export function createApp(ctx) {
         h('h1', { class: 'vn-logo' }, [
           h('span', { class: 'vn-logo__line' }, [
             '我的',
-            h('span', { class: 'vn-logo__line-big' }, ['大学四年']),
+            h('span', { class: 'vn-logo__line-big' }, [
+              h('span', { class: 'vn-logo__hl vn-logo__hl--red' }, ['大学']),
+              '四年',
+            ]),
           ]),
           h('span', { class: 'vn-logo__line vn-logo__line--accent' }, [
             h('span', { class: 'vn-logo__tilt' }, ['果然']),
