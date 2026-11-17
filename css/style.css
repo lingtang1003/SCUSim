@@ -4084,7 +4084,7 @@ body { font-synthesis: none; }
 }
 /* 男生：站在「没问题！」右侧（落在第二行的高度带里） */
 .vn-mascot--boy {
-  left: 46.0%;
+  left: 44.3%;
   bottom: 34px;
   height: 150px;
   transform: rotate(13deg);
@@ -4180,7 +4180,7 @@ body { font-synthesis: none; }
 
 /* 副标题：红色 + 白色描边，和标题呼应 */
 .vn-logo__sub {
-  color: var(--red);
+  color: color-mix(in srgb, var(--red) 76%, #fff);   /* 比主红淡一档 */
   -webkit-text-stroke: 0.095em #fff;
   paint-order: stroke fill;
   text-shadow:
