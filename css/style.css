@@ -4084,7 +4084,7 @@ body { font-synthesis: none; }
 }
 /* 男生：站在「没问题！」右侧（落在第二行的高度带里） */
 .vn-mascot--boy {
-  left: 43.6%;
+  left: 41.0%;
   bottom: 30px;
   height: 152px;
   transform: rotate(13deg);
@@ -4284,6 +4284,12 @@ body { font-synthesis: none; }
   display: inline-block;
   font-size: 0.76em;
   line-height: 1;
-  vertical-align: baseline;
+  vertical-align: 0.12em;   /* 往上抬一点，和中文的视觉中线对齐 */
   margin: 0 0.04em;
+}
+
+
+/* 第一行整体右移一点，和左边距拉开呼吸 */
+.vn-logo__line:first-child {
+  padding-left: 14px;
 }

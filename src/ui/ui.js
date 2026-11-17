@@ -832,7 +832,7 @@ export function createApp(ctx) {
           }, [
             h('span', { class: 'vn-menu-btn__body' }, [
               h('span', { class: 'vn-menu-btn__label' }, ['开始新游戏']),
-            h('span', { class: 'vn-menu-btn__hint' }, ['从大一新生开始']),
+            h('span', { class: 'vn-menu-btn__hint' }, ['从大一开始']),
             ]),
           ]),
           h('button', {
@@ -854,7 +854,7 @@ export function createApp(ctx) {
             },
           }, [
             h('span', { class: 'vn-menu-btn__body' }, [
-              h('span', { class: 'vn-menu-btn__label' }, ['结局图鉴']),
+              h('span', { class: 'vn-menu-btn__label' }, ['图鉴']),
             h('span', { class: 'vn-menu-btn__hint' }, ['已达成的结局']),
             ]),
           ]),
@@ -865,8 +865,8 @@ export function createApp(ctx) {
             },
           }, [
             h('span', { class: 'vn-menu-btn__body' }, [
-              h('span', { class: 'vn-menu-btn__label' }, ['系统设置']),
-            h('span', { class: 'vn-menu-btn__hint' }, ['立绘 / 动效 / 声音']),
+              h('span', { class: 'vn-menu-btn__label' }, ['设置']),
+            h('span', { class: 'vn-menu-btn__hint' }, ['动效 / 声音']),
             ]),
           ]),
         ]),
@@ -879,6 +879,7 @@ export function createApp(ctx) {
     stopTypewriter();
     clearSeasonTheme();
     clearRoot();
+    lastState = null;   // 回到标题页就没有「当前角色」，设置里不再提供换立绘
     ui.scene = 'title';
     titleSeq += 1;
     ui.sceneEntry = pickScene('title', titleSeq, 0);
@@ -1384,7 +1385,7 @@ export function createApp(ctx) {
         else if (callbacks.onLoadGame) callbacks.onLoadGame();
       } },
       { label: '剧情回放', hint: '重看本周的对话', run: () => showBacklog() },
-      { label: '系统设置', hint: '立绘 / 动效 / 声音', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
+      { label: '设置', hint: '立绘 / 动效 / 声音', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
       { label: '商城', hint: '敬请期待', locked: true, run: () => showToast('商城还没开门呢', 'warning') },
     ];
     const scrim = h('div', {
@@ -1981,6 +1982,8 @@ export function createApp(ctx) {
       return node;
     }));
 
+    // 立绘只在对局中可换：标题页没有角色，换立绘没有意义
+    const canPickAppearance = !!lastState;
     const body = [
       h('div', { class: 'vn-setting' }, [
         h('div', { class: 'vn-setting__label' }, ['动效']),
@@ -1991,10 +1994,12 @@ export function createApp(ctx) {
         bgmRow,
         sfxRow,
       ]),
-      h('div', { class: 'vn-setting' }, [
-        h('div', { class: 'vn-setting__label' }, ['我的立绘']),
-        grid,
-      ]),
+      canPickAppearance
+        ? h('div', { class: 'vn-setting' }, [
+            h('div', { class: 'vn-setting__label' }, ['我的立绘']),
+            grid,
+          ])
+        : null,
     ];
     mountOverlay(
       modalShell('系统设置', body, [
