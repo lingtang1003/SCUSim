@@ -4472,3 +4472,149 @@ body { font-synthesis: none; }
 .vn-dialogue__box::after {
   display: none;
 }
+
+
+/* =========================================================================
+   37. 校园地图（右上角地点 → 打开）
+   ========================================================================= */
+.vn-loc--btn {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  transition: background 160ms var(--ease-out), color 160ms linear, transform 160ms var(--ease-out);
+}
+.vn-loc--btn:hover {
+  transform: translateY(-1px);
+  background: var(--red);
+  color: #fff;
+}
+
+.vn-map {
+  position: relative;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #eef3e6;
+  aspect-ratio: 1440 / 1018;
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.vn-map__art {
+  position: absolute;
+  inset: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: saturate(0.92) brightness(1.02);
+}
+.vn-map__pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+}
+.vn-map__dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50% 50% 50% 2px;
+  background: var(--red);
+  border: 2px solid #fff;
+  box-shadow: 0 4px 10px rgba(20, 16, 15, 0.28);
+  transform: rotate(-45deg);
+  transition: transform 160ms var(--ease-out), background 160ms linear;
+}
+.vn-map__name {
+  font-size: 12px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 6px rgba(20, 16, 15, 0.14);
+  white-space: nowrap;
+}
+.vn-map__need {
+  font-size: 10px;
+  color: #fff;
+  background: var(--ink-3);
+  border-radius: 999px;
+  padding: 0 6px;
+}
+.vn-map__pin:hover .vn-map__dot {
+  transform: rotate(-45deg) scale(1.15);
+}
+.vn-map__pin.is-here .vn-map__dot {
+  background: var(--ink);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--red) 26%, transparent), 0 4px 10px rgba(20, 16, 15, 0.3);
+}
+.vn-map__pin.is-here .vn-map__name {
+  background: var(--red);
+  color: #fff;
+}
+.vn-map__pin.is-locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.vn-map__pin.is-locked .vn-map__dot {
+  background: var(--ink-3);
+}
+
+
+/* =========================================================================
+   38. 地图舞台：回合开始、还没选地点时的整屏地图
+   ========================================================================= */
+.vn-stage--map {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 84px 4vw 4vw;
+  background: #0f1210;
+}
+.vn-map-stage {
+  position: relative;
+  width: min(1180px, 92vw);
+  aspect-ratio: 1440 / 1018;
+  max-height: calc(100vh - 150px);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  background: #eef3e6;
+}
+.vn-map-stage__art {
+  position: absolute;
+  inset: 0;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  filter: saturate(0.95);
+}
+.vn-map-stage__pins {
+  position: absolute;
+  inset: 0;
+}
+.vn-map-stage__hint {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  transform: translateX(-50%);
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 18px rgba(20, 16, 15, 0.18);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  pointer-events: none;
+}
+.vn-stage--map .vn-map__pin .vn-map__dot {
+  width: 20px;
+  height: 20px;
+}
+.vn-stage--map .vn-map__name {
+  font-size: 13px;
+  padding: 2px 9px;
+}

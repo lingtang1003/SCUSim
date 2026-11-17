@@ -95,6 +95,15 @@ export function createController(deps) {
     return availability;
   }
 
+  // 行动点耗尽后的「自动进入下一周」定时器：任何新操作都会取消它，避免重复推进
+  let autoAdvanceTimer = null;
+  function clearAutoAdvance() {
+    if (autoAdvanceTimer && typeof clearTimeout === 'function') {
+      clearTimeout(autoAdvanceTimer);
+    }
+    autoAdvanceTimer = null;
+  }
+
   function renderState(view) {
     if (!state) return;
     const vm = (typeof eng.buildViewModel === 'function')
@@ -358,6 +367,7 @@ export function createController(deps) {
 
   // ---------------- 回调：执行行动 ----------------
   async function onAction(actionId) {
+    clearAutoAdvance();
     if (!state) return;
     audio.playSfx('choice');
     // 弹窗未关时先让队列前进（UI 未必回调 done，这里给一个隐式关闭兜底）
@@ -382,10 +392,25 @@ export function createController(deps) {
     actionSeq += 1;
     await storage.saveGame(state);
     renderState({ actionId, actionSeq });
+
+    // 行动点用完 → 短暂停留展示行动结果，然后自动进入下一周（回到校园地图）
+    if (state.actionPoints <= 0 && !state.endingId && !state.pendingEvent) {
+      toast('行动点用完了，进入下一周', 'info');
+      if (typeof setTimeout === 'function') {
+        clearAutoAdvance();
+        autoAdvanceTimer = setTimeout(() => {
+          autoAdvanceTimer = null;
+          if (state && state.actionPoints <= 0 && !state.pendingEvent && !state.endingId) {
+            onAdvance();
+          }
+        }, 1100);
+      }
+    }
   }
 
   // ---------------- 回调：推进回合 ----------------
   async function onAdvance() {
+    clearAutoAdvance();
     if (!state) return;
     audio.playSfx('click');
     // 已经到终局（读档回到最后一回合的存档）：直接给结局，而不是报 "无法推进：ended"
@@ -638,6 +663,30 @@ export function createController(deps) {
     audio.playBgm('theme');
   }
 
+  // ---------------- 回调：校园地图 ----------------
+  function onOpenMap() {
+    if (!state) return;
+    app.showMap();
+  }
+
+  function onMoveLocation(id) {
+    clearAutoAdvance();
+    if (!state) return;
+    const r = eng.moveToLocation(state, id, config);
+    if (!r.ok) {
+      if (r.reason === 'health') {
+        toast('健康 ' + r.health + ' 点，进这里需要 ' + r.need + ' 点', 'warning');
+      } else {
+        toast('去不了这个地方', 'warning');
+      }
+      return;
+    }
+    // 移动不消耗行动点，刷新舞台与旁白
+    state.rngState = rng.getState();
+    audio.playSfx('click');
+    app.render(state, { moved: { name: r.location.name, line: r.location.line } });
+  }
+
   // ---------------- 回调：打开图鉴 ----------------
   async function onOpenGallery() {
     const r = await storage.getGallery();
@@ -674,6 +723,7 @@ export function createController(deps) {
 
   // ---------------- 回调：返回主菜单 ----------------
   function onOpenMenu() {
+    clearAutoAdvance();
     resetModals();
     if (app.mount) app.mount(rootEl, { hasSave });
     audio.playBgm('theme');
@@ -696,6 +746,8 @@ export function createController(deps) {
     onImport,
     onClearSave,
     onOpenGallery,
+    onOpenMap,
+    onMoveLocation,
     onOpenSettings,
     onAudioChange(settings) { audio.apply(settings || {}); },
     onOpenMenu,

@@ -9,7 +9,7 @@
 
 import { validateConfigs } from './schema.js';
 
-const FILES = ['balance', 'colleges', 'tags', 'actions', 'events', 'endings'];
+const FILES = ['balance', 'colleges', 'tags', 'actions', 'events', 'endings', 'locations'];
 
 /**
  * 加载并校验六份配置。

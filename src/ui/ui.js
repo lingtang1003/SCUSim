@@ -575,7 +575,19 @@ export function createApp(ctx) {
         ]),
       ]),
       h('div', { class: 'vn-hud__group' }, [
-        h('span', { class: 'vn-loc' }, ['◈ ' + (ui.sceneEntry ? ui.sceneEntry.label : '校园')]),
+        !locationOf(state) ? null : h('button', {
+          class: 'vn-loc vn-loc--btn',
+          type: 'button',
+          title: '打开校园地图',
+          onclick: () => {
+            if (callbacks.onOpenMap) callbacks.onOpenMap();
+            else showMap();
+          },
+        }, ['◈ ' + (function () {
+          const loc = locationOf(state);
+          if (loc) return loc.name;
+          return ui.sceneEntry ? ui.sceneEntry.label : '校园';
+        })()]),
         h('button', {
           class: 'vn-icon',
           title: '保存进度',
@@ -675,8 +687,25 @@ export function createApp(ctx) {
     ]);
   }
 
+  /** 当前地点（config/locations.json）；没有配置时返回 null（不限制地点） */
+  function locationOf(state) {
+    const list = listOf('locations');
+    if (!list.length) return null;
+    const id = state && state.player ? state.player.location : null;
+    if (!id) return null;   // 本回合还没选地点 → 停在地图界面
+    return list.find((l) => l.id === id) || list.find((l) => l.id === 'dorm') || null;
+  }
+
+  /** 当前地点可做的行动；没有地点配置时返回全部 */
+  function actionsHere(state) {
+    const all = listOf('actions');
+    const loc = locationOf(state);
+    if (!loc || !Array.isArray(loc.activities) || !loc.activities.length) return all;
+    return all.filter((a) => loc.activities.indexOf(a.id) >= 0);
+  }
+
   function actionChoices(state, availability) {
-    const actions = listOf('actions');
+    const actions = actionsHere(state);
     const apLeft = Number(state.actionPoints) || 0;
     const items = [];
     for (let i = 0; i < actions.length; i += 1) {
@@ -719,6 +748,13 @@ export function createApp(ctx) {
   // ---------------- 主视图 ----------------
   function syncDialogue(state, view) {
     const player = state.player || {};
+    if (view && view.moved) {
+      ui.speaker = view.moved.name || '校园';
+      ui.text = view.moved.line || '（四处看了看）';
+      ui.effects = [];
+      ui.history.push({ who: ui.speaker, text: ui.text });
+      return;
+    }
     const seq = view && Number.isFinite(view.actionSeq) ? view.actionSeq : 0;
     const actionId = view && view.actionId;
     const eventResult = view && view.eventResult;
@@ -732,7 +768,8 @@ export function createApp(ctx) {
       ui.history.push({ who: ui.speaker, text: ui.text });
     } else if (actionId && seq && seq !== ui.consumedSeq) {
       ui.consumedSeq = seq;
-      ui.scene = ACTION_SCENE[actionId] || ui.scene;
+      const loc = locationOf(state);
+      ui.scene = (loc && loc.scene) || ACTION_SCENE[actionId] || ui.scene;
       ui.sceneEntry = pickScene(ui.scene, state.turn, seq);
       const action = findAction(actionId);
       const text = (ui.sceneEntry && ui.sceneEntry.line) || '（时间悄悄过去了）';
@@ -776,18 +813,32 @@ export function createApp(ctx) {
     const appearance = findAppearance(ui.appearanceId);
 
     applySeasonTheme(state.turn);
+
+    // 场景跟随所在地点（未由行动指定时）
+    const hereLoc = locationOf(state);
+    if (hereLoc && hereLoc.scene && ui.scene !== hereLoc.scene) {
+      ui.scene = hereLoc.scene;
+      ui.sceneEntry = pickScene(hereLoc.scene, state.turn, 0);
+    }
     const sceneSig = String(ui.scene) + '|' + ((ui.sceneEntry && ui.sceneEntry.file) || '');
     const sceneChanged = sceneSig !== lastSceneSig;
     lastSceneSig = sceneSig;
 
+    const onMap = !hereLoc;
     rootEl.appendChild(
-      h('div', { class: 'vn-stage' + (sceneChanged ? ' is-scene-change' : '') }, [
-        bgLayer(ui.scene, ui.sceneEntry),
-        spriteLayer(appearance),
-        hud(state, v),
-        actionChoices(state, v.availability),
-        dialogueBox(ui.speaker, ui.text, ui.effects),
-      ])
+      h('div', {
+        class: 'vn-stage'
+          + (sceneChanged ? ' is-scene-change' : '')
+          + (onMap ? ' vn-stage--map' : ''),
+      }, onMap
+        ? [mapStage(state), hud(state, v)]
+        : [
+            bgLayer(ui.scene, ui.sceneEntry),
+            spriteLayer(appearance),
+            hud(state, v),
+            actionChoices(state, v.availability),
+            dialogueBox(ui.speaker, ui.text, ui.effects),
+          ])
     );
   }
 
@@ -1639,6 +1690,80 @@ export function createApp(ctx) {
     );
   }
 
+  /** 地图上的一枚图钉 */
+  function mapPin(l, state) {
+    const st = state || lastState || {};
+    const health = Number(st.player && st.player.attributes && st.player.attributes.health) || 0;
+    const need = Number(l.requiresHealth) || 0;
+    const locked = health < need;
+    const here = (st.player && st.player.location) === l.id;
+    return h('button', {
+      class: 'vn-map__pin' + (here ? ' is-here' : '') + (locked ? ' is-locked' : ''),
+      type: 'button',
+      style: 'left:' + (Number(l.x) || 50) + '%;top:' + (Number(l.y) || 50) + '%',
+      title: locked ? '需要健康 ' + need : (l.desc || l.name),
+      onclick: () => {
+        if (locked) {
+          showToast('健康 ' + health + ' 点，进「' + l.name + '」需要 ' + need + ' 点', 'warning');
+          return;
+        }
+        if (callbacks.onMoveLocation) callbacks.onMoveLocation(l.id);
+      },
+    }, [
+      h('i', { class: 'vn-map__dot' }),
+      h('span', { class: 'vn-map__name' }, [l.name]),
+      locked ? h('span', { class: 'vn-map__need' }, ['健康 ' + need]) : null,
+    ]);
+  }
+
+  /** 地图舞台：还没选地点时的整屏地图 */
+  function mapStage(state) {
+    const list = listOf('locations');
+    const conf = (config && config.locations) || {};
+    const mapArt = conf.mapArt || '';
+    return h('div', { class: 'vn-map-stage' }, [
+      h('div', {
+        class: 'vn-map-stage__art',
+        style: mapArt ? 'background-image:url("assets/map/' + mapArt + '")' : null,
+      }),
+      h('div', { class: 'vn-map-stage__pins' }, list.map((l) => mapPin(l, state))),
+      h('div', { class: 'vn-map-stage__hint' }, ['选择今天要去的地方']),
+    ]);
+  }
+
+  // ---------------- 弹层：校园地图（选择地点） ----------------
+  function showMap() {
+    if (!rootEl) return;
+    const list = listOf('locations');
+    if (!list.length) {
+      showToast('还没有配置地点', 'warning');
+      return;
+    }
+    const conf = (config && config.locations) || {};
+    const mapArt = conf.mapArt || '';
+    const st = lastState || {};
+    const health = Number(st.player && st.player.attributes && st.player.attributes.health) || 0;
+    const here = (st.player && st.player.location) || conf.default || 'dorm';
+
+    const pins = list.map((l) => mapPin(l, st));
+
+    const body = [
+      h('div', { class: 'vn-map' }, [
+        mapArt
+          ? h('div', {
+              class: 'vn-map__art',
+              style: 'background-image:url("assets/map/' + mapArt + '")',
+            })
+          : null,
+      ].concat(pins)),
+    ];
+    mountOverlay(
+      modalShell('选择地点', body, [
+        h('button', { class: 'btn btn--secondary btn--block', onclick: () => closeOverlay() }, ['取消']),
+      ], 'xl')
+    );
+  }
+
   // ---------------- 弹层：存档位（保存 / 读取） ----------------
   function formatSavedAt(ms) {
     const t = Number(ms);
@@ -2117,6 +2242,7 @@ export function createApp(ctx) {
     showToast,
     showGallery,
     showSlots,
+    showMap,
     showSettings,
     showBacklog,
     openMenu,

@@ -167,7 +167,8 @@ test('Engine: 非法 tags（仅 2 个）→ {ok:false, reason:"tags"}', () => {
 test('Engine: health < requiresHealth → {ok:false, reason:"health"}', () => {
   const ng = newGame(validOptions, config, createRng(1));
   const s = ng.state;
-  s.player.attributes.health = 1; // exercise.requiresHealth=2
+  s.player.location = 'track';     // 体育场才有「体育锻炼」
+  s.player.attributes.health = 1;  // exercise.requiresHealth=2
   const av = actionAvailability(s, 'exercise', config);
   return av.ok === false && av.reason === 'health';
 });
@@ -182,7 +183,7 @@ test('Engine: actionPoints < cost → {ok:false, reason:"AP"}', () => {
 // ---------------- 5) Engine.doAction ----------------
 test('Engine: actionPoints===0 时 doAction → {ok:false,reason:"AP"} 且 state 不变', () => {
   const ng = newGame(validOptions, config, createRng(1));
-  const s = ng.state; s.actionPoints = 0;
+  const s = ng.state; s.actionPoints = 0; s.player.location = 'college';
   const snapshot = JSON.stringify(s);
   const r = doAction(s, 'study', config, createRng(2));
   return r.ok === false && r.reason === 'AP' && JSON.stringify(s) === snapshot;
@@ -190,6 +191,7 @@ test('Engine: actionPoints===0 时 doAction → {ok:false,reason:"AP"} 且 state
 test('Engine: doAction("study") → AP 4→3 / studyActions+1 / 效果生效 / log 追加', () => {
   const ng = newGame(validOptions, config, createRng(1));
   const s = ng.state;
+  s.player.location = 'college'; // 教学楼才有「上课学习」
   // 第六版引擎：存在待处理事件时不允许行动，先把开局事件结掉再测行动本身
   if (s.pendingEvent && s.pendingEvent.eventId) {
     resolvePendingEvent(s, s.pendingEvent.options[0].id, config, createRng(3));

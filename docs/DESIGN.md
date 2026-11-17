@@ -306,6 +306,27 @@
 2. **关掉「动效」会吃掉过渡**：`.reduce-motion * { transition: none !important }` 是全站规则。
    选项卡填充**不再是例外**（之前为了调试临时开过口子，已移除）：关掉动效后填充立即到位，
    弹窗、抽屉、打字机、季节换色等动效也一并关闭。
+## 9.y 地点与行动（地图循环）
+
+每一回合都是「先看地图，再选地点」：
+
+1. **回合开始停在地图**：`player.location = null` 表示还没选地点，舞台渲染成
+   `.vn-stage--map`——整屏 `assets/map/jiang-an-map.jpg` + 图钉，**没有立绘、没有对话框、地点胶囊也不显示**，
+   只有顶部 HUD（周数 / 学期 / 行动点 / 菜单）和一句「选择今天要去的地方」。
+2. **点图钉前往**（`engine.moveToLocation`）：不消耗行动点；健康 < `requiresHealth` 时拒绝并 toast。
+   到达后恢复常规舞台：立绘 + 对话框（播该地点的 `line`）+ 该地点的活动。
+3. **活动按地点过滤**：`locations[].activities` 是 `actions.json` 的 id 子集，
+   `actionAvailability` 对不在当前地点的行动返回 `reason: 'not_here'`，健康 < 3 时只能锻炼/休息。
+4. **行动点耗尽 → 自动进入下一周**：`onAction` 结束后若 `actionPoints <= 0`，toast 提示并
+   `setTimeout(1100)` 调 `onAdvance()`；`advance()` 会清空 `location`，于是回到地图。
+   任何新操作（行动 / 推进 / 移动 / 回主菜单）都会 `clearAutoAdvance()`，避免重复推进。
+5. **健康不足去不了**：地图上锁定的图钉显示「健康 N」并给出 toast，不会移动。
+
+配置：`config/locations.json`（`mapArt` / `default` / `list[{id,name,scene,x,y,requiresHealth,activities,line}]`）。
+引擎 API：`currentLocation`（空 location → null、未知 id → 回落宿舍）/ `canEnterLocation` /
+`moveToLocation` / `availableActivities`（在地图上返回 `[]`）。
+测试：`tests/verify_locations.mjs`（19 项）。
+
 ## 9.x 声音（背景音乐 / 音效）
 
 - **两路音量**：背景音乐、音效各自 0–100，存在设置里（`scusim:settings`），与存档无关；

@@ -143,7 +143,7 @@ function makeStubDoc() {
 
 // ---------------- 配置加载（复用本地 config 文件） ----------------
 async function loadConfigsFromDisk() {
-  const files = ['balance', 'colleges', 'tags', 'actions', 'events', 'endings'];
+  const files = ['balance', 'colleges', 'tags', 'actions', 'events', 'endings', 'locations'];
   const cfg = {};
   for (const f of files) {
     cfg[f] = JSON.parse(
@@ -165,6 +165,7 @@ function makeSpyApp(ctx) {
     'showEnding',
     'showError',
     'showGallery',
+    'showMap',
     'showSettings',
   ]) {
     api[m] = (...args) => {
@@ -294,14 +295,25 @@ test('D: 经 controller 驱动完整一局不抛错且到达结局', async () =>
   }
   if (s.pendingEvent) return '开局事件未结算';
 
+  // --- 先在地图上选地点（新玩法：每回合先到某个地点，才能做那里的活动） ---
+  await controller.callbacks.onMoveLocation('college');
+  if (s.player.location !== 'college') return 'DBGloc=' + s.player.location + ' cfg=' + !!(configs.locations && configs.locations.list);
+
   // --- 行动直到 AP=0 ---
   const apBefore = s.actionPoints;
   let guard = 0;
   while (s.actionPoints > 0 && guard < 100) {
     guard++;
-    const avail = configs.actions.list.find((a) =>
+    let avail = configs.actions.list.find((a) =>
       engine.actionAvailability(s, a.id, configs).ok
     );
+    if (!avail) {
+      // 健康 <3 或当前地点没得做：先回宿舍休息
+      await controller.callbacks.onMoveLocation('dorm');
+      avail = configs.actions.list.find((a) =>
+        engine.actionAvailability(s, a.id, configs).ok
+      );
+    }
     if (!avail) break;
     await controller.callbacks.onAction(avail.id);
   }
@@ -512,11 +524,17 @@ test('G: AP=0 时 onAction 返回 reason:"AP"，state 不变', async () => {
   if (s.pendingEvent) {
     await controller.callbacks.onResolveEvent(s.pendingEvent.options[0].id);
   }
+  await controller.callbacks.onMoveLocation('college');   // 先选地点才能行动
   let g = 0;
   while (s.actionPoints > 0 && g < 100) {
     g++;
-    const av = configs.actions.list.find((a) =>
+    let av = configs.actions.list.find((a) =>
       engine.actionAvailability(s, a.id, configs).ok);
+    if (!av) {
+      await controller.callbacks.onMoveLocation('dorm');
+      av = configs.actions.list.find((a) =>
+        engine.actionAvailability(s, a.id, configs).ok);
+    }
     if (!av) break;
     await controller.callbacks.onAction(av.id);
   }

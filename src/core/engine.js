@@ -334,6 +334,8 @@ export function newGame(options, config, rng) {
   }
 
   const state = createGameState(options);
+  // 开局先让玩家在地图上选地点
+  state.player.location = null;
 
   // D-01：把「金钱点数」按 walletPerMoneyPoint 兑换为初始资金；配置缺席则保持点数语义
   const perPoint = num(balance.walletPerMoneyPoint, 0);
@@ -367,10 +369,65 @@ export function newGame(options, config, rng) {
  * 顺序：存在性 → 行动点 → 健康白名单（D-03）→ 行动自身健康要求。
  * @returns {{ ok: boolean, reason?: string }}
  */
+// ═══════════════ 地点（config/locations.json）═══════════════
+
+function getLocations(config) {
+  const list = (config && config.locations && Array.isArray(config.locations.list))
+    ? config.locations.list
+    : [];
+  return list;
+}
+
+/** 当前地点对象（缺配置时返回 null）。 */
+export function currentLocation(state, config) {
+  const id = (state && state.player && state.player.location) || '';
+  const list = getLocations(config);
+  if (!id) return null;                       // 还没选地点：停在地图界面
+  return list.find((l) => l.id === id) || list.find((l) => l.id === 'dorm') || null;
+}
+
+/** 地点是否可进入：健康达到 requiresHealth 即可。 */
+export function canEnterLocation(state, locationId, config) {
+  const list = getLocations(config);
+  const loc = list.find((l) => l.id === locationId);
+  if (!loc) return { ok: false, reason: 'unknown_location' };
+  const health = Number(state && state.player && state.player.attributes
+    ? state.player.attributes.health : 0) || 0;
+  const need = num(loc.requiresHealth, 0);
+  if (health < need) return { ok: false, reason: 'health', need, health };
+  return { ok: true, location: loc };
+}
+
+/**
+ * 移动到一个地点（不消耗行动点）。
+ * @returns {{ok:boolean, reason?:string, location?:object}}
+ */
+export function moveToLocation(state, locationId, config) {
+  if (!state || !state.player) return { ok: false, reason: 'state' };
+  const check = canEnterLocation(state, locationId, config);
+  if (!check.ok) return check;
+  state.player.location = locationId;
+  pushHistory(state, { type: 'move', location: locationId, text: '前往' + (check.location.name || locationId) }, config);
+  return { ok: true, location: check.location };
+}
+
+/** 当前地点可做的行动 id 列表（没有配置时返回 null 表示“不限制”）。 */
+export function availableActivities(state, config) {
+  const loc = currentLocation(state, config);
+  if (!loc) return [];                       // 还在地图上：哪也去不了
+  if (!Array.isArray(loc.activities)) return null;
+  return loc.activities.slice();
+}
+
 export function actionAvailability(state, actionId, config) {
   const action = findAction(config, actionId);
   if (!action) return { ok: false, reason: 'unknown_action' };
   if (state.actionPoints < (action.cost ?? 0)) return { ok: false, reason: 'AP' };
+
+  const activities = availableActivities(state, config);
+  if (activities && activities.indexOf(action.id) < 0) {
+    return { ok: false, reason: 'not_here' };
+  }
 
   const health = Number(state.player.attributes.health) || 0;
   const restrict = num(getBalance(config).healthRestrictThreshold, HEALTH_RESTRICT_DEFAULT);
@@ -509,6 +566,8 @@ export function advance(state, config, rng) {
   // 进入新回合
   state.turn += 1;
   state.actionPoints = apPerTurn;
+  // 新回合先回到校园地图，由玩家重新选地点
+  if (state.player) state.player.location = null;
 
   // 月初收支结算（SRS 3.3.1）
   const monthly = (typeof economy.settleMonthly === 'function')
