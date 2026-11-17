@@ -57,7 +57,8 @@
   - **标题字体** **汉仪唐美人 W**（`--font-display`，手写行书）：弹窗标题、表单标题、抽屉标题、
     创建角色大标题、结局名、事件标签，以及徽记 SCUSim（角色信息姓名、创建页表单小标题用正文字体）
 
-  - 第二行的「果然」单独包一层 `.vn-logo__tilt`：`rotate(4deg)`、`transform-origin: 50% 80%`，向右微倾
+  - 第二行的「果然」单独包一层 `.vn-logo__tilt`：`font-size: 1.08em`、`translateX(-7px) rotate(5deg)`、`transform-origin: 50% 80%`：
+  比后面的「有」略大、整体左移贴住荧光笔色带起点、向右微倾
 - 第一行「我的大学四年」里，**「大学四年」比「我的」大 1.14 倍**（`.vn-logo__line-big`），
   字号差制造节奏，但共用同一基线
 - 标题里的「有 / 没问题」套 `.vn-logo__hl`（「我的大学四年」不带描边）：`-webkit-text-stroke: .055em #fff` + `paint-order: stroke fill`
@@ -187,6 +188,12 @@
 后者的旧快照会把 `reduceMotion` / 音量写回默认值（表现为「关掉动效保存后又自己打开」）。
 修正：storage 里用一条 Promise 队列串行化，并且 UI 侧先 `onSave` 再 `onChangeAppearance`。
 回归测试 `tests/verify_settings.mjs`。
+
+### 标题的淡投影
+
+主标题两行与副标题都加了一层 `text-shadow: 0 4px 12px rgba(20,16,15,.26), 0 1px 2px rgba(20,16,15,.14)`，
+让黑字/红字从白卡上轻轻浮起。带白描边的字（有 / 没问题 / 副标题）把投影写在 shadow 列表**最后一项**，
+这样投影落在白描边外圈之下，不会把描边染灰。
 
 ### 弹窗尺寸
 
