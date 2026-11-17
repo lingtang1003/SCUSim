@@ -128,5 +128,163 @@ export function validateConfigs(c) {
     if (endings.list.length < 6) errors.push(`ending 数量不足 6（当前 ${endings.list.length}）`);
   }
 
+  // ---- characters（v2.1，可选：缺省时整个角色系统关闭） ----
+  const charIds = [];
+  if (c.characters !== undefined) {
+    if (!isObj(c.characters) || !Array.isArray(c.characters.list)) {
+      errors.push('characters.list 必须是数组');
+    } else {
+      if (c.characters.list.length === 0) errors.push('characters.list 不能为空');
+      for (const ch of c.characters.list) {
+        if (!isObj(ch) || !isStr(ch.id) || !isStr(ch.name)) {
+          errors.push('character 条目需含 id/name 字符串');
+          continue;
+        }
+        if (charIds.includes(ch.id)) errors.push(`character id 重复：${ch.id}`);
+        charIds.push(ch.id);
+        if (!Array.isArray(ch.stages) || ch.stages.length === 0) {
+          errors.push(`character ${ch.id}.stages 必须是非空数组`);
+        } else {
+          let prev = -Infinity;
+          for (const s of ch.stages) {
+            if (!isObj(s) || !isNum(s.at) || !isStr(s.id)) {
+              errors.push(`character ${ch.id} 的 stages 需含 at(数字)/id(字符串)`);
+              continue;
+            }
+            if (s.at < prev) errors.push(`character ${ch.id} 的 stages.at 必须升序`);
+            prev = s.at;
+          }
+          if (ch.stages[0] && ch.stages[0].at !== 0) {
+            errors.push(`character ${ch.id} 的 stages 首档 at 必须为 0`);
+          }
+        }
+        if (ch.initialAffinity !== undefined && (!isNum(ch.initialAffinity) || ch.initialAffinity < 0)) {
+          errors.push(`character ${ch.id}.initialAffinity 必须是非负数字`);
+        }
+        if (ch.portrait !== undefined && !isObj(ch.portrait)) {
+          errors.push(`character ${ch.id}.portrait 必须是对象`);
+        }
+        if (ch.likedEvents !== undefined && !Array.isArray(ch.likedEvents)) {
+          errors.push(`character ${ch.id}.likedEvents 必须是数组`);
+        }
+      }
+    }
+  }
+
+  // ---- events（v2.1 增补：charId / lines / relation 效果） ----
+  const allEventIds = [];
+  if (isObj(events)) {
+    const list = [].concat(
+      Array.isArray(events.fixed) ? events.fixed : [],
+      Array.isArray(events.random) ? events.random : []
+    );
+    for (const e of list) {
+      if (!isObj(e)) continue;
+      if (isStr(e.id)) allEventIds.push(e.id);
+      if (e.charId !== undefined && !isStr(e.charId)) {
+        errors.push(`事件 ${e.id}.charId 必须是字符串`);
+      }
+      if (e.lines !== undefined) {
+        if (!Array.isArray(e.lines) || e.lines.length === 0) {
+          errors.push(`事件 ${e.id}.lines 必须是非空数组`);
+        } else for (const l of e.lines) {
+          if (!isObj(l) || !isStr(l.text)) errors.push(`事件 ${e.id} 的 lines 每段需含 text 字符串`);
+        }
+      }
+      if (e.storylineOnly !== undefined && typeof e.storylineOnly !== 'boolean') {
+        errors.push(`事件 ${e.id}.storylineOnly 必须是布尔值`);
+      }
+      for (const o of (Array.isArray(e.options) ? e.options : [])) {
+        if (!isObj(o)) continue;
+        const rel = o.effects && o.effects.relation;
+        if (rel !== undefined && !isObj(rel)) {
+          errors.push(`事件 ${e.id} 选项 ${o.id} 的 effects.relation 必须是对象`);
+        }
+        const reqRel = o.requires && o.requires.relationAtLeast;
+        if (reqRel !== undefined && (!isObj(reqRel) || !isStr(reqRel.charId) || !isNum(reqRel.value))) {
+          errors.push(`事件 ${e.id} 选项 ${o.id} 的 requires.relationAtLeast 需含 charId/value`);
+        }
+      }
+    }
+  }
+
+  // 跨表引用：事件 / 剧情线里出现的角色必须存在
+  if (charIds.length) {
+    if (isObj(events)) {
+      const list = [].concat(
+        Array.isArray(events.fixed) ? events.fixed : [],
+        Array.isArray(events.random) ? events.random : []
+      );
+      for (const e of list) {
+        if (!isObj(e)) continue;
+        if (isStr(e.charId) && !charIds.includes(e.charId)) {
+          errors.push(`事件 ${e.id} 引用了不存在的角色 ${e.charId}`);
+        }
+        for (const o of (Array.isArray(e.options) ? e.options : [])) {
+          const rel = o && o.effects && o.effects.relation;
+          if (isObj(rel)) {
+            for (const k of Object.keys(rel)) {
+              if (!charIds.includes(k)) errors.push(`事件 ${e.id} 选项 ${o.id} 的效果引用了不存在的角色 ${k}`);
+            }
+          }
+          const reqRel = o && o.requires && o.requires.relationAtLeast;
+          if (isObj(reqRel) && isStr(reqRel.charId) && !charIds.includes(reqRel.charId)) {
+            errors.push(`事件 ${e.id} 选项 ${o.id} 的前置引用了不存在的角色 ${reqRel.charId}`);
+          }
+        }
+      }
+    }
+  }
+
+  // ---- storylines（v2.1，可选） ----
+  if (c.storylines !== undefined) {
+    if (!isObj(c.storylines) || !Array.isArray(c.storylines.lines)) {
+      errors.push('storylines.lines 必须是数组');
+    } else {
+      const lineIds = [];
+      for (const line of c.storylines.lines) {
+        if (!isObj(line) || !isStr(line.id) || !isStr(line.name)) {
+          errors.push('storyline 条目需含 id/name 字符串');
+          continue;
+        }
+        if (lineIds.includes(line.id)) errors.push(`storyline id 重复：${line.id}`);
+        lineIds.push(line.id);
+        if (line.charId !== undefined && charIds.length && !charIds.includes(line.charId)) {
+          errors.push(`storyline ${line.id} 引用了不存在的角色 ${line.charId}`);
+        }
+        if (!Array.isArray(line.steps) || line.steps.length === 0) {
+          errors.push(`storyline ${line.id}.steps 必须是非空数组`);
+          continue;
+        }
+        const stepIds = line.steps.map((s) => (isObj(s) ? s.id : null)).filter(isStr);
+        for (const s of line.steps) {
+          if (!isObj(s) || !isStr(s.id) || !isStr(s.eventId)) {
+            errors.push(`storyline ${line.id} 的 step 需含 id/eventId`);
+            continue;
+          }
+          if (allEventIds.length && !allEventIds.includes(s.eventId)) {
+            errors.push(`storyline ${line.id} 的 step ${s.id} 引用了不存在的事件 ${s.eventId}`);
+          }
+          if (s.window !== undefined) {
+            if (!Array.isArray(s.window) || s.window.length !== 2 ||
+                !s.window.every((v) => isNum(v)) || s.window[0] > s.window[1]) {
+              errors.push(`storyline ${line.id} 的 step ${s.id}.window 必须是 [起, 止] 升序数字`);
+            }
+          }
+          if (s.next !== undefined) {
+            if (!isObj(s.next)) {
+              errors.push(`storyline ${line.id} 的 step ${s.id}.next 必须是对象`);
+            } else for (const k of Object.keys(s.next)) {
+              const target = s.next[k];
+              const ok = target === '@break' || target === '@done' ||
+                (isStr(target) && stepIds.includes(target));
+              if (!ok) errors.push(`storyline ${line.id} 的 step ${s.id}.next.${k} 指向了不存在的步骤 ${target}`);
+            }
+          }
+        }
+      }
+    }
+  }
+
   return { ok: errors.length === 0, errors };
 }

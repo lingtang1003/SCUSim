@@ -10,11 +10,16 @@
 import { validateConfigs } from './schema.js';
 
 const FILES = ['balance', 'colleges', 'tags', 'actions', 'events', 'endings'];
+/**
+ * v2.1 可选配置：读取失败（文件不存在 / fetch 404 / 注入 reader 不认这个 key）时静默跳过，
+ * 对应系统自动降级关闭，不影响前六份必需配置的加载。
+ */
+const OPTIONAL_FILES = ['characters', 'storylines', 'events-characters'];
 
 /**
- * 加载并校验六份配置。
+ * 加载并校验配置。
  * @param {object} [reader] 可选注入 { read(path)->Promise<string|object> }，path 不含扩展名
- * @returns {Promise<{balance,colleges,tags,actions,events,endings}>}
+ * @returns {Promise<{balance,colleges,tags,actions,events,endings,characters?,storylines?}>}
  */
 export async function loadConfig(reader) {
   let read;
@@ -47,6 +52,28 @@ export async function loadConfig(reader) {
   }
   if (errors.length > 0) {
     throw { ok: false, reason: '配置加载失败', errors };
+  }
+
+  for (const f of OPTIONAL_FILES) {
+    try {
+      const raw = await read(f);
+      const json = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      if (json && typeof json === 'object') configs[f] = json;
+    } catch (_) {
+      // 可选配置缺失 = 该子系统关闭（角色/剧情线），不阻塞启动
+    }
+  }
+
+  // 内容分片：events-characters.json 的 fixed/random 合并进主 events 表，
+  // 让角色剧情可以和主表分开维护（B 单文件改主表、内容协笔加自己的分片）。
+  const shard = configs['events-characters'];
+  delete configs['events-characters'];
+  if (shard && configs.events && typeof configs.events === 'object') {
+    const ev = configs.events;
+    if (!Array.isArray(ev.fixed)) ev.fixed = [];
+    if (!Array.isArray(ev.random)) ev.random = [];
+    if (Array.isArray(shard.fixed)) ev.fixed = shard.fixed.concat(ev.fixed);
+    if (Array.isArray(shard.random)) ev.random = ev.random.concat(shard.random);
   }
 
   const v = validateConfigs(configs);

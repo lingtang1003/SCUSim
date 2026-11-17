@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.1.0",
   "turns": 40,
   "actionPointsPerTurn": 4,
   "monthsPerSemester": 5,
@@ -10,6 +10,8 @@
   "attributeKeys": ["knowledge", "social", "health", "money"],
   "healthRestrictThreshold": 3,
   "warningFailedCourses": 3,
+  "affinityMax": 100,
+  "endingPriorityOrder": "asc",
 
   "monthlyIncome": 2000,
   "monthlyExpense": 2000,

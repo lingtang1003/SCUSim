@@ -14,7 +14,12 @@
  *   - flags：写 player.flags[key]；romance 额外同步写 player.romance。
  *   - club：写 player.club。
  *   所有变更追加到 state.history（超过上限截断；可通过 ctx 注入 pushHistory / historyLimit）。
+ *
+ * v2.1 增补：`effects.relation = { charId: delta }` 统一走 relation.changeAffinity，
+ * 保证好感只从这一个入口写入（好感为 0..balance.affinityMax）。
  */
+
+import { changeAffinity } from './relation.js';
 
 const DEFAULT_MIN = 0;
 const DEFAULT_MAX = 100;
@@ -131,6 +136,25 @@ export function applyEffects(state, effects, ctx) {
     changes.push({ kind: 'club', key: 'club', delta: effects.club });
   }
 
+  // ---- relation：角色好感（统一走 relation.changeAffinity）----
+  const relEff = effects.relation;
+  if (relEff && typeof relEff === 'object') {
+    for (const charId of Object.keys(relEff)) {
+      const delta = Number(relEff[charId]);
+      if (!Number.isFinite(delta) || delta === 0) continue;
+      const r = changeAffinity(state, charId, delta, ctx && ctx.config);
+      if (!r.changed) continue;
+      changes.push({
+        kind: 'relation',
+        key: charId,
+        delta: r.applied,
+        name: (r.char && r.char.name) || charId,
+        stage: r.stage ? r.stage.id : '',
+        stageChanged: !!r.stageChanged,
+      });
+    }
+  }
+
   if (changes.length > 0) pushHistory(state, changes, ctx);
   return { ok: true, changes };
 }
@@ -140,7 +164,7 @@ const ATTR_LABEL = { knowledge: '学识', social: '社交', health: '健康', mo
 /**
  * 把 applyEffects 返回的 changes 转成人类可读的影响片段数组。
  * 例如 [{kind:'attr',key:'knowledge',delta:2},{kind:'attr',key:'health',delta:-1}]
- * → ['学识+2', '健康-1']
+ * → ['学识+2', '健康-1']；好感 → ['江叙 好感+8']
  * @param {Array<{kind:string,key:string,delta:any}>} changes
  * @returns {string[]}
  */
@@ -151,6 +175,9 @@ export function describeChanges(changes) {
       const label = (c.kind === 'money' ? '金钱' : ATTR_LABEL[c.key]) || c.key;
       const d = Number(c.delta);
       if (Number.isFinite(d)) parts.push(`${label}${d > 0 ? '+' : ''}${d}`);
+    } else if (c.kind === 'relation') {
+      const d = Number(c.delta);
+      if (Number.isFinite(d)) parts.push(`${c.name || c.key} 好感${d > 0 ? '+' : ''}${d}`);
     } else if (c.kind === 'flag') {
       // 旗标属于内部状态（如 scholarship=pursuing），不写进玩家可见文本
       continue;

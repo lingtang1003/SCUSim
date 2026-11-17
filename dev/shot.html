@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#faf7f6" />
+  <title>SCUSim · shot harness</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    html, body { background: #faf7f6; }
+    #app { min-height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <!-- 正式入口：src/main.js（页面在 dev/ 下，所以用 ../） -->
+  <script type="module" src="../src/main.js"></script>
+  <!--
+    截图/回归用的自动化脚本（只在带 ?scene= 参数时执行）：
+      dev/shot.html?scene=welcome&dev=1          迎新晚会
+      dev/shot.html?scene=event&char=linyu&dev=1 剧情线第一步（台词播放中）
+      dev/shot.html?scene=event&char=linyu&click=1&dev=1  台词播完、选项出现
+      dev/shot.html?scene=result&char=linyu&dev=1 事件结算（好感标签）
+      dev/shot.html?scene=relations&char=linyu&dev=1 关系面板
+  -->
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const scene = params.get('scene');
+    if (scene) {
+      const charId = params.get('char') || 'linyu';
+      const doClick = params.get('click') === '1';
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      async function waitFor(fn, ms = 10000) {
+        const t0 = Date.now();
+        while (Date.now() - t0 < ms) {
+          try { if (fn()) return true; } catch (_) { /* ignore */ }
+          await sleep(60);
+        }
+        return false;
+      }
+      const api = await (async () => {
+        await waitFor(() => window.__scusim && window.__scusim.config && window.__scusim.config.characters);
+        return window.__scusim;
+      })();
+      const cb = api.callbacks;
+      const firstEnabled = () => {
+        const st = api.state;
+        if (!st || !st.pendingEvent) return null;
+        const o = st.pendingEvent.options.find((x) => x.enabled !== false) || st.pendingEvent.options[0];
+        return o ? o.id : null;
+      };
+      await cb.onNewGame({
+        name: '测试生', gender: '男', collegeId: 'cs',
+        attributes: { knowledge: 6, social: 6, health: 6, money: 2 },
+        tags: ['study_hard', 'gamer', 'chill'],
+        appearance: 'm_short1', seed: 20241117,
+      });
+      await sleep(250);
+      const first = firstEnabled();
+      if (first) await cb.onResolveEvent(first);           // 社团招新
+      await sleep(200);
+      await cb.onAdvance();                                // 第 2 回合 → 迎新晚会
+      await waitFor(() => document.querySelector('.vn-event'));
+      if (scene !== 'welcome' && api.state.pendingEvent) {
+        await cb.onResolveEvent('approach_' + charId);
+        await sleep(200);
+        await cb.onAdvance();                              // 第 3 回合 → 剧情线第一步
+        await waitFor(() => document.querySelector('.vn-event'));
+        await sleep(300);
+        const box = () => document.querySelector('.vn-dialogue__box--event');
+        if (doClick && box()) {
+          box().click(); await sleep(150); box().click(); await sleep(320);
+        }
+        if (scene === 'result') {
+          await cb.onResolveEvent('chat');
+          await sleep(400);
+        }
+        if (scene === 'relations') {
+          api.app.showRelations();
+          await sleep(400);
+        }
+      }
+      document.documentElement.setAttribute('data-shot-ready', '1');
+    }
+  </script>
+</body>
+</html>

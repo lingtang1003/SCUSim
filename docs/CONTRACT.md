@@ -411,3 +411,81 @@ W1 新增（可选，C 的弹窗队列用）：`onModalClosed()` —— UI 关�
 | B | ✅ 规则已合并（经济/学业/事件/effects） | W3 |
 | C | ✅ `showExam(settlement, done)` 已对接 | W3 |
 | D | ⏳ schema/CI/accept/IDB 待交付 | — |
+
+---
+
+## 附录 C · 角色系统 v2.1（契约增量）
+
+> 新增的两张配置表 + 三处状态字段 + 一批可选字段。**全部可选**：删掉 `config/characters.json` /
+> `config/storylines.json` / `config/events-characters.json`，角色系统自动关闭，前六表行为不变。
+
+### C.1 `config/characters.json`
+
+| 键 | 类型 | 必填 | 读取者 | 语义 |
+|---|---|---|---|---|
+| `id` | string | 是 | relation / UI | 角色唯一 id（小写英文/拼音） |
+| `name` / `gender` / `role` / `title` / `intro` | string | name 必填 | UI | 展示信息（`role` 用于关系面板） |
+| `college` | string | 否 | UI | 学院（展示用） |
+| `portrait.file` | string | 否 | UI | 立绘相对路径；空或 `silhouette:true` 时画剪影卡 |
+| `portrait.silhouette` | boolean | 否 | UI | 强制剪影 |
+| `initialAffinity` | number | 否 | relation | 初始好感（默认 0） |
+| `stages[]` | `{at,id,name}` | 是 | relation | 阶段阈值，**首档 at 必须 0、升序** |
+| `likedEvents` | string[] | 否 | eventManager | 该角色偏好事件（权重 ×1.3） |
+| `lineId` | string | 否 | UI | 对应 `storylines.json` 的线 id |
+
+### C.2 `config/storylines.json`
+
+| 键 | 类型 | 必填 | 语义 |
+|---|---|---|---|
+| `lines[].id` / `name` | string | 是 | 线 id / 显示名 |
+| `lines[].charId` | string | 否 | 绑定角色（`checkBreak` 用） |
+| `lines[].priority` | number | 否 | 同时到期时的派发顺序（越小越先） |
+| `lines[].startIf` | gate | 否 | 开启条件（迎新晚会写入的 `route_<id>`） |
+| `lines[].steps[]` | `{id,eventId,window?,gate?,next?}` | 是 | 步骤；`window` 为回合区间 |
+| `lines[].steps[].next` | object | 否 | `{ 选项id: 下一步id \| '@done' \| '@break' }` |
+| `lines[].onBreak` | `{affinityBelow,forTurns}` | 否 | 好感连续低于底线 N 回合 → broken |
+
+### C.3 GameState 增量（全部有默认值）
+
+```js
+player.relations = { /* charId: { affinity, stage, met, lastTurn } */ }
+state.storylines = { /* lineId: { step, status, since, lastTurn, lowTurns } */ }
+// status ∈ 'idle' | 'active' | 'done' | 'broken'
+```
+
+`buildViewModel` / `newGame` 会幂等补全；旧存档无需迁移即可继续。
+
+### C.4 effects / requires / condition 增量
+
+| 位置 | 新键 | 说明 |
+|---|---|---|
+| `effects.relation` | `{ charId: delta }` | 好感增减，统一走 `relation.changeAffinity`（禁止各处直改 `player.relations`） |
+| `requires.relationAtLeast` | `{ charId, value }` | 好感不足时选项置灰，`reason` 自动生成 |
+| `events[].charId` / `lines[]` / `storylineOnly` / `once` / `layout` | — | 见 `docs/角色系统.md` §4.3 |
+| `ending.condition.type` | `relationAtLeast` `lineStatus` `lineDone` | 角色结局条件（`evaluateCondition` 已实现） |
+
+### C.5 UI 契约增量
+
+| 新增 | 方向 | 说明 |
+|---|---|---|
+| `view.relations` | main → UI | `[{ id,name,affinity,max,stage,stageName,met,portrait,silhouette,... }]`（按好感排序） |
+| `view.line` | main → UI | `{ id,name,charId,step,total }` 或 null（HUD 上的剧情线胶囊） |
+| `eventResult.relationDelta` | main → UI | `[{charId,name,delta}]`，对话框下方显示「▲ 林予 好感 +10」 |
+| `pendingEvent.options[].hints` | engine → UI | 选项上的好感提示 |
+| `app.showRelations()` | main/UI | 关系面板（UI 内部读 `lastState` + `config.characters`） |
+
+### C.6 文件归属（v2.1 新增）
+
+| 路径 | Owner |
+|---|---|
+| `config/characters.json`、`config/storylines.json` 结构 | D；内容 B |
+| `config/events-characters.json` | B（内容分片，loader 合并进 `config.events`） |
+| `src/core/relation.js`、`src/core/storyline.js` | A |
+| `media/characters/*.webp`（角色立绘）、`dev/shot.html`（截图回归页） | C |
+| `tests/verify_characters.mjs`、`tests/unit/a-browser-characters.mjs` | A |
+
+### C.7 版本
+
+- 配置 `version`：`2.1.0`（六表 + 两张新表 + 一张分片表）。
+- 存档 `SAVE_VERSION` 不变（新增字段全部可选、默认值补全，旧档直接可读）。
+

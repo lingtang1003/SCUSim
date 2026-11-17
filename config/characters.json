@@ -1,0 +1,126 @@
+{
+  "version": "2.1.0",
+  "list": [
+    {
+      "id": "jiangxu",
+      "name": "江叙",
+      "gender": "男",
+      "role": "计算机学院 · 大三",
+      "college": "cs",
+      "title": "凌晨三点的报错信息",
+      "intro": "独立游戏社的技术担当，白天睡觉，晚上写代码。话很少，但会记住你说过的每一句。",
+      "portrait": { "file": "media/characters/jiangxu.webp", "silhouette": false },
+      "initialAffinity": 0,
+      "stages": [
+        { "at": 0, "id": "stranger", "name": "陌生" },
+        { "at": 12, "id": "acquaintance", "name": "熟识" },
+        { "at": 28, "id": "friend", "name": "朋友" },
+        { "at": 45, "id": "close", "name": "知己" },
+        { "at": 60, "id": "lover", "name": "恋人" }
+      ],
+      "likedEvents": ["ev_story_jiangxu_2"],
+      "lineId": "line_jiangxu"
+    },
+    {
+      "id": "guchi",
+      "name": "顾迟",
+      "gender": "男",
+      "role": "法学院 · 大三",
+      "college": "law",
+      "title": "辩论队的最后一张牌",
+      "intro": "校辩论队队长，说话像在开庭。句句带刺，但从不在背后说人。",
+      "portrait": { "file": "media/characters/guchi.webp", "silhouette": false },
+      "initialAffinity": 0,
+      "stages": [
+        { "at": 0, "id": "stranger", "name": "陌生" },
+        { "at": 12, "id": "acquaintance", "name": "熟识" },
+        { "at": 28, "id": "friend", "name": "朋友" },
+        { "at": 45, "id": "close", "name": "知己" },
+        { "at": 60, "id": "lover", "name": "恋人" }
+      ],
+      "likedEvents": ["ev_story_guchi_2"],
+      "lineId": "line_guchi"
+    },
+    {
+      "id": "linyu",
+      "name": "林予",
+      "gender": "女",
+      "role": "文学与新闻学院 · 大二",
+      "college": "literature",
+      "title": "校报上没署名的作者",
+      "intro": "校报的摄影兼写手，帽子压得很低。写诗，但不给任何人看。",
+      "portrait": { "file": "media/characters/linyu.webp", "silhouette": false },
+      "initialAffinity": 0,
+      "stages": [
+        { "at": 0, "id": "stranger", "name": "陌生" },
+        { "at": 12, "id": "acquaintance", "name": "熟识" },
+        { "at": 28, "id": "friend", "name": "朋友" },
+        { "at": 45, "id": "close", "name": "知己" },
+        { "at": 60, "id": "lover", "name": "恋人" }
+      ],
+      "likedEvents": ["ev_r25"],
+      "lineId": "line_linyu"
+    },
+    {
+      "id": "suwan",
+      "name": "苏晚",
+      "gender": "女",
+      "role": "艺术学院 · 大二",
+      "college": "literature",
+      "title": "琴房最后一个走的人",
+      "intro": "钢琴专业的优等生，怕吵、怕生、怕上台。手指比话多。",
+      "portrait": { "file": "media/characters/suwan.webp", "silhouette": false },
+      "initialAffinity": 0,
+      "stages": [
+        { "at": 0, "id": "stranger", "name": "陌生" },
+        { "at": 12, "id": "acquaintance", "name": "熟识" },
+        { "at": 28, "id": "friend", "name": "朋友" },
+        { "at": 45, "id": "close", "name": "知己" },
+        { "at": 60, "id": "lover", "name": "恋人" }
+      ],
+      "likedEvents": ["ev_story_suwan_2"],
+      "lineId": "line_suwan"
+    },
+    {
+      "id": "zhouye",
+      "name": "周野",
+      "gender": "男",
+      "role": "体育学院 · 大二",
+      "college": "med",
+      "title": "东区操场第 4 道",
+      "intro": "田径队的直球选手，笑起来没心没肺。跑完十公里还能再跑十公里。",
+      "portrait": { "file": "", "silhouette": true },
+      "initialAffinity": 0,
+      "stages": [
+        { "at": 0, "id": "stranger", "name": "陌生" },
+        { "at": 12, "id": "acquaintance", "name": "熟识" },
+        { "at": 28, "id": "friend", "name": "朋友" },
+        { "at": 45, "id": "close", "name": "知己" },
+        { "at": 60, "id": "lover", "name": "恋人" }
+      ],
+      "likedEvents": ["ev_r03"],
+      "lineId": "line_zhouye"
+    },
+    {
+      "id": "tangtang",
+      "name": "唐棠",
+      "gender": "女",
+      "role": "外国语学院 · 大三",
+      "college": "foreign",
+      "title": "话剧社的万能替补",
+      "intro": "学生会外联部长，话剧社台柱。谁都能聊，谁都看不透。",
+      "portrait": { "file": "", "silhouette": true },
+      "initialAffinity": 0,
+      "stages": [
+        { "at": 0, "id": "stranger", "name": "陌生" },
+        { "at": 12, "id": "acquaintance", "name": "熟识" },
+        { "at": 28, "id": "friend", "name": "朋友" },
+        { "at": 45, "id": "close", "name": "知己" },
+        { "at": 60, "id": "lover", "name": "恋人" }
+      ],
+      "likedEvents": ["ev_r13"],
+      "lineId": "line_tangtang"
+    }
+  ],
+  "note": "v2.1 角色表：6 名可攻略角色（4 名有立绘 + 2 名剪影占位）。全部为在读学生（同级/学长学姐），没有师生关系。portrait.file 为相对项目根的路径；silhouette=true 时 UI 画剪影卡，把正式立绘放好后改 file 即可。"
+}

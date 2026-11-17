@@ -15,6 +15,8 @@
  */
 
 import { applyEffects, describeChanges } from '../core/effects.js';
+import * as relation from '../core/relation.js';
+import * as storyline from '../core/storyline.js';
 
 function getAllEvents(config) {
   const events = (config && config.events) || {};
@@ -43,29 +45,12 @@ function semesterOf(state) {
 }
 
 /**
- * 剧情线保证触发：每局 40 回合内，竞赛 / 恋爱 / 保研 / 实习各至少触发一次，
- * 且保研、实习只安排在大四（回合 30 之后）。窗口回合且该线尚未触发 → 强制返回其起始事件。
- * 起始事件一旦被 resolve（无论选哪个选项）都会写入 player.flags.chain_<line>，防止重复触发。
+ * 剧情线保证触发（v2.1）：真正的「哪条线、哪一步、什么窗口」全部在 config/storylines.json，
+ * 由 core/storyline.js 的状态机决定；这里只负责在回合开始时问它一句「现在该不该强制出事件」。
  */
-const STORYLINES = [
-  { line: 'competition', start: 'ev_r16', window: [8, 13] },
-  { line: 'romance', start: 'ev_r23', window: [2, 6] },
-  { line: 'scholarship', start: 'ev_r35', window: [32, 36] },
-  { line: 'intern', start: 'ev_r17', window: [33, 37] },
-];
-
-function storylineKey(line) { return `chain_${line}`; }
-
 function nextStoryline(state, config) {
-  if (!state || !state.player || typeof state.turn !== 'number') return null;
-  const flags = state.player.flags || {};
-  const turn = state.turn;
-  for (const L of STORYLINES) {
-    if (turn >= L.window[0] && turn <= L.window[1] && !flags[storylineKey(L.line)]) {
-      return L.start;
-    }
-  }
-  return null;
+  const due = storyline.dueEvent(state, config);
+  return due && due.eventId ? due.eventId : null;
 }
 
 /**
@@ -128,6 +113,8 @@ export function checkFixedEvents(state, config) {
  */
 export function computeWeight(event, state, config) {
   if (!event) return 0;
+  // 剧情线步骤事件只由状态机强制派发，不参与随机池（避免与步进重复触发）
+  if (event.storylineOnly) return 0;
   const tr = Array.isArray(event.termRange) ? event.termRange : [];
   if (tr.length >= 2) {
     const semester = semesterOf(state);
@@ -142,6 +129,11 @@ export function computeWeight(event, state, config) {
   }
   // 学院专属事件：事件带 college 字段时，仅该学院玩家才会遇到
   if (event.college && state.player && state.player.collegeId !== event.college) return 0;
+  // 一次性事件：已经发生过就不再回到随机池
+  if (event.once) {
+    const history = Array.isArray(state.eventHistory) ? state.eventHistory : [];
+    if (history.indexOf(event.id) >= 0) return 0;
+  }
   let w = Number(event.weight) || 0;
   if (w <= 0) return 0;
 
@@ -159,6 +151,15 @@ export function computeWeight(event, state, config) {
   const college = getColleges(config).find((c) => c.id === collegeId);
   const eb = college && college.eventBias ? college.eventBias[event.id] : undefined;
   if (Number.isFinite(eb)) w *= eb;
+
+  // v2.1：带角色的日常事件，好感越高越容易遇到（0 好感 ×1，满好感 ×2）
+  if (event.charId) {
+    const char = relation.findCharacter(config, event.charId);
+    const aff = relation.affinityOf(state, event.charId);
+    const max = relation.affinityMax(config);
+    w *= 1 + Math.max(0, Math.min(1, aff / max));
+    if (char && Array.isArray(char.likedEvents) && char.likedEvents.indexOf(event.id) >= 0) w *= 1.3;
+  }
 
   return w;
 }
@@ -229,12 +230,38 @@ function attrLabel(key) {
   return map[key] || key;
 }
 
+/** 选项携带的好感提示（UI 在选项上显示「↑ 江叙 +8」）。 */
+function optionHints(option, config) {
+  const out = [];
+  const rel = option && option.effects && option.effects.relation;
+  if (rel && typeof rel === 'object') {
+    for (const charId of Object.keys(rel)) {
+      const delta = Number(rel[charId]);
+      if (!Number.isFinite(delta) || delta === 0) continue;
+      const char = relation.findCharacter(config, charId);
+      out.push({ charId, name: char ? char.name : charId, delta });
+    }
+  }
+  if (Array.isArray(option && option.hints)) {
+    for (const h of option.hints) if (typeof h === 'string') out.push({ text: h });
+  }
+  return out;
+}
+
+/** 好感不足时的可读提示。 */
+function relationReason(req, config) {
+  const need = Number(req.relationAtLeast.value);
+  const charId = req.relationAtLeast.charId;
+  const char = relation.findCharacter(config, charId);
+  return `需要和${char ? char.name : charId}更熟（好感 ≥ ${need}）`;
+}
+
 /**
  * 逐条判断事件选项的可用性。
  * @param {object} event
  * @param {object} state
  * @param {object} config
- * @returns {Array<{id:string,label:string,enabled:boolean,reason:string}>}
+ * @returns {Array<{id:string,label:string,enabled:boolean,reason:string,hints:Array}>}
  */
 export function availableOptions(event, state, config) {
   const opts = (event && Array.isArray(event.options)) ? event.options : [];
@@ -278,8 +305,14 @@ export function availableOptions(event, state, config) {
           enabled = false; reason = hint || `需要绩点 ≥ ${req.gpaAtLeast}`;
         }
       }
+      // 好感前置（v2.1）
+      if (enabled && req.relationAtLeast && req.relationAtLeast.charId) {
+        if (relation.affinityOf(state, req.relationAtLeast.charId) < Number(req.relationAtLeast.value)) {
+          enabled = false; reason = hint || relationReason(req, config);
+        }
+      }
     }
-    return { id: o.id, label: o.label, enabled, reason };
+    return { id: o.id, label: o.label, enabled, reason, hints: optionHints(o, config) };
   });
 }
 
@@ -296,13 +329,17 @@ export function buildPending(event, state, config) {
   if (state && config) {
     return {
       eventId: event.id,
+      charId: event.charId || '',
       options: availableOptions(event, state, config),
       resolved: false,
     };
   }
   return {
     eventId: event.id,
-    options: (event.options || []).map((o) => ({ id: o.id, label: o.label, enabled: true, reason: '' })),
+    charId: event.charId || '',
+    options: (event.options || []).map((o) => ({
+      id: o.id, label: o.label, enabled: true, reason: '', hints: [],
+    })),
     resolved: false,
   };
 }
@@ -348,15 +385,9 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
   const effParts = describeChanges(applied.changes);
   if (effParts.length) text += ` ｜ 效果：${effParts.join('，')}`;
   state.log.push(`事件【${ev.name}】选择「${option.label}」：${text}`);
-  // 剧情线起始事件：无论选哪个选项，标记该线已触发，避免强制调度重复
   if (state && state.player) {
-    const st = STORYLINES.find((L) => L.start === eventId);
-    if (st) {
-      if (!state.player.flags) state.player.flags = {};
-      state.player.flags[storylineKey(st.line)] = true;
-    }
-    // 学院专属事件：resolve 后标记，避免回合12重复强制触发
-    if (ev && ev.college) {
+    // 学院专属事件：resolve 后标记，避免回合 12 重复强制触发
+    if (ev.college) {
       if (!state.player.flags) state.player.flags = {};
       state.player.flags.chain_college = true;
     }

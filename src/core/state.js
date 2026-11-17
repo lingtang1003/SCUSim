@@ -78,6 +78,9 @@ export function createGameState(options) {
       // 连续未安排对应行动的周数（idleDecay）：{ knowledge, health }
       idle: { knowledge: 0, health: 0 },
       idleYear: 1,
+      // v2.1：角色好感 { [charId]: { affinity, stage, met, lastTurn } }
+      // 由 core/relation.js 初始化与维护，UI 只读
+      relations: {},
     },
     academics: {
       semesterScores: [],
@@ -92,6 +95,9 @@ export function createGameState(options) {
     },
     pendingEvent: null,
     eventHistory: [],
+    // v2.1：剧情线进度 { [lineId]: { step, status, since, lastTurn, lowTurns } }
+    // 由 core/storyline.js 维护
+    storylines: {},
     history: [],
     log: [],
     endingId: null,

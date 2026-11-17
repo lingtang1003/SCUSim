@@ -1,36 +1,123 @@
 {
-  "version": "1.0.0",
+  "version": "2.1.0",
   "list": [
     {
-      "id": "ending_academic_star", "name": "学术之星", "priority": 100,
-      "desc": "你以优异学识走向科研之路。",
-      "condition": { "type": "attributeAtLeast", "key": "knowledge", "value": 30 }
+      "id": "ending_jiangxu_true", "name": "凌晨三点的存档点", "priority": 1,
+      "desc": "他后来做了很多游戏，每个游戏的最后一行制作名单里，都写着你的名字。",
+      "condition": { "type": "all", "conditions": [
+        { "type": "lineStatus", "lineId": "line_jiangxu", "status": "done" },
+        { "type": "relationAtLeast", "charId": "jiangxu", "value": 55 }
+      ] }
     },
     {
-      "id": "ending_social_star", "name": "社交名流", "priority": 90,
-      "desc": "你成了校园里人尽皆知的交际达人。",
-      "condition": { "type": "attributeAtLeast", "key": "social", "value": 30 }
+      "id": "ending_guchi_true", "name": "闭庭之后", "priority": 2,
+      "desc": "他赢过很多场辩论，只在你面前输过一次——那一次他说的是心里话。",
+      "condition": { "type": "all", "conditions": [
+        { "type": "lineStatus", "lineId": "line_guchi", "status": "done" },
+        { "type": "relationAtLeast", "charId": "guchi", "value": 55 }
+      ] }
     },
     {
-      "id": "ending_wealthy", "name": "小富翁", "priority": 80,
-      "desc": "你大学期间攒下了一笔可观的财富。",
-      "condition": { "type": "attributeAtLeast", "key": "money", "value": 50 }
+      "id": "ending_linyu_true", "name": "校报上的最后一行", "priority": 3,
+      "desc": "毕业那期校报，她终于把署名写上了，两个人的名字。",
+      "condition": { "type": "all", "conditions": [
+        { "type": "lineStatus", "lineId": "line_linyu", "status": "done" },
+        { "type": "relationAtLeast", "charId": "linyu", "value": 55 }
+      ] }
     },
     {
-      "id": "ending_healthy", "name": "养生达人", "priority": 70,
-      "desc": "四年下来，你拥有了最棒的身体状态。",
-      "condition": { "type": "attributeAtLeast", "key": "health", "value": 30 }
+      "id": "ending_suwan_true", "name": "两个人的四手联弹", "priority": 4,
+      "desc": "音乐厅的最后一排，你们弹完了一首没有人听的曲子。",
+      "condition": { "type": "all", "conditions": [
+        { "type": "lineStatus", "lineId": "line_suwan", "status": "done" },
+        { "type": "relationAtLeast", "charId": "suwan", "value": 55 }
+      ] }
     },
     {
-      "id": "ending_warning", "name": "学业警示", "priority": 10,
-      "desc": "挂科累计过多，你收到学业警示。",
-      "condition": { "type": "warningTrue" }
+      "id": "ending_zhouye_true", "name": "最后一圈", "priority": 5,
+      "desc": "校运会最后一圈，他把接力棒换到了另一只手，空出来的那只手一直伸向你。",
+      "condition": { "type": "all", "conditions": [
+        { "type": "lineStatus", "lineId": "line_zhouye", "status": "done" },
+        { "type": "relationAtLeast", "charId": "zhouye", "value": 45 }
+      ] }
     },
     {
-      "id": "ending_ordinary", "name": "平凡四年", "priority": 1,
+      "id": "ending_tangtang_true", "name": "谢幕之后", "priority": 6,
+      "desc": "她演过很多场戏，只在谢幕那次，对着台下一个人说了句台词本上没有的话。",
+      "condition": { "type": "all", "conditions": [
+        { "type": "lineStatus", "lineId": "line_tangtang", "status": "done" },
+        { "type": "relationAtLeast", "charId": "tangtang", "value": 45 }
+      ] }
+    },
+    {
+      "id": "ending_jiangxu_warm", "name": "没说完的话", "priority": 7,
+      "desc": "你们还是会在便利店遇见。他会多买一瓶咖啡，放在你手上，什么也不说。",
+      "condition": { "type": "relationAtLeast", "charId": "jiangxu", "value": 30 }
+    },
+    {
+      "id": "ending_guchi_warm", "name": "未写完的陈词", "priority": 8,
+      "desc": "他去了很好的地方。偶尔发来一句「这句怎么写」，后面跟着半页没写完的稿子。",
+      "condition": { "type": "relationAtLeast", "charId": "guchi", "value": 30 }
+    },
+    {
+      "id": "ending_linyu_warm", "name": "没有署名的诗", "priority": 9,
+      "desc": "后来你在校报上读到一首很喜欢的诗。没有署名，但你知道是谁写的。",
+      "condition": { "type": "relationAtLeast", "charId": "linyu", "value": 30 }
+    },
+    {
+      "id": "ending_suwan_warm", "name": "琴房的灯", "priority": 10,
+      "desc": "四楼琴房的灯还亮着。你知道她在里面，但这次没有敲门。",
+      "condition": { "type": "relationAtLeast", "charId": "suwan", "value": 30 }
+    },
+    {
+      "id": "ending_zhouye_warm", "name": "跑道边的那瓶水", "priority": 11,
+      "desc": "他跑完还是会朝看台挥手。看台上已经没有人了，他还是会挥。",
+      "condition": { "type": "relationAtLeast", "charId": "zhouye", "value": 25 }
+    },
+    {
+      "id": "ending_tangtang_warm", "name": "一年之后", "priority": 12,
+      "desc": "她走的时候说的「一年」，一年后谁都没再提。你们默契地当成了玩笑。",
+      "condition": { "type": "relationAtLeast", "charId": "tangtang", "value": 25 }
+    },
+    {
+      "id": "ending_baoyan", "name": "保研上岸", "priority": 13,
+      "desc": "你把四年都押在了图书馆四楼，最后那张录取通知书，配得上那些没睡的夜。",
+      "condition": { "type": "all", "conditions": [
+        { "type": "gpaAtLeast", "value": 3.7 },
+        { "type": "flagEquals", "key": "scholarship", "value": "pursuing" },
+        { "type": "attributeAtLeast", "key": "knowledge", "value": 60 }
+      ] }
+    },
+    {
+      "id": "ending_academic_star", "name": "学术之星", "priority": 14,
+      "desc": "你以优异学识走向科研之路，实验室的白板上写满了你的名字。",
+      "condition": { "type": "attributeAtLeast", "key": "knowledge", "value": 75 }
+    },
+    {
+      "id": "ending_social_star", "name": "社交名流", "priority": 15,
+      "desc": "你成了校园里人尽皆知的交际达人，走到哪里都有人跟你打招呼。",
+      "condition": { "type": "attributeAtLeast", "key": "social", "value": 75 }
+    },
+    {
+      "id": "ending_wealthy", "name": "小富翁", "priority": 16,
+      "desc": "你大学期间攒下了一笔可观的财富——代价是很多个没能赴约的晚上。",
+      "condition": { "type": "attributeAtLeast", "key": "money", "value": 500 }
+    },
+    {
+      "id": "ending_healthy", "name": "养生达人", "priority": 17,
+      "desc": "四年下来，你的体测成绩比大一时还好。操场的塑胶跑道认识你的鞋。",
+      "condition": { "type": "attributeAtLeast", "key": "health", "value": 75 }
+    },
+    {
+      "id": "ending_warning", "name": "学业警示", "priority": 18,
+      "desc": "绩点掉到了线下。辅导员的电话打来时，你正躺在宿舍看天花板。",
+      "condition": { "type": "gpaAtLeast", "value": 2.0, "negate": true }
+    },
+    {
+      "id": "ending_ordinary", "name": "平凡四年", "priority": 99,
       "desc": "没有惊天动地，但这是独属于你的四年。",
       "condition": { "type": "default" }
     }
   ],
-  "note": "优先级数值越大越优先；多结局命中时引擎取优先级最高者。条件类型与阈值待平衡确认（开发方案 §2）"
+  "note": "priority 越小越优先（balance.endingPriorityOrder = 'asc'）。角色线结局 1–12 优先于属性结局 13–18；lineStatus 判定这条线是否走完（done / broken / idle），relationAtLeast 判定好感。"
 }
