@@ -3764,7 +3764,7 @@ a:hover {
 .vn-logo__sub {
   margin-top: 8px;
   font-family: 'SubtitleChild', var(--font);
-  font-size: clamp(15px, 1.5vw, 21px);
+  font-size: clamp(18px, 1.9vw, 28px);
   letter-spacing: 0.08em;
   color: var(--ink-2);
 }
@@ -4068,6 +4068,7 @@ body { font-synthesis: none; }
 }
 .vn-mascot {
   position: absolute;
+  z-index: 3;               /* 站在菜单卡前面，像贴纸 */
   display: block;
   width: auto;
   image-rendering: -webkit-optimize-contrast;
@@ -4076,16 +4077,16 @@ body { font-synthesis: none; }
 }
 /* 女生：站在「大学四年」右侧（整只落在第一行的高度带里） */
 .vn-mascot--girl {
-  left: 37.0%;
+  left: 36.5%;
   bottom: 178px;
   height: 190px;
   transform: rotate(-15deg);
 }
 /* 男生：站在「没问题！」右侧（落在第二行的高度带里） */
 .vn-mascot--boy {
-  left: 45.6%;
-  bottom: 40px;
-  height: 132px;
+  left: 46.0%;
+  bottom: 34px;
+  height: 150px;
   transform: rotate(13deg);
 }
 /* 悬停：摆正 + 放大 + 上浮，回弹曲线让动作更明显 */
@@ -4180,13 +4181,13 @@ body { font-synthesis: none; }
 /* 副标题：红色 + 白色描边，和标题呼应 */
 .vn-logo__sub {
   color: var(--red);
-  -webkit-text-stroke: 0.055em #fff;
+  -webkit-text-stroke: 0.095em #fff;
   paint-order: stroke fill;
   text-shadow:
-     0.05em 0 0 #fff, -0.05em 0 0 #fff,
-     0 0.05em 0 #fff, 0 -0.05em 0 #fff,
-     0.035em 0.035em 0 #fff, -0.035em 0.035em 0 #fff,
-     0.035em -0.035em 0 #fff, -0.035em -0.035em 0 #fff;
+     0.085em 0 0 #fff, -0.085em 0 0 #fff,
+     0 0.085em 0 #fff, 0 -0.085em 0 #fff,
+     0.06em 0.06em 0 #fff, -0.06em 0.06em 0 #fff,
+     0.06em -0.06em 0 #fff, -0.06em -0.06em 0 #fff;
 }
 
 
