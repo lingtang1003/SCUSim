@@ -1521,7 +1521,6 @@ export function createApp(ctx) {
         else if (callbacks.onLoadGame) callbacks.onLoadGame();
       } },
       { label: '剧情回放', hint: '重看本周的对话', run: () => showBacklog() },
-      { label: '关系', hint: '好感 / 剧情线', run: () => showRelations() },
       { label: '设置', hint: '立绘 / 动效 / 声音', run: () => { if (callbacks.onOpenSettings) callbacks.onOpenSettings(); } },
       { label: '商城', hint: '敬请期待', locked: true, run: () => showToast('商城还没开门呢', 'warning') },
     ];
