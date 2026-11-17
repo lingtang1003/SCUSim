@@ -4326,3 +4326,19 @@ body { font-synthesis: none; }
 .vn-logo__gap {
   margin-left: 0.14em;
 }
+
+
+/* 图鉴条目：标题往上收一点，别在卡片里显得偏下 */
+.vn-gallery__item {
+  padding-top: 8px;
+  padding-bottom: 10px;
+}
+.vn-gallery__row {
+  align-items: flex-start;
+}
+.vn-gallery__name {
+  margin-top: -1px;
+}
+.vn-gallery__flag {
+  margin-top: 1px;
+}
