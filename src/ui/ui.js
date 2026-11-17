@@ -1355,7 +1355,7 @@ export function createApp(ctx) {
           creationPreview(),
           h('section', { class: 'vn-create__panel' }, [
             h('div', { class: 'vn-create__head' }, [
-              h('h1', { class: 'vn-create__title' }, ['创建角色']),
+              h('h1', { class: 'vn-create__title' }, ['录入信息']),
               stepper(creation.step),
             ]),
             h('div', { class: 'vn-create__body' }, [body]),
