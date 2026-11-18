@@ -4886,3 +4886,76 @@ body { font-synthesis: none; }
 .vn-choice--gold {
   border-width: 0;
 }
+
+
+/* =========================================================================
+   41. 校区切换标签（望江 / 江安）
+   ========================================================================= */
+.vn-map__tabs {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 22px rgba(20, 16, 15, 0.2);
+  z-index: 6;
+}
+.vn-map__tab {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  transition: background 160ms linear, color 160ms linear;
+}
+.vn-map__tab:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+}
+.vn-map__tab.is-on {
+  background: var(--red);
+  color: #fff;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--red) 34%, transparent);
+}
+
+/* 舞台上的标签往下挪一点，避开顶部提示胶囊 */
+.vn-map-stage .vn-map__tabs {
+  top: 62px;
+}
+
+
+/* =========================================================================
+   42. 地图图钉的文字胶囊：可整体偏移，避开地图自带的黑字标注
+   ========================================================================= */
+.vn-map__tag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+
+
+/* 文字胶囊默认隐藏：地图自带黑字标注已经说明了位置，
+   胶囊只在悬停 / 当前地点时出现，避免盖住手绘地图的文字 */
+.vn-map__tag {
+  opacity: 0;
+  transition: opacity 140ms linear;
+}
+.vn-map__pin:hover .vn-map__tag,
+.vn-map__pin:focus-visible .vn-map__tag,
+.vn-map__pin.is-here .vn-map__tag {
+  opacity: 1;
+}
+/* 触屏没有 hover：始终显示，但缩小一点 */
+@media (hover: none) {
+  .vn-map__tag { opacity: 1; }
+}

@@ -312,26 +312,43 @@
 2. **关掉「动效」会吃掉过渡**：`.reduce-motion * { transition: none !important }` 是全站规则。
    选项卡填充**不再是例外**（之前为了调试临时开过口子，已移除）：关掉动效后填充立即到位，
    弹窗、抽屉、打字机、季节换色等动效也一并关闭。
-## 9.y 地点与行动（地图循环）
+## 9.y 地点与行动（地图循环 · 双校区）
 
 每一回合都是「先看地图，再选地点」：
 
-1. **回合开始停在地图**：`player.location = null` 表示还没选地点，舞台渲染成
-   `.vn-stage--map`——整屏 `assets/map/jiang-an-map.jpg` + 图钉，**没有立绘、没有对话框、地点胶囊也不显示**，
-   只有顶部 HUD（周数 / 学期 / 行动点 / 菜单）和一句「选择今天要去的地方」。
-2. **点图钉前往**（`engine.moveToLocation`）：不消耗行动点；健康 < `requiresHealth` 时拒绝并 toast。
-   到达后恢复常规舞台：立绘 + 对话框（播该地点的 `line`）+ 该地点的活动。
-3. **活动按地点过滤**：`locations[].activities` 是 `actions.json` 的 id 子集，
-   `actionAvailability` 对不在当前地点的行动返回 `reason: 'not_here'`，健康 < 3 时只能锻炼/休息。
-4. **行动点耗尽 → 自动进入下一周**：`onAction` 结束后若 `actionPoints <= 0`，toast 提示并
-   `setTimeout(1100)` 调 `onAdvance()`；`advance()` 会清空 `location`，于是回到地图。
-   任何新操作（行动 / 推进 / 移动 / 回主菜单）都会 `clearAutoAdvance()`，避免重复推进。
-5. **健康不足去不了**：地图上锁定的图钉显示「健康 N」并给出 toast，不会移动。
+1. **回合开始停在地图**：`player.location = null` 渲染 `.vn-stage--map`——整屏手绘校园地图 + 图钉，
+   **没有立绘、没有对话框、地点胶囊也不显示**，只有 HUD 和「选择今天要去的地方」。
+2. **两个校区**：`config/locations.json` 的 `campuses` 定义 `江安 / 望江` 两张图
+   （`assets/map/jiang-an-map.jpg`、`wangjiang-map.jpg`，均 2560×1440）。
+   地图顶部有 `.vn-map__tabs` 切换；默认跟随「人所在的校区」，否则用 `defaultCampus`（江安）。
+3. **点图钉前往**（`engine.moveToLocation`）：不消耗行动点；健康 < `requiresHealth` 时拒绝并 toast。
+4. **活动按地点过滤**：`locations[].activities` 是 `actions.json` 的 id 子集；
+   不在当前地点的行动 → `reason: 'not_here'`；健康 < 3 时只能锻炼/休息。
+5. **行动点耗尽 → 自动进入下一周**：`onAction` 后若 `actionPoints <= 0`，toast 并 `setTimeout(1100)`
+   调 `onAdvance()`；`advance()` 清空 `location`，于是回到地图。任何新操作都会取消这个定时器。
+6. **健康不足去不了**：锁定图钉显示「健康 N」并 toast，不移动。
+7. **图钉只显示圆点**：文字胶囊默认 `opacity: 0`，悬停 / 当前地点 / 触屏时才显示，
+   这样不会盖住手绘地图上自带的黑字标注（`labelDx/labelDy` 可再微调胶囊位置）。
 
-配置：`config/locations.json`（`mapArt` / `mapAspect` / `default` / `list[{id,name,scene,x,y,requiresHealth,activities,line}]`）。
+地点一览（14 个）：
+
+| 校区 | 地点 | 健康门槛 | 活动 |
+|---|---|---|---|
+| 江安 | 宿舍 / 长桥 / 不高山 | 0 | 休息 |
+| 江安 | 食堂 | 0 | 食堂吃饭（健康 +3 / 金钱 −15） |
+| 江安 | 图书馆 / 教学楼 / 文科楼 | 0 | 学习 |
+| 江安 | 社团活动中心 | 0 | 社团 |
+| 江安 | 商业街 | 2 | 社交娱乐 |
+| 江安 | 二号体育场 | 2 | 锻炼 |
+| 江安 | 体育馆 | 5 | 锻炼 |
+| 望江 | 宿舍 | 0 | 休息 |
+| 望江 | 教学楼 | 0 | 学习 |
+| 望江 | 体育场 | 2 | 锻炼 |
+| 望江 | 食堂 | 0 | 食堂吃饭 |
+| 望江 | 校门 | 3 | 兼职赚钱 |
+
 引擎 API：`currentLocation`（空 location → null、未知 id → 回落宿舍）/ `canEnterLocation` /
-`moveToLocation` / `availableActivities`（在地图上返回 `[]`）。
-测试：`tests/verify_locations.mjs`（19 项）。
+`moveToLocation` / `availableActivities`（在地图上返回 `[]`）。测试：`tests/verify_locations.mjs`（19 项）。
 
 ## 9.x 声音（背景音乐 / 音效）
 

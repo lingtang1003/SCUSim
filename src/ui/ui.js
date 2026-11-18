@@ -1837,6 +1837,49 @@ export function createApp(ctx) {
     );
   }
 
+  // ---------------- 校区（望江 / 江安） ----------------
+  let mapCampus = null;   // 当前展示的校区（没选地点时用来切图）
+
+  function campusesOf() {
+    const conf = (config && config.locations) || {};
+    return Array.isArray(conf.campuses) ? conf.campuses : [];
+  }
+
+  /** 当前应该展示哪个校区：优先「人所在的校区」，其次手动切换过的，最后默认 */
+  function activeCampus(state) {
+    const list = campusesOf();
+    if (!list.length) return null;
+    const loc = locationOf(state);
+    if (loc && loc.campus) {
+      const hit = list.find((c) => c.id === loc.campus);
+      if (hit) return hit;
+    }
+    if (mapCampus) {
+      const hit = list.find((c) => c.id === mapCampus);
+      if (hit) return hit;
+    }
+    const conf = (config && config.locations) || {};
+    const def = conf.defaultCampus || (list[0] && list[0].id);
+    return list.find((c) => c.id === def) || list[0];
+  }
+
+  function campusTabs(state) {
+    const list = campusesOf();
+    if (list.length < 2) return null;
+    const cur = activeCampus(state);
+    return h('div', { class: 'vn-map__tabs' }, list.map((c) =>
+      h('button', {
+        type: 'button',
+        class: 'vn-map__tab' + (cur && cur.id === c.id ? ' is-on' : ''),
+        onclick: () => {
+          mapCampus = c.id;
+          if (overlayEl) showMap();
+          else if (lastState) render(lastState, {});
+        },
+      }, [c.name])
+    ));
+  }
+
   /** 地图上的一枚图钉 */
   function mapPin(l, state) {
     const st = state || lastState || {};
@@ -1858,25 +1901,35 @@ export function createApp(ctx) {
       },
     }, [
       h('i', { class: 'vn-map__dot' }),
-      h('span', { class: 'vn-map__name' }, [l.name]),
-      locked ? h('span', { class: 'vn-map__need' }, ['健康 ' + need]) : null,
+      h('span', {
+        class: 'vn-map__tag',
+        // 只挪文字胶囊，图钉尖仍钉在锚点上，避免盖住地图自带的黑字标注
+        style: 'transform:translate(' + (Number(l.labelDx) || 0) + 'px,'
+          + (Number(l.labelDy) || 0) + 'px)',
+      }, [
+        h('span', { class: 'vn-map__name' }, [l.name]),
+        locked ? h('span', { class: 'vn-map__need' }, ['健康 ' + need]) : null,
+      ]),
     ]);
   }
 
   /** 地图舞台：还没选地点时的整屏地图（图片按比例铺满，图钉跟着画布走） */
   function mapStage(state) {
-    const list = listOf('locations');
-    const conf = (config && config.locations) || {};
-    const mapArt = conf.mapArt || '';
+    const campus = activeCampus(state);
+    const list = listOf('locations').filter((l) =>
+      !campus || !l.campus || l.campus === campus.id);
+    const mapArt = (campus && campus.mapArt) || '';
+    const aspect = (campus && campus.aspect) || '2560 / 1440';
     return h('div', { class: 'vn-map-stage' }, [
       h('div', {
         class: 'vn-map-stage__canvas',
-        style: 'aspect-ratio:' + (conf.mapAspect || '1036 / 583')
+        style: 'aspect-ratio:' + aspect
           + (mapArt ? ';background-image:url("assets/map/' + mapArt + '")' : ''),
       }, [
         h('div', { class: 'vn-map-stage__pins' }, list.map((l) => mapPin(l, state))),
       ]),
       h('div', { class: 'vn-map-stage__hint' }, ['选择今天要去的地方']),
+      campusTabs(state),
     ]);
   }
 
@@ -1888,23 +1941,25 @@ export function createApp(ctx) {
       showToast('还没有配置地点', 'warning');
       return;
     }
-    const conf = (config && config.locations) || {};
-    const mapArt = conf.mapArt || '';
     const st = lastState || {};
-    const health = Number(st.player && st.player.attributes && st.player.attributes.health) || 0;
-    const here = (st.player && st.player.location) || conf.default || 'dorm';
-
-    const pins = list.map((l) => mapPin(l, st));
+    const campus = activeCampus(st);
+    const hereList = list.filter((l) => !campus || !l.campus || l.campus === campus.id);
+    const mapArt = (campus && campus.mapArt) || '';
+    const aspect = (campus && campus.aspect) || '2560 / 1440';
 
     const body = [
-      h('div', { class: 'vn-map' }, [
+      campusTabs(st),
+      h('div', {
+        class: 'vn-map',
+        style: 'aspect-ratio:' + aspect,
+      }, [
         mapArt
           ? h('div', {
               class: 'vn-map__art',
               style: 'background-image:url("assets/map/' + mapArt + '")',
             })
           : null,
-      ].concat(pins)),
+      ].concat(hereList.map((l) => mapPin(l, st)))),
     ];
     mountOverlay(
       modalShell('选择地点', body, [

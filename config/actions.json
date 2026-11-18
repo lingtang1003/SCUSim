@@ -2,34 +2,101 @@
   "version": "1.0.0",
   "list": [
     {
-      "id": "study", "name": "上课学习", "desc": "去教室听课、泡图书馆",
-      "cost": 1, "requiresHealth": 0, "mainAttr": "knowledge",
-      "effects": { "attributes": { "knowledge": 2, "health": -1 } }
+      "id": "study",
+      "name": "上课学习",
+      "desc": "去教室听课、泡图书馆",
+      "cost": 1,
+      "requiresHealth": 0,
+      "mainAttr": "knowledge",
+      "effects": {
+        "attributes": {
+          "knowledge": 2,
+          "health": -1
+        }
+      }
     },
     {
-      "id": "club", "name": "社团活动", "desc": "参加社团例会或活动",
-      "cost": 1, "requiresHealth": 0, "mainAttr": "social",
-      "effects": { "attributes": { "social": 2, "health": -1 } }
+      "id": "club",
+      "name": "社团活动",
+      "desc": "参加社团例会或活动",
+      "cost": 1,
+      "requiresHealth": 0,
+      "mainAttr": "social",
+      "effects": {
+        "attributes": {
+          "social": 2,
+          "health": -1
+        }
+      }
     },
     {
-      "id": "exercise", "name": "体育锻炼", "desc": "跑步、打球、健身",
-      "cost": 1, "requiresHealth": 2, "mainAttr": "health",
-      "effects": { "attributes": { "health": 2, "social": 1 } }
+      "id": "exercise",
+      "name": "体育锻炼",
+      "desc": "跑步、打球、健身",
+      "cost": 1,
+      "requiresHealth": 2,
+      "mainAttr": "health",
+      "effects": {
+        "attributes": {
+          "health": 2,
+          "social": 1
+        }
+      }
     },
     {
-      "id": "parttime", "name": "兼职赚钱", "desc": "校外兼职补贴生活",
-      "cost": 1, "requiresHealth": 3, "mainAttr": "money",
-      "effects": { "attributes": { "money": 30, "health": -1 } }
+      "id": "parttime",
+      "name": "兼职赚钱",
+      "desc": "校外兼职补贴生活",
+      "cost": 1,
+      "requiresHealth": 3,
+      "mainAttr": "money",
+      "effects": {
+        "attributes": {
+          "money": 30,
+          "health": -1
+        }
+      }
     },
     {
-      "id": "socialize", "name": "社交娱乐", "desc": "聚餐、逛街、联谊",
-      "cost": 1, "requiresHealth": 0, "mainAttr": "social",
-      "effects": { "attributes": { "social": 2, "money": -10 } }
+      "id": "socialize",
+      "name": "社交娱乐",
+      "desc": "聚餐、逛街、联谊",
+      "cost": 1,
+      "requiresHealth": 0,
+      "mainAttr": "social",
+      "effects": {
+        "attributes": {
+          "social": 2,
+          "money": -10
+        }
+      }
     },
     {
-      "id": "rest", "name": "休息放松", "desc": "睡觉、发呆、回血",
-      "cost": 1, "requiresHealth": 0, "mainAttr": "health",
-      "effects": { "attributes": { "health": 3 } }
+      "id": "rest",
+      "name": "休息放松",
+      "desc": "睡觉、发呆、回血",
+      "cost": 1,
+      "requiresHealth": 0,
+      "mainAttr": "health",
+      "effects": {
+        "attributes": {
+          "health": 3
+        }
+      }
+    },
+    {
+      "id": "eat",
+      "name": "食堂吃饭",
+      "desc": "吃顿热的，健康和心情一起回来。",
+      "cost": 1,
+      "mainAttr": "health",
+      "requiresHealth": 0,
+      "effects": {
+        "attributes": {
+          "health": 3,
+          "money": -15
+        }
+      }
     }
   ],
   "note": "mainAttr 为该行动正向效果里最主要的属性，供标签/学院偏向与 UI 高亮使用"
