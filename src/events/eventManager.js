@@ -45,6 +45,41 @@ function semesterOf(state) {
 }
 
 /**
+ * 读取玩家最近一次行动作为「当前场景」（spot 类别，与 actions.json 的 actionId 一致）。
+ * 事件在回合推进时抽取，此时 state.player.location 已被引擎清空，
+ * 但上一回合做过的行动记在 state.history（type:'action'），行动与地点一一对应，
+ * 因此用最近行动等价于当前所在地点场景；找不到则返回 null（不做场景限制）。
+ */
+function currentSpot(state) {
+  const history = Array.isArray(state && state.history) ? state.history : [];
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const entry = history[i];
+    if (entry && entry.type === 'action' && entry.actionId) return entry.actionId;
+  }
+  return null;
+}
+
+/**
+ * 读取玩家最近一次前往的地点，返回其细分主题（topic，与 locations.json 的 topic 一致）。
+ * 同一大类（spot）下不同地点再细分：如图书馆=major 专业课、教学楼=basics 公共课、文科楼=humanities。
+ * 事件抽取时 state.player.location 已被清空，故从 history 最近一条 type:'move' 反查地点。
+ */
+function currentTopic(state, config) {
+  const history = Array.isArray(state && state.history) ? state.history : [];
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const entry = history[i];
+    if (entry && entry.type === 'move' && entry.location) {
+      const list = config && config.locations && Array.isArray(config.locations.list)
+        ? config.locations.list
+        : [];
+      const loc = list.find((l) => l.id === entry.location);
+      return (loc && loc.topic) || null;
+    }
+  }
+  return null;
+}
+
+/**
  * 剧情线保证触发（v2.1）：真正的「哪条线、哪一步、什么窗口」全部在 config/storylines.json，
  * 由 core/storyline.js 的状态机决定；这里只负责在回合开始时问它一句「现在该不该强制出事件」。
  */
@@ -187,25 +222,51 @@ export function rollEvent(state, config, rng) {
   // 去重：最近触发过的随机事件（state.__recentEvents）短间隔内不重复触发，
   // 避免「上一回合刚领完十佳歌手门票、这一回合又来同一事件」的情况。
   const recent = (state && Array.isArray(state.__recentEvents)) ? state.__recentEvents : [];
-  const fresh = weighted.filter((x) => !recent.includes(x.e.id));
-  // 防卡：只返回至少含一个可用选项的事件；前置 flag 未满足（全部选项被置灰）的事件跳过不触发。
-  let pool = fresh.length > 0 ? fresh : weighted;
-  while (pool.length > 0) {
-    const totalWeight = pool.reduce((s, x) => s + x.w, 0);
-    let r = rng.next() * totalWeight;
-    let picked = pool[pool.length - 1].e;
-    for (const x of pool) {
-      r -= x.w;
-      if (r < 0) { picked = x.e; break; }
+
+  // 场景 + 细分主题分组（混合模式）：主题匹配 → 同大类其他主题 → 通用事件（无 spot）→ 其他场景；逐级兜底，避免空池卡死。
+  const cur = currentSpot(state);
+  const curTopic = currentTopic(state, config);
+  let groups;
+  if (!cur) {
+    groups = [weighted];
+  } else {
+    const inSpot = (x) => Array.isArray(x.e.spot) && x.e.spot.includes(cur);
+    const topicMatch = weighted.filter((x) => inSpot(x) && curTopic && x.e.topic === curTopic);
+    const spotMatch = weighted.filter((x) => inSpot(x) && !(curTopic && x.e.topic === curTopic));
+    const general = weighted.filter((x) => !Array.isArray(x.e.spot) || x.e.spot.length === 0);
+    const other = weighted.filter((x) => Array.isArray(x.e.spot) && x.e.spot.length > 0 && !inSpot(x));
+    groups = [topicMatch, spotMatch, general, other];
+  }
+
+  // 在给定候选组内做轮盘赌；只返回至少含一个可用选项的事件，前置未满足的跳过。
+  const pickFrom = (pool) => {
+    let cand = pool.filter((x) => !recent.includes(x.e.id));
+    if (cand.length === 0) cand = pool; // 防卡：去重窗口内全重复时回退整组
+    let guard = cand.length;
+    while (cand.length > 0 && guard-- > 0) {
+      const totalWeight = cand.reduce((s, x) => s + x.w, 0);
+      let r = rng.next() * totalWeight;
+      let picked = cand[cand.length - 1].e;
+      for (const x of cand) {
+        r -= x.w;
+        if (r < 0) { picked = x.e; break; }
+      }
+      const avail = availableOptions(picked, state, config);
+      if (avail.some((a) => a.enabled)) {
+        return {
+          eventId: picked.id,
+          options: (picked.options || []).map((o) => ({ id: o.id, label: o.label })),
+        };
+      }
+      cand = cand.filter((x) => x.e !== picked);
     }
-    const avail = availableOptions(picked, state, config);
-    if (avail.some((a) => a.enabled)) {
-      return {
-        eventId: picked.id,
-        options: (picked.options || []).map((o) => ({ id: o.id, label: o.label })),
-      };
-    }
-    pool = pool.filter((x) => x.e !== picked);
+    return null;
+  };
+
+  for (const group of groups) {
+    if (group.length === 0) continue;
+    const res = pickFrom(group);
+    if (res) return res;
   }
   return { eventId: null, options: [] };
 }

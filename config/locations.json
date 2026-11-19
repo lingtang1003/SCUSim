@@ -32,7 +32,8 @@
       "desc": "回宿舍躺一会儿，恢复健康。",
       "line": "（推开门，室友的键盘声和床铺的味道一起涌上来）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "nap"
     },
     {
       "id": "library",
@@ -48,7 +49,8 @@
       "desc": "安静的自习区，学识 +2。",
       "line": "（图书馆的空调声很低，翻书声一层一层）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "major"
     },
     {
       "id": "college",
@@ -64,7 +66,8 @@
       "desc": "上课、自习都在这儿。",
       "line": "（走廊尽头的门虚掩着，夕阳把地砖照成一条光带）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "basics"
     },
     {
       "id": "humanities",
@@ -80,7 +83,8 @@
       "desc": "文科的课大多在这儿上。",
       "line": "（文科楼的楼梯很宽，扶手被摸得发亮）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "humanities"
     },
     {
       "id": "clubroom",
@@ -96,7 +100,8 @@
       "desc": "社团的人都在，社交 +2。",
       "line": "（活动中心的展板又换了一版，胶水味还没散）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "club"
     },
     {
       "id": "street",
@@ -112,7 +117,8 @@
       "desc": "火锅、奶茶、KTV，钱包和健康都得掂量。",
       "line": "（商业街的灯牌全亮着，炸串的味道飘了一条街）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "mall"
     },
     {
       "id": "track",
@@ -128,7 +134,8 @@
       "desc": "跑两圈，健康 +2。",
       "line": "（塑胶跑道被晒得发软，远处有人在对墙练球）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "run"
     },
     {
       "id": "gym",
@@ -144,7 +151,8 @@
       "desc": "羽毛球馆，健康 +2；身体太虚进不去。",
       "line": "（体育馆里全是球鞋摩擦地板的声音）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "indoor"
     },
     {
       "id": "bridge",
@@ -160,7 +168,8 @@
       "desc": "吹吹风，恢复健康。",
       "line": "（长桥上的风带着水汽，栏杆是温的）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "stroll"
     },
     {
       "id": "hill",
@@ -176,7 +185,8 @@
       "desc": "草坪和亭子，适合发呆。",
       "line": "（不高山的草坡上有人躺着晒太阳，风把书页吹得哗哗响）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "chill"
     },
     {
       "id": "wj_dorm",
@@ -192,7 +202,8 @@
       "desc": "望江的宿舍楼，回血用。",
       "line": "（楼道里飘着泡面味，楼下有人在打电话）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "nap"
     },
     {
       "id": "wj_college",
@@ -208,7 +219,8 @@
       "desc": "望江的教学楼，学识 +2。",
       "line": "（教室的窗户朝西，下午的光会一直铺到最后一排）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "basics"
     },
     {
       "id": "wj_track",
@@ -224,7 +236,8 @@
       "desc": "跑两圈，健康 +2。",
       "line": "（塑胶跑道上有人在慢跑，篮球场传来拍球声）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "run"
     },
     {
       "id": "wj_gate",
@@ -240,7 +253,8 @@
       "desc": "出校门去打工，金钱 +30、健康 −1。",
       "line": "（校门外的车流一直没停，门柱被晒得发烫）",
       "labelDx": 0,
-      "labelDy": 0
+      "labelDy": 0,
+      "topic": "work"
     },
     {
       "id": "wj_canteen",
@@ -256,7 +270,8 @@
       "labelDx": 0,
       "labelDy": 0,
       "desc": "望江的食堂，吃顿好的。",
-      "line": "（窗口前排着队，餐盘碰撞的声音此起彼伏）"
+      "line": "（窗口前排着队，餐盘碰撞的声音此起彼伏）",
+      "topic": "meal"
     },
     {
       "id": "canteen",
@@ -272,7 +287,8 @@
       "labelDx": 0,
       "labelDy": 0,
       "desc": "江安的食堂，吃顿好的。",
-      "line": "（食堂的窗口排起长队，餐盘碰撞声此起彼伏）"
+      "line": "（食堂的窗口排起长队，餐盘碰撞声此起彼伏）",
+      "topic": "meal"
     }
   ]
 }

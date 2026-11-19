@@ -157,7 +157,11 @@
           "resultText": "你还是吃了老三样。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "eat"
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r02",
@@ -189,7 +193,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r03",
@@ -221,7 +229,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "exercise"
+      ],
+      "topic": "run"
     },
     {
       "id": "ev_r04",
@@ -254,7 +266,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r05",
@@ -287,7 +303,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r06",
@@ -313,7 +333,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r07",
@@ -346,7 +370,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "rest"
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r08",
@@ -378,7 +406,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "rest"
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r09",
@@ -410,7 +442,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r10",
@@ -442,7 +478,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r11",
@@ -471,7 +511,8 @@
           "resultText": "你关掉了购物车。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": []
     },
     {
       "id": "ev_r12",
@@ -503,7 +544,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r13",
@@ -532,7 +577,11 @@
           "resultText": "你错过了一次联谊。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r14",
@@ -567,7 +616,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r15",
@@ -609,7 +662,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r16",
@@ -646,7 +703,11 @@
             "money": -120
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r17",
@@ -686,7 +747,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r18",
@@ -715,7 +780,11 @@
           "resultText": "你赶着去上课。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r19",
@@ -748,7 +817,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r20",
@@ -777,7 +850,12 @@
           "resultText": "你坚持减肥计划。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "socialize",
+        "eat"
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r21",
@@ -814,7 +892,11 @@
             "money": -200
           }
         }
-      ]
+      ],
+      "spot": [
+        "club"
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r22",
@@ -856,7 +938,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r23",
@@ -871,9 +957,19 @@
       ],
       "text": "早起去图书馆自习，你在书架前遇见了她——正巧，你们都要找同一本书。",
       "lines": [
-        { "speaker": "旁白", "text": "早上八点的图书馆四楼，阳光斜着落在书架之间。" },
-        { "speaker": "林予", "emotion": "neutral", "text": "……你也来找这本？" },
-        { "speaker": "旁白", "text": "她压着一顶旧贝雷帽，指腹蹭着书脊，没有看你。" }
+        {
+          "speaker": "旁白",
+          "text": "早上八点的图书馆四楼，阳光斜着落在书架之间。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "neutral",
+          "text": "……你也来找这本？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她压着一顶旧贝雷帽，指腹蹭着书脊，没有看你。"
+        }
       ],
       "options": [
         {
@@ -899,7 +995,12 @@
           "resultText": "你把悸动压回书页里。她取走了另一本，脚步声在楼梯间慢慢消失。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study",
+        "socialize"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r24",
@@ -914,9 +1015,19 @@
       ],
       "text": "上次在书架前遇见的那个人，约你去校外吃晚饭。",
       "lines": [
-        { "speaker": "旁白", "text": "手机在桌上震了一下，是个没备注的号码。" },
-        { "speaker": "林予", "emotion": "shy", "text": "看到一家小店，红油抄手。……你要不要一起？" },
-        { "speaker": "旁白", "text": "消息发出来三秒，她又补了一句：「不去也没关系。」" }
+        {
+          "speaker": "旁白",
+          "text": "手机在桌上震了一下，是个没备注的号码。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "shy",
+          "text": "看到一家小店，红油抄手。……你要不要一起？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "消息发出来三秒，她又补了一句：「不去也没关系。」"
+        }
       ],
       "options": [
         {
@@ -946,7 +1057,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize",
+        "eat"
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r25",
@@ -961,9 +1077,19 @@
       ],
       "text": "晚饭后，她约你去江安河边走走。晚风微凉，气氛有些微妙。",
       "lines": [
-        { "speaker": "旁白", "text": "江安河把晚霞揉碎了，桥栏杆还是温的。" },
-        { "speaker": "林予", "emotion": "neutral", "text": "我写的稿子，编辑说太冷了。……你觉得呢？" },
-        { "speaker": "旁白", "text": "她停下来，转过身，忽然说：「我好像有点喜欢你。」" }
+        {
+          "speaker": "旁白",
+          "text": "江安河把晚霞揉碎了，桥栏杆还是温的。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "neutral",
+          "text": "我写的稿子，编辑说太冷了。……你觉得呢？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她停下来，转过身，忽然说：「我好像有点喜欢你。」"
+        }
       ],
       "options": [
         {
@@ -996,7 +1122,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize",
+        "rest"
+      ],
+      "topic": "stroll"
     },
     {
       "id": "ev_r26",
@@ -1011,9 +1142,19 @@
       ],
       "text": "因为一件小事，你和她起了争执，气氛降到冰点。",
       "lines": [
-        { "speaker": "旁白", "text": "她说她要去外地实习三个月，是在订好机票之后才告诉你的。" },
-        { "speaker": "林予", "emotion": "sad", "text": "我以为……你会替我高兴。" },
-        { "speaker": "旁白", "text": "话说出口两个人都后悔了。风从走廊尽头灌进来。" }
+        {
+          "speaker": "旁白",
+          "text": "她说她要去外地实习三个月，是在订好机票之后才告诉你的。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "sad",
+          "text": "我以为……你会替我高兴。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "话说出口两个人都后悔了。风从走廊尽头灌进来。"
+        }
       ],
       "options": [
         {
@@ -1049,7 +1190,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r27",
@@ -1082,7 +1227,11 @@
             "money": -150
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r28",
@@ -1115,7 +1264,11 @@
             "money": -250
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r29",
@@ -1148,7 +1301,11 @@
             "money": -150
           }
         }
-      ]
+      ],
+      "spot": [
+        "exercise"
+      ],
+      "topic": "indoor"
     },
     {
       "id": "ev_r30",
@@ -1193,7 +1350,11 @@
           "denyText": "你还没报名参赛，谈不上组队。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r31",
@@ -1246,7 +1407,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r32",
@@ -1293,7 +1458,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r33",
@@ -1340,7 +1509,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study",
+        "socialize"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r34",
@@ -1387,7 +1561,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r35",
@@ -1433,7 +1611,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r36",
@@ -1482,7 +1664,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "club"
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r37",
@@ -1515,7 +1701,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize",
+        "rest"
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r38",
@@ -1548,7 +1739,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r39",
@@ -1581,7 +1776,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r40",
@@ -1613,7 +1812,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "exercise"
+      ],
+      "topic": "run"
     },
     {
       "id": "ev_r41",
@@ -1646,7 +1849,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize",
+        "eat"
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r42",
@@ -1685,7 +1893,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "club"
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r43",
@@ -1718,7 +1930,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r44",
@@ -1750,6 +1966,9 @@
             }
           }
         }
+      ],
+      "spot": [
+        "rest"
       ]
     },
     {
@@ -1784,7 +2003,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "rest"
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r46",
@@ -1813,7 +2036,11 @@
           "resultText": "你决定蹭图书馆的。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c01",
@@ -1843,7 +2070,11 @@
           "resultText": "你觉得卷不动，安心上课。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c02",
@@ -1873,7 +2104,11 @@
           "resultText": "你把焊好的板子丢给队友，溜了。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c03",
@@ -1905,7 +2140,11 @@
             "money": 20
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c04",
@@ -1936,7 +2175,12 @@
           "resultText": "你说最近太忙，下次再约。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study",
+        "club"
+      ],
+      "topic": "humanities"
     },
     {
       "id": "ev_c05",
@@ -1970,7 +2214,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c06",
@@ -2004,7 +2252,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c07",
@@ -2038,7 +2290,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c08",
@@ -2068,7 +2324,12 @@
           "resultText": "你打了个招呼，借口有课溜了。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study",
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r60",
@@ -2100,7 +2361,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r61",
@@ -2132,7 +2397,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "club"
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r62",
@@ -2161,7 +2430,11 @@
           "resultText": "你说再考虑考虑，师兄找了别人。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r63",
@@ -2193,7 +2466,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r64",
@@ -2226,7 +2503,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r65",
@@ -2260,7 +2541,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r66",
@@ -2293,7 +2578,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r67",
@@ -2322,7 +2611,11 @@
           "resultText": "你想着大不了补考。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r68",
@@ -2350,7 +2643,11 @@
           "resultText": "你觉得现在的专业也挺好。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r69",
@@ -2380,7 +2677,11 @@
           "resultText": "你决定专心把本专业读好。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r70",
@@ -2408,7 +2709,11 @@
           "resultText": "你把宣传单塞进了回收箱。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "club"
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r71",
@@ -2442,7 +2747,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "club",
+        "socialize"
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r72",
@@ -2474,7 +2784,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "exercise"
+      ],
+      "topic": "run"
     },
     {
       "id": "ev_r73",
@@ -2507,7 +2821,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "eat"
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r74",
@@ -2535,7 +2853,8 @@
           "resultText": "你转身走了，结果晚上忘了。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": []
     },
     {
       "id": "ev_r75",
@@ -2566,7 +2885,8 @@
             }
           }
         }
-      ]
+      ],
+      "spot": []
     },
     {
       "id": "ev_r76",
@@ -2592,7 +2912,8 @@
           "resultText": "你贴了张膜，继续用着。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": []
     },
     {
       "id": "ev_r77",
@@ -2623,7 +2944,11 @@
             "money": -200
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r78",
@@ -2652,7 +2977,11 @@
           "resultText": "你觉得留在本校也挺好。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r79",
@@ -2685,7 +3014,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study",
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r80",
@@ -2718,7 +3052,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r81",
@@ -2752,7 +3090,11 @@
             "money": -400
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r82",
@@ -2783,7 +3125,11 @@
             "money": -80
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r83",
@@ -2816,7 +3162,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r84",
@@ -2849,7 +3199,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "rest"
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r85",
@@ -2882,7 +3236,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r86",
@@ -2911,7 +3269,8 @@
           "resultText": "你摆摆手快步走过。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": []
     },
     {
       "id": "ev_r87",
@@ -2942,7 +3301,11 @@
             "money": -120
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r88",
@@ -2976,7 +3339,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r89",
@@ -3005,7 +3372,12 @@
           "resultText": "你咽了咽口水，径直走回宿舍。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "socialize",
+        "eat"
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_c09",
@@ -3035,7 +3407,11 @@
           "resultText": "你随手关掉了 PR。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c10",
@@ -3070,7 +3446,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c11",
@@ -3100,7 +3480,11 @@
           "resultText": "你侥幸推给了设备，心里有点虚。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c12",
@@ -3134,7 +3518,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c13",
@@ -3165,7 +3553,11 @@
           "resultText": "你把文档存进了草稿箱。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c14",
@@ -3200,7 +3592,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study",
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_c15",
@@ -3230,7 +3627,11 @@
           "resultText": "你把机会让给了别人。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "club"
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_c16",
@@ -3265,7 +3666,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study",
+        "club"
+      ],
+      "topic": "humanities"
     },
     {
       "id": "ev_c17",
@@ -3299,7 +3705,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c18",
@@ -3329,7 +3739,11 @@
           "resultText": "你打算再玩半年。",
           "effects": {}
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c19",
@@ -3364,7 +3778,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c20",
@@ -3398,7 +3816,12 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime",
+        "socialize"
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_c21",
@@ -3433,7 +3856,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_c22",
@@ -3467,7 +3894,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c23",
@@ -3502,7 +3933,11 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_c24",
@@ -3535,8 +3970,709 @@
             }
           }
         }
-      ]
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major"
+    },
+    {
+      "id": "ev_r90",
+      "name": "百团招新季",
+      "weight": 8,
+      "termRange": [
+        1,
+        6
+      ],
+      "spot": [
+        "club"
+      ],
+      "text": "社团招新摆了一条街，横幅和音响此起彼伏，你边走边看。",
+      "options": [
+        {
+          "id": "stroll",
+          "label": "逛一圈凑个热闹",
+          "resultText": "你领了一沓宣传单，认识了几个同好。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "join",
+          "label": "报名感兴趣的社团",
+          "resultText": "你填了报名表，等着面试通知。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            }
+          }
+        }
+      ],
+      "topic": "club"
+    },
+    {
+      "id": "ev_r91",
+      "name": "社团策划会",
+      "weight": 8,
+      "termRange": [
+        3,
+        20
+      ],
+      "spot": [
+        "club"
+      ],
+      "text": "社团要办一场活动，例会拉你一起头脑风暴出主意。",
+      "options": [
+        {
+          "id": "listen",
+          "label": "听听大家怎么说",
+          "resultText": "你坐在角落听完整场，偶尔点头附和。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "take",
+          "label": "主动承担一块任务",
+          "resultText": "你揽下宣传这块，忙了一周但很有成就感。",
+          "effects": {
+            "attributes": {
+              "social": 2,
+              "health": -1
+            }
+          }
+        }
+      ],
+      "topic": "club"
+    },
+    {
+      "id": "ev_r92",
+      "name": "晚会节目彩排",
+      "weight": 8,
+      "termRange": [
+        4,
+        24
+      ],
+      "spot": [
+        "club"
+      ],
+      "text": "迎新晚会要彩排，社团的节目还缺人手，问你要不要上。",
+      "options": [
+        {
+          "id": "support",
+          "label": "留下来当观众帮忙",
+          "resultText": "你帮着搬道具、看流程，也挺充实。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "stage",
+          "label": "上台参演一个节目",
+          "resultText": "你排了好几遍，上台那天台下掌声不断。",
+          "effects": {
+            "attributes": {
+              "social": 3,
+              "health": -1
+            }
+          }
+        }
+      ],
+      "topic": "club"
+    },
+    {
+      "id": "ev_r93",
+      "name": "社团换届选举",
+      "weight": 8,
+      "termRange": [
+        6,
+        30
+      ],
+      "spot": [
+        "club"
+      ],
+      "text": "社团换届，部长问你有没有兴趣竞选下一届干事。",
+      "options": [
+        {
+          "id": "member",
+          "label": "继续当普通社员",
+          "resultText": "你觉得这样更轻松，把时间留给自己。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "run",
+          "label": "竞选干事",
+          "resultText": "你上台做了竞选发言，顺利当选。",
+          "effects": {
+            "attributes": {
+              "social": 2,
+              "knowledge": 1
+            }
+          }
+        }
+      ],
+      "topic": "club"
+    },
+    {
+      "id": "ev_r94",
+      "name": "政治课点名",
+      "weight": 7,
+      "termRange": [
+        1,
+        30
+      ],
+      "text": "政治课上老师突然点名提问，你这学期没怎么翻书。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "listen",
+          "label": "翻开课本认真听",
+          "resultText": "你跟着课件把知识点补了一遍。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "duck",
+          "label": "低头避开点名",
+          "resultText": "你缩在后排摸了一节课的鱼。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "humanities"
+    },
+    {
+      "id": "ev_r95",
+      "name": "文史阅览室",
+      "weight": 7,
+      "termRange": [
+        2,
+        24
+      ],
+      "text": "文科楼阅览室摆着旧期刊和文史丛书，光线很安静。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "read",
+          "label": "借一本通读",
+          "resultText": "你在文史丛书中读了一下午。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "browse",
+          "label": "翻两页就走",
+          "resultText": "你随手翻了翻，吹了吹风。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "humanities"
+    },
+    {
+      "id": "ev_r96",
+      "name": "写作练笔",
+      "weight": 7,
+      "termRange": [
+        3,
+        28
+      ],
+      "text": "文学社的写作练习贴在公告栏，一篇短文就能参加。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "write",
+          "label": "认真写一篇",
+          "resultText": "你写完短文，文笔被学长夸了两句。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "watch",
+          "label": "看看别人的",
+          "resultText": "你翻了翻投稿，放松了一会儿。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "humanities"
+    },
+    {
+      "id": "ev_r97",
+      "name": "草坪晒太阳",
+      "weight": 8,
+      "termRange": [
+        1,
+        34
+      ],
+      "text": "不高山的草坡晒得暖烘烘的，有人躺着看书。",
+      "spot": [
+        "rest"
+      ],
+      "options": [
+        {
+          "id": "lie",
+          "label": "躺下晒会儿",
+          "resultText": "你躺在草坡上晒着太阳，困意慢慢上来。",
+          "effects": {
+            "attributes": {
+              "health": 3
+            }
+          }
+        },
+        {
+          "id": "sit",
+          "label": "坐起来看风景",
+          "resultText": "你坐在坡上看云，和路过的同学打了招呼。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        }
+      ],
+      "topic": "chill"
+    },
+    {
+      "id": "ev_r98",
+      "name": "亭中看书",
+      "weight": 7,
+      "termRange": [
+        1,
+        34
+      ],
+      "text": "半山腰的亭子里很清静，风把树叶吹得沙沙响。",
+      "spot": [
+        "rest"
+      ],
+      "options": [
+        {
+          "id": "read",
+          "label": "带本书读完",
+          "resultText": "你在亭子里读完半本书，心里很静。",
+          "effects": {
+            "attributes": {
+              "health": 2,
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "blank",
+          "label": "发会儿呆",
+          "resultText": "你靠着柱子发呆，什么也没想。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        }
+      ],
+      "topic": "chill"
+    },
+    {
+      "id": "ev_r99",
+      "name": "长桥夜走",
+      "weight": 8,
+      "termRange": [
+        1,
+        34
+      ],
+      "text": "晚饭后你独自走上长桥，河面映着路灯，风很轻。",
+      "spot": [
+        "rest"
+      ],
+      "options": [
+        {
+          "id": "walk",
+          "label": "慢慢走一圈",
+          "resultText": "你沿着桥来回走了一圈，脚步都松快了。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        },
+        {
+          "id": "wind",
+          "label": "停下来吹风",
+          "resultText": "你靠在栏杆上吹风，和路过的同学聊了两句。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        }
+      ],
+      "topic": "stroll"
+    },
+    {
+      "id": "ev_r100",
+      "name": "篮球半场",
+      "weight": 7,
+      "termRange": [
+        2,
+        30
+      ],
+      "text": "体育场半场缺人，球友招手喊你凑一局。",
+      "spot": [
+        "exercise"
+      ],
+      "options": [
+        {
+          "id": "play",
+          "label": "上场打半场",
+          "resultText": "你跑了几趟，出了一身汗，和队友熟了起来。",
+          "effects": {
+            "attributes": {
+              "health": 3,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "watch",
+          "label": "场边看会儿",
+          "resultText": "你在场边活动了一下筋骨。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "run"
+    },
+    {
+      "id": "ev_r101",
+      "name": "足球友谊赛",
+      "weight": 7,
+      "termRange": [
+        3,
+        28
+      ],
+      "text": "操场边有人约了足球友谊赛，还差一个边锋。",
+      "spot": [
+        "exercise"
+      ],
+      "options": [
+        {
+          "id": "join",
+          "label": "加入踢球",
+          "resultText": "你在场上跑了半场，配合进了一脚。",
+          "effects": {
+            "attributes": {
+              "health": 3,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "spectate",
+          "label": "当观众",
+          "resultText": "你坐在场边看完整场，活动了下腿。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "run"
+    },
+    {
+      "id": "ev_r102",
+      "name": "羽毛球约局",
+      "weight": 7,
+      "termRange": [
+        2,
+        30
+      ],
+      "text": "体育馆羽毛球馆有空场，室友约你一起打球。",
+      "spot": [
+        "exercise"
+      ],
+      "options": [
+        {
+          "id": "doubles",
+          "label": "双打一局",
+          "resultText": "你在球馆跑跳了一局，球拍挥得顺手。",
+          "effects": {
+            "attributes": {
+              "health": 3,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "stretch",
+          "label": "场边活动",
+          "resultText": "你在场边拉了拉伸，出了点薄汗。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "indoor"
+    },
+    {
+      "id": "ev_r103",
+      "name": "器械训练",
+      "weight": 7,
+      "termRange": [
+        3,
+        28
+      ],
+      "text": "健身房器械区人不多，跑步机和哑铃都空着。",
+      "spot": [
+        "exercise"
+      ],
+      "options": [
+        {
+          "id": "lift",
+          "label": "练一组力量",
+          "resultText": "你练了一组哑铃和拉伸，肌肉有点发酸。",
+          "effects": {
+            "attributes": {
+              "health": 3
+            }
+          }
+        },
+        {
+          "id": "tread",
+          "label": "慢走拉伸",
+          "resultText": "你在跑步机上慢走了一会儿，舒展身体。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        }
+      ],
+      "topic": "indoor"
+    },
+    {
+      "id": "ev_r104",
+      "name": "英语四级备考",
+      "weight": 7,
+      "termRange": [
+        2,
+        16
+      ],
+      "text": "四级报名开始，单词书和真题卷堆在桌上。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "cram",
+          "label": "背单词刷真题",
+          "resultText": "你刷了两套真题，阅读速度快了些。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "postpone",
+          "label": "先放一放",
+          "resultText": "你把资料收进抽屉，先歇了口气。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "basics"
+    },
+    {
+      "id": "ev_r105",
+      "name": "数学课作业",
+      "weight": 7,
+      "termRange": [
+        1,
+        12
+      ],
+      "text": "高数/线代作业明天交，最后一道大题卡了半小时。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "solve",
+          "label": "啃下难题",
+          "resultText": "你一步步推到最后，终于解出了那道题。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "borrow",
+          "label": "问同学思路",
+          "resultText": "你和同学对了对思路，借了个提示。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "social": 1
+            }
+          }
+        }
+      ],
+      "topic": "basics"
+    },
+    {
+      "id": "ev_r106",
+      "name": "宿舍午休",
+      "weight": 8,
+      "termRange": [
+        1,
+        34
+      ],
+      "text": "没课的下午，宿舍拉着窗帘，床铺格外舒服。",
+      "spot": [
+        "rest"
+      ],
+      "options": [
+        {
+          "id": "nap",
+          "label": "睡个午觉",
+          "resultText": "你拉上床帘睡了一觉，醒来精神多了。",
+          "effects": {
+            "attributes": {
+              "health": 3
+            }
+          }
+        },
+        {
+          "id": "scroll",
+          "label": "躺着刷手机",
+          "resultText": "你躺着刷了会儿消息，和室友有一搭没一搭地聊。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        }
+      ],
+      "topic": "nap"
+    },
+    {
+      "id": "ev_r107",
+      "name": "专业课小组讨论",
+      "weight": 7,
+      "termRange": [
+        2,
+        30
+      ],
+      "text": "专业课小组在图书馆讨论选题，还差你一个。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "join",
+          "label": "参与讨论",
+          "resultText": "你在讨论里提了个思路，小组记下了。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "listen",
+          "label": "旁听记录",
+          "resultText": "你坐在旁边记了几页笔记。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ],
+      "topic": "major"
+    },
+    {
+      "id": "ev_r108",
+      "name": "专业文献阅读",
+      "weight": 7,
+      "termRange": [
+        3,
+        34
+      ],
+      "text": "导师发来几篇专业文献，要求这周读完写摘要。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "deep",
+          "label": "精读做笔记",
+          "resultText": "你逐篇精读并整理了摘要，思路清晰不少。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3
+            }
+          }
+        },
+        {
+          "id": "skim",
+          "label": "浏览摘要",
+          "resultText": "你扫了一遍结论，先混个眼熟。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ],
+      "topic": "major"
     }
   ],
-  "note": "fixed 三条：社团招新(CLUB)、毕业论文(THESIS)、负债(DEBT)；random 已扩充至约 100 条：恋爱链 ev_r23-26、花钱加属性 ev_r27-29、链式延伸 ev_r30-36、独立随机 ev_r37-46、校园生活 ev_r47-59、通用扩充 ev_r60-89、学院专属 ev_c01-c24（每院 3 条）。money 统一用顶层 effects.money。"
+  "note": "fixed 三条：社团招新/毕业论文/负债；random 按 spot 场景归类：study 学习、club 社团、exercise 运动、parttime 兼职、socialize 社交、rest 休息、eat 吃饭；spot 为空为通用兜底事件。混合抽取：优先当前场景 → 通用 → 其他场景。"
 }
