@@ -74,11 +74,18 @@
 
 ```json
 { "id": "study_hard", "name": "学霸", "desc": "天生爱学习",
-  "modifiers": { "attributes": { "knowledge": 2, "health": -1 } },
+  "modifiers": { "attributes": { "knowledge": 3, "social": -1, "health": -1 } },
   "eventWeights": { "ev_r02": 1.5 } }
 ```
 
-- `modifiers.attributes` 必填且非空；键 ∈ `attributeKeys`；三标签叠加后非 money 属性 `max(0, …)`（SRS 1.4，已由 `engine.applyTagModifiers` 实现）。
+- **v2.2 起：12 个标签每一条都必须有属性修正**，且必须同时含至少一项加成和一项代价（`tests/verify_tags.mjs` 门禁）：
+  - 主加成 `+2 ~ +3`、代价 `-1 ~ -2`、单项绝对值 ≤ 3、净收益 `-1 ~ +3`；
+  - 键 ∈ `attributeKeys`；三标签叠加后非 money 属性 `max(0, …)`（SRS 1.4，已由 `engine.applyTagModifiers` 实现）；
+  - money 不钳制，允许因为标签变成负数（与「负债」线呼应）；等价于开局属性 = 分配值 + 三条标签修正之和。
+- 当前数值表（`config/tags.json`）：学霸 学识+3/社交-1/健康-1；社牛 社交+3/学识-1/金钱-1；运动达人 健康+3/学识-1/金钱-1；
+  吃货 社交+2/健康+1/金钱-2；夜猫子 学识+2/社交+1/健康-2；卷王 学识+3/社交-1/健康-2；佛系 健康+2/学识-1；
+  社团达人 社交+3/学识-1/健康-1；科研党 学识+3/社交-2；创业青年 金钱+3/学识-1/健康-1；文艺青年 社交+2/学识+1/健康-2；
+  游戏宅 学识+2/社交-1/健康-1。
 - 引擎同时兼容扁平写法 `modifiers:{knowledge:2}`。
 - `eventWeights` 选填；键必须是 `events.json` 中存在的随机事件 id；`eventManager.computeWeight` 读取。
 

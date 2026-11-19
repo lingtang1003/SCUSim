@@ -270,7 +270,7 @@ test('D: 经 controller 驱动完整一局不抛错且到达结局', async () =>
   await controller.start();
   const calls = spyApp._calls;
 
-  // --- 新游戏（合法：属性和=20，3 标签，seed 固定） ---
+  // --- 新游戏（合法：分配和=20，3 标签，seed 固定） ---
   const validOptions = {
     name: '验证生',
     gender: '男',
@@ -282,8 +282,16 @@ test('D: 经 controller 驱动完整一局不抛错且到达结局', async () =>
   await controller.callbacks.onNewGame(validOptions);
   const s = controller._getState();
   if (!(s && s.turn === 1)) return '新游戏后 turn 不为 1: ' + (s && s.turn);
-  if (s.player.attributes.knowledge + s.player.attributes.social + s.player.attributes.health + s.player.attributes.money !== 20) {
-    return '属性总和不为 20';
+  // 属性 = 分配值 + 标签修正（v2.2 起每个标签都有加成与代价），所以总和不再恒为 20
+  const tagModSum = validOptions.tags.reduce((acc, id) => {
+    const tag = configs.tags.list.find((t) => t.id === id);
+    const m = (tag && tag.modifiers && (tag.modifiers.attributes || tag.modifiers)) || {};
+    return acc + Object.values(m).reduce((a, v) => a + (Number(v) || 0), 0);
+  }, 0);
+  const attrSum = s.player.attributes.knowledge + s.player.attributes.social
+    + s.player.attributes.health + s.player.attributes.money;
+  if (attrSum !== 20 + tagModSum) {
+    return `属性总和应为 20+标签修正(${tagModSum})，实际 ${attrSum}`;
   }
 
   // --- 解开局固定事件（社团招新） ---

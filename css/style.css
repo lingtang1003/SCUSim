@@ -1570,6 +1570,44 @@ a:hover {
   line-height: 1.4;
 }
 
+/* 标签下的属性修正小药丸：加成=墨黑，代价=红（与全站「涨墨跌红」一致） */
+.vn-tag__mods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.vn-tag__mod {
+  font-size: 11px;
+  line-height: 1.7;
+  padding: 0 7px;
+  border-radius: var(--r-pill);
+  letter-spacing: 0.02em;
+  background: var(--paper-3);
+  color: var(--ink-2);
+}
+.vn-tag__mod.is-up { color: var(--ink); }
+.vn-tag__mod.is-down { color: var(--red); background: var(--red-50); }
+
+/* 「属性合计」一行 */
+.vn-tag-sum {
+  margin: 10px 2px 2px;
+  font-size: 13px;
+  color: var(--ink-2);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 右侧预览里的加成角标 */
+.vn-create__attr-mod {
+  font-style: normal;
+  font-size: 11px;
+  margin-left: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.vn-create__attr-mod.is-up { color: var(--ink); }
+.vn-create__attr-mod.is-down { color: var(--red); }
+
 .vn-tag.is-selected {
   border-color: var(--gold-3);
   background: linear-gradient(180deg, var(--paper), var(--paper-2));

@@ -401,6 +401,39 @@ export function createApp(ctx) {
     return t ? t.name : id || '';
   }
 
+  /** 标签的属性修正（按 ATTRIBUTE_META 顺序，过滤 0）。兼容 modifiers.attributes 与扁平写法。 */
+  function tagMods(tag) {
+    const m = (tag && tag.modifiers && (tag.modifiers.attributes || tag.modifiers)) || {};
+    const out = [];
+    for (const meta of ATTRIBUTE_META) {
+      const delta = Number(m[meta.key]);
+      if (Number.isFinite(delta) && delta !== 0) {
+        out.push({ key: meta.key, name: meta.name, icon: meta.icon, delta });
+      }
+    }
+    return out;
+  }
+
+  /** 已选标签的修正合计（「属性合计」一行与右侧预览用）。 */
+  function selectedTagMods(ids) {
+    const sum = {};
+    for (const id of ids || []) {
+      const tag = listOf('tags').find((t) => t.id === id);
+      for (const d of tagMods(tag)) sum[d.key] = (sum[d.key] || 0) + d.delta;
+    }
+    return sum;
+  }
+
+  /** 「学识 +3 · 健康 -2」；无修正返回空串。 */
+  function tagModsText(mods) {
+    const parts = [];
+    for (const meta of ATTRIBUTE_META) {
+      const v = Number(mods[meta.key]);
+      if (Number.isFinite(v) && v !== 0) parts.push(meta.name + (v > 0 ? '+' : '') + v);
+    }
+    return parts.join(' · ');
+  }
+
   function balanceOf(key, fallback) {
     const b = (config && config.balance) || {};
     return Number.isFinite(b[key]) ? b[key] : fallback;
@@ -1100,11 +1133,22 @@ export function createApp(ctx) {
         h('div', { class: 'vn-create__meta' }, [
           creation.gender + ' · ' + findCollegeName(creation.collegeId),
         ]),
-        h('div', { class: 'vn-create__attrs' }, ATTRIBUTE_META.map((m) =>
-          h('span', { class: 'vn-create__attr' }, [
-            m.icon + ' ' + m.name + ' ' + (Number(creation.attributes[m.key]) || 0),
-          ])
-        )),
+        h('div', { class: 'vn-create__attrs' }, (() => {
+          const mods = selectedTagMods(creation.tags);
+          return ATTRIBUTE_META.map((m) => {
+            const base = Number(creation.attributes[m.key]) || 0;
+            const d = Number(mods[m.key]) || 0;
+            const eff = m.key === 'money' ? base + d : Math.max(0, base + d);
+            return h('span', { class: 'vn-create__attr' }, [
+              m.icon + ' ' + m.name + ' ' + eff,
+              d
+                ? h('i', { class: 'vn-create__attr-mod' + (d > 0 ? ' is-up' : ' is-down') }, [
+                    (d > 0 ? '+' : '') + d,
+                  ])
+                : null,
+            ]);
+          });
+        })()),
         h('div', { class: 'vn-create__tags' }, creation.tags.length
           ? creation.tags.map((t) => h('span', { class: 'pill pill--accent' }, [findTagName(t)]))
           : [h('span', { class: 'tiny muted' }, ['尚未选择标签'])]) ,
@@ -1376,10 +1420,20 @@ export function createApp(ctx) {
         }, [
           h('b', {}, [t.name || t.id]),
           h('small', {}, [t.desc || '']),
+          h('span', { class: 'vn-tag__mods' }, tagMods(t).map((d) =>
+            h('span', { class: 'vn-tag__mod' + (d.delta > 0 ? ' is-up' : ' is-down') }, [
+              d.name + (d.delta > 0 ? '+' : '') + d.delta,
+            ])
+          )),
         ]);
       })),
       h('div', { class: 'vn-counter' + (selected.length < REQUIRED_TAGS ? ' is-ok' : '') }, [
         '已选 ' + selected.length + ' / ' + REQUIRED_TAGS,
+      ]),
+      h('p', { class: 'vn-tag-sum' }, [
+        selected.length
+          ? '属性合计：' + (tagModsText(selectedTagMods(selected)) || '无')
+          : '标签会直接改变开局属性（加成与代价同时生效）',
       ]),
       h('button', {
         class:
