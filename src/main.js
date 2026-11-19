@@ -608,7 +608,14 @@ export function createController(deps) {
     const relationDelta = diffRelations(relBefore, state);
     await storage.saveGame(state);
     renderState({
-      eventResult: { eventId: eventId, text: res.message || '', delta: delta, relationDelta: relationDelta },
+      eventResult: {
+        eventId: eventId,
+        text: res.message || '',
+        delta: delta,
+        relationDelta: relationDelta,
+        // 选项带角色（迎新晚会选人）时，用它把左侧立绘换成对方
+        charId: (res.result && res.result.charId) || '',
+      },
     });
     notifyModalClosed();
     // 剧情线状态变化给个明确反馈（走完 / 中断）

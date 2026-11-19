@@ -312,7 +312,15 @@ export function availableOptions(event, state, config) {
         }
       }
     }
-    return { id: o.id, label: o.label, enabled, reason, hints: optionHints(o, config) };
+    return {
+      id: o.id,
+      label: o.label,
+      enabled,
+      reason,
+      hints: optionHints(o, config),
+      // 选项自带角色（迎新晚会选人）：结算后 UI 用它在左侧立绘位显示对方
+      charId: o.charId || '',
+    };
   });
 }
 
@@ -394,7 +402,12 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
   }
   return {
     ok: true,
-    result: { eventId, choiceId, effects: option.effects || {} },
+    result: {
+      eventId,
+      choiceId,
+      effects: option.effects || {},
+      charId: option.charId || '',
+    },
     message: text,
   };
 }

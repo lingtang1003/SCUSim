@@ -4567,6 +4567,24 @@ body { font-synthesis: none; }
 
 /* 37.1b 透明底立绘（cutout）：不套白卡、不裁底、不画名牌，直接站在场景里 */
 .vn-npc--cutout { width: min(460px, 34vw); height: min(84vh, 760px); }
+/* 事件结算后站在左下（原来玩家立绘的位置），换人时有轻微入场 */
+.vn-npc--stage {
+  left: 1.5%;
+  right: auto;
+  bottom: 0;
+  animation: vn-npc-in 320ms var(--ease-out) both;
+}
+.vn-stage--map .vn-npc--stage {
+  left: 2%;
+  bottom: 8%;
+  width: min(400px, 30vw);
+  height: min(70vh, 620px);
+}
+@keyframes vn-npc-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+.reduce-motion .vn-npc--stage { animation: none !important; }
 .vn-npc--cutout .vn-npc__card {
   background: none;
   box-shadow: none;
