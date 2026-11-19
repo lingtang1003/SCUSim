@@ -30,6 +30,8 @@ import { createAudio } from './audio/audio.js';
  */
 export function createController(deps) {
   const { loader, storage, engine: engineMod, createRng: makeRng, createApp: makeApp, doc, rootEl } = deps;
+  // 浏览器入口传 true：刷新后自动回到上次的画面；测试默认 false，避免影响用例
+  const autoResume = !!(deps && deps.autoResume);
 
   // 允许直接传入 engine 模块，或回退到本地导入
   const eng = engineMod || engine;
@@ -42,6 +44,25 @@ export function createController(deps) {
   let appearanceId = '';
   const audio = createAudio({ doc });
   let actionSeq = 0;
+
+  // ---------------- 刷新后回到原画面 ----------------
+  // 只记录「上次停在哪个画面」：主页写 'title'，开局/读档后写 'game'。
+  // 存 localStorage（和存档同域），隐私模式写不进去就退化成「不记忆」。
+  const ROUTE_KEY = 'scusim:route';
+  function readRoute() {
+    try {
+      return (typeof localStorage !== 'undefined' && localStorage.getItem(ROUTE_KEY)) || '';
+    } catch (_) {
+      return '';
+    }
+  }
+  function writeRoute(v) {
+    try {
+      if (typeof localStorage !== 'undefined') localStorage.setItem(ROUTE_KEY, String(v));
+    } catch (_) {
+      /* 忽略：写不进去就不记忆 */
+    }
+  }
 
   // ---------------- 弹窗队列（D-13：学期结算先、事件后） ----------------
   // 约定：UI 的 showExam / showEvent 收第二个参数 done，关闭时调用它；
@@ -254,6 +275,7 @@ export function createController(deps) {
     await storage.saveGame(state);
     await storage.saveSettings({ appearance: state.player.appearance || appearanceId });
     hasSave = true;
+    writeRoute('game');
     actionSeq = 0;
     renderState();
     // 回合 1 可能已生成固定事件（社团招新），在场景之上弹事件
@@ -274,6 +296,7 @@ export function createController(deps) {
       appearanceId = state.player.appearance;
     }
     hasSave = true;
+    writeRoute('game');
     actionSeq = 0;
     renderState();
     // 存档已经判过结局（最后一回合的自动存档）：读档后直接把结局放出来
@@ -348,6 +371,7 @@ export function createController(deps) {
       appearanceId = state.player.appearance;
     }
     hasSave = true;
+    writeRoute('game');
     actionSeq = 0;
     app.closeOverlay();
     renderState();
@@ -690,6 +714,7 @@ export function createController(deps) {
       appearanceId = state.player.appearance;
     }
     hasSave = true;
+    writeRoute('game');
     actionSeq = 0;
     await storage.saveGame(state);
     renderState();
@@ -701,6 +726,7 @@ export function createController(deps) {
     await storage.clearSave();
     state = null;
     hasSave = false;
+    writeRoute('title');
     if (app.mount) app.mount(rootEl, { hasSave: false });
     audio.playBgm('theme');
   }
@@ -767,6 +793,7 @@ export function createController(deps) {
   function onOpenMenu() {
     clearAutoAdvance();
     resetModals();
+    writeRoute('title');   // 主动回主页：刷新后也留在主页
     if (app.mount) app.mount(rootEl, { hasSave });
     audio.playBgm('theme');
   }
@@ -811,6 +838,10 @@ export function createController(deps) {
     app.mount(rootEl, { hasSave });
     audio.playBgm('theme');
     mountDevPanel();
+    // 刷新页面后停在原画面：有存档 + 上次不是主动回主页 → 直接续玩（含未结算事件的弹窗恢复）
+    if (hasSave && autoResume && readRoute() !== 'title') {
+      await onLoadGame();
+    }
     // 仅 ?dev=1：暴露只读调试句柄，供浏览器 E2E / 手工调试驱动（正式访问不存在）
     if (devModeEnabled() && typeof globalThis !== 'undefined') {
       globalThis.__scusim = {
@@ -850,6 +881,7 @@ if (typeof document !== 'undefined' && typeof document.getElementById === 'funct
       createApp,
       doc: document,
       rootEl: el,
+      autoResume: true,
     });
     controller.start().catch((e) => {
       el.innerHTML =
