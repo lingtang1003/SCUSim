@@ -155,6 +155,24 @@ export function applyEffects(state, effects, ctx) {
     }
   }
 
+  // ---- subject：分科进度（major/basics/humanities），独立于主属性，供分科考试算分 ----
+  const subjEff = effects.subject;
+  if (subjEff && typeof subjEff === 'object') {
+    if (!state.academics || typeof state.academics !== 'object') state.academics = {};
+    if (!state.academics.subjectProgress || typeof state.academics.subjectProgress !== 'object') {
+      state.academics.subjectProgress = { major: 0, basics: 0, humanities: 0 };
+    }
+    for (const key of Object.keys(subjEff)) {
+      const delta = Number(subjEff[key]);
+      if (!Number.isFinite(delta) || delta === 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(state.academics.subjectProgress, key)) {
+        state.academics.subjectProgress[key] = 0;
+      }
+      state.academics.subjectProgress[key] += delta;
+      changes.push({ kind: 'subject', key, delta });
+    }
+  }
+
   if (changes.length > 0) pushHistory(state, changes, ctx);
   return { ok: true, changes };
 }

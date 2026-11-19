@@ -203,18 +203,18 @@ check('C: 剧情事件不重复触发', dup.length === 0, dup.join(','));
 // =====================================================================
 // D) 分支：保守选择 → 温暖结局；首次冷落 → 线断
 // =====================================================================
-// 江叙：sit(10)+test(12)+help(14)+wait(8) = 44 + 6 = 50 → 线走完但不到 55 → 温暖结局
+// 江叙：date 步选次选（seat +2）→ 好感停在 30–54、线未走完 → 温暖结局（warm 不要求 done）
 const jxWarm = play(config, 777, 'jiangxu', {
-  ev_story_jiangxu_4: 'wait',
+  ev_story_jiangxu_3: 'seat',
 });
-check('D: 保守选择也把线走完', storyline.progressOf(jxWarm.state, config, 'line_jiangxu').status === 'done');
+check('D: 保守选择线未走完', storyline.progressOf(jxWarm.state, config, 'line_jiangxu').status !== 'done');
 check('D: 好感 30–54 之间',
   relation.affinityOf(jxWarm.state, 'jiangxu') >= 30 && relation.affinityOf(jxWarm.state, 'jiangxu') < 55,
   '=' + relation.affinityOf(jxWarm.state, 'jiangxu'));
 check('D: 结局是「没说完的话」', jxWarm.state.endingId === 'ending_jiangxu_warm', jxWarm.state.endingId);
 
-// 江叙：第 3 步选择「让他自己去」（+6）→ 好感 34 < 38，最后一步进不去 → 线断
-const jxHalf = play(config, 778, 'jiangxu', { ev_story_jiangxu_3: 'leave' });
+// 江叙：初遇就选次选（greet +2）→ 好感达不到后续门槛，窗口过期 → 线断
+const jxHalf = play(config, 778, 'jiangxu', { ev_story_jiangxu_1: 'greet' });
 check('D: 半途而废的选择会让线断在最后一步之前',
   storyline.progressOf(jxHalf.state, config, 'line_jiangxu').status === 'broken',
   storyline.progressOf(jxHalf.state, config, 'line_jiangxu').status + ' / ' + relation.affinityOf(jxHalf.state, 'jiangxu'));

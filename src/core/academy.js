@@ -94,14 +94,23 @@ export function runFinalExam(state, config, rng) {
 
   const next = (rng && typeof rng.next === 'function') ? () => rng.next() : () => 0.5;
   const health = Number(state.player.attributes.health) || 0;
+  const topicMap = (exam.subjectTopics && typeof exam.subjectTopics === 'object') ? exam.subjectTopics : {};
+  const progress = (state.academics && state.academics.subjectProgress) || {};
+  const satiety = Number.isFinite(exam.subjectSatiety) ? exam.subjectSatiety : 12;
+  const subjBonus = Number.isFinite(exam.subjectBonus) ? exam.subjectBonus : 30;
+
   const results = subjects.map((name) => {
     const n = next();
-    // 学识饱和贡献（开根号边际递减）：学识100→40分加成，学识50→≈28，学识10→≈13
-    const knowGain = 40 * Math.sqrt(Math.max(0, knowledge) / 100);
-    // 健康调节：60为基准，偏离每点0.1（健康100→+4，健康20→-4），死读书拖分
+    const topic = topicMap[name];
+    const prog = topic ? (Number(progress[topic]) || 0) : 0;
+    // 分科进度加成（开根号边际递减）：刷满 satiety 次该方向学习 → subjBonus 分
+    const progGain = subjBonus * Math.sqrt(Math.max(0, prog) / satiety);
+    // 学识兜底：没怎么刷该方向也保留一点基础分，不挂科
+    const knowFloor = 10 * Math.sqrt(Math.max(0, knowledge) / 100);
+    // 健康调节：60为基准，偏离每点0.1
     const healthMod = (health - 60) * 0.1;
     // 整体乘随机波动，保底 passLine(60)、封顶100（永不挂科）
-    const baseScore = passLine + knowGain + healthMod;
+    const baseScore = passLine + progGain + knowFloor + healthMod;
     const raw = baseScore * (1 + (n * 2 - 1) * fluctuation);
     let score = Math.round(raw);
     score = Math.max(passLine, Math.min(100, score));

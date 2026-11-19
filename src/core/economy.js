@@ -42,10 +42,27 @@ export function applyAttributeEffects(state, effects) {
  * @param {object} rng
  */
 export function applyActionEconomy(state, action, config, rng) {
-  if (!action || !action.effects) return;
-  const res = applyEffects(state, action.effects, { config });
-  const parts = describeChanges(res.changes);
-  if (parts.length) state.log.push(`影响：${parts.join('，')}。`);
+  if (action && action.effects) {
+    const res = applyEffects(state, action.effects, { config });
+    const parts = describeChanges(res.changes);
+    if (parts.length) state.log.push(`影响：${parts.join('，')}。`);
+  }
+
+  // study 行动：按当前地点的细分主题累计分科进度（图书馆→major 专业，教学楼→basics 公共课，文科楼→humanities 人文）。
+  // 分科进度独立于主属性学识，仅用于期末分科算分。
+  if (action && action.id === 'study' && state.player) {
+    const list = config && config.locations && Array.isArray(config.locations.list)
+      ? config.locations.list : [];
+    const loc = list.find((l) => l.id === state.player.location);
+    const topic = loc && loc.topic;
+    if (topic === 'major' || topic === 'basics' || topic === 'humanities') {
+      if (!state.academics || typeof state.academics !== 'object') state.academics = {};
+      if (!state.academics.subjectProgress || typeof state.academics.subjectProgress !== 'object') {
+        state.academics.subjectProgress = { major: 0, basics: 0, humanities: 0 };
+      }
+      state.academics.subjectProgress[topic] = (Number(state.academics.subjectProgress[topic]) || 0) + 1;
+    }
+  }
 }
 
 const MONTH_LABEL = { knowledge: '学识', social: '社交', health: '健康' };

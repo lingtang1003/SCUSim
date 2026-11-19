@@ -428,6 +428,14 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
     }
   }
   const applied = applyEffects(state, option.effects || {}, { config });
+  // 学习类事件按其细分主题累计分科进度（独立于学识主属性，供期末分科算分）
+  if (ev.topic === 'major' || ev.topic === 'basics' || ev.topic === 'humanities') {
+    if (!state.academics || typeof state.academics !== 'object') state.academics = {};
+    if (!state.academics.subjectProgress || typeof state.academics.subjectProgress !== 'object') {
+      state.academics.subjectProgress = { major: 0, basics: 0, humanities: 0 };
+    }
+    state.academics.subjectProgress[ev.topic] = (Number(state.academics.subjectProgress[ev.topic]) || 0) + 1;
+  }
   if (!Array.isArray(state.eventHistory)) state.eventHistory = [];
   state.eventHistory.push(eventId);
   // 随机事件去重：记录最近触发的随机事件，供 rollEvent 短间隔内不重复

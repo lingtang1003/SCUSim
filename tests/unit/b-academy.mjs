@@ -48,9 +48,11 @@ console.log('== B · 学业单测 ==');
   const res = runFinalExam(s, config, rngStub(0));
   const passLine = Number.isFinite(exam.passLine) ? exam.passLine : 60;
   // 公式（与 src/core/academy.js 一致，参数来自 config）：
-  //   score = clamp(round((passLine + 40×√(学识/100) + (健康-60)×0.1) × (1±波动)), passLine, 100)
+  //   score = clamp(round((passLine + 分科进度加成 + 学识兜底10×√(学识/100) + (健康-60)×0.1) × (1±波动)), passLine, 100)
+  // 本用例未累计分科进度，progGain=0。
   const health = Number(s.player.attributes.health) || 0;
-  const rawBase = passLine + 40 * Math.sqrt(Math.max(0, 10) / 100) + (health - 60) * 0.1;
+  const knowFloor = 10 * Math.sqrt(Math.max(0, 10) / 100);
+  const rawBase = passLine + knowFloor + (health - 60) * 0.1;
   const expected = Math.max(passLine, Math.min(100, Math.round(rawBase * (1 - fluctuation))));
   check('runFinalExam: rng=0 → 按公式取低值（且不低于及格线）',
     res.ok === true && res.subjects.every((x) => x.score === expected),
@@ -74,7 +76,8 @@ console.log('== B · 学业单测 ==');
   const res = runFinalExam(s, config, rngStub(0.999999));
   const passLine2 = Number.isFinite(exam.passLine) ? exam.passLine : 60;
   const health2 = Number(s.player.attributes.health) || 0;
-  const rawBase2 = passLine2 + 40 * Math.sqrt(Math.max(0, 10) / 100) + (health2 - 60) * 0.1;
+  const knowFloor2 = 10 * Math.sqrt(Math.max(0, 10) / 100);
+  const rawBase2 = passLine2 + knowFloor2 + (health2 - 60) * 0.1;
   const expected = Math.max(passLine2, Math.min(100, Math.round(rawBase2 * (1 + fluctuation))));
   check('runFinalExam: rng≈1 → 按公式取高值',
     res.subjects.every((x) => x.score === expected),

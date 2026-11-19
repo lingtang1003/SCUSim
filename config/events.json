@@ -985,7 +985,7 @@
               "crush": true
             },
             "relation": {
-              "linyu": 10
+              "linyu": 7
             }
           }
         },
@@ -1043,7 +1043,7 @@
               "crush2": true
             },
             "relation": {
-              "linyu": 12
+              "linyu": 7
             }
           }
         },
@@ -1053,7 +1053,7 @@
           "resultText": "你说还有作业没写完。她回了个「好」，那边的输入状态亮了很久，又灭了。",
           "effects": {
             "relation": {
-              "linyu": 4
+              "linyu": 2
             }
           }
         }
@@ -1105,7 +1105,7 @@
               "romance": "dating"
             },
             "relation": {
-              "linyu": 14
+              "linyu": 6
             }
           }
         },
@@ -1118,7 +1118,7 @@
               "social": 1
             },
             "relation": {
-              "linyu": 8
+              "linyu": 2
             }
           }
         }
@@ -1170,7 +1170,7 @@
               "romance": "hehe"
             },
             "relation": {
-              "linyu": 18
+              "linyu": 4
             }
           }
         },
@@ -1186,7 +1186,7 @@
               "romance": null
             },
             "relation": {
-              "linyu": -10
+              "linyu": -4
             }
           }
         }

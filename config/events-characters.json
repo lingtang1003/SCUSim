@@ -1,63 +1,124 @@
 {
   "version": "2.1.0",
-  "note": "角色系统剧情事件分片（由 loader 合并进 config.events）。fixed 为迎新晚会（第 2 回合选攻略对象），random 为五条新剧情线的步骤事件；林予线复用主表里的 ev_r23–ev_r26。storylineOnly 的事件不进随机池，只由 core/storyline.js 按窗口强制派发。",
+  "note": "角色系统剧情事件分片（由 loader 合并进 config.events）。fixed 为迎新晚会（第 2 回合选攻略对象）；random 为六条剧情线的步骤事件。storylineOnly 事件不进随机池，只由 core/storyline.js 按窗口强制派发。每条线 9 步：初遇→再次邂逅→单独相处→散步同行→深入了解→暧昧升温→吵架误会→复合和解→告白。",
   "fixed": [
     {
       "id": "ev_fixed_welcome",
       "code": "WELCOME",
       "name": "迎新晚会",
       "type": "fixed",
-      "trigger": { "type": "turn", "value": 2 },
-      "termRange": [1, 2],
+      "trigger": {
+        "type": "turn",
+        "value": 2
+      },
+      "termRange": [
+        1,
+        2
+      ],
       "layout": "grid",
       "text": "迎新晚会在体育馆办到一半，灯忽然暗了两秒。再亮起来时，人群散开了一圈——你可以走过去，跟其中一个人说第一句话。",
       "lines": [
-        { "speaker": "旁白", "text": "迎新晚会在体育馆办到一半，灯忽然暗了两秒。" },
-        { "speaker": "旁白", "text": "再亮起来的时候，人群散开了一圈。有人靠在音响旁，有人抱着琴谱往门口走。" },
-        { "speaker": "旁白", "text": "这一晚的选择，会决定这四年里你身边站着谁。" }
+        {
+          "speaker": "旁白",
+          "text": "迎新晚会在体育馆办到一半，灯忽然暗了两秒。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "再亮起来的时候，人群散开了一圈。有人靠在音响旁，有人抱着琴谱往门口走。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "这一晚的选择，会决定这四年里你身边站着谁。"
+        }
       ],
       "options": [
         {
           "id": "approach_jiangxu",
           "label": "江叙 · 靠在音响旁看手机",
           "resultText": "你把一瓶水递过去。他愣了一下，接过来，说了句谢谢。",
-          "effects": { "flags": { "route_jiangxu": true }, "relation": { "jiangxu": 6 } }
+          "effects": {
+            "flags": {
+              "route_jiangxu": true
+            },
+            "relation": {
+              "jiangxu": 6
+            }
+          }
         },
         {
           "id": "approach_guchi",
           "label": "顾迟 · 在人群外系领带",
           "resultText": "你问他领带是不是系反了。他低头看了两秒，说：「你眼神不错。」",
-          "effects": { "flags": { "route_guchi": true }, "relation": { "guchi": 6 } }
+          "effects": {
+            "flags": {
+              "route_guchi": true
+            },
+            "relation": {
+              "guchi": 6
+            }
+          }
         },
         {
           "id": "approach_linyu",
           "label": "林予 · 举着相机拍舞台",
           "resultText": "你帮她挡了一下挤过来的人群。她说了声谢谢，镜头没有放下。",
-          "effects": { "flags": { "route_linyu": true }, "relation": { "linyu": 6 } }
+          "effects": {
+            "flags": {
+              "route_linyu": true
+            },
+            "relation": {
+              "linyu": 6
+            }
+          }
         },
         {
           "id": "approach_suwan",
           "label": "苏晚 · 抱着琴谱往门口走",
           "resultText": "你替她推开侧门。她小声说：「谢谢……里面太吵了。」",
-          "effects": { "flags": { "route_suwan": true }, "relation": { "suwan": 6 } }
+          "effects": {
+            "flags": {
+              "route_suwan": true
+            },
+            "relation": {
+              "suwan": 6
+            }
+          }
         },
         {
           "id": "approach_zhouye",
           "label": "周野 · 刚从操场跑过来",
           "resultText": "他一身汗，笑着跟你击了个掌：「你身上有股新生的味道。」",
-          "effects": { "flags": { "route_zhouye": true }, "relation": { "zhouye": 6 } }
+          "effects": {
+            "flags": {
+              "route_zhouye": true
+            },
+            "relation": {
+              "zhouye": 6
+            }
+          }
         },
         {
           "id": "approach_tangtang",
           "label": "唐棠 · 拿着话筒在串场",
           "resultText": "她冲你眨了眨眼，把话筒往你嘴边递了一下就收回去，笑得很得意。",
-          "effects": { "flags": { "route_tangtang": true }, "relation": { "tangtang": 6 } }
+          "effects": {
+            "flags": {
+              "route_tangtang": true
+            },
+            "relation": {
+              "tangtang": 6
+            }
+          }
         },
         {
           "id": "alone",
           "label": "一个人待着 · 退到看台最后排",
           "resultText": "你退到看台最后排，看着灯一盏盏灭掉。这一晚谁都很好，也谁都和你没关系。",
-          "effects": { "attributes": { "knowledge": 1 } }
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
         }
       ]
     }
@@ -70,118 +131,201 @@
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
+      "termRange": [
+        1,
+        8
+      ],
       "text": "凌晨一点，宿舍楼下的便利店只剩关东煮还热着。你撞见了他。",
       "lines": [
-        { "speaker": "旁白", "text": "凌晨一点，宿舍楼下的便利店只剩关东煮还热着。" },
-        { "speaker": "江叙", "emotion": "neutral", "text": "……你也这个点出来。" },
-        { "speaker": "旁白", "text": "他拎着两瓶咖啡，电脑包上挂着一根没剪的网线。" }
+        {
+          "speaker": "旁白",
+          "text": "凌晨一点，宿舍楼下的便利店只剩关东煮还热着。"
+        },
+        {
+          "speaker": "江叙",
+          "emotion": "neutral",
+          "text": "……你也这个点出来。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他拎着两瓶咖啡，电脑包上挂着一根没剪的网线。"
+        }
       ],
       "options": [
         {
           "id": "sit",
           "label": "陪他坐一会儿",
           "resultText": "你们谁都没说话，只是并排坐着看微波炉转。他忽然说：「这样挺好。」",
-          "effects": { "attributes": { "social": 1 }, "relation": { "jiangxu": 10 } }
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "jiangxu": 7
+            }
+          }
         },
         {
           "id": "greet",
           "label": "打个招呼就走",
           "resultText": "你说了句早点睡，他点点头，目光又落回屏幕。",
-          "effects": { "relation": { "jiangxu": 5 } }
+          "effects": {
+            "relation": {
+              "jiangxu": 2
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_jiangxu_2",
       "charId": "jiangxu",
-      "name": "联机测试",
+      "name": "大赛组队邀请",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "独立游戏社的群里突然弹出一句「求测试，只差最后一关」。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "学校独立游戏大赛开始报名，他抱着笔记本坐到你旁边，犹豫着问你要不要组队。",
       "lines": [
-        { "speaker": "旁白", "text": "群里弹出一条消息：求测试，只差最后一关。" },
-        { "speaker": "江叙", "emotion": "neutral", "text": "你玩过《去月球》吗？……那你能不能，装作没玩过。" },
-        { "speaker": "旁白", "text": "他把屏幕转过来。画面里是一条没有尽头的走廊。" }
+        {
+          "speaker": "旁白",
+          "text": "独立游戏大赛开始报名，他抱着笔记本坐到你旁边。"
+        },
+        {
+          "speaker": "江叙",
+          "emotion": "neutral",
+          "text": "我程序差不多写完了……还差个出点子的。你要不要，跟我一组？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他说完又补了一句：「你要是不想做游戏，也没关系。」"
+        }
       ],
       "options": [
         {
           "id": "test",
-          "label": "陪他测到凌晨",
-          "resultText": "你在他旁边坐到天快亮。指出第 47 处 bug 时，他第一次笑出了声。",
-          "effects": { "attributes": { "knowledge": 1, "health": -2 }, "relation": { "jiangxu": 12 } }
+          "label": "答应组队做 demo",
+          "resultText": "你凑过去看他的原型图。他松了口气，把你们俩的名字一起写进报名表。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "relation": {
+              "jiangxu": 7
+            }
+          }
         },
         {
           "id": "sleep",
-          "label": "明天再说",
-          "resultText": "你说太晚了。他回了个嗯，然后一个人测到天亮。",
-          "effects": { "attributes": { "health": 1 }, "relation": { "jiangxu": 3 } }
+          "label": "说再想想",
+          "resultText": "你说先看看。他合上笔记本，嗯了一声，没再邀第二次。",
+          "effects": {
+            "relation": {
+              "jiangxu": 2
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_jiangxu_3",
       "charId": "jiangxu",
-      "name": "他要去比赛",
+      "name": "天台的彩蛋",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "他的作品入围了独立游戏展，答辩那天正好撞上你的期末周。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "在一起之后，他带你爬上宿舍天台，给你看作游戏里偷偷藏的小彩蛋。",
       "lines": [
-        { "speaker": "旁白", "text": "他的作品入围了独立游戏展。答辩那天，正好撞上你的期末周。" },
-        { "speaker": "江叙", "emotion": "sad", "text": "我自己去也行。" },
-        { "speaker": "旁白", "text": "他说这句话的时候，手一直在拧咖啡杯的盖子。" }
+        {
+          "speaker": "旁白",
+          "text": "傍晚的天台风很大，他翻开笔记本，调出一个你没见过的关卡。"
+        },
+        {
+          "speaker": "江叙",
+          "emotion": "shy",
+          "text": "这里面藏了个彩蛋……是照着那天便利店的样子做的。只有你能找到。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他说这话时没看你，耳朵却红了。"
+        }
       ],
       "options": [
         {
-          "id": "help",
-          "label": "陪他去，通宵改 demo",
-          "resultText": "你们在高铁上改完最后一版。上台前他把耳机递给你：「听着，我就不抖了。」",
-          "effects": { "attributes": { "knowledge": 1, "health": -2 }, "relation": { "jiangxu": 14 } }
+          "id": "stroll",
+          "label": "并肩看完这段彩蛋",
+          "resultText": "你们并肩看完那段隐藏关卡。风把他的刘海吹乱，他也顾不上理，只盯着你笑。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "relation": {
+              "jiangxu": 6
+            }
+          }
         },
         {
-          "id": "leave",
-          "label": "让他自己去",
-          "resultText": "你说期末要紧。他点点头，一个人拖着箱子走了。",
-          "effects": { "relation": { "jiangxu": 6 } }
-        },
-        {
-          "id": "cold",
-          "label": "「那你加油。」",
-          "resultText": "你转身回了自习室。后来他在群里发了张奖状，没有 @ 任何人。",
-          "effects": { "relation": { "jiangxu": -4 } }
+          "id": "seat",
+          "label": "在天台边安静坐着",
+          "resultText": "你们在天台边坐下。他抱着笔记本，安静地陪你看着天暗下来。",
+          "effects": {
+            "relation": {
+              "jiangxu": 2
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_jiangxu_4",
       "charId": "jiangxu",
-      "name": "凌晨三点",
+      "name": "凌晨三点的存档点",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "展会结束那晚，他在便利店门口站了很久，像在等一个不会来的人。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "毕业前他把游戏做完了，通关制作名单的最后一行，写着你的名字。",
       "lines": [
-        { "speaker": "旁白", "text": "展会结束那晚，他在便利店门口站了很久。" },
-        { "speaker": "江叙", "emotion": "shy", "text": "……你要是现在走，我就当没说过。" },
-        { "speaker": "旁白", "text": "他没说完的半句话，被夜里的风吞掉了。" }
+        {
+          "speaker": "旁白",
+          "text": "毕业前的深夜，游戏终于通关。制作名单缓缓滚动。"
+        },
+        {
+          "speaker": "江叙",
+          "emotion": "shy",
+          "text": "最后一行……我写了你的名字。以后我做的每个游戏，都给你留一个位置。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他合上电脑，在便利店门口转过身等你走过去。"
+        }
       ],
       "options": [
         {
           "id": "confess",
-          "label": "「我不走。」",
-          "resultText": "他盯着你看了很久，然后很轻地、很笨拙地，把额头靠在你肩上。",
-          "effects": { "attributes": { "social": 1 }, "flags": { "jx_lover": true }, "relation": { "jiangxu": 18 } }
-        },
-        {
-          "id": "wait",
-          "label": "「再想想吧。」",
-          "resultText": "他说好，然后像平时一样，把最后一瓶咖啡塞进你手里。",
-          "effects": { "relation": { "jiangxu": 8 } }
+          "label": "走上前抱住他",
+          "resultText": "你走过去抱住他。他僵了一下，然后轻轻回抱住你，很小声地说：「存档点一直是你。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "jx_lover": true
+            },
+            "relation": {
+              "jiangxu": 10
+            }
+          }
         }
       ]
     },
@@ -192,118 +336,205 @@
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
+      "termRange": [
+        1,
+        8
+      ],
       "text": "校辩论赛决赛，你被室友拽来坐第一排，正好撞上他抬眼。",
       "lines": [
-        { "speaker": "旁白", "text": "校辩论赛决赛，你被室友拽来坐第一排。" },
-        { "speaker": "顾迟", "emotion": "neutral", "text": "同学，你刚才点了三次头。所以——你站哪边？" },
-        { "speaker": "旁白", "text": "他把话筒递到你面前。全场安静下来。" }
+        {
+          "speaker": "旁白",
+          "text": "校辩论赛决赛，你被室友拽来坐第一排。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "neutral",
+          "text": "同学，你刚才点了三次头。所以——你站哪边？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他把话筒递到你面前。全场安静下来。"
+        }
       ],
       "options": [
         {
           "id": "answer",
           "label": "站起来说出自己的观点",
           "resultText": "你说得不算漂亮，但逻辑是通的。他挑了下眉：「有点意思。」",
-          "effects": { "attributes": { "social": 1, "knowledge": 1 }, "relation": { "guchi": 10 } }
+          "effects": {
+            "attributes": {
+              "social": 1,
+              "knowledge": 1
+            },
+            "relation": {
+              "guchi": 7
+            }
+          }
         },
         {
           "id": "pass",
           "label": "摆手拒绝",
           "resultText": "你把话筒推回去。他笑了一下，转回去继续陈词，没有再为难你。",
-          "effects": { "relation": { "guchi": 5 } }
+          "effects": {
+            "relation": {
+              "guchi": 2
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_guchi_2",
       "charId": "guchi",
-      "name": "改稿的咖啡",
+      "name": "模拟法庭组队",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "你在公告栏看到自己的稿子被红笔改得只剩三行，旁边压着一杯咖啡。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "学院辩论赛要组队伍，他抱着辩稿走到你桌边，问你要不要当他的队友。",
       "lines": [
-        { "speaker": "旁白", "text": "你在公告栏看到自己的稿子被红笔改得只剩三行。" },
-        { "speaker": "顾迟", "emotion": "neutral", "text": "逻辑断了两处，论据错了一个。不用谢。" },
-        { "speaker": "旁白", "text": "他把一杯还热着的美式推过来，杯壁上写着「赔你」。" }
+        {
+          "speaker": "旁白",
+          "text": "学院辩论赛缺队友，他抱着一叠辩稿走到你桌边。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "neutral",
+          "text": "下一场模拟法庭，缺个二辩。……你反应够快，要不要跟我一组？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他顿了顿，又补一句：「当然，辩场上我可不会让着你。」"
+        }
       ],
       "options": [
         {
           "id": "coffee",
-          "label": "收下咖啡，跟他较真",
-          "resultText": "你逐条反驳，他逐条拆解。两小时后稿子改好了，咖啡凉了，你们都没走。",
-          "effects": { "attributes": { "knowledge": 1, "social": 1 }, "relation": { "guchi": 12 } }
+          "label": "答应做他的队友",
+          "resultText": "你接过辩稿。他挑了下眉，把分工写在扉页上：「那就合作愉快。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "guchi": 7
+            }
+          }
         },
         {
           "id": "study",
-          "label": "只收下改稿",
-          "resultText": "你把稿子折好放进包里。他说：「下次还给你改。」语气像在宣判。",
-          "effects": { "attributes": { "knowledge": 2 }, "relation": { "guchi": 6 } }
+          "label": "说再想想",
+          "resultText": "你说先看看。他把辩稿抱回怀里，嘴硬道：「想好了别后悔。」",
+          "effects": {
+            "relation": {
+              "guchi": 2
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_guchi_3",
       "charId": "guchi",
-      "name": "他的锋利",
+      "name": "辩不赢的心事",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "他在群里把一位同学的方案批得体无完肤，群里安静了十分钟。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "争执间隙你看着他寸步不让的样子，忽然发现自己在意的是他这个人。",
       "lines": [
-        { "speaker": "旁白", "text": "他在群里把一位同学的方案批得体无完肤，群里安静了十分钟。" },
-        { "speaker": "顾迟", "emotion": "neutral", "text": "你要替他们说话吗。" },
-        { "speaker": "旁白", "text": "他摘下眼镜揉了揉眉心——那是他少有的、不确定的样子。" }
+        {
+          "speaker": "旁白",
+          "text": "又一次辩完，他还嘴硬地撑着立场，耳朵却有点红。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "neutral",
+          "text": "怎么，辩不过就一直看着我？……我脸上写着论点吗。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你忽然分不清，自己想赢的是辩题，还是想多看他一会儿。"
+        }
       ],
       "options": [
         {
-          "id": "talk",
-          "label": "「你可以更温柔一点。」",
-          "resultText": "他沉默了很久，说：「我不会。」然后又说：「你教我。」",
-          "effects": { "attributes": { "social": 1 }, "relation": { "guchi": 14 } }
+          "id": "brave",
+          "label": "鼓起勇气把心意说出口",
+          "resultText": "你越过辩题先说了心里话。他张了张嘴，平时的锋利全卡在喉咙里，半天没接上话。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "gc_lover": true
+            },
+            "relation": {
+              "guchi": 7
+            }
+          }
         },
         {
-          "id": "walk",
-          "label": "拉他去操场走一圈",
-          "resultText": "你们绕着跑道走了三圈。他忽然说：「刚才那句，我收回。」",
-          "effects": { "attributes": { "health": 1 }, "relation": { "guchi": 10 } }
-        },
-        {
-          "id": "cold",
-          "label": "什么也没说",
-          "resultText": "你低头继续做自己的事。他没有再解释，那副眼镜戴了回去。",
-          "effects": { "relation": { "guchi": -4 } }
+          "id": "letitbe",
+          "label": "顺其自然，先不说破",
+          "resultText": "你把话收住，绕回了辩题。他松了口气，又变回那个寸步不让的辩友。",
+          "effects": {
+            "relation": {
+              "guchi": 0
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_guchi_4",
       "charId": "guchi",
-      "name": "闭庭",
+      "name": "闭庭之后",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "毕业前的最后一场模拟法庭，他赢了。散场后他叫住你。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "毕业前最后一场模拟法庭闭庭，他在走廊上对你说了句辩词本上没有的话。",
       "lines": [
-        { "speaker": "旁白", "text": "毕业前的最后一场模拟法庭，他赢了。散场后他叫住你。" },
-        { "speaker": "顾迟", "emotion": "shy", "text": "我准备了十四页陈词。最后一句还没写。" },
-        { "speaker": "旁白", "text": "「最后一句，得你来说。」" }
+        {
+          "speaker": "旁白",
+          "text": "最后一场模拟法庭结束，人群散场，他在走廊尽头叫住你。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "shy",
+          "text": "辩稿我背了很多遍……唯独这句，不在稿子上。我喜欢你，很久了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他第一次没跟你争，说完耳根通红，等你回应。"
+        }
       ],
       "options": [
         {
           "id": "confess",
-          "label": "「那我替你说完。」",
-          "resultText": "他愣了一下，然后笑了——不是辩论场上的那种笑，是十七岁的那种。",
-          "effects": { "attributes": { "social": 1 }, "flags": { "gc_lover": true }, "relation": { "guchi": 18 } }
-        },
-        {
-          "id": "wait",
-          "label": "「你先说给我听。」",
-          "resultText": "他把十四页陈词收进包里，说：「那就再等一场。」",
-          "effects": { "relation": { "guchi": 8 } }
+          "label": "替他说完那句心里话",
+          "resultText": "你走过去接过他手里的辩稿。他小声补完那句没说顺的话，这一次，他没有反驳你。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "gc_lover": true
+            },
+            "relation": {
+              "guchi": 10
+            }
+          }
         }
       ]
     },
@@ -314,89 +545,155 @@
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
+      "termRange": [
+        1,
+        8
+      ],
       "text": "琴房四楼走廊尽头漏出一点《月光》，弹到第三句就停了。",
       "lines": [
-        { "speaker": "旁白", "text": "琴房四楼走廊尽头漏出一点《月光》，弹到第三句就停了。" },
-        { "speaker": "苏晚", "emotion": "neutral", "text": "抱歉……我以为这个时间没有人。" },
-        { "speaker": "旁白", "text": "她把手从琴键上收回去，像做错了事。" }
+        {
+          "speaker": "旁白",
+          "text": "琴房四楼走廊尽头漏出一点《月光》，弹到第三句就停了。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "neutral",
+          "text": "抱歉……我以为这个时间没有人。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她把手从琴键上收回去，像做错了事。"
+        }
       ],
       "options": [
         {
           "id": "listen",
           "label": "在门口听完",
           "resultText": "你靠在门框上听她弹完。最后一个音落下时，她抬头看见你，耳朵红了。",
-          "effects": { "attributes": { "knowledge": 1 }, "relation": { "suwan": 10 } }
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "relation": {
+              "suwan": 7
+            }
+          }
         },
         {
           "id": "leave",
           "label": "轻轻带上门",
           "resultText": "你退出去，把门带上。琴声停了很久，又慢慢响起来。",
-          "effects": { "relation": { "suwan": 5 } }
+          "effects": {
+            "relation": {
+              "suwan": 2
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_suwan_2",
       "charId": "suwan",
-      "name": "搬琴",
+      "name": "通识课分组",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "学期末搬琴，琴房老师说只能找两个学生帮忙。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "通识课要分小组做课程汇报，她抱着讲义走到你桌边，犹豫着停了下来。",
       "lines": [
-        { "speaker": "旁白", "text": "学期末搬琴，琴房老师说只能找两个学生帮忙。" },
-        { "speaker": "苏晚", "emotion": "shy", "text": "我一个人也可以的。……真的。" },
-        { "speaker": "旁白", "text": "琴比她还高，她的手腕细得像随时会断。" }
+        {
+          "speaker": "旁白",
+          "text": "通识课要分组做课程汇报，她抱着讲义走到你桌边。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "shy",
+          "text": "那个……如果还没人和你一组的话，我们可以一起吗？资料我查过了，分工我也可以先做。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她说完又补了一句：「你要是已经有组了，也没关系。」"
+        }
       ],
       "options": [
         {
-          "id": "move",
-          "label": "卷起袖子帮她搬",
-          "resultText": "琴抬到三楼时你俩都喘得说不出话。她递水给你，手心全是汗。",
-          "effects": { "attributes": { "health": -1 }, "relation": { "suwan": 12 } }
+          "id": "join",
+          "label": "点头答应同组",
+          "resultText": "你把讲义接过来。她松了口气，在组员名单上工工整整写下两个人的名字。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "suwan": 7
+            }
+          }
         },
         {
-          "id": "listen",
-          "label": "帮她联系志愿者",
-          "resultText": "你把志愿者叫来。她站在旁边看着，轻声说：「谢谢你想得周到。」",
-          "effects": { "attributes": { "social": 1 }, "relation": { "suwan": 8 } }
+          "id": "think",
+          "label": "说想再想想",
+          "resultText": "你说先看看。她点点头退回去，把名单抱在怀里，没再开口。",
+          "effects": {
+            "relation": {
+              "suwan": 2
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_suwan_3",
       "charId": "suwan",
-      "name": "舞台焦虑",
+      "name": "白石桥边",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "学年音乐会前一周，她把谱子翻来覆去，指尖在抖。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "确定关系之后，你们第一次一起沿白石桥慢慢走，河面映着傍晚的光。",
       "lines": [
-        { "speaker": "旁白", "text": "学年音乐会前一周，她把谱子翻来覆去，指尖在抖。" },
-        { "speaker": "苏晚", "emotion": "sad", "text": "如果我台上忘谱了，你会不会觉得很丢脸。" },
-        { "speaker": "旁白", "text": "她说这话时不敢看你，只看着琴键。" }
+        {
+          "speaker": "旁白",
+          "text": "傍晚的白石桥，河水把夕阳折成一片一片的。你们并肩走在桥面上。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "shy",
+          "text": "和你一起走在这里，好像连琴房里那些紧张的日子，都变得没那么可怕了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她走得很慢，袖口不小心碰到你的手背，又轻轻收了回去。"
+        }
       ],
       "options": [
         {
-          "id": "backstage",
-          "label": "去后台陪她",
-          "resultText": "上台前你握住她冰凉的手。她闭眼数了三下，然后松开，走了出去。",
-          "effects": { "attributes": { "social": 1 }, "relation": { "suwan": 14 } }
+          "id": "stroll",
+          "label": "并肩走完整座桥",
+          "resultText": "你们从桥头走到桥尾，聊起小时候练琴的事。风把她的头发吹起来，她也没去理。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "relation": {
+              "suwan": 6
+            }
+          }
         },
         {
-          "id": "seat",
-          "label": "坐在第一排",
-          "resultText": "她抬头看见你，深呼吸了一次。第一个音落下时，手不抖了。",
-          "effects": { "relation": { "suwan": 10 } }
-        },
-        {
-          "id": "leave",
-          "label": "「你自己可以。」",
-          "resultText": "她点点头，很配合地说嗯。演出那天，她在台上停了四秒。",
-          "effects": { "relation": { "suwan": -4 } }
+          "id": "bench",
+          "label": "在桥边长椅坐下歇会儿",
+          "resultText": "你们在长椅上坐了一会儿。她靠得不远不近，安静地看着河面。",
+          "effects": {
+            "relation": {
+              "suwan": 2
+            }
+          }
         }
       ]
     },
@@ -407,25 +704,52 @@
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
+      "termRange": [
+        1,
+        8
+      ],
       "text": "音乐会散场，她一个人留在空了的音乐厅。",
       "lines": [
-        { "speaker": "旁白", "text": "音乐会散场，她一个人留在空了的音乐厅。" },
-        { "speaker": "苏晚", "emotion": "shy", "text": "最后一个音我弹错了。但这次……我没有停。" },
-        { "speaker": "旁白", "text": "她把手放在琴盖上，掌心朝上。" }
+        {
+          "speaker": "旁白",
+          "text": "音乐会散场，她一个人留在空了的音乐厅。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "shy",
+          "text": "最后一个音我弹错了。但这次……我没有停。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她把手放在琴盖上，掌心朝上。"
+        }
       ],
       "options": [
         {
           "id": "confess",
           "label": "握住她的手",
           "resultText": "她没有抽回去，只是很小声地说：「那下一首，我们弹同一架琴。」",
-          "effects": { "attributes": { "social": 1 }, "flags": { "sw_lover": true }, "relation": { "suwan": 18 } }
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "sw_lover": true
+            },
+            "relation": {
+              "suwan": 10
+            }
+          }
         },
         {
           "id": "wait",
           "label": "「弹得很好。」",
           "resultText": "她笑了一下，把琴盖合上。空厅里还残留着一点回响。",
-          "effects": { "relation": { "suwan": 8 } }
+          "effects": {
+            "relation": {
+              "suwan": 0
+            }
+          }
         }
       ]
     },
@@ -436,25 +760,49 @@
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
+      "termRange": [
+        1,
+        8
+      ],
       "text": "傍晚的操场，跑道上只有一个人在跑，配速快得不像话。",
       "lines": [
-        { "speaker": "旁白", "text": "傍晚的操场，跑道上只有一个人在跑，配速快得不像话。" },
-        { "speaker": "周野", "emotion": "smile", "text": "你也来跑？我带你，慢的。" },
-        { "speaker": "旁白", "text": "他倒退着跑了几步，笑着等你。" }
+        {
+          "speaker": "旁白",
+          "text": "傍晚的操场，跑道上只有一个人在跑，配速快得不像话。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "smile",
+          "text": "你也来跑？我带你，慢的。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他倒退着跑了几步，笑着等你。"
+        }
       ],
       "options": [
         {
           "id": "run",
           "label": "跟上他",
           "resultText": "你跑了两圈就岔气。他放慢速度陪你走完最后一圈，说：「下次我等你。」",
-          "effects": { "attributes": { "health": 2 }, "relation": { "zhouye": 10 } }
+          "effects": {
+            "attributes": {
+              "health": 2
+            },
+            "relation": {
+              "zhouye": 7
+            }
+          }
         },
         {
           "id": "sit",
           "label": "在看台坐着",
           "resultText": "你坐在看台上看他跑完十公里。最后一圈他冲你挥了挥手。",
-          "effects": { "relation": { "zhouye": 5 } }
+          "effects": {
+            "relation": {
+              "zhouye": 2
+            }
+          }
         }
       ]
     },
@@ -465,54 +813,98 @@
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
+      "termRange": [
+        1,
+        8
+      ],
       "text": "他开始每天在群里发「今天几点跑」，只发给你一个人。",
       "lines": [
-        { "speaker": "旁白", "text": "他开始每天在群里发「今天几点跑」，只发给你一个人。" },
-        { "speaker": "周野", "emotion": "smile", "text": "周末带你拉个十公里？不跑也行，你带水。" },
-        { "speaker": "旁白", "text": "他说完自己先笑了。" }
+        {
+          "speaker": "旁白",
+          "text": "他开始每天在群里发「今天几点跑」，只发给你一个人。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "smile",
+          "text": "周末带你拉个十公里？不跑也行，你带水。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他说完自己先笑了。"
+        }
       ],
       "options": [
         {
           "id": "train",
           "label": "跟着跑十公里",
           "resultText": "跑到第八公里你想放弃。他把耳机分你一半：「听这个，能多跑两公里。」",
-          "effects": { "attributes": { "health": 2 }, "relation": { "zhouye": 12 } }
+          "effects": {
+            "attributes": {
+              "health": 2
+            },
+            "relation": {
+              "zhouye": 7
+            }
+          }
         },
         {
           "id": "watch",
           "label": "去看他训练",
           "resultText": "你坐在跑道边帮他掐表。他每跑过来一次，就冲你喊一次时间。",
-          "effects": { "attributes": { "social": 1 }, "relation": { "zhouye": 8 } }
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "zhouye": 2
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_zhouye_3",
       "charId": "zhouye",
-      "name": "他的伤",
+      "name": "最后一圈",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "校运会前的最后一次测试，他拉伤了腿，坐在地上半天没起来。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "毕业前校运会最后一圈，他跑过看台时，腾出一只手伸向你。",
       "lines": [
-        { "speaker": "旁白", "text": "校运会前的最后一次测试，他拉伤了腿，坐在地上半天没起来。" },
-        { "speaker": "周野", "emotion": "sad", "text": "没事。就是……这次可能上不了场了。" },
-        { "speaker": "旁白", "text": "他把脸埋在护腕后面，声音闷闷的。" }
+        {
+          "speaker": "旁白",
+          "text": "校运会最后一圈，他沿着跑道冲刺，看台上全是呐喊。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "happy",
+          "text": "这圈跑完……我就不跑了，以后的路，换我陪你走。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他冲过看台时，把手伸到你面前，额头上全是汗。"
+        }
       ],
       "options": [
         {
-          "id": "stay",
-          "label": "陪他做康复，整个夏天",
-          "resultText": "你每天陪他去康复室。开学第一场，他跑完过来抱了你一下，全场都在起哄。",
-          "effects": { "attributes": { "health": 1 }, "flags": { "zy_lover": true }, "relation": { "zhouye": 20 } }
-        },
-        {
-          "id": "go",
-          "label": "帮他把报名表交上去",
-          "resultText": "你把表交了，说「上不上场你自己决定」。他愣了半天，笑了：「你真狠。」",
-          "effects": { "relation": { "zhouye": 10 } }
+          "id": "confess",
+          "label": "跑向他伸出的手",
+          "resultText": "你握住他伸来的手。他一把把你拉到跑道边，笑得露出虎牙：「说好了，不许松手。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "zy_lover": true
+            },
+            "relation": {
+              "zhouye": 10
+            }
+          }
         }
       ]
     },
@@ -523,25 +915,52 @@
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
+      "termRange": [
+        1,
+        8
+      ],
       "text": "话剧社彩排，女主角临时请假，唐棠在后台把台词本翻得哗哗响。",
       "lines": [
-        { "speaker": "旁白", "text": "话剧社彩排，女主角临时请假，唐棠在后台把台词本翻得哗哗响。" },
-        { "speaker": "唐棠", "emotion": "smile", "text": "你台词记得怎么样？……开玩笑的，你念旁白就行。" },
-        { "speaker": "旁白", "text": "她把一件戏服塞进你怀里。尺寸刚好。" }
+        {
+          "speaker": "旁白",
+          "text": "话剧社彩排，女主角临时请假，唐棠在后台把台词本翻得哗哗响。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "smile",
+          "text": "你台词记得怎么样？……开玩笑的，你念旁白就行。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她把一件戏服塞进你怀里。尺寸刚好。"
+        }
       ],
       "options": [
         {
           "id": "join",
           "label": "上台",
           "resultText": "你念到最后一句时忘词，她顺着接了下去。台下没人发现，她在后台偷偷给你比了个赞。",
-          "effects": { "attributes": { "social": 2 }, "relation": { "tangtang": 10 } }
+          "effects": {
+            "attributes": {
+              "social": 2
+            },
+            "relation": {
+              "tangtang": 7
+            }
+          }
         },
         {
           "id": "help",
           "label": "帮后台",
           "resultText": "你在后台搬了一晚上道具。散场时她说：「你比台上所有人都重要。」",
-          "effects": { "attributes": { "social": 1 }, "relation": { "tangtang": 6 } }
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "tangtang": 2
+            }
+          }
         }
       ]
     },
@@ -552,54 +971,2242 @@
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
+      "termRange": [
+        1,
+        8
+      ],
       "text": "演出前一周，排练到保安来赶人。",
       "lines": [
-        { "speaker": "旁白", "text": "演出前一周，排练到保安来赶人。" },
-        { "speaker": "唐棠", "emotion": "neutral", "text": "其实我每年都演。演完就没人记得我。" },
-        { "speaker": "旁白", "text": "她说完立刻笑起来，像刚才那句话不是她说的。" }
+        {
+          "speaker": "旁白",
+          "text": "演出前一周，排练到保安来赶人。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "neutral",
+          "text": "其实我每年都演。演完就没人记得我。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她说完立刻笑起来，像刚才那句话不是她说的。"
+        }
       ],
       "options": [
         {
           "id": "join",
           "label": "陪她走回宿舍",
           "resultText": "一路她都在讲戏。到宿舍楼下她忽然停住，说：「谢谢你听我讲这些。」",
-          "effects": { "relation": { "tangtang": 12 } }
+          "effects": {
+            "relation": {
+              "tangtang": 7
+            }
+          }
         },
         {
           "id": "watch",
           "label": "把道具收好再走",
           "resultText": "你收完道具，回头看见她站在门口等你，手里拎着两瓶汽水。",
-          "effects": { "attributes": { "social": 1 }, "relation": { "tangtang": 8 } }
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "tangtang": 2
+            }
+          }
         }
       ]
     },
     {
       "id": "ev_story_tangtang_3",
       "charId": "tangtang",
-      "name": "交换名额",
+      "name": "谢幕之后",
       "weight": 1,
       "storylineOnly": true,
       "once": true,
-      "termRange": [1, 8],
-      "text": "她拿到了去国外的交换名额，一年。",
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "毕业前最后一场活动谢幕，她对着台下你一个人，说了句台词本上没有的话。",
       "lines": [
-        { "speaker": "旁白", "text": "她拿到了去国外交换的名额。一年。" },
-        { "speaker": "唐棠", "emotion": "sad", "text": "你应该说恭喜我。" },
-        { "speaker": "旁白", "text": "她捏着那张纸，指节发白。" }
+        {
+          "speaker": "旁白",
+          "text": "最后一场活动散场，幕布缓缓合上，她在台上朝你走来。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "shy",
+          "text": "台词本上的话我都说完了……只有这句不是：我想一直站在你看得见的地方。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她收起一贯的笑，认真地看着你，等你回答。"
+        }
       ],
       "options": [
         {
-          "id": "stay",
-          "label": "「我等你回来。」",
-          "resultText": "她抬起头，眼睛亮得厉害，嘴上还在逞强：「一年很久的，你可别后悔。」",
-          "effects": { "flags": { "tt_lover": true }, "relation": { "tangtang": 20 } }
+          "id": "confess",
+          "label": "在台下点头回应她",
+          "resultText": "你朝她用力点头。她眼里的笑终于不再是场面话，走下台伸手挽住了你。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "tt_lover": true
+            },
+            "relation": {
+              "tangtang": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_jiangxu_5",
+      "charId": "jiangxu",
+      "name": "深夜的消息",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "深夜十一点，独立游戏社的群已经安静，他却单独给你发来一张代码截图，末尾跟着一句没头没尾的话。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "深夜十一点，群里已经安静，他却单独发来一张代码截图。"
         },
         {
-          "id": "go",
-          "label": "「恭喜你。」",
-          "resultText": "她笑着说谢谢，然后说还有事，一个人走远了。",
-          "effects": { "relation": { "tangtang": 10 } }
+          "speaker": "江叙",
+          "emotion": "neutral",
+          "text": "这个报错，我想了两个小时。……你不用懂，我就是想发给你看看。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他打字很慢，一句话删改了好几遍才发出来。"
+        }
+      ],
+      "options": [
+        {
+          "id": "reply",
+          "label": "认真回他，陪他把报错看完",
+          "resultText": "你陪他一行行捋到十二点。问题解决时他发来一句「晚安」，比平时多了两个字。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "jiangxu": 6
+            }
+          }
+        },
+        {
+          "id": "ignore",
+          "label": "明天再回",
+          "resultText": "你睡下了。第二天早上那条截图旁边，他又补了一句「算了，我自己搞定了」。",
+          "effects": {
+            "relation": {
+              "jiangxu": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_jiangxu_6",
+      "charId": "jiangxu",
+      "name": "图书馆的空位",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "组好队后，你们常在图书馆靠窗的位置碰头，对着原型图一条一条过。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "图书馆靠窗的位置，你们对着原型图一条一条过。"
+        },
+        {
+          "speaker": "江叙",
+          "emotion": "neutral",
+          "text": "这关的难度我再调一下。……你要是觉得哪里不好玩，直接说就行。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他把椅子往你这边挪了挪，屏幕上是你们俩一起改的关卡。"
+        }
+      ],
+      "options": [
+        {
+          "id": "sit",
+          "label": "在他旁边坐下一起改",
+          "resultText": "你们把关卡从头测到尾。临走时他把备注好的原型图推给你：「下次还在这里碰。」",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "relation": {
+              "jiangxu": 6
+            }
+          }
+        },
+        {
+          "id": "move",
+          "label": "另找一座自己学",
+          "resultText": "你另找了个位置。他抬头看了你一眼，又转回去对着屏幕。",
+          "effects": {
+            "relation": {
+              "jiangxu": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_jiangxu_7",
+      "charId": "jiangxu",
+      "name": "说不出口的心意",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "改到闭馆，你看着他盯着屏幕的侧脸，心里某个地方忽然软了一下。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "闭馆音乐响起来，他还在盯着屏幕调最后一处参数。"
+        },
+        {
+          "speaker": "江叙",
+          "emotion": "neutral",
+          "text": "怎么了？……我脸上有 bug 吗。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你忽然意识到，自己在意的不只是这个游戏队友。"
+        }
+      ],
+      "options": [
+        {
+          "id": "brave",
+          "label": "鼓起勇气把心意说出口",
+          "resultText": "你深吸一口气说了出来。他愣住，手指停在键盘上，耳朵一点点红透，没有躲开。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "jx_lover": true
+            },
+            "relation": {
+              "jiangxu": 7
+            }
+          }
+        },
+        {
+          "id": "letitbe",
+          "label": "顺其自然，先不说破",
+          "resultText": "你把话咽了回去，只说没什么。他哦了一声，又转回去改代码，那份悸动被你压在心底。",
+          "effects": {
+            "relation": {
+              "jiangxu": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_jiangxu_8",
+      "charId": "jiangxu",
+      "name": "去留之争",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "聊到毕业以后要不要继续做独立游戏，你们的想法拧不到一起。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "毕业后要不要继续做独立游戏，你们各执一词，谁也没说服谁。"
+        },
+        {
+          "speaker": "江叙",
+          "emotion": "sad",
+          "text": "我不是非要跟你争……只是这件事我想了很久。你是不是觉得我太固执了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他合上笔记本，声音压得很低，像在等一个结论。"
+        }
+      ],
+      "options": [
+        {
+          "id": "cool",
+          "label": "先各自冷静冷静",
+          "resultText": "你说好先都想想。他点点头，临走前回头看了你一眼：「那我们下次再谈。」",
+          "effects": {
+            "relation": {
+              "jiangxu": 4
+            }
+          }
+        },
+        {
+          "id": "quit",
+          "label": "认真说出也许不合适",
+          "resultText": "你说或许两个人本来就不合适。他沉默了很久，最后轻轻嗯了一声，合上电脑离开了。",
+          "effects": {
+            "relation": {
+              "jiangxu": -4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_jiangxu_9",
+      "charId": "jiangxu",
+      "name": "台阶上的咖啡",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "第二天再见面，他把一杯咖啡放在你旁边，昨晚没说开的话重新讲了一遍。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "第二天便利店门口，他先到的，手里多了一杯咖啡。"
+        },
+        {
+          "speaker": "江叙",
+          "emotion": "neutral",
+          "text": "昨天是我太钻牛角尖了。……你说的那些，我回去想了，有道理。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他把咖啡推过来，指尖往你这边靠了靠。"
+        }
+      ],
+      "options": [
+        {
+          "id": "reconcile",
+          "label": "接过咖啡，互相理解和解",
+          "resultText": "你也为昨天的态度道了歉。他听完肩膀松下来：「那这件事，翻篇了。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "jiangxu": 4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_guchi_5",
+      "charId": "guchi",
+      "name": "公告栏前的改稿人",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "你路过公告栏，又看见他俯身在改一张辩论招新海报，红笔在纸上划得又快又狠。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "公告栏前，他俯身在改招新海报，红笔划得又快又狠。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "neutral",
+          "text": "这张词不达意，我顺手改改。——你站那么远，是怕我骂到你头上？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他抬眼，嘴角却压着一点没藏住的笑意。"
+        }
+      ],
+      "options": [
+        {
+          "id": "notice",
+          "label": "上前看他改的内容，跟他辩两句",
+          "resultText": "你指出他改重了一处。他挑眉看了你半晌，把红笔递给你：「行，这条归你。」",
+          "effects": {
+            "attributes": {
+              "social": 1,
+              "knowledge": 1
+            },
+            "relation": {
+              "guchi": 6
+            }
+          }
+        },
+        {
+          "id": "watch",
+          "label": "在旁边看完就走",
+          "resultText": "你没说话，转身离开。他在身后凉凉一句：「走得倒快。」",
+          "effects": {
+            "relation": {
+              "guchi": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_guchi_6",
+      "charId": "guchi",
+      "name": "操场三圈",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "在一起后他拉你去操场走路，别的事都能让着你，一到辩题还是嘴硬。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "傍晚的操场，你们并肩绕着跑道一圈一圈走。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "shy",
+          "text": "这件事我可以让着你……但刚才那个论点，我还是觉得我赢了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他嘴上不认输，脚步却一直和你保持着同样的速度。"
+        }
+      ],
+      "options": [
+        {
+          "id": "walk",
+          "label": "陪他绕完三圈",
+          "resultText": "你们绕着跑道走了三圈，从辩题聊到以后。他嘴上争个不停，步子却始终挨着你。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "relation": {
+              "guchi": 6
+            }
+          }
+        },
+        {
+          "id": "refuse",
+          "label": "说先回教学楼",
+          "resultText": "你说还有事先回去。他点点头，一个人又绕了一圈。",
+          "effects": {
+            "relation": {
+              "guchi": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_guchi_7",
+      "charId": "guchi",
+      "name": "磨辩词的傍晚",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "你们为一个论点反复推敲辩稿，从教室这头辩到那头。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "一个论点卡住了，你们对着辩稿你来我往，谁也不服谁。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "neutral",
+          "text": "这个角度你反驳不了我。……别急着点头，再想想有没有漏洞。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他嘴上不饶人，递过来的笔记却把双方论点都标得清清楚楚。"
+        }
+      ],
+      "options": [
+        {
+          "id": "listen",
+          "label": "听他说完，不急着反驳",
+          "resultText": "你把他的论点一条条记下来。他看完你的笔记，难得点头：「行，你跟上了。」",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "relation": {
+              "guchi": 6
+            }
+          }
+        },
+        {
+          "id": "argue",
+          "label": "顺着他的话继续辩",
+          "resultText": "你们又辩了一轮。他寸步不让，下课铃响才作罢。",
+          "effects": {
+            "relation": {
+              "guchi": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_guchi_8",
+      "charId": "guchi",
+      "name": "观点交锋",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "聊到一件正经事，你们各执一词，谁也不肯先松口。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "一件事上你们看法完全相反，辩到最后气氛僵住。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "sad",
+          "text": "我不是要压过你……只是我一直这么想。你是不是觉得我太咄咄逼人了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他别过脸，声音低下来，等你给个说法。"
+        }
+      ],
+      "options": [
+        {
+          "id": "cool",
+          "label": "先停下争执，各自冷静",
+          "resultText": "你说先都想想。他绷着的肩松了松：「那我们都回去冷静一晚，再谈。」",
+          "effects": {
+            "relation": {
+              "guchi": 4
+            }
+          }
+        },
+        {
+          "id": "quit",
+          "label": "认真说出也许不合适",
+          "resultText": "你说或许两个人本来就不合适。他抿着唇沉默很久，最后只说了句：「知道了。」",
+          "effects": {
+            "relation": {
+              "guchi": -4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_guchi_9",
+      "charId": "guchi",
+      "name": "赔罪的美式",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "第二天他拎着一杯美式在老地方等你，别扭地先开了口。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "第二天教室门口，他靠在墙边，手里两杯美式。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "neutral",
+          "text": "昨天话说重了。……对不起。你讲的道理，我回去捋过，站得住脚。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他把其中一杯递给你，眼神偏到一边，不肯承认自己在让步。"
+        }
+      ],
+      "options": [
+        {
+          "id": "reconcile",
+          "label": "走过去坐下，把台阶递给他",
+          "resultText": "你接过咖啡，也为昨天的急脾气道了歉。他嘴角压了压，没忍住翘起来：「翻篇。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "guchi": 4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_linyu_5",
+      "charId": "linyu",
+      "name": "镜头里的你",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "社团招新那天人很多，你转头时，正好撞见她举着相机，镜头对着你。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "招新现场人很多，你转头时，正好撞见她举着相机。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "shy",
+          "text": "对不起……我不是故意拍你的。我只是觉得，光落在你身上很好看。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她说完立刻低头翻相机，手指攥着背带。"
+        }
+      ],
+      "options": [
+        {
+          "id": "wave",
+          "label": "冲她笑了一下",
+          "resultText": "你冲她笑，她慌忙把相机举起来又放下，小声说了句「谢谢」，耳根红了一片。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "linyu": 6
+            }
+          }
+        },
+        {
+          "id": "avoid",
+          "label": "躲开视线走开",
+          "resultText": "你低下头走过。她站在原地，把那张刚拍下的照片翻来覆去看了很久。",
+          "effects": {
+            "relation": {
+              "linyu": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_linyu_7",
+      "charId": "linyu",
+      "name": "没给人看过的本子",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "河边茶馆，她从包里拿出一个磨旧的本子，犹豫很久，推到你面前——是她写的诗。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "她拿出一个磨旧的本子，犹豫很久，推到你面前。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "shy",
+          "text": "这些我谁都没给看过。……你要是觉得不好，也没关系，就当我没拿出来过。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她把手缩回袖子里，目光落在窗外。"
+        }
+      ],
+      "options": [
+        {
+          "id": "read",
+          "label": "一页页认真读完，说出哪句打动了你",
+          "resultText": "你指着其中一句说为什么喜欢。她抬头看你，眼睛亮了一下，又很快垂下去：「你真的……这么觉得？」",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "relation": {
+              "linyu": 6
+            }
+          }
+        },
+        {
+          "id": "praise",
+          "label": "客气地夸两句写得不错",
+          "resultText": "你翻了翻说挺好。她轻轻把本子收回去，没再说什么。",
+          "effects": {
+            "relation": {
+              "linyu": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_linyu_8",
+      "charId": "linyu",
+      "name": "暗房里的心动",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "红灯下她把洗好的照片递给你，你看懂了镜头里藏着的情绪，心跳忽然快了一拍。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "暗房里红灯很暗，她把一张还没干的照片递到你面前。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "shy",
+          "text": "这张……我很少给别人看。你看得懂吗，我想拍的是什么。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你看着照片里熟悉的校园角落，忽然意识到自己在意她很久了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "brave",
+          "label": "鼓起勇气告诉她你的心意",
+          "resultText": "你把照片放低，先说了心里话。她愣住，指尖攥着相纸边角，耳朵红透，没有躲开。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "ly_lover": true
+            },
+            "relation": {
+              "linyu": 7
+            }
+          }
+        },
+        {
+          "id": "letitbe",
+          "label": "顺其自然，先把话说回照片",
+          "resultText": "你把话咽回去，聊起照片的构图。她松了口气，小心地把相纸收进袋子里。",
+          "effects": {
+            "relation": {
+              "linyu": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_linyu_9",
+      "charId": "linyu",
+      "name": "长桥的纸条",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "吵架之后连着几天没见她。你走到长桥，石栏上夹着一张折好的纸条，是她的字迹。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "石栏上夹着一张折好的纸条，是她的字迹。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "sad",
+          "text": "纸条上写：「我嘴笨，当面说不出来。我不是想躲你，是怕一开口又说错话。」"
+        },
+        {
+          "speaker": "旁白",
+          "text": "纸条边角被水浸过一点，像是写了好几遍。"
+        }
+      ],
+      "options": [
+        {
+          "id": "reconcile",
+          "label": "拿着纸条去找她",
+          "resultText": "你在校报室门口等到她。她看见你手里的纸条，低着头说：「你愿意来，我就当你不生我气了。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "linyu": 4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_linyu_10",
+      "charId": "linyu",
+      "name": "校报上的署名",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "毕业那期校报定稿，她拿着报纸过来，问你愿不愿意名字和她排在一起。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "毕业那期校报，样张摊在桌上，最后一版还空着署名。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "shy",
+          "text": "这期专题……我想把两个人的名字都写上。你愿意吗。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她把笔递过来，指尖有点凉，不敢抬头看你。"
+        }
+      ],
+      "options": [
+        {
+          "id": "confess",
+          "label": "告诉她名字排在一起",
+          "resultText": "你在署名旁写下自己的名字。她看着并排的两个名字，小声说：「以后也想这样排着。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "ly_lover": true
+            },
+            "relation": {
+              "linyu": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_suwan_5",
+      "charId": "suwan",
+      "name": "走廊里的琴声",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "你路过琴房走廊，里面又传出那段《月光》，这次没有弹断，比上次完整了许多。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "走廊里传出那段《月光》，这次没有弹断。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "neutral",
+          "text": "你……听见了吗。我练了很多遍，才敢在这个时间弹。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她的声音从门后传出来，很轻，像怕惊扰了琴声。"
+        }
+      ],
+      "options": [
+        {
+          "id": "stop",
+          "label": "在门口听完这首",
+          "resultText": "你靠在门框听完。最后一个音落下，她推开门一条缝，看见是你，小声说：「谢谢你没走开。」",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "relation": {
+              "suwan": 6
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "放轻脚步路过",
+          "resultText": "你走过去了。琴音在身后停了一下，又继续响起来。",
+          "effects": {
+            "relation": {
+              "suwan": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_suwan_6",
+      "charId": "suwan",
+      "name": "课后小组作业",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "课后你们留在教学楼讨论汇报分工，窗外的天一点点暗下来。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "课后你们留在教学楼，对着提纲一条一条理分工。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "neutral",
+          "text": "这部分我来查资料，你负责讲可以吗？……哪段你觉得不好讲，我们可以换。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她把划好重点的笔记推到你这边，字迹很整齐。"
+        }
+      ],
+      "options": [
+        {
+          "id": "work",
+          "label": "一起把分工捋清楚",
+          "resultText": "你们把提纲补完整。临走时她抱着笔记说：「那下次课后，我们还在这里碰。」",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "relation": {
+              "suwan": 6
+            }
+          }
+        },
+        {
+          "id": "split",
+          "label": "各做各的，线上再对",
+          "resultText": "你说分头做更快。她应了一声，把笔记收进包里，没有约下次。",
+          "effects": {
+            "relation": {
+              "suwan": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_suwan_7",
+      "charId": "suwan",
+      "name": "说不清的心事",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "讨论结束的傍晚，你看着她低头记笔记的侧脸，心里某个地方忽然动了一下。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "讨论结束，教室里只剩你们两个。她低头在本子上写着什么，睫毛垂下来。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "shy",
+          "text": "怎么一直看着我……我脸上有东西吗？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你忽然意识到，自己好像不只是想和她做普通同学。"
+        }
+      ],
+      "options": [
+        {
+          "id": "brave",
+          "label": "鼓起勇气，把心意说出口",
+          "resultText": "你深吸一口气说了出来。她愣住，耳朵一点点红透，握着笔的手紧了紧，没有躲开。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "sw_lover": true
+            },
+            "relation": {
+              "suwan": 7
+            }
+          }
+        },
+        {
+          "id": "letitbe",
+          "label": "顺其自然，先不说破",
+          "resultText": "你把话咽了回去，只说没什么。她笑了笑合上本子，那份悸动被你悄悄压在了心底。",
+          "effects": {
+            "relation": {
+              "suwan": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_suwan_8",
+      "charId": "suwan",
+      "name": "不合的想法",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "聊到以后的打算，你们对一件事的看法拧不到一起，气氛一下子僵住。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "聊到毕业以后的打算，你们在一件事上各执一词，谁也没说服谁。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "sad",
+          "text": "我不是要和你吵……只是我一直就是这么想的。你是不是觉得我太固执了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她别过脸，声音压得很低，像在等一个结论。"
+        }
+      ],
+      "options": [
+        {
+          "id": "cool",
+          "label": "先各自冷静冷静",
+          "resultText": "你说好先都想想。她点点头，临走前回头看了你一眼，语气软下来：「那我们下次再谈。」",
+          "effects": {
+            "relation": {
+              "suwan": 4
+            }
+          }
+        },
+        {
+          "id": "quit",
+          "label": "认真说出也许不合适",
+          "resultText": "你说或许两个人本来就不合适。她沉默了很久，最后轻轻嗯了一声，转身走进了走廊。",
+          "effects": {
+            "relation": {
+              "suwan": -4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_suwan_9",
+      "charId": "suwan",
+      "name": "第二天的歉意",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "第二天再见面，你们都冷静了下来，把昨天没说清楚的话重新讲开。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "隔了一天，你们在老地方见了面。两个人都比昨天平静。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "neutral",
+          "text": "昨天我说话太急了。……对不起。你说的那些，我回去想了，其实有道理。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她低着头把歉意说完，指尖却轻轻往你这边靠了靠。"
+        }
+      ],
+      "options": [
+        {
+          "id": "reconcile",
+          "label": "主动开口，互相理解和道歉",
+          "resultText": "你也为昨天的态度道了歉。她听完笑了一下，肩膀松下来：「那这件事，我们翻篇了。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "suwan": 4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_zhouye_5",
+      "charId": "zhouye",
+      "name": "跑道边的水",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "傍晚操场，他刚跑完一组，看见你路过，径直走过来把一瓶水塞到你手里。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "他刚跑完一组，看见你路过，径直走过来塞给你一瓶水。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "smile",
+          "text": "给你的！我刚从便利店拿的，冰的。……别站这儿了，陪我坐会儿呗。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他额头上还淌着汗，笑得没什么遮拦。"
+        }
+      ],
+      "options": [
+        {
+          "id": "take",
+          "label": "接下水，在跑道边坐一会儿",
+          "resultText": "你们坐在台阶上聊天。他说着说着就把自己的赛程讲了一遍，末了拍胸脯：「到时候你来看啊！」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "zhouye": 6
+            }
+          }
+        },
+        {
+          "id": "decline",
+          "label": "摆手说还有事",
+          "resultText": "你跑开了。他举着水站在原地，挠挠头：「行吧，那我下回再喊你。」",
+          "effects": {
+            "relation": {
+              "zhouye": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_zhouye_6",
+      "charId": "zhouye",
+      "name": "赛后慢走",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "测试跑完，他没有立刻冲去洗澡，沿着跑道慢慢走，看见你就招手让你跟上。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "测试跑完，他沿跑道慢慢走，看见你就招手。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "neutral",
+          "text": "刚跑完不能马上坐，得走一走。你陪我呗，走完请你喝糖水。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他步子不快，一手撑着腰，呼吸还没平复。"
+        }
+      ],
+      "options": [
+        {
+          "id": "walk",
+          "label": "陪他一圈圈慢走放松",
+          "resultText": "你们边走边聊。他说腿有点酸，却笑着不让你看。走完一圈，他把糖水让给了你一半。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "relation": {
+              "zhouye": 6
+            }
+          }
+        },
+        {
+          "id": "leave",
+          "label": "说先回宿舍",
+          "resultText": "你先走了。他一个人又绕了两圈，嘴里念叨着「下次得把人留住」。",
+          "effects": {
+            "relation": {
+              "zhouye": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_zhouye_7",
+      "charId": "zhouye",
+      "name": "直球下的心动",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "训练后他跟你说起跑步的执念，你听着听着，发现自己心里也装着他。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "赛后跑道边，他抹了把汗，说起为什么非要跑这一圈又一圈。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "neutral",
+          "text": "我这人不会绕弯子……认准的事就一直跑。你呢，有没有认准谁。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他直勾勾看着你，你忽然心跳漏了一拍。"
+        }
+      ],
+      "options": [
+        {
+          "id": "brave",
+          "label": "鼓起勇气回应他的心意",
+          "resultText": "你迎着他的目光点了头。他一下子笑开，差点蹦起来，又挠着头有点不好意思。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "zy_lover": true
+            },
+            "relation": {
+              "zhouye": 7
+            }
+          }
+        },
+        {
+          "id": "letitbe",
+          "label": "顺其自然，先把话题岔开",
+          "resultText": "你笑着说先去喝水。他哦了一声，没再追问，只把买给你的水拧开了盖。",
+          "effects": {
+            "relation": {
+              "zhouye": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_zhouye_8",
+      "charId": "zhouye",
+      "name": "夕阳跑道",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "在一起后，他训练完拉你沿操场慢走，夕阳把跑道晒得暖黄。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "训练结束，他把外套搭在肩上，陪你沿跑道一圈圈慢走。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "shy",
+          "text": "跟你一起走，比跑完十公里还累……不是累，是心跳太快了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他挠挠头，笑得直白又有点不好意思。"
+        }
+      ],
+      "options": [
+        {
+          "id": "stroll",
+          "label": "陪他慢慢走完这圈",
+          "resultText": "你们沿着跑道走了一圈又一圈。他语速很快地说着训练的事，脚步一直挨着你。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "relation": {
+              "zhouye": 6
+            }
+          }
+        },
+        {
+          "id": "bench",
+          "label": "在看台坐下歇会儿",
+          "resultText": "你们在看台坐下。他把外套铺在旁边，让你靠得舒服些。",
+          "effects": {
+            "relation": {
+              "zhouye": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_zhouye_9",
+      "charId": "zhouye",
+      "name": "训练与你",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "他总把训练和比赛放在第一位，你忍不住说出心里的委屈。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "又一次他为了训练爽了约，你们在操场边拌起嘴。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "sad",
+          "text": "我不是不在乎你……队里的事我推不掉。你是不是觉得，我心里只有跑步。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他攥着毛巾，直愣愣等你一个说法。"
+        }
+      ],
+      "options": [
+        {
+          "id": "cool",
+          "label": "先各自冷静一晚",
+          "resultText": "你说好都先想想。他点点头，临走把一瓶水塞给你：「明天我再找你谈。」",
+          "effects": {
+            "relation": {
+              "zhouye": 4
+            }
+          }
+        },
+        {
+          "id": "quit",
+          "label": "认真说出也许不合适",
+          "resultText": "你说或许两个人本来就不合适。他脸上的笑僵住，攥着毛巾半天没说出话。",
+          "effects": {
+            "relation": {
+              "zhouye": -4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_zhouye_10",
+      "charId": "zhouye",
+      "name": "笨笨的赔礼",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "第二天训练结束，他堵在你回宿舍的路上，手里拎着一袋你爱喝的，样子很不自在。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "他堵在回宿舍的路上，拎着一袋饮料，样子很不自在。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "shy",
+          "text": "昨天是我不对。……我不太会说软话，东西你收下，就当我赔罪了，行不？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他把袋子递过来，眼神躲来躲去，不敢看你。"
+        }
+      ],
+      "options": [
+        {
+          "id": "reconcile",
+          "label": "收下东西，原谅他这一次",
+          "resultText": "你接过袋子笑了一下。他长舒一口气，又挠挠头：「那……以后你不高兴就直接说，我肯定听。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "zhouye": 4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_tangtang_5",
+      "charId": "tangtang",
+      "name": "外联群的求助",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "外联群里消息一条接一条，她单独私戳你，说明天拉赞助缺个帮忙的人。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "她单独私戳你，说嘴替和跑腿都缺一个。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "smile",
+          "text": "大忙人，明天帮我个小忙呗？事后请你吃饭，保证不让你白跑一趟～"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她发了个俏皮的表情，可话说得比平时小心。"
+        }
+      ],
+      "options": [
+        {
+          "id": "help",
+          "label": "答应去帮忙",
+          "resultText": "你陪她跑完一家家店。她把最会说的话留给对方，回头却小声问你：「我刚才，有没有哪句不太体面？」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "tangtang": 6
+            }
+          }
+        },
+        {
+          "id": "decline",
+          "label": "推脱说没空",
+          "resultText": "她说「没事啦我再找别人」，语气轻快，消息却隔了很久才回。",
+          "effects": {
+            "relation": {
+              "tangtang": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_tangtang_6",
+      "charId": "tangtang",
+      "name": "散场夜路",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "演出散场已是深夜，她卸了妆，和你一起走回宿舍，一路没有再对谁堆笑。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "散场深夜，她卸了妆，和你走在回宿舍的路上。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "neutral",
+          "text": "台上那个我是给大家看的。夜里这段路……我可以不演，对吧？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她把包换到肩上，脚步慢下来。"
+        }
+      ],
+      "options": [
+        {
+          "id": "walk",
+          "label": "陪她慢慢走回宿舍",
+          "resultText": "你们走了一路没急着说话。到楼下她回头笑：「跟你走路，挺省心的，不用想着该接哪句。」",
+          "effects": {
+            "relation": {
+              "tangtang": 6
+            }
+          }
+        },
+        {
+          "id": "first",
+          "label": "在路口先分开",
+          "resultText": "你在路口先走了。她一个人走完剩下的路，到楼下才又挂上那副笑。",
+          "effects": {
+            "relation": {
+              "tangtang": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_tangtang_7",
+      "charId": "tangtang",
+      "name": "卸下的笑容",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "后台角落，她难得没在应酬，靠着墙揉太阳穴。你递过去一瓶水，她愣了一下。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "后台角落，她靠着墙揉太阳穴，难得没在应酬。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "sad",
+          "text": "所有人都觉得我八面玲珑，不会累。……其实我也不知道，哪句话是真的，哪句是场面话。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她说完苦笑了一下，像在等你安慰，又像在自嘲。"
+        }
+      ],
+      "options": [
+        {
+          "id": "listen",
+          "label": "听她把这些话说完",
+          "resultText": "你没有打圆场，只是听着。她沉默片刻，轻声说：「你是第一个没让我把笑捡起来的人。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "tangtang": 6
+            }
+          }
+        },
+        {
+          "id": "smooth",
+          "label": "打个圆场把话题带过去",
+          "resultText": "你说她已经很厉害了。她立刻扬起笑接话，那句真话被盖了过去。",
+          "effects": {
+            "relation": {
+              "tangtang": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_tangtang_8",
+      "charId": "tangtang",
+      "name": "卸不下的笑容",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "谢幕时她在台上朝你这边看了一眼，你见过她不笑的样子，心里忽然有了答案。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "活动谢幕，台上灯光很亮，她在人群里朝你这边瞥了一眼。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "neutral",
+          "text": "台下那么多人……你说，我刚才是在看谁呢。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她笑着问，你却想起她卸下笑容的样子，心跳快了起来。"
+        }
+      ],
+      "options": [
+        {
+          "id": "brave",
+          "label": "鼓起勇气问她是不是也喜欢你",
+          "resultText": "你越过人群问出那句话。她脸上的笑僵了一下，眼底晃过一丝慌，又很快掩住。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "tt_lover": true
+            },
+            "relation": {
+              "tangtang": 7
+            }
+          }
+        },
+        {
+          "id": "letitbe",
+          "label": "顺其自然，先把话题带过去",
+          "resultText": "你打了个圆场绕开。她重新挂上得体的笑，像什么都没发生过。",
+          "effects": {
+            "relation": {
+              "tangtang": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_tangtang_9",
+      "charId": "tangtang",
+      "name": "笑容的回避",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "你说起她总用笑容回避真心，两个人的气氛一下子僵住。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "你问她为什么什么都不摊开说，她脸上的笑淡了下去。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "sad",
+          "text": "我习惯了笑着把事带过去……你是不是觉得，我从来没真心过。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她垂着眼，第一次没把情绪藏回笑容后面。"
+        }
+      ],
+      "options": [
+        {
+          "id": "cool",
+          "label": "先各自冷静，慢慢谈",
+          "resultText": "你说好都先缓一缓。她点点头，声音轻下来：「那我下次，不笑给你看了。」",
+          "effects": {
+            "relation": {
+              "tangtang": 4
+            }
+          }
+        },
+        {
+          "id": "quit",
+          "label": "认真说出也许不合适",
+          "resultText": "你说或许两个人本来就不合适。她维持着的笑终于挂不住，别过脸没说话。",
+          "effects": {
+            "relation": {
+              "tangtang": -4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_tangtang_10",
+      "charId": "tangtang",
+      "name": "第一次不笑",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "约定的地方，她没有像平时那样笑着迎上来，而是站在那里，神色认真得有点陌生。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "她站在那里，没有像平时那样笑，神色认真得有点陌生。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "shy",
+          "text": "我练了一晚上怎么说，见面还是紧张。……对别人是场面，对你不是。这句话，我没演。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她攥着裙摆，等着你的回应。"
+        }
+      ],
+      "options": [
+        {
+          "id": "reconcile",
+          "label": "相信她这次是认真的",
+          "resultText": "她听完长长松了口气，又忍不住弯起嘴角：「那以后，我在你这儿可以少练一点笑了吧？」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "relation": {
+              "tangtang": 4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_suwan_happy",
+      "charId": "suwan",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "毕业前夕的曲子",
+      "text": "毕业前夕，她在琴房又为你弹了一首曲子，这一次从头到尾都很稳。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "毕业前夕的琴房，灯只开了一盏。她坐在琴前，为你弹了那首练了很多年的曲子。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "shy",
+          "text": "这首我弹完了，没有停。……以后不在一个城市，你也要记得，有人为你弹过这么一首。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "最后一个音落下，她转过身，把手从琴键上抬起来。"
+        }
+      ],
+      "options": [
+        {
+          "id": "confess",
+          "label": "走上前抱住她",
+          "resultText": "你走过去抱住她。她把脸靠在你肩上，很小声地说：「下一首，我们还要弹同一架琴。」",
+          "effects": {
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "sw_lover": true
+            },
+            "relation": {
+              "suwan": 10
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_suwan_miss",
+      "charId": "suwan",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "她的新恋人",
+      "text": "那次之后你们仍是普通朋友。下次见面，她笑着挽着身边的人，说要介绍给你认识。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "之后你们没再走近。某天在校园里遇见，她身边多了一个人。"
+        },
+        {
+          "speaker": "苏晚",
+          "emotion": "neutral",
+          "text": "给你介绍一下，这是我……很好的朋友。他也学音乐，我们常一起练琴。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她笑得和从前一样温和，只是那份亲昵，已经不是对你的了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "congratulate",
+          "label": "心情复杂地笑着祝贺",
+          "resultText": "你道了声恭喜。她点点头，挽着人走开了。你站在原地，把那句没说出口的话，留到了很多年以后。",
+          "effects": {
+            "relation": {
+              "suwan": -12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_suwan_drift",
+      "charId": "suwan",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "熟悉的曲子",
+      "text": "分开之后你们慢慢疏远。偶然路过琴房，你又听见那段熟悉的旋律从门缝里传出来。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "很久没再联系。这天路过琴房走廊，里面又传出那段《月光》。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "还是从前那个调子，只是弹琴的人，已经和你没有关系了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你在门口站了一会儿，最后还是轻轻走开了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "leave_door",
+          "label": "听完这一段，转身离开",
+          "resultText": "最后一个音落下，你没有敲门。走廊很长，琴声在身后慢慢远了，像一段没有写完的日子。",
+          "effects": {
+            "relation": {
+              "suwan": -18
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_jiangxu_miss",
+      "charId": "jiangxu",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "新的搭档",
+      "text": "那次之后你们仍是普通队友。下次见他身边多了个一起做游戏的人，他介绍你们认识。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "之后你们没再走近。某天社团活动，他身边多了个一起写代码的人。"
+        },
+        {
+          "speaker": "江叙",
+          "emotion": "neutral",
+          "text": "给你介绍一下，这是我新的开发搭档，我们常一起熬夜改 demo。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他笑得和从前一样客气，只是那份认真，已经不是对你的了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "congratulate",
+          "label": "心情复杂地笑着祝贺",
+          "resultText": "你道了声恭喜。他点点头，和新搭档转身走开。你站在原地，把那句没说出口的话留在了以后。",
+          "effects": {
+            "relation": {
+              "jiangxu": -12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_jiangxu_drift",
+      "charId": "jiangxu",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "还亮着的灯",
+      "text": "分开之后你们慢慢断了联系。某天凌晨路过便利店，灯还亮着，你在门口站了一会儿。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "很久没再联系。这天凌晨路过那家便利店，灯还亮着。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "窗边好像坐着个对着电脑的人影，只是已经和你没有关系了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你在门口站了一会儿，最后还是轻轻走开了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "leave_door",
+          "label": "看完这一段，转身离开",
+          "resultText": "你没有进去。街道很静，便利店的灯光在身后慢慢远了，像一段没通关的存档。",
+          "effects": {
+            "relation": {
+              "jiangxu": -18
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_guchi_miss",
+      "charId": "guchi",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "默契的新辩友",
+      "text": "顺其自然之后，他身边多了个配合默契的辩论搭档，笑着介绍你们认识。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "之后你们没再走近。辩论赛那天，他身边站着个配合默契的辩友。"
+        },
+        {
+          "speaker": "顾迟",
+          "emotion": "neutral",
+          "text": "给你介绍一下，这是我队里的新搭档，攻防配合一直很顺。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他客套地笑着，那份默契已经不是和你之间的了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "congratulate",
+          "label": "祝贺他",
+          "resultText": "你道了声恭喜。他点头致意，挽着辩友去备场。你留在原地，那句辩词终究没说出口。",
+          "effects": {
+            "relation": {
+              "guchi": -12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_guchi_drift",
+      "charId": "guchi",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "亮灯的教室",
+      "text": "分开后慢慢疏远。路过辩论社教室，灯下有人在改稿，背影像他。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "很久没联系。路过辩论社，教室还亮着灯。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "窗边有人低头改着稿子，那个背影很像他，只是你没有走进去。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你站了一会儿，转身离开。"
+        }
+      ],
+      "options": [
+        {
+          "id": "leave_door",
+          "label": "看完转身离开",
+          "resultText": "教室里传来翻稿的声音。你没有敲门，走廊很长，脚步声在身后慢慢远了。",
+          "effects": {
+            "relation": {
+              "guchi": -18
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_linyu_miss",
+      "charId": "linyu",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "一起拍照的人",
+      "text": "顺其自然之后，她身边多了个常一起拍照的人，腼腆地介绍给你。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "之后你们没再走近。影展那天，她身边站着个一起扛相机的人。"
+        },
+        {
+          "speaker": "林予",
+          "emotion": "neutral",
+          "text": "给你介绍一下，这是我摄影社的搭档，我们常一起出去采风。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她腼腆地笑着，那份并肩已经不是和你的了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "congratulate",
+          "label": "祝贺她",
+          "resultText": "你道了声恭喜。她点点头，和搭档一起去看下一组照片。你站在展厅里，那句没写进稿子的话留在了身后。",
+          "effects": {
+            "relation": {
+              "linyu": -12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_linyu_drift",
+      "charId": "linyu",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "熟悉风格的照片",
+      "text": "分开后慢慢疏远。路过影展，墙上挂着熟悉风格的照片，你站了一会儿离开。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "很久没联系。路过教学楼的影展，墙上挂着一组照片。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "取景的角度、留白的习惯都很像她，只是照片里已经没有你了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你站在画面前看了很久，最后转身离开。"
+        }
+      ],
+      "options": [
+        {
+          "id": "leave_door",
+          "label": "看完转身离开",
+          "resultText": "你没有留名字，也没有回去找她。展厅很静，照片在身后一张张过去，像没写完的一行诗。",
+          "effects": {
+            "relation": {
+              "linyu": -18
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_zhouye_miss",
+      "charId": "zhouye",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "新的队员",
+      "text": "顺其自然之后，他身边多了个一起训练的队员，大声介绍给你。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "之后你们没再走近。训练场上，他身边跟着个一起热身的新队员。"
+        },
+        {
+          "speaker": "周野",
+          "emotion": "neutral",
+          "text": "给你介绍一下，这是我们队新上来的，以后接力一起跑。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他爽朗地笑着，那份并肩冲刺已经不是和你的了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "congratulate",
+          "label": "笑着祝贺",
+          "resultText": "你道了声恭喜。他挥挥手，带着新队员跑上跑道。你站在场边，那瓶没递出去的水始终没拿出来。",
+          "effects": {
+            "relation": {
+              "zhouye": -12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_zhouye_drift",
+      "charId": "zhouye",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "跑道上的脚步",
+      "text": "分开后慢慢疏远。路过体育场，跑道上有人在跑，脚步声很像他。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "很久没联系。路过体育场，塑胶跑道上有人在一圈圈跑。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "脚步声很熟悉，节奏却已经不属于你了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你站在围栏外看了一会儿，转身离开。"
+        }
+      ],
+      "options": [
+        {
+          "id": "leave_door",
+          "label": "看完转身离开",
+          "resultText": "脚步声一圈圈远去。你没有喊住谁，操场的风从耳边吹过，像没跑完的那圈。",
+          "effects": {
+            "relation": {
+              "zhouye": -18
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_tangtang_miss",
+      "charId": "tangtang",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "形影不离的搭档",
+      "text": "顺其自然之后，她身边多了个形影不离的搭档，笑着介绍给你。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "之后你们没再走近。活动现场，她身边跟着个配合默契的搭档。"
+        },
+        {
+          "speaker": "唐棠",
+          "emotion": "neutral",
+          "text": "给你介绍一下，这是我新的外联搭档，活动我们俩一起盯。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她笑得周全又客气，那份默契已经不是和你的了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "congratulate",
+          "label": "祝贺她",
+          "resultText": "你道了声恭喜。她笑着挽着搭档去招呼客人。你站在人流里，那句台下的话终究没说出口。",
+          "effects": {
+            "relation": {
+              "tangtang": -12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev_story_tangtang_drift",
+      "charId": "tangtang",
+      "weight": 1,
+      "storylineOnly": true,
+      "once": true,
+      "termRange": [
+        1,
+        8
+      ],
+      "name": "远处的谢幕",
+      "text": "分开后慢慢疏远。路过活动大厅，台上有人谢幕，笑声很像她。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "很久没联系。路过活动大厅，里面正在谢幕，掌声一阵接一阵。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "台上那个笑起来的身影很像她，只是你没有走进去。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "你在门外站了一会儿，转身离开。"
+        }
+      ],
+      "options": [
+        {
+          "id": "leave_door",
+          "label": "看完离开",
+          "resultText": "掌声从门里传出来。你没有上台，走廊很长，那些笑声在身后慢慢远了。",
+          "effects": {
+            "relation": {
+              "tangtang": -18
+            }
+          }
         }
       ]
     }
