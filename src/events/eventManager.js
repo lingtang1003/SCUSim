@@ -60,6 +60,26 @@ function currentSpot(state) {
 }
 
 /**
+ * 读取玩家最近一次前往的地点，返回其细分主题（topic，与 locations.json 的 topic 一致）。
+ * 同一大类（spot）下不同地点再细分：如图书馆=major 专业课、教学楼=basics 公共课、文科楼=humanities。
+ * 事件抽取时 state.player.location 已被清空，故从 history 最近一条 type:'move' 反查地点。
+ */
+function currentTopic(state, config) {
+  const history = Array.isArray(state && state.history) ? state.history : [];
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const entry = history[i];
+    if (entry && entry.type === 'move' && entry.location) {
+      const list = config && config.locations && Array.isArray(config.locations.list)
+        ? config.locations.list
+        : [];
+      const loc = list.find((l) => l.id === entry.location);
+      return (loc && loc.topic) || null;
+    }
+  }
+  return null;
+}
+
+/**
  * 剧情线保证触发（v2.1）：真正的「哪条线、哪一步、什么窗口」全部在 config/storylines.json，
  * 由 core/storyline.js 的状态机决定；这里只负责在回合开始时问它一句「现在该不该强制出事件」。
  */
@@ -203,16 +223,19 @@ export function rollEvent(state, config, rng) {
   // 避免「上一回合刚领完十佳歌手门票、这一回合又来同一事件」的情况。
   const recent = (state && Array.isArray(state.__recentEvents)) ? state.__recentEvents : [];
 
-  // 场景分组（混合模式）：优先当前场景 → 通用事件（无 spot）→ 其他场景；逐级兜底，避免空池卡死。
+  // 场景 + 细分主题分组（混合模式）：主题匹配 → 同大类其他主题 → 通用事件（无 spot）→ 其他场景；逐级兜底，避免空池卡死。
   const cur = currentSpot(state);
+  const curTopic = currentTopic(state, config);
   let groups;
   if (!cur) {
     groups = [weighted];
   } else {
-    const matched = weighted.filter((x) => Array.isArray(x.e.spot) && x.e.spot.includes(cur));
+    const inSpot = (x) => Array.isArray(x.e.spot) && x.e.spot.includes(cur);
+    const topicMatch = weighted.filter((x) => inSpot(x) && curTopic && x.e.topic === curTopic);
+    const spotMatch = weighted.filter((x) => inSpot(x) && !(curTopic && x.e.topic === curTopic));
     const general = weighted.filter((x) => !Array.isArray(x.e.spot) || x.e.spot.length === 0);
-    const other = weighted.filter((x) => Array.isArray(x.e.spot) && x.e.spot.length > 0 && !x.e.spot.includes(cur));
-    groups = [matched, general, other];
+    const other = weighted.filter((x) => Array.isArray(x.e.spot) && x.e.spot.length > 0 && !inSpot(x));
+    groups = [topicMatch, spotMatch, general, other];
   }
 
   // 在给定候选组内做轮盘赌；只返回至少含一个可用选项的事件，前置未满足的跳过。

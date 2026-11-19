@@ -160,7 +160,8 @@
       ],
       "spot": [
         "eat"
-      ]
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r02",
@@ -195,7 +196,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r03",
@@ -230,7 +232,8 @@
       ],
       "spot": [
         "exercise"
-      ]
+      ],
+      "topic": "run"
     },
     {
       "id": "ev_r04",
@@ -266,7 +269,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r05",
@@ -302,7 +306,8 @@
       ],
       "spot": [
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r06",
@@ -331,7 +336,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r07",
@@ -367,7 +373,8 @@
       ],
       "spot": [
         "rest"
-      ]
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r08",
@@ -402,7 +409,8 @@
       ],
       "spot": [
         "rest"
-      ]
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r09",
@@ -437,7 +445,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r10",
@@ -472,7 +481,8 @@
       ],
       "spot": [
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r11",
@@ -537,7 +547,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r13",
@@ -569,7 +580,8 @@
       ],
       "spot": [
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r14",
@@ -607,7 +619,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r15",
@@ -652,7 +665,8 @@
       ],
       "spot": [
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r16",
@@ -692,7 +706,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r17",
@@ -735,7 +750,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r18",
@@ -767,7 +783,8 @@
       ],
       "spot": [
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r19",
@@ -803,7 +820,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r20",
@@ -836,7 +854,8 @@
       "spot": [
         "socialize",
         "eat"
-      ]
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r21",
@@ -876,7 +895,8 @@
       ],
       "spot": [
         "club"
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r22",
@@ -921,7 +941,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r23",
@@ -978,7 +999,8 @@
       "spot": [
         "study",
         "socialize"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r24",
@@ -1039,7 +1061,8 @@
       "spot": [
         "socialize",
         "eat"
-      ]
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r25",
@@ -1103,7 +1126,8 @@
       "spot": [
         "socialize",
         "rest"
-      ]
+      ],
+      "topic": "stroll"
     },
     {
       "id": "ev_r26",
@@ -1169,7 +1193,8 @@
       ],
       "spot": [
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r27",
@@ -1205,7 +1230,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r28",
@@ -1241,7 +1267,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r29",
@@ -1277,7 +1304,8 @@
       ],
       "spot": [
         "exercise"
-      ]
+      ],
+      "topic": "indoor"
     },
     {
       "id": "ev_r30",
@@ -1325,7 +1353,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r31",
@@ -1381,7 +1410,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r32",
@@ -1431,7 +1461,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r33",
@@ -1482,7 +1513,8 @@
       "spot": [
         "study",
         "socialize"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r34",
@@ -1532,7 +1564,8 @@
       ],
       "spot": [
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r35",
@@ -1581,7 +1614,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r36",
@@ -1633,7 +1667,8 @@
       ],
       "spot": [
         "club"
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r37",
@@ -1670,7 +1705,8 @@
       "spot": [
         "socialize",
         "rest"
-      ]
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r38",
@@ -1706,7 +1742,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r39",
@@ -1742,7 +1779,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r40",
@@ -1777,7 +1815,8 @@
       ],
       "spot": [
         "exercise"
-      ]
+      ],
+      "topic": "run"
     },
     {
       "id": "ev_r41",
@@ -1814,7 +1853,8 @@
       "spot": [
         "socialize",
         "eat"
-      ]
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r42",
@@ -1856,7 +1896,8 @@
       ],
       "spot": [
         "club"
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r43",
@@ -1892,7 +1933,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r44",
@@ -1964,7 +2006,8 @@
       ],
       "spot": [
         "rest"
-      ]
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r46",
@@ -1996,7 +2039,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c01",
@@ -2029,7 +2073,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c02",
@@ -2062,7 +2107,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c03",
@@ -2097,7 +2143,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c04",
@@ -2132,7 +2179,8 @@
       "spot": [
         "study",
         "club"
-      ]
+      ],
+      "topic": "humanities"
     },
     {
       "id": "ev_c05",
@@ -2169,7 +2217,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c06",
@@ -2206,7 +2255,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c07",
@@ -2243,7 +2293,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c08",
@@ -2277,7 +2328,8 @@
       "spot": [
         "study",
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r60",
@@ -2312,7 +2364,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r61",
@@ -2347,7 +2400,8 @@
       ],
       "spot": [
         "club"
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r62",
@@ -2379,7 +2433,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r63",
@@ -2414,7 +2469,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r64",
@@ -2450,7 +2506,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r65",
@@ -2487,7 +2544,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r66",
@@ -2523,7 +2581,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r67",
@@ -2555,7 +2614,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "basics"
     },
     {
       "id": "ev_r68",
@@ -2586,7 +2646,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r69",
@@ -2619,7 +2680,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r70",
@@ -2650,7 +2712,8 @@
       ],
       "spot": [
         "club"
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r71",
@@ -2688,7 +2751,8 @@
       "spot": [
         "club",
         "socialize"
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r72",
@@ -2723,7 +2787,8 @@
       ],
       "spot": [
         "exercise"
-      ]
+      ],
+      "topic": "run"
     },
     {
       "id": "ev_r73",
@@ -2759,7 +2824,8 @@
       ],
       "spot": [
         "eat"
-      ]
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_r74",
@@ -2881,7 +2947,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r78",
@@ -2913,7 +2980,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r79",
@@ -2950,7 +3018,8 @@
       "spot": [
         "study",
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r80",
@@ -2986,7 +3055,8 @@
       ],
       "spot": [
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r81",
@@ -3023,7 +3093,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r82",
@@ -3057,7 +3128,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r83",
@@ -3093,7 +3165,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r84",
@@ -3129,7 +3202,8 @@
       ],
       "spot": [
         "rest"
-      ]
+      ],
+      "topic": "nap"
     },
     {
       "id": "ev_r85",
@@ -3165,7 +3239,8 @@
       ],
       "spot": [
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_r86",
@@ -3229,7 +3304,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_r88",
@@ -3266,7 +3342,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r89",
@@ -3299,7 +3376,8 @@
       "spot": [
         "socialize",
         "eat"
-      ]
+      ],
+      "topic": "meal"
     },
     {
       "id": "ev_c09",
@@ -3332,7 +3410,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c10",
@@ -3370,7 +3449,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c11",
@@ -3403,7 +3483,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c12",
@@ -3440,7 +3521,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c13",
@@ -3474,7 +3556,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c14",
@@ -3513,7 +3596,8 @@
       "spot": [
         "study",
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_c15",
@@ -3546,7 +3630,8 @@
       ],
       "spot": [
         "club"
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_c16",
@@ -3585,7 +3670,8 @@
       "spot": [
         "study",
         "club"
-      ]
+      ],
+      "topic": "humanities"
     },
     {
       "id": "ev_c17",
@@ -3622,7 +3708,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c18",
@@ -3655,7 +3742,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c19",
@@ -3693,7 +3781,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c20",
@@ -3731,7 +3820,8 @@
       "spot": [
         "parttime",
         "socialize"
-      ]
+      ],
+      "topic": "mall"
     },
     {
       "id": "ev_c21",
@@ -3769,7 +3859,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_c22",
@@ -3806,7 +3897,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_c23",
@@ -3844,7 +3936,8 @@
       ],
       "spot": [
         "parttime"
-      ]
+      ],
+      "topic": "work"
     },
     {
       "id": "ev_c24",
@@ -3880,7 +3973,8 @@
       ],
       "spot": [
         "study"
-      ]
+      ],
+      "topic": "major"
     },
     {
       "id": "ev_r90",
@@ -3915,7 +4009,8 @@
             }
           }
         }
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r91",
@@ -3951,7 +4046,8 @@
             }
           }
         }
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r92",
@@ -3987,7 +4083,8 @@
             }
           }
         }
-      ]
+      ],
+      "topic": "club"
     },
     {
       "id": "ev_r93",
@@ -4023,7 +4120,558 @@
             }
           }
         }
-      ]
+      ],
+      "topic": "club"
+    },
+    {
+      "id": "ev_r94",
+      "name": "政治课点名",
+      "weight": 7,
+      "termRange": [
+        1,
+        30
+      ],
+      "text": "政治课上老师突然点名提问，你这学期没怎么翻书。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "listen",
+          "label": "翻开课本认真听",
+          "resultText": "你跟着课件把知识点补了一遍。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "duck",
+          "label": "低头避开点名",
+          "resultText": "你缩在后排摸了一节课的鱼。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "humanities"
+    },
+    {
+      "id": "ev_r95",
+      "name": "文史阅览室",
+      "weight": 7,
+      "termRange": [
+        2,
+        24
+      ],
+      "text": "文科楼阅览室摆着旧期刊和文史丛书，光线很安静。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "read",
+          "label": "借一本通读",
+          "resultText": "你在文史丛书中读了一下午。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "browse",
+          "label": "翻两页就走",
+          "resultText": "你随手翻了翻，吹了吹风。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "humanities"
+    },
+    {
+      "id": "ev_r96",
+      "name": "写作练笔",
+      "weight": 7,
+      "termRange": [
+        3,
+        28
+      ],
+      "text": "文学社的写作练习贴在公告栏，一篇短文就能参加。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "write",
+          "label": "认真写一篇",
+          "resultText": "你写完短文，文笔被学长夸了两句。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "watch",
+          "label": "看看别人的",
+          "resultText": "你翻了翻投稿，放松了一会儿。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "humanities"
+    },
+    {
+      "id": "ev_r97",
+      "name": "草坪晒太阳",
+      "weight": 8,
+      "termRange": [
+        1,
+        34
+      ],
+      "text": "不高山的草坡晒得暖烘烘的，有人躺着看书。",
+      "spot": [
+        "rest"
+      ],
+      "options": [
+        {
+          "id": "lie",
+          "label": "躺下晒会儿",
+          "resultText": "你躺在草坡上晒着太阳，困意慢慢上来。",
+          "effects": {
+            "attributes": {
+              "health": 3
+            }
+          }
+        },
+        {
+          "id": "sit",
+          "label": "坐起来看风景",
+          "resultText": "你坐在坡上看云，和路过的同学打了招呼。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        }
+      ],
+      "topic": "chill"
+    },
+    {
+      "id": "ev_r98",
+      "name": "亭中看书",
+      "weight": 7,
+      "termRange": [
+        1,
+        34
+      ],
+      "text": "半山腰的亭子里很清静，风把树叶吹得沙沙响。",
+      "spot": [
+        "rest"
+      ],
+      "options": [
+        {
+          "id": "read",
+          "label": "带本书读完",
+          "resultText": "你在亭子里读完半本书，心里很静。",
+          "effects": {
+            "attributes": {
+              "health": 2,
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "blank",
+          "label": "发会儿呆",
+          "resultText": "你靠着柱子发呆，什么也没想。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        }
+      ],
+      "topic": "chill"
+    },
+    {
+      "id": "ev_r99",
+      "name": "长桥夜走",
+      "weight": 8,
+      "termRange": [
+        1,
+        34
+      ],
+      "text": "晚饭后你独自走上长桥，河面映着路灯，风很轻。",
+      "spot": [
+        "rest"
+      ],
+      "options": [
+        {
+          "id": "walk",
+          "label": "慢慢走一圈",
+          "resultText": "你沿着桥来回走了一圈，脚步都松快了。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        },
+        {
+          "id": "wind",
+          "label": "停下来吹风",
+          "resultText": "你靠在栏杆上吹风，和路过的同学聊了两句。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        }
+      ],
+      "topic": "stroll"
+    },
+    {
+      "id": "ev_r100",
+      "name": "篮球半场",
+      "weight": 7,
+      "termRange": [
+        2,
+        30
+      ],
+      "text": "体育场半场缺人，球友招手喊你凑一局。",
+      "spot": [
+        "exercise"
+      ],
+      "options": [
+        {
+          "id": "play",
+          "label": "上场打半场",
+          "resultText": "你跑了几趟，出了一身汗，和队友熟了起来。",
+          "effects": {
+            "attributes": {
+              "health": 3,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "watch",
+          "label": "场边看会儿",
+          "resultText": "你在场边活动了一下筋骨。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "run"
+    },
+    {
+      "id": "ev_r101",
+      "name": "足球友谊赛",
+      "weight": 7,
+      "termRange": [
+        3,
+        28
+      ],
+      "text": "操场边有人约了足球友谊赛，还差一个边锋。",
+      "spot": [
+        "exercise"
+      ],
+      "options": [
+        {
+          "id": "join",
+          "label": "加入踢球",
+          "resultText": "你在场上跑了半场，配合进了一脚。",
+          "effects": {
+            "attributes": {
+              "health": 3,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "spectate",
+          "label": "当观众",
+          "resultText": "你坐在场边看完整场，活动了下腿。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "run"
+    },
+    {
+      "id": "ev_r102",
+      "name": "羽毛球约局",
+      "weight": 7,
+      "termRange": [
+        2,
+        30
+      ],
+      "text": "体育馆羽毛球馆有空场，室友约你一起打球。",
+      "spot": [
+        "exercise"
+      ],
+      "options": [
+        {
+          "id": "doubles",
+          "label": "双打一局",
+          "resultText": "你在球馆跑跳了一局，球拍挥得顺手。",
+          "effects": {
+            "attributes": {
+              "health": 3,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "stretch",
+          "label": "场边活动",
+          "resultText": "你在场边拉了拉伸，出了点薄汗。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "indoor"
+    },
+    {
+      "id": "ev_r103",
+      "name": "器械训练",
+      "weight": 7,
+      "termRange": [
+        3,
+        28
+      ],
+      "text": "健身房器械区人不多，跑步机和哑铃都空着。",
+      "spot": [
+        "exercise"
+      ],
+      "options": [
+        {
+          "id": "lift",
+          "label": "练一组力量",
+          "resultText": "你练了一组哑铃和拉伸，肌肉有点发酸。",
+          "effects": {
+            "attributes": {
+              "health": 3
+            }
+          }
+        },
+        {
+          "id": "tread",
+          "label": "慢走拉伸",
+          "resultText": "你在跑步机上慢走了一会儿，舒展身体。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        }
+      ],
+      "topic": "indoor"
+    },
+    {
+      "id": "ev_r104",
+      "name": "英语四级备考",
+      "weight": 7,
+      "termRange": [
+        2,
+        16
+      ],
+      "text": "四级报名开始，单词书和真题卷堆在桌上。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "cram",
+          "label": "背单词刷真题",
+          "resultText": "你刷了两套真题，阅读速度快了些。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "postpone",
+          "label": "先放一放",
+          "resultText": "你把资料收进抽屉，先歇了口气。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "topic": "basics"
+    },
+    {
+      "id": "ev_r105",
+      "name": "数学课作业",
+      "weight": 7,
+      "termRange": [
+        1,
+        12
+      ],
+      "text": "高数/线代作业明天交，最后一道大题卡了半小时。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "solve",
+          "label": "啃下难题",
+          "resultText": "你一步步推到最后，终于解出了那道题。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2
+            }
+          }
+        },
+        {
+          "id": "borrow",
+          "label": "问同学思路",
+          "resultText": "你和同学对了对思路，借了个提示。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "social": 1
+            }
+          }
+        }
+      ],
+      "topic": "basics"
+    },
+    {
+      "id": "ev_r106",
+      "name": "宿舍午休",
+      "weight": 8,
+      "termRange": [
+        1,
+        34
+      ],
+      "text": "没课的下午，宿舍拉着窗帘，床铺格外舒服。",
+      "spot": [
+        "rest"
+      ],
+      "options": [
+        {
+          "id": "nap",
+          "label": "睡个午觉",
+          "resultText": "你拉上床帘睡了一觉，醒来精神多了。",
+          "effects": {
+            "attributes": {
+              "health": 3
+            }
+          }
+        },
+        {
+          "id": "scroll",
+          "label": "躺着刷手机",
+          "resultText": "你躺着刷了会儿消息，和室友有一搭没一搭地聊。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        }
+      ],
+      "topic": "nap"
+    },
+    {
+      "id": "ev_r107",
+      "name": "专业课小组讨论",
+      "weight": 7,
+      "termRange": [
+        2,
+        30
+      ],
+      "text": "专业课小组在图书馆讨论选题，还差你一个。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "join",
+          "label": "参与讨论",
+          "resultText": "你在讨论里提了个思路，小组记下了。",
+          "effects": {
+            "attributes": {
+              "knowledge": 2,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "listen",
+          "label": "旁听记录",
+          "resultText": "你坐在旁边记了几页笔记。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ],
+      "topic": "major"
+    },
+    {
+      "id": "ev_r108",
+      "name": "专业文献阅读",
+      "weight": 7,
+      "termRange": [
+        3,
+        34
+      ],
+      "text": "导师发来几篇专业文献，要求这周读完写摘要。",
+      "spot": [
+        "study"
+      ],
+      "options": [
+        {
+          "id": "deep",
+          "label": "精读做笔记",
+          "resultText": "你逐篇精读并整理了摘要，思路清晰不少。",
+          "effects": {
+            "attributes": {
+              "knowledge": 3
+            }
+          }
+        },
+        {
+          "id": "skim",
+          "label": "浏览摘要",
+          "resultText": "你扫了一遍结论，先混个眼熟。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        }
+      ],
+      "topic": "major"
     }
   ],
   "note": "fixed 三条：社团招新/毕业论文/负债；random 按 spot 场景归类：study 学习、club 社团、exercise 运动、parttime 兼职、socialize 社交、rest 休息、eat 吃饭；spot 为空为通用兜底事件。混合抽取：优先当前场景 → 通用 → 其他场景。"
