@@ -684,7 +684,7 @@ export function createApp(ctx) {
         !locationOf(state) ? null : h('button', {
           class: 'vn-loc vn-loc--btn',
           type: 'button',
-          title: '打开校园地图',
+          title: '切换地点（不消耗行动点，本周行动点用完前可用）',
           onclick: () => {
             if (callbacks.onOpenMap) callbacks.onOpenMap();
             else showMap();
@@ -1185,17 +1185,46 @@ export function createApp(ctx) {
       type: 'text',
       placeholder: '例如：林夕',
       value: creation.name,
-      maxlength: String(NAME_MAX),
+      // 不用 maxlength：输入法在组合拼音时会被它卡住（就是「打几个字母打不进去」的元凶之一），
+      // 长度改由 sanitize 里 slice(0, NAME_MAX) 兜底
       autocomplete: 'off',
+      autocapitalize: 'off',
+      spellcheck: 'false',
+    });
+
+    // 输入法（拼音/五笔）组合输入期间【绝不能改写 value】：
+    // 原来每次 input 都回写一遍过滤结果，会在组合中途打断输入法，
+    // 表现就是「打了几个字母之后突然打不进字了」。组合期间这里只记录、不动 DOM。
+    let composing = false;
+    const previewName = (raw) => {
+      const node = doc.getElementById && doc.getElementById('vn-preview-name');
+      if (node) node.textContent = String(raw || '') || '（还没有名字）';
+    };
+    function sync(raw, target) {
+      const cleaned = sanitize(raw);
+      if (target && target.value !== cleaned) target.value = cleaned;
+      creation.name = cleaned;
+      previewName(cleaned);
+    }
+    input.addEventListener('compositionstart', () => { composing = true; });
+    input.addEventListener('compositionend', (e) => {
+      composing = false;
+      sync(e && e.target ? e.target.value : '', e && e.target);
     });
     input.addEventListener('input', (e) => {
-      const raw = e.target ? e.target.value : '';
-      const cleaned = sanitize(raw);
-      // 直接过滤掉数字/符号/空格，避免“能输入但提交报错”
-      if (e.target && e.target.value !== cleaned) e.target.value = cleaned;
-      creation.name = cleaned;
-      const node = doc.getElementById && doc.getElementById('vn-preview-name');
-      if (node) node.textContent = creation.name || '（还没有名字）';
+      const raw = e && e.target ? e.target.value : '';
+      // isComposing 在 Edge/Safari 上也可靠；两者任一为真都按「组合中」处理
+      if (composing || (e && e.isComposing)) {
+        creation.name = String(raw);
+        previewName(raw);
+        return;
+      }
+      sync(raw, e && e.target);
+    });
+    // 失焦兜底清理一次（组合被外部打断、或粘贴了非法字符）
+    input.addEventListener('blur', (e) => {
+      if (composing) return;
+      sync(e && e.target ? e.target.value : '', e && e.target);
     });
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['你的名字']),
@@ -1204,6 +1233,12 @@ export function createApp(ctx) {
       h('button', {
         class: 'btn btn--primary btn--block btn--lg',
         onclick: () => {
+          // 输入法还开着（组合未确认）时先别提交，否则会把拼音当成名字
+          if (composing) {
+            if (input && typeof input.blur === 'function') input.blur();
+            showError('请先按空格/回车确认输入法里的字');
+            return;
+          }
           const n = String(creation.name || '').trim();
           if (!n) {
             showError('请输入姓名');
@@ -1970,15 +2005,24 @@ export function createApp(ctx) {
     const health = Number(st.player && st.player.attributes && st.player.attributes.health) || 0;
     const need = Number(l.requiresHealth) || 0;
     const locked = health < need;
+    // 行动点用完 = 这一周的行动周期结束：这时候不让再换地点（避免把自动推进顶掉）
+    const ap = Number(st.actionPoints);
+    const noAp = Number.isFinite(ap) && ap <= 0;
     const here = (st.player && st.player.location) === l.id;
     return h('button', {
-      class: 'vn-map__pin' + (here ? ' is-here' : '') + (locked ? ' is-locked' : ''),
+      class: 'vn-map__pin' + (here ? ' is-here' : '') + (locked || noAp ? ' is-locked' : ''),
       type: 'button',
       style: 'left:' + (Number(l.x) || 50) + '%;top:' + (Number(l.y) || 50) + '%',
-      title: locked ? '需要健康 ' + need : (l.desc || l.name),
+      title: locked ? '需要健康 ' + need
+        : noAp ? '行动点用完了，这周不能再换地点'
+        : (l.desc || l.name),
       onclick: () => {
         if (locked) {
           showToast('健康 ' + health + ' 点，进「' + l.name + '」需要 ' + need + ' 点', 'warning');
+          return;
+        }
+        if (noAp) {
+          showToast('行动点用完了，这周不能再换地点', 'warning');
           return;
         }
         if (callbacks.onMoveLocation) callbacks.onMoveLocation(l.id);
@@ -1992,7 +2036,11 @@ export function createApp(ctx) {
           + (Number(l.labelDy) || 0) + 'px)',
       }, [
         h('span', { class: 'vn-map__name' }, [l.name]),
-        locked ? h('span', { class: 'vn-map__need' }, ['健康 ' + need]) : null,
+        locked
+          ? h('span', { class: 'vn-map__need' }, ['健康 ' + need])
+          : noAp
+          ? h('span', { class: 'vn-map__need' }, ['行动点用完'])
+          : null,
       ]),
     ]);
   }
@@ -2030,9 +2078,18 @@ export function createApp(ctx) {
     const hereList = list.filter((l) => !campus || !l.campus || l.campus === campus.id);
     const mapArt = (campus && campus.mapArt) || '';
     const aspect = (campus && campus.aspect) || '2560 / 1440';
+    const apNow = Number(st.actionPoints) || 0;
+    const apMax = balanceOf('actionPointsPerTurn', 4);
+    const locNow = locationOf(st);
+    const canMove = apNow > 0;
 
     const body = [
       campusTabs(st),
+      h('p', { class: 'vn-modal__lead' }, [
+        canMove
+          ? '行动点 ' + apNow + ' / ' + apMax + ' · 换地点不消耗行动点' + (locNow ? '（当前：' + locNow.name + '）' : '')
+          : '这周的行动点用完了，下周再换地点',
+      ]),
       h('div', {
         class: 'vn-map',
         style: 'aspect-ratio:' + aspect,

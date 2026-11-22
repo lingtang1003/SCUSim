@@ -737,9 +737,19 @@ export function createController(deps) {
     app.showMap();
   }
 
-  function onMoveLocation(id) {
-    clearAutoAdvance();
+  async function onMoveLocation(id) {
     if (!state) return;
+    // 换地点不消耗行动点，但只能在「本周还有行动点」的窗口里换：
+    // 4 个行动点就是这一周的行动周期，用完了就得等下一周（也避免把自动推进的定时器顶掉）
+    if ((Number(state.actionPoints) || 0) <= 0) {
+      toast('行动点用完了，这周不能再换地点', 'warning');
+      return;
+    }
+    if (state.pendingEvent) {
+      toast('先处理当前事件，再换地点', 'warning');
+      return;
+    }
+    clearAutoAdvance();
     const r = eng.moveToLocation(state, id, config);
     if (!r.ok) {
       if (r.reason === 'health') {
@@ -749,9 +759,10 @@ export function createController(deps) {
       }
       return;
     }
-    // 移动不消耗行动点，刷新舞台与旁白
+    // 移动不消耗行动点，刷新舞台与旁白；顺手存盘，刷新后还停在这个地点
     state.rngState = rng.getState();
     audio.playSfx('click');
+    await storage.saveGame(state);
     app.render(state, { moved: { name: r.location.name, line: r.location.line } });
   }
 
