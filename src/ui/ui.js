@@ -1965,9 +1965,18 @@ export function createApp(ctx) {
   }
 
   /** 当前应该展示哪个校区：优先「人所在的校区」，其次手动切换过的，最后默认 */
-  function activeCampus(state) {
+  /**
+   * 当前看的是哪个校区的地图：
+   *  - preferTab=true（在弹窗里点了「江安/望江」页签）→ 以页签为准，
+   *    这样站在江安也能翻到望江的地图；否则以所在地点的校区为准。
+   */
+  function activeCampus(state, preferTab) {
     const list = campusesOf();
     if (!list.length) return null;
+    if (preferTab && mapCampus) {
+      const hit = list.find((c) => c.id === mapCampus);
+      if (hit) return hit;
+    }
     const loc = locationOf(state);
     if (loc && loc.campus) {
       const hit = list.find((c) => c.id === loc.campus);
@@ -1982,17 +1991,19 @@ export function createApp(ctx) {
     return list.find((c) => c.id === def) || list[0];
   }
 
-  function campusTabs(state) {
+  function campusTabs(state, preferTab) {
     const list = campusesOf();
     if (list.length < 2) return null;
-    const cur = activeCampus(state);
+    const cur = activeCampus(state, preferTab);
     return h('div', { class: 'vn-map__tabs' }, list.map((c) =>
       h('button', {
         type: 'button',
         class: 'vn-map__tab' + (cur && cur.id === c.id ? ' is-on' : ''),
+        title: '切换到' + c.name + '校区的地图',
         onclick: () => {
           mapCampus = c.id;
-          if (overlayEl) showMap();
+          // 弹窗里点页签：按页签强制切换地图（否则会一直被「所在校区」盖回去）
+          if (overlayEl) showMap(true);
           else if (lastState) render(lastState, {});
         },
       }, [c.name])
@@ -2025,6 +2036,7 @@ export function createApp(ctx) {
           showToast('行动点用完了，这周不能再换地点', 'warning');
           return;
         }
+        if (l.campus) mapCampus = l.campus;   // 记住这次去的是哪个校区
         if (callbacks.onMoveLocation) callbacks.onMoveLocation(l.id);
       },
     }, [
@@ -2066,15 +2078,16 @@ export function createApp(ctx) {
   }
 
   // ---------------- 弹层：校园地图（选择地点） ----------------
-  function showMap() {
+  function showMap(preferTab) {
     if (!rootEl) return;
     const list = listOf('locations');
     if (!list.length) {
       showToast('还没有配置地点', 'warning');
       return;
     }
+    closeOverlay();   // 页签切换会重开弹窗，先关掉旧的，避免叠层
     const st = lastState || {};
-    const campus = activeCampus(st);
+    const campus = activeCampus(st, preferTab);
     const hereList = list.filter((l) => !campus || !l.campus || l.campus === campus.id);
     const mapArt = (campus && campus.mapArt) || '';
     const aspect = (campus && campus.aspect) || '2560 / 1440';
@@ -2084,10 +2097,11 @@ export function createApp(ctx) {
     const canMove = apNow > 0;
 
     const body = [
-      campusTabs(st),
+      campusTabs(st, preferTab),
       h('p', { class: 'vn-modal__lead' }, [
         canMove
-          ? '行动点 ' + apNow + ' / ' + apMax + ' · 换地点不消耗行动点' + (locNow ? '（当前：' + locNow.name + '）' : '')
+          ? '行动点 ' + apNow + ' / ' + apMax + ' · 换地点不消耗行动点'
+            + '（当前：' + (locNow ? locNow.name : '地图上') + ' · 地图：' + (campus ? campus.name : '校园') + '）'
           : '这周的行动点用完了，下周再换地点',
       ]),
       h('div', {

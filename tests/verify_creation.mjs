@@ -92,6 +92,16 @@ function findByTag(node, tag, out = []) {
   return out;
 }
 
+function findByClass(node, cls, out = []) {
+  for (const c of node.children || []) {
+    if (c && c.nodeType === 1) {
+      if (String(c.className || '').split(/\s+/).includes(cls)) out.push(c);
+      findByClass(c, cls, out);
+    }
+  }
+  return out;
+}
+
 function makeDoc() {
   const byId = new Map();
   return {
@@ -248,6 +258,64 @@ st.pendingEvent = { eventId: 'ev_r01', options: [], resolved: false };
 const before2 = st.player.location;
 await controller.callbacks.onMoveLocation('dorm');
 check('E: 有未结算事件时不能换地点', st.player.location === before2, String(st.player.location));
+
+// ---------------------------------------------------------------------------
+// G) 地图页签：站在江安也能翻到望江的地图（本周 4 AP 内）
+// ---------------------------------------------------------------------------
+{
+  const { controller: c2, rootEl } = await (async () => {
+    const storage2 = createStorage();
+    const root2 = makeEl('div');
+    const ctl = createController({
+      loader: { loadConfig: async () => config },
+      storage: storage2, engine, createRng, createApp,
+      doc: makeDoc(), rootEl: root2, autoResume: false,
+    });
+    await ctl.start();
+    await ctl.callbacks.onNewGame({
+      name: '换图生', gender: '男', collegeId: 'cs',
+      attributes: { knowledge: 5, social: 5, health: 5, money: 5 },
+      tags: ['study_hard', 'gamer', 'chill'], seed: 7,
+    });
+    const s2 = ctl._getState();
+    s2.pendingEvent = null;
+    await ctl.callbacks.onMoveLocation('dorm');   // 先站在江安宿舍
+    return { controller: ctl, rootEl: root2 };
+  })();
+  const state2 = c2._getState();
+  check('G: 准备：站在江安宿舍', state2.player.location === 'dorm', String(state2.player.location));
+
+  c2.callbacks.onOpenMap();   // 周内打开地图
+  const art0 = findByClass(rootEl, 'vn-map__art')[0];
+  check('G: 弹窗默认显示当前校区（江安）地图',
+    !!art0 && String(art0.attr_style || '').includes('jiang-an-map.jpg'),
+    art0 ? String(art0.attr_style) : 'no art');
+
+  const tabs = findByClass(rootEl, 'vn-map__tab');
+  check('G: 地图上有江安/望江两个页签', tabs.length === 2,
+    tabs.map((t) => String(t.textContent)).join('/'));
+  const wjTab = tabs.find((t) => String(t.textContent).trim() === '望江');
+  check('G: 找到「望江」页签', !!wjTab);
+  if (wjTab) fire(wjTab, 'click');
+  const art1 = findByClass(rootEl, 'vn-map__art')[0];
+  check('G: 点「望江」后切到望江校区地图',
+    !!art1 && String(art1.attr_style || '').includes('wangjiang-map.jpg'),
+    art1 ? String(art1.attr_style) : 'no art');
+  check('G: 切页签不会叠出第二层弹窗',
+    findByClass(rootEl, 'vn-modal-scrim').length === 1,
+    String(findByClass(rootEl, 'vn-modal-scrim').length));
+
+  // 望江地图上的图钉：直接点一个，本周内（还有 AP）就能过去
+  const pins = findByClass(rootEl, 'vn-map__pin');
+  check('G: 望江地图上有地点图钉', pins.length >= 2, String(pins.length));
+  const target = pins.find((p) => String(p.textContent).includes('教学楼'));
+  check('G: 望江地图上有「教学楼」图钉', !!target,
+    pins.map((p) => String(p.textContent)).join('/'));
+  if (target) fire(target, 'click');
+  check('G: 坐在江安也能在周内换到望江教学楼（AP 不变）',
+    state2.player.location === 'wj_college' && state2.actionPoints === 4,
+    state2.player.location + '/' + state2.actionPoints);
+}
 
 console.log(`\n总计 ${pass + failures.length} 项，PASS ${pass}，FAIL ${failures.length}`);
 if (failures.length) console.error('失败用例: ' + failures.join(' | '));
