@@ -257,3 +257,8 @@ npx wrangler pages deploy . --project-name scusim
 - 更完整的方案与架构见 `docs/开发方案.md`、`docs/架构任务分解.md`（非部署产物，可忽略）。
 - 设计约束（无构建、无框架、相对路径）见 `docs/开发方案.md` §1 / §5。
 - 角色系统见 [`docs/角色系统.md`](docs/角色系统.md)；剧情化优化路线见 [`docs/剧情化优化路线.md`](docs/剧情化优化路线.md)。
+
+## 字体（改剧情后必看）
+
+正文/标题字体是子集，源字体备份在 `C:\Users\19337\Documents\SCUSim-字体源\`。
+改完剧情跑 `npm run fonts:check`：有缺字（生僻字）再 `npm run fonts` 重打，否则不用管。

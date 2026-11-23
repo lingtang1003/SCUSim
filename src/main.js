@@ -184,7 +184,7 @@ export function createController(deps) {
     bar.appendChild(mk('社交+10', () => bump('social', 10)));
     bar.appendChild(mk('健康+10', () => bump('health', 10)));
     bar.appendChild(mk('钱+1000', () => bump('money', 1000)));
-    bar.appendChild(mk('钱−5000', () => bump('money', -5000)));
+    bar.appendChild(mk('钱-5000', () => bump('money', -5000)));
     bar.appendChild(mk('AP 清零', () => {
       if (!state) return;
       state.actionPoints = 0;
@@ -475,7 +475,7 @@ export function createController(deps) {
       const expense = Number(res.monthly.expense) || 0;
       const parts = [];
       if (income > 0) parts.push(`生活费已发放 +${income}`);
-      if (expense > 0) parts.push(`开销 −${expense}`);
+      if (expense > 0) parts.push(`开销 -${expense}`);
       parts.push(`当前金钱 ${money}`);
       toast(parts.join(' · '), 'info');
     }

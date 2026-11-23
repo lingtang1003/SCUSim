@@ -446,8 +446,8 @@ const stageSpeaker = byClass(rootUi, 'vn-speaker')[0];
 check('H: 对话框说话人换成林予',
   !!stageSpeaker && stageSpeaker.textContent === '林予',
   stageSpeaker && stageSpeaker.textContent);
-check('H: 选人结果里带好感标签',
-  byClass(rootUi, 'vn-effect').some((x) => String(x.textContent).includes('林予')));
+check('H: 好感不再额外挂黑色标签（改由正文/说话人体现）',
+  byClass(rootUi, 'vn-effect--relation').length === 0);
 
 // =====================================================================
 console.log(`\n总计 ${pass + failures.length} 项，PASS ${pass}，FAIL ${failures.length}`);

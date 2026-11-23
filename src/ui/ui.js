@@ -382,15 +382,6 @@ export function createApp(ctx) {
     ]);
   }
 
-  /** 关系变化标签（对话框下方：▲ 江叙 好感 +8）。 */
-  function relationChips(delta) {
-    if (!Array.isArray(delta) || !delta.length) return [];
-    return delta.map((d) => ({
-      kind: 'relation',
-      text: '▲ ' + (d.name || d.charId) + ' 好感' + (Number(d.delta) > 0 ? '+' : '') + Number(d.delta),
-    }));
-  }
-
   function findCollege(id) {
     return listOf('colleges').find((c) => c.id === id) || null;
   }
@@ -528,7 +519,7 @@ export function createApp(ctx) {
       const delta = Number(attrs[meta.key]);
       if (!Number.isFinite(delta) || delta === 0) continue;
       out.push({
-        text: meta.icon + ' ' + meta.name + ' ' + (delta > 0 ? '+' : '−') + Math.abs(delta),
+        text: meta.icon + ' ' + meta.name + ' ' + (delta > 0 ? '+' : '-') + Math.abs(delta),
         kind: delta > 0 ? 'up' : 'down',
       });
     }
@@ -678,7 +669,7 @@ export function createApp(ctx) {
         ]),
         line
           ? h('span', { class: 'vn-chip vn-chip--line', title: line.name }, [
-              '♡ ' + line.name + ' · ' + line.step + '/' + line.total,
+              '◆ ' + line.name + ' · ' + line.step + '/' + line.total,
             ])
           : null,
       ]),
@@ -691,7 +682,7 @@ export function createApp(ctx) {
             if (callbacks.onOpenMap) callbacks.onOpenMap();
             else showMap();
           },
-        }, ['◈ ' + (function () {
+        }, ['◆ ' + (function () {
           const loc = locationOf(state);
           if (loc) return loc.name;
           return ui.sceneEntry ? ui.sceneEntry.label : '校园';
@@ -721,7 +712,7 @@ export function createApp(ctx) {
           title: '菜单',
           'aria-label': '打开菜单',
           onclick: () => openMenu(),
-        }, ['☰']),
+        }, ['≡']),
       ]),
       h('button', {
         class: 'vn-hud__name',
@@ -907,7 +898,8 @@ export function createApp(ctx) {
       const def = findEventById(eventResult.eventId) || {};
       ui.speaker = def.name || '事件';
       ui.text = eventResult.text || '（这件事就这样过去了）';
-      ui.effects = relationChips(eventResult.relationDelta);
+      // 正文已经带「｜ 效果：林予 好感+6」，不再额外挂一行黑色标签
+      ui.effects = [];
       // 事件带角色（或选项本身带角色，如迎新晚会选人）→ 左侧立绘换成对方，说话人也换成对方
       const who = eventResult.charId || def.charId || '';
       if (who) {
@@ -988,8 +980,9 @@ export function createApp(ctx) {
           + (sceneChanged ? ' is-scene-change' : '')
           + (onMap ? ' vn-stage--map' : ''),
       }, onMap
-        // 地图界面默认只有地图与 HUD；只有「事件结算结果」需要就地播一段，才带出立绘与对话框
-        ? [mapStage(state), who, hud(state, v),
+        // 地图界面默认只有地图与 HUD；只有「事件结算结果」播报期间才带出立绘与对话框，
+        // 对话一关（回到选地点）立绘要跟着消失，不然人物会留在图上
+        ? [mapStage(state), ui.showDialogue ? who : null, hud(state, v),
            ui.showDialogue ? dialogueBox(ui.speaker, ui.text, ui.effects) : null]
         : [
             bgLayer(ui.scene, ui.sceneEntry),
@@ -1356,7 +1349,7 @@ export function createApp(ctx) {
       },
     }, [
       h('span', { class: 'vn-picker__value' }, [current ? current.label : '请选择']),
-      h('span', { class: 'vn-picker__caret', 'aria-hidden': 'true' }, ['⌄']),
+      h('span', { class: 'vn-picker__caret', 'aria-hidden': 'true' }, ['▼']),
     ]);
     const wrap = h('div', { class: 'vn-picker' }, [trigger, list]);
     return wrap;
@@ -1442,7 +1435,7 @@ export function createApp(ctx) {
             renderCreation();
           }
         },
-      }, ['−']);
+      }, ['-']);
       const plus = h('button', {
         class: 'vn-step-btn',
         'data-kind': 'plus',
@@ -1817,7 +1810,7 @@ export function createApp(ctx) {
       h('div', { class: 'vn-event__scrim' }),
       npcWrap,
       h('div', { class: 'vn-event__inner' }, [
-        h('div', { class: 'vn-event__tag' }, ['✦ ' + title]),
+        h('div', { class: 'vn-event__tag' }, ['◆ ' + title]),
         choiceWrap,
         hintEl,
         h('div', { class: 'vn-dialogue' }, [
@@ -2435,7 +2428,7 @@ export function createApp(ctx) {
           },
         }, [
           h('span', {}, ['各学期成绩和绩点']),
-          h('span', { class: 'vn-score__arrow' }, ['▾']),
+          h('span', { class: 'vn-score__arrow' }, ['▼']),
         ]),
         semesterList.length
           ? (listEl = h('div', { class: 'vn-score__list is-collapsed' }, semesterList.map((it) =>
