@@ -4917,17 +4917,9 @@ body { font-synthesis: none; }
 }
 
 
-/* 地图顶部加一层很淡的遮罩，保证 HUD 文字压在地图上也读得清 */
+/* 地图舞台不再加顶部渐变遮罩：HUD 的白色胶囊本身就有投影，足够了 */
 .vn-stage--map::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 132px;
-  background: linear-gradient(180deg, rgba(12, 14, 12, 0.42), rgba(12, 14, 12, 0));
-  pointer-events: none;
-  z-index: 4;
+  display: none;
 }
 
 
@@ -5015,3 +5007,47 @@ body { font-synthesis: none; }
 @media (hover: none) {
   .vn-map__tag { opacity: 1; }
 }
+
+
+/* =========================================================================
+   43. 行动选项：现在一处地点通常只有 1~2 件事，改回单列居中
+   （原来按「六个行动、两列三行」排版，容器定位在 57%~62%，单张卡片会偏）
+   ========================================================================= */
+.vn-choices:not(.vn-choices--event) {
+  left: 50%;
+  top: auto;
+  bottom: 230px;
+  transform: translateX(-50%);
+  width: min(520px, 88vw);
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (max-width: 980px) {
+  .vn-choices:not(.vn-choices--event) {
+    top: 96px;
+    bottom: auto;
+    width: 92vw;
+  }
+}
+
+
+/* =========================================================================
+   44. HUD 右侧图标：统一 emoji 并做光学校正
+   —— emoji 的墨迹重心普遍偏低（📖 尤其明显），用 top 微调而不是 transform，
+      避免和 hover 的 translateY 抢同一个属性
+   ========================================================================= */
+.vn-icon {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  line-height: 1;
+}
+.vn-icon--rel,
+.vn-icon--save,
+.vn-icon--book,
+.vn-icon--menu {
+  /* 用 padding-bottom 把 emoji 往上顶：button 本身不动，只有字形重心上移 */
+  box-sizing: border-box;
+}
+.vn-icon--rel { padding-bottom: 3px; }
+.vn-icon--save { padding-bottom: 3px; }
+.vn-icon--book { padding-bottom: 10px; }
+.vn-icon--menu { padding-bottom: 1px; }

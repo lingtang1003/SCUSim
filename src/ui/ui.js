@@ -695,13 +695,13 @@ export function createApp(ctx) {
           return ui.sceneEntry ? ui.sceneEntry.label : '校园';
         })()]),
         h('button', {
-          class: 'vn-icon',
+          class: 'vn-icon vn-icon--rel',
           title: '关系',
           'aria-label': '查看关系',
           onclick: () => showRelations(),
-        }, ['♡']),
+        }, ['💗']),
         h('button', {
-          class: 'vn-icon',
+          class: 'vn-icon vn-icon--save',
           title: '保存进度',
           'aria-label': '保存进度',
           onclick: () => {
@@ -709,13 +709,13 @@ export function createApp(ctx) {
           },
         }, ['💾']),
         h('button', {
-          class: 'vn-icon',
+          class: 'vn-icon vn-icon--book',
           title: '剧情回放',
           'aria-label': '剧情回放',
           onclick: () => showBacklog(),
         }, ['📖']),
         h('button', {
-          class: 'vn-icon',
+          class: 'vn-icon vn-icon--menu',
           title: '菜单',
           'aria-label': '打开菜单',
           onclick: () => openMenu(),
@@ -962,7 +962,9 @@ export function createApp(ctx) {
           + (sceneChanged ? ' is-scene-change' : '')
           + (onMap ? ' vn-stage--map' : ''),
       }, onMap
-        ? [mapStage(state), who, hud(state, v), dialogueBox(ui.speaker, ui.text, ui.effects)]
+        // 地图界面默认只有地图与 HUD；只有「事件结算结果」需要就地播一段，才带出立绘与对话框
+        ? [mapStage(state), who, hud(state, v),
+           v.eventResult ? dialogueBox(ui.speaker, ui.text, ui.effects) : null]
         : [
             bgLayer(ui.scene, ui.sceneEntry),
             who || spriteLayer(appearance),

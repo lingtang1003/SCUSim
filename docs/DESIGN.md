@@ -261,6 +261,31 @@
 | 正在填写 `.is-current` | 正红底 + 白字 + 红色投影 |
 | 未填写（默认） | 5% 墨色底 + `--ink-3` 灰字 + 灰色数字点 |
 
+### HUD 右侧图标
+
+四个圆形按钮统一用 emoji：💗（关系）/ 💾（保存）/ 📖（剧情回放）/ ☰（菜单），
+`font-family` 显式指定 emoji 字族，避免被正文的汉仪字体接管成黑白字形。
+
+emoji 的墨迹重心普遍偏低（📖 最明显，实测偏下 2.7px），用 `padding-bottom` 把字形顶起：
+💗/💾 3px、📖 10px、☰ 1px，实测墨迹中心与圆心偏差回到 ±0.4px 以内。
+不用 `transform` 是因为 hover 的 `translateY(-1px)` 会把它覆盖掉。
+
+### 行动选项的排版
+
+地点系统上线后，一处地点只有 1~3 个活动，选项面板从「两列三行」改为**单列居中**：
+
+```css
+.vn-choices:not(.vn-choices--event) {
+  left: 50%; top: auto; bottom: 230px;
+  transform: translateX(-50%);
+  width: min(520px, 88vw);
+  grid-template-columns: 1fr;
+}
+```
+
+原来的 57%~62% 定位是给六宫格留的，单张卡片会明显偏左；事件选项（`.vn-choices--event`）
+有自己的定位规则，用 `:not()` 排除，不受影响。
+
 ### 选项卡填充后的白边
 
 `.vn-choice::after` 的波浪填充被 `overflow: hidden` 裁在 **padding box**，而卡片的浅色渐变是按

@@ -376,7 +376,8 @@ try {
   console.error('  render 抛错:', e && e.message);
 }
 check('H: render 不抛错', renderOk);
-check('H: HUD 出关系入口', byClass(rootUi, 'vn-icon').some((b) => b.textContent === '♡'));
+check('H: HUD 出关系入口', byClass(rootUi, 'vn-icon--rel').length === 1
+  && byClass(rootUi, 'vn-icon--rel')[0].textContent === '💗');
 
 let eventOk = true;
 try {
