@@ -5104,3 +5104,24 @@ body { font-synthesis: none; }
   .vn-choices--event.is-many .vn-choice { font-size: 17px; }
   .vn-choices--event.is-many .vn-choice__label { font-size: 17px; }
 }
+
+
+/* =========================================================================
+   47. 学期结算：科目多了（一学期 6~13 门）时限高滚动，别把按钮顶出屏幕
+   ========================================================================= */
+.vn-score__list {
+  max-height: min(52vh, 460px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(20, 16, 15, 0.2) transparent;
+  padding-right: 4px;
+}
+.vn-score__list::-webkit-scrollbar { width: 8px; }
+.vn-score__list::-webkit-scrollbar-thumb {
+  background: rgba(20, 16, 15, 0.2);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.vn-score__sem { min-width: 0; overflow-wrap: anywhere; }

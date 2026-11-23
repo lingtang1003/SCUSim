@@ -82,6 +82,53 @@ function pushGpaPoints(state, gpa) {
  * @param {object} rng
  * @returns {{ ok: boolean, subjects: Array<{name,score,passed,gpa}>, semesterGpa: number, totalGpa: number, failedThisSemester: number }}
  */
+/**
+ * 本学期考试科目 = 该学期 2 门公共课 + 该学院 2 门专业课（config/courses.json）。
+ * 没配置该学院/该学期时退回 balance.exam.subjects，保证老存档也能考。
+ * @returns {string[]} 科目名列表
+ */
+/** 取某学院某学期的专业课；该学期没配就往前找最近的学期。 */
+function majorsAt(collegeMap, semester) {
+  if (!collegeMap) return [];
+  for (let s = semester; s >= 1; s -= 1) {
+    const arr = collegeMap[String(s)];
+    if (Array.isArray(arr) && arr.length) return arr;
+  }
+  return [];
+}
+
+export function subjectsFor(state, config, examCfg) {
+  const exam = examCfg || getExamConfig(config);
+  const fallback = Array.isArray(exam.subjects) && exam.subjects.length
+    ? exam.subjects.slice()
+    : DEFAULT_EXAM.subjects.slice();
+  const courses = (config && config.courses) || null;
+  if (!courses || !courses.public) return fallback;
+
+  const balance = getBalance(config);
+  const months = Number.isFinite(balance.monthsPerSemester) ? balance.monthsPerSemester : 5;
+  const semester = Math.min(8, Math.max(1, Math.ceil((Number(state && state.turn) || 1) / months)));
+
+  const pub = (courses.public && Array.isArray(courses.public[String(semester)]))
+    ? courses.public[String(semester)]
+    : [];
+  const collegeId = state && state.player && state.player.collegeId;
+  // 大四（学期 7/8）只考公共课（毕业实习 / 毕业论文 就在 public 里），不排专业课
+  if (semester >= 7) {
+    return pub.length ? pub.slice() : fallback;
+  }
+
+  const collegeMap = (courses.colleges && collegeId) ? courses.colleges[collegeId] : null;
+  // 其他学期若没单独录入，沿用最近一个学期的专业课
+  const majors = majorsAt(collegeMap, semester);
+
+  // 该学院/该学期没有专业课配置（老存档、未录入的学院）→ 用 balance 的默认科目
+  if (!majors.length) return fallback;
+  // 全部科目：该学期所有公共课 + 该学院该学期所有专业课
+  const out = pub.concat(majors);
+  return out.length ? out : fallback;
+}
+
 export function runFinalExam(state, config, rng) {
   const exam = getExamConfig(config);
   const knowledge = Number(state.player.attributes.knowledge) || 0;
@@ -90,7 +137,7 @@ export function runFinalExam(state, config, rng) {
   const base = Number.isFinite(exam.base) ? exam.base : DEFAULT_EXAM.base;
   const kWeight = Number.isFinite(exam.knowledgeWeight) ? exam.knowledgeWeight : DEFAULT_EXAM.knowledgeWeight;
   const growth = Number.isFinite(exam.growthRate) ? exam.growthRate : DEFAULT_EXAM.growthRate;
-  const subjects = Array.isArray(exam.subjects) && exam.subjects.length ? exam.subjects : DEFAULT_EXAM.subjects;
+  const subjects = subjectsFor(state, config, exam);
 
   const next = (rng && typeof rng.next === 'function') ? () => rng.next() : () => 0.5;
   const health = Number(state.player.attributes.health) || 0;

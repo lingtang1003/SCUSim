@@ -394,6 +394,28 @@ emoji 的墨迹重心普遍偏低（📖 最明显，实测偏下 2.7px），用
 2. **关掉「动效」会吃掉过渡**：`.reduce-motion * { transition: none !important }` 是全站规则。
    选项卡填充**不再是例外**（之前为了调试临时开过口子，已移除）：关掉动效后填充立即到位，
    弹窗、抽屉、打字机、季节换色等动效也一并关闭。
+## 9.z 课程与期末考试科目（config/courses.json）
+
+每学期末的考试科目不再写死在 `balance.exam.subjects`，而是按 **学院 + 学期** 取：
+
+```
+考试科目 = 该学期全部公共课（courses.public[sem]）
+         + 该学院该学期全部专业课（courses.colleges[学院][sem]）
+```
+
+一学期通常 8~15 门，结算弹窗的科目列表设了 `max-height: min(52vh, 460px)` + 细滚动条，
+保证「学期绩点 / 继续」始终可见。
+
+- 场次：`balance.examTurns = [5,10,15,20,25,30,35,40]`，5 回合一学期，共 8 次期末；学期号 = `ceil(turn / 5)`；
+- 公共课（`public`）全校一致，改名字/换课只动这一处（大学英语、体育、思政四门、形势与政策、军事理论…）；
+- 专业课（`colleges`）来自真实课表截图，按大一上~大三下六个学期录入；
+- 大四（学期 7/8）**只考公共课**（`public[7]` = 形势与政策（七）+ 毕业实习；`public[8]` = 形势与政策（八）+ 毕业论文），不再排专业课；
+- 缺配置时（老存档 / 未录入的学院）由 `academy.subjectsFor()` 回退到 `balance.exam.subjects`，保证不会因为缺数据考不了；
+- 分数公式不变（学识与健康联动），**只换科目名**，不动数值。
+
+函数：`academy.subjectsFor(state, config)` → `string[]`；`runFinalExam()` 直接用它填 `settlement.subjects`，
+所以考试弹窗、成绩单、归档记录都会按学院显示真实课程名。测试：`tests/verify_courses.mjs`。
+
 ## 9.y 地点与行动（地图循环 · 双校区）
 
 每一回合都是「先看地图，再选地点」：

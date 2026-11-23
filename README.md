@@ -262,3 +262,7 @@ npx wrangler pages deploy . --project-name scusim
 
 正文/标题字体是子集，源字体备份在 `C:\Users\19337\Documents\SCUSim-字体源\`。
 改完剧情跑 `npm run fonts:check`：有缺字（生僻字）再 `npm run fonts` 重打，否则不用管。
+
+## 课程与考试科目
+
+期末考试科目按「学院 + 学期」取：`config/courses.json` 的 `public`（公共课，全校一致）+ `colleges[学院]`（专业课，来自各学院真实课表）。公共课改名只改 `public` 一处即可；缺配置时考试回退 `balance.exam.subjects`。
