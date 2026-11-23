@@ -1433,7 +1433,7 @@ export function createApp(ctx) {
       h('h2', { class: 'vn-form__title' }, ['属性']),
       h('p', { class: 'vn-form__desc' }, ['原来初入大学的你是这样的。']),
       h('div', { class: 'vn-attr-list' }, rows),
-      h('div', { class: 'vn-counter' + (remain > 0 ? ' is-ok' : '') }, [
+      h('div', { class: 'vn-counter' + (remain === 0 ? ' is-ok' : '') }, [
         '剩余 ' + remain + ' 点',
       ]),
       h('button', {
@@ -1480,8 +1480,8 @@ export function createApp(ctx) {
           )),
         ]);
       })),
-      h('div', { class: 'vn-counter' + (selected.length < REQUIRED_TAGS ? ' is-ok' : '') }, [
-        '已选 ' + selected.length + ' / ' + REQUIRED_TAGS,
+      h('div', { class: 'vn-counter' + (selected.length === REQUIRED_TAGS ? ' is-ok' : '') }, [
+        '已选 ' + selected.length + ' / ' + REQUIRED_TAGS + (selected.length === REQUIRED_TAGS ? ' · 可以继续' : ''),
       ]),
       h('p', { class: 'vn-tag-sum' }, [
         selected.length
