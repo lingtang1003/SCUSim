@@ -317,6 +317,61 @@ check('E: 有未结算事件时不能换地点', st.player.location === before2,
     state2.player.location + '/' + state2.actionPoints);
 }
 
+// ---------------------------------------------------------------------------
+// H) 创建页「计数器」状态：未完成=普通态、完成=is-ok（原来条件写反了）
+// ---------------------------------------------------------------------------
+{
+  const rootEl = makeEl('div');
+  const app = createApp({ config, callbacks: {}, doc: makeDoc(), appearance: 'm_short1' });
+  app.mount(rootEl, { hasSave: false });
+  app.startCreation();
+
+  const primary = () => findByClass(rootEl, 'btn--primary')[0];
+  const counter = () => findByClass(rootEl, 'vn-counter')[0];
+  const title = () => String((findByClass(rootEl, 'vn-form__title')[0] || {}).textContent || '');
+  const clickPrimary = () => { const b = primary(); if (b) fire(b, 'click'); };
+
+  const input = findByTag(rootEl, 'input')[0];
+  input.value = '测试生';
+  fire(input, 'input');
+  clickPrimary();                       // 名字 → 性别
+  check('H: 走到第 2 步（性别）', title() === '性别', title());
+  clickPrimary();                       // 性别 → 学院
+  clickPrimary();                       // 学院 → 属性
+  check('H: 走到第 4 步（属性）', title() === '属性', title());
+
+  const c4 = counter();
+  check('H: 属性刚好 20 点时计数器是完成态（红）',
+    !!c4 && c4.classList.contains('is-ok'), c4 && c4.className);
+
+  const minus = findByClass(rootEl, 'vn-step-btn').find((b) => b['attr_data-kind'] === 'minus');
+  if (minus) fire(minus, 'click');
+  const c4b = counter();
+  check('H: 拿掉 1 点后计数器不再显示完成态',
+    !!c4b && !c4b.classList.contains('is-ok'), c4b && c4b.className);
+
+  const plus = findByClass(rootEl, 'vn-step-btn').find((b) => b['attr_data-kind'] === 'plus');
+  if (plus) fire(plus, 'click');
+  clickPrimary();                       // 属性 → 标签
+  check('H: 走到第 5 步（标签）', title() === '标签', title());
+
+  const c5 = counter();
+  check('H: 一个标签都没选时计数器不是完成态',
+    !!c5 && !c5.classList.contains('is-ok'), c5 && c5.className);
+  check('H: 未选满时提示「已选 0 / 3」',
+    !!c5 && String(c5.textContent).includes('已选 0 / 3'), c5 && c5.textContent);
+
+  const tagBtns = findByClass(rootEl, 'vn-tag');
+  check('H: 标签页有 12 张卡片', tagBtns.length === 12, String(tagBtns.length));
+  for (let i = 0; i < 3 && i < tagBtns.length; i += 1) fire(tagBtns[i], 'click');
+
+  const c5b = counter();
+  check('H: 选满 3 个后计数器变成完成态（红）',
+    !!c5b && c5b.classList.contains('is-ok'), c5b && c5b.className);
+  check('H: 选满后提示「已选 3 / 3 · 可以继续」',
+    !!c5b && String(c5b.textContent).includes('可以继续'), c5b && c5b.textContent);
+}
+
 console.log(`\n总计 ${pass + failures.length} 项，PASS ${pass}，FAIL ${failures.length}`);
 if (failures.length) console.error('失败用例: ' + failures.join(' | '));
 process.exit(failures.length === 0 ? 0 : 1);

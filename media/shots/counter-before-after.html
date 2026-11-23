@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SCUSim · 计数器状态修复对照</title>
+  <!-- 直接引用项目真实样式：这里看到的胶囊就是游戏里的胶囊 -->
+  <link rel="stylesheet" href="../../css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 32px 64px;
+      background: var(--paper-2);
+      color: var(--ink);
+      font-family: var(--font, system-ui);
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; }
+    h1 { font-family: var(--font-display, serif); font-size: 30px; margin: 0 0 6px; letter-spacing: .04em; }
+    .sub { color: var(--ink-3); font-size: 13px; line-height: 1.8; margin: 0 0 28px; }
+    .sub code { background: var(--paper-3); padding: 1px 6px; border-radius: 6px; }
+    .row { margin-bottom: 26px; }
+    .row h2 { font-size: 15px; margin: 0 0 10px; letter-spacing: .06em; color: var(--ink-2); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .panel {
+      background: var(--paper);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      padding: 18px 20px 22px;
+      box-shadow: 0 10px 26px rgba(20, 16, 15, .06);
+    }
+    .panel.bad { border-color: color-mix(in srgb, var(--red) 34%, transparent); }
+    .panel.good { border-color: color-mix(in srgb, var(--up) 40%, transparent); }
+    .tag { font-size: 11px; letter-spacing: .16em; padding: 2px 10px; border-radius: 999px; }
+    .tag.bad { background: var(--red-50); color: var(--red); }
+    .tag.good { background: var(--up-bg, #e8f5ee); color: var(--up, #2d8a5f); }
+    .demo { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+    .hint { color: var(--ink-3); font-size: 12px; margin-top: 10px; }
+    .tagcard {
+      display: flex; flex-direction: column; gap: 2px;
+      width: 210px; padding: 9px 12px; border-radius: var(--r-md);
+      background: rgba(255, 255, 255, .72);
+      border: 2px solid rgba(255, 255, 255, .9);
+      box-shadow: var(--shadow-1, 0 2px 8px rgba(20,16,15,.08));
+      font-size: 13px;
+    }
+    .tagcard b { font-size: var(--t-base, 16px); }
+    .tagcard small { font-size: 11px; color: var(--ink-3); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>创建角色 · 「计数器」状态修复对照</h1>
+    <p class="sub">
+      这是把项目真实的 <code>css/style.css</code> 引进来渲染的对照页（不是截图，但样式与游戏完全一致）。<br>
+      修复内容：<code>.vn-counter</code> 的 <code>is-ok</code> 类代表「已完成 / 可以继续」（红底白字），
+      而原来的判断条件写反了 —— <b>没选满时反而红底、选满了变灰</b>。<br>
+      涉及两处：属性页「剩余 N 点」、标签页「已选 N / 3」。
+    </p>
+
+    <div class="row">
+      <h2>1 · 标签页：一个都没选（已选 0 / 3）</h2>
+      <div class="grid">
+        <div class="panel bad">
+          <span class="tag bad">修复前</span>
+          <div class="demo">
+            <div class="vn-counter is-ok">已选 0 / 3</div>
+            <span class="hint">0 个也显示成「完成」的红底</span>
+          </div>
+        </div>
+        <div class="panel good">
+          <span class="tag good">修复后</span>
+          <div class="demo">
+            <div class="vn-counter">已选 0 / 3</div>
+            <span class="hint">普通灰底，表示还没选完</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <h2>2 · 标签页：选满 3 个（已选 3 / 3）</h2>
+      <div class="grid">
+        <div class="panel bad">
+          <span class="tag bad">修复前</span>
+          <div class="demo">
+            <div class="vn-counter">已选 3 / 3</div>
+            <span class="hint">选满了反而变灰，看不出「可以继续」</span>
+          </div>
+        </div>
+        <div class="panel good">
+          <span class="tag good">修复后</span>
+          <div class="demo">
+            <div class="vn-counter is-ok">已选 3 / 3 · 可以继续</div>
+            <span class="hint">红底白字，和「下一步」按钮的可用态一致</span>
+          </div>
+        </div>
+      </div>
+      <div class="demo" style="margin-top:16px">
+        <div class="tagcard">
+          <b>学霸</b><small>天生爱学习</small>
+          <span class="vn-tag__mods">
+            <span class="vn-tag__mod is-up">学识+3</span>
+            <span class="vn-tag__mod is-down">社交-1</span>
+            <span class="vn-tag__mod is-down">健康-1</span>
+          </span>
+        </div>
+        <div class="tagcard">
+          <b>吃货</b><small>美食不可辜负</small>
+          <span class="vn-tag__mods">
+            <span class="vn-tag__mod is-up">社交+2</span>
+            <span class="vn-tag__mod is-up">健康+1</span>
+            <span class="vn-tag__mod is-down">金钱-2</span>
+          </span>
+        </div>
+        <span class="hint">顺带看一眼标签卡上的属性药丸（上一版加的）</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <h2>3 · 属性页：「剩余 20 点」（还没分配）</h2>
+      <div class="grid">
+        <div class="panel bad">
+          <span class="tag bad">修复前</span>
+          <div class="demo">
+            <div class="vn-counter is-ok">剩余 20 点</div>
+            <span class="hint">一点没分配就红底</span>
+          </div>
+        </div>
+        <div class="panel good">
+          <span class="tag good">修复后</span>
+          <div class="demo">
+            <div class="vn-counter">剩余 20 点</div>
+            <span class="hint">普通灰底</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <h2>4 · 属性页：「剩余 0 点」（分满 20 点）</h2>
+      <div class="grid">
+        <div class="panel bad">
+          <span class="tag bad">修复前</span>
+          <div class="demo">
+            <div class="vn-counter">剩余 0 点</div>
+            <span class="hint">分满了变灰，和「下一步」可用态对不上</span>
+          </div>
+        </div>
+        <div class="panel good">
+          <span class="tag good">修复后</span>
+          <div class="demo">
+            <div class="vn-counter is-ok">剩余 0 点</div>
+            <span class="hint">红底白字，表示可以继续</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="sub" style="margin-top:34px">
+      代码改动只有两行：<code>remain &gt; 0</code> → <code>remain === 0</code>；
+      <code>selected.length &lt; REQUIRED_TAGS</code> → <code>selected.length === REQUIRED_TAGS</code>。
+      回归用例在 <code>tests/verify_creation.mjs</code> 的 H 组（10 条）。
+    </p>
+  </div>
+</body>
+</html>
