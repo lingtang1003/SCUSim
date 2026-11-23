@@ -204,6 +204,8 @@ export function createApp(ctx) {
     npc: '',
     npcEmotion: 'neutral',
     consumedSeq: 0,
+    // 对话框 / 选项框二选一：true 时舞台上只有对话框，点一下关掉才出现选项
+    showDialogue: false,
     lastTurn: 0,
     history: [],
     reduceMotion: false,
@@ -739,6 +741,22 @@ export function createApp(ctx) {
     ]);
   }
 
+  function dismissDialogue() {
+    ui.showDialogue = false;
+    if (callbacks.onDialogueDone) callbacks.onDialogueDone();
+    else if (lastState) render(lastState, {});
+  }
+
+  /** 打字机还没打完时，第一下点击先补全，第二下才关对话框 */
+  function dialogueContinue(body, full) {
+    if (typeRaf != null) {
+      stopTypewriter();
+      if (body) body.textContent = full == null ? '' : String(full);
+      return;
+    }
+    dismissDialogue();
+  }
+
   function dialogueBox(speaker, text, effects) {
     const body = h('p', { class: 'vn-text' });
     typeText(body, text || '');
@@ -747,7 +765,11 @@ export function createApp(ctx) {
           h('span', { class: 'vn-effect vn-effect--' + c.kind }, [c.text])
         ))
       : null;
-    return h('div', { class: 'vn-dialogue' }, [
+    const onNext = () => dialogueContinue(body, text);
+    return h('div', {
+      class: 'vn-dialogue is-clickable',
+      onclick: onNext,
+    }, [
       h('div', { class: 'vn-dialogue__box' }, [
         speaker ? h('div', { class: 'vn-speaker' }, [speaker]) : null,
         body,
@@ -871,6 +893,7 @@ export function createApp(ctx) {
       ui.text = view.moved.line || '（四处看了看）';
       ui.effects = [];
       ui.npc = '';   // 换地点后回到「我」的画面
+      ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: ui.text });
       return;
     }
@@ -892,6 +915,7 @@ export function createApp(ctx) {
         const ch = findCharacter(who);
         if (ch && ch.name) ui.speaker = ch.name;
       }
+      ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: ui.text });
     } else if (actionId && seq && seq !== ui.consumedSeq) {
       ui.consumedSeq = seq;
@@ -904,6 +928,7 @@ export function createApp(ctx) {
       ui.text = text;
       ui.effects = [];
       ui.npc = '';   // 行动时收起对方立绘，回到「我」的画面
+      ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: text });
     } else if (state.turn !== ui.lastTurn) {
       const first = ui.lastTurn === 0;
@@ -918,6 +943,7 @@ export function createApp(ctx) {
         : weekLine(state.turn);
       ui.effects = [];
       ui.npc = '';
+      ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: ui.text });
     }
     if (ui.history.length > 200) ui.history.splice(0, ui.history.length - 200);
@@ -964,13 +990,15 @@ export function createApp(ctx) {
       }, onMap
         // 地图界面默认只有地图与 HUD；只有「事件结算结果」需要就地播一段，才带出立绘与对话框
         ? [mapStage(state), who, hud(state, v),
-           v.eventResult ? dialogueBox(ui.speaker, ui.text, ui.effects) : null]
+           ui.showDialogue ? dialogueBox(ui.speaker, ui.text, ui.effects) : null]
         : [
             bgLayer(ui.scene, ui.sceneEntry),
             who || spriteLayer(appearance),
             hud(state, v),
-            actionChoices(state, v.availability),
-            dialogueBox(ui.speaker, ui.text, ui.effects),
+            // 对话框与选项框不同时出现：先出对话框，点掉之后才轮到选项
+            ui.showDialogue
+              ? dialogueBox(ui.speaker, ui.text, ui.effects)
+              : actionChoices(state, v.availability),
           ])
     );
   }

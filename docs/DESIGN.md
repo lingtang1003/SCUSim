@@ -270,20 +270,35 @@ emoji 的墨迹重心普遍偏低（📖 最明显，实测偏下 2.7px），用
 💗/💾 3px、📖 10px、☰ 1px，实测墨迹中心与圆心偏差回到 ±0.4px 以内。
 不用 `transform` 是因为 hover 的 `translateY(-1px)` 会把它覆盖掉。
 
+### 对话框与选项互斥
+
+一屏里不会同时出现对话框和选项框，节奏是「先看结果，再选下一步」：
+
+1. 进入地点 / 做完一次行动 → `ui.showDialogue = true`，舞台只渲染对话框（和立绘），**不渲染选项**；
+2. 点击对话框（整块可点，右下角有 ▼）：打字机没打完时先补全文字，打完后再点才关闭；
+3. 关闭时 `ui.showDialogue = false` 并调 `callbacks.onDialogueDone()`：
+   - 行动点还有 → `renderState()` 重绘，选项出现；
+   - 行动点已用完 → 直接 `onAdvance()` 进入下一周（回到地图）。
+
+实现要点：`render()` 里是 `ui.showDialogue ? dialogueBox(...) : actionChoices(...)` 的二选一；
+`syncDialogue` 只在「换地点 / 新行动 / 事件结算 / 新回合」这四个时机把开关置回 true，
+所以关掉之后再重绘不会又把对话框弹出来。
+
 ### 行动选项的排版
 
 地点系统上线后，一处地点只有 1~3 个活动，选项面板从「两列三行」改为**单列居中**：
 
 ```css
 .vn-choices:not(.vn-choices--event) {
-  left: 50%; top: auto; bottom: 230px;
+  left: 50%; top: auto; bottom: 300px;
   transform: translateX(-50%);
   width: min(520px, 88vw);
   grid-template-columns: 1fr;
 }
 ```
 
-原来的 57%~62% 定位是给六宫格留的，单张卡片会明显偏左；事件选项（`.vn-choices--event`）
+原来的 57%~62% 定位是给六宫格留的，单张卡片会明显偏左；垂直方向用 `bottom: 300px`，
+卡片落在画面中下部，不贴着对话框原来的位置；事件选项（`.vn-choices--event`）
 有自己的定位规则，用 `:not()` 排除，不受影响。
 
 ### 选项卡填充后的白边

@@ -416,20 +416,19 @@ export function createController(deps) {
     actionSeq += 1;
     await storage.saveGame(state);
     renderState({ actionId, actionSeq });
+  }
 
-    // 行动点用完 → 短暂停留展示行动结果，然后自动进入下一周（回到校园地图）
-    if (state.actionPoints <= 0 && !state.endingId && !state.pendingEvent) {
+  // ---------------- 回调：对话框点掉之后 ----------------
+  // 行动结果先以对话框呈现；玩家点一下关掉后，才出现选项（或自动进入下一周）
+  function onDialogueDone() {
+    if (!state) return;
+    if (!state.endingId && !state.pendingEvent && state.actionPoints <= 0) {
+      clearAutoAdvance();
       toast('行动点用完了，进入下一周', 'info');
-      if (typeof setTimeout === 'function') {
-        clearAutoAdvance();
-        autoAdvanceTimer = setTimeout(() => {
-          autoAdvanceTimer = null;
-          if (state && state.actionPoints <= 0 && !state.pendingEvent && !state.endingId) {
-            onAdvance();
-          }
-        }, 1100);
-      }
+      onAdvance();
+      return;
     }
+    renderState({});
   }
 
   // ---------------- 回调：推进回合 ----------------
@@ -819,6 +818,7 @@ export function createController(deps) {
     onLoadSlot,
     onDeleteSlot,
     onAction,
+    onDialogueDone,
     onAdvance,
     onResolveEvent,
     onChangeAppearance,

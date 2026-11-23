@@ -5016,7 +5016,7 @@ body { font-synthesis: none; }
 .vn-choices:not(.vn-choices--event) {
   left: 50%;
   top: auto;
-  bottom: 230px;
+  bottom: 300px;
   transform: translateX(-50%);
   width: min(520px, 88vw);
   grid-template-columns: 1fr;
@@ -5051,3 +5051,20 @@ body { font-synthesis: none; }
 .vn-icon--save { padding-bottom: 3px; }
 .vn-icon--book { padding-bottom: 10px; }
 .vn-icon--menu { padding-bottom: 1px; }
+
+
+/* =========================================================================
+   45. 对话框可点击推进：点一下补全文字，再点关掉并露出选项
+   ========================================================================= */
+.vn-dialogue.is-clickable {
+  cursor: pointer;
+}
+.vn-dialogue.is-clickable .vn-dialogue__box {
+  transition: box-shadow 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+.vn-dialogue.is-clickable:hover .vn-dialogue__box {
+  box-shadow: 0 26px 64px rgba(20, 16, 15, 0.42);
+}
+.vn-dialogue.is-clickable:active .vn-dialogue__box {
+  transform: scale(0.997);
+}

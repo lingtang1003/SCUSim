@@ -183,6 +183,21 @@ test('engine: 推进到下一周后回到地图', () => {
   return s.player.location === null;
 });
 
+// 9) topic：eventManager 用它给事件加权（locations.json 的 topic 词表由 events.json 决定）
+test('配置: 每个地点都带 topic', () => {
+  const bad = (config.locations.list || []).filter((l) => !l.topic);
+  return bad.length === 0 ? true : '缺 topic: ' + bad.map((l) => l.id).join(',');
+});
+test('配置: topic 都是 events.json 里出现过的词', () => {
+  const ev = config.events || {};
+  const used = new Set();
+  for (const group of ['fixed', 'random']) {
+    for (const e of ev[group] || []) if (e.topic) used.add(e.topic);
+  }
+  const bad = (config.locations.list || []).filter((l) => l.topic && !used.has(l.topic));
+  return bad.length === 0 ? true : '未知 topic: ' + bad.map((l) => l.id + '=' + l.topic).join(',');
+});
+
 console.log(`\n== verify_locations 结果 ==`);
 console.log(`总计 ${pass + failures.length} 项，PASS ${pass}，FAIL ${failures.length}`);
 if (failures.length) console.error('失败用例: ' + failures.join(' | '));
