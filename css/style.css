@@ -5016,7 +5016,7 @@ body { font-synthesis: none; }
 .vn-choices:not(.vn-choices--event) {
   left: 50%;
   top: auto;
-  bottom: 300px;
+  bottom: 350px;
   transform: translateX(-50%);
   width: min(520px, 88vw);
   grid-template-columns: 1fr;
@@ -5067,4 +5067,35 @@ body { font-synthesis: none; }
 }
 .vn-dialogue.is-clickable:active .vn-dialogue__box {
   transform: scale(0.997);
+}
+
+
+/* =========================================================================
+   46. 事件选项：≤3 个保持原样，≥4 个（如迎新晚会的 7 个）收一档字号，
+       避免每句都折成两三行；同时事件期间藏掉地图上的提示与校区标签
+   ========================================================================= */
+.vn-stage.is-event .vn-map-stage__hint,
+.vn-stage.is-event .vn-map__tabs {
+  display: none;
+}
+.vn-choices--event.is-many {
+  width: min(860px, 92vw);
+  gap: 10px 14px;
+}
+.vn-choices--event.is-many .vn-choice {
+  min-height: 60px;
+  padding: 10px 14px;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+}
+.vn-choices--event.is-many .vn-choice__label {
+  font-size: 17px;
+  line-height: 1.35;
+}
+.vn-choices--event.is-many .vn-choice__meta {
+  font-size: 12px;
+}
+@media (max-width: 760px) {
+  .vn-choices--event.is-many .vn-choice { font-size: 15px; }
+  .vn-choices--event.is-many .vn-choice__label { font-size: 15px; }
 }

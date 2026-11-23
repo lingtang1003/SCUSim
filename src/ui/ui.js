@@ -1750,6 +1750,7 @@ export function createApp(ctx) {
     const choiceWrap = h('div', {
       class: 'vn-choices vn-choices--event'
         + (def.layout === 'grid' ? ' is-grid' : '')
+        + (options.length >= 4 ? ' is-many' : '')
         + (lines.length > 1 ? ' is-waiting' : ''),
     }, options.map((o) => {
       const hints = Array.isArray(o.hints) ? o.hints : [];

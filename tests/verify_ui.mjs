@@ -616,6 +616,35 @@ test('G: createApp 传入空 actions 列表 → render 不崩且产出 DOM', asy
   return true;
 });
 
+// 递归收集满足条件的节点（DOM 桩只有 children / className）
+function findNodes(root, pred) {
+  const out = [];
+  const walk = (n) => {
+    if (!n) return;
+    if (pred(n)) out.push(n);
+    const kids = n.children || [];
+    for (let i = 0; i < kids.length; i += 1) walk(kids[i]);
+  };
+  walk(root);
+  return out;
+}
+
+test('K: 事件选项 ≥4 个时加 is-many（≤3 个保持原尺寸）', async () => {
+  const configs = await loadConfigsFromDisk();
+  const doc = makeStubDoc();
+  const rootEl = makeStubElement('div');
+  const app = realCreateApp({ config: configs, callbacks: {}, doc });
+  app.mount(rootEl, { hasSave: true });
+  const mk = (n) => ({ eventId: 'ev_test', options: Array.from({ length: n }, (_, i) => ({ id: 'o' + i, label: '选项' + i })) });
+  app.showEvent(mk(7));
+  const manyWrap = findNodes(rootEl, (n) => n.className && String(n.className).includes('vn-choices--event'))[0];
+  const hasMany = !!manyWrap && String(manyWrap.className).includes('is-many');
+  app.showEvent(mk(2));
+  const fewWrap = findNodes(rootEl, (n) => n.className && String(n.className).includes('vn-choices--event'))[0];
+  const fewLacks = !!fewWrap && !String(fewWrap.className).includes('is-many');
+  return hasMany && fewLacks;
+});
+
 // ---------------- 执行 ----------------
 console.log('== SCUSim M3/M4 集成验证（verify_ui）==');
 for (const { name, fn } of tests) {
