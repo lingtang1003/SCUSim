@@ -8,10 +8,15 @@
  *
  * 资源约定（把文件按下面的名字放进对应目录即可自动生效）：
  *   assets/audio/bgm/theme.mp3     标题页
- *   assets/audio/bgm/campus.mp3    游戏内（按季节同名文件可覆盖：spring/summer/autumn/winter）
- *   assets/audio/sfx/click.mp3     按钮、选项卡
- *   assets/audio/sfx/choice.mp3    确认选项
- *   assets/audio/sfx/toast.mp3     提示音
+ *   assets/audio/bgm/campus.mp3    游戏内兜底
+ *   assets/audio/bgm/{spring,summer,autumn,winter}.mp3  按季节切换
+ *   assets/audio/bgm/exam.mp3      学期结算
+ *   assets/audio/bgm/ending.mp3    结局
+ *   assets/audio/sfx/click.wav     按钮、选项卡
+ *   assets/audio/sfx/choice.wav    确认选项
+ *   assets/audio/sfx/toast.wav     提示音
+ *   assets/audio/sfx/bell.wav      进入下一周
+ *   assets/audio/sfx/firework.wav  结局
  *
  * 缺哪个文件，就只是那一个音不响，其余照常。
  */
@@ -20,15 +25,24 @@ const BGM_DIR = 'assets/audio/bgm/';
 const SFX_DIR = 'assets/audio/sfx/';
 
 /** 逻辑音轨名 → 文件名。想换曲子只改这里。 */
+/* 正文字体：季节曲按 SEASON_BGM 轮换（见 src/main.js），缺文件时自动退到 campus。 */
 const BGM_TRACKS = {
-  theme: 'theme.mp3',
-  campus: 'campus.mp3',
+  theme: 'theme.mp3',      // 标题页 / 创建角色
+  campus: 'campus.mp3',    // 校园日常（季节曲缺失时的兜底）
+  spring: 'spring.mp3',    // 春
+  summer: 'summer.mp3',    // 夏
+  autumn: 'autumn.mp3',    // 秋
+  winter: 'winter.mp3',    // 冬
+  exam: 'exam.mp3',        // 学期结算 / 期末
+  ending: 'ending.mp3',    // 结局
 };
 
 const SFX_TRACKS = {
-  click: 'click.mp3',
-  choice: 'choice.mp3',
-  toast: 'toast.mp3',
+  click: 'click.wav',
+  choice: 'choice.wav',
+  toast: 'toast.wav',
+  bell: 'bell.wav',        // 下课铃：进入下一周
+  firework: 'firework.wav',// 烟花：结局
 };
 
 const DEFAULT_VOLUME = { bgm: 0.6, sfx: 0.8 };

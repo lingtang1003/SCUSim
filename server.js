@@ -27,7 +27,9 @@ const MIME = {
   '.jpeg': 'image/jpeg',
   '.webp': 'image/webp',
   '.mp3': 'audio/mpeg',
-  '.ogg': 'audio/ogg'
+  '.ogg': 'audio/ogg',
+  '.wav': 'audio/wav',
+  '.m4a': 'audio/mp4'
 };
 
 /** 代码类文件不缓存（改完刷新即生效）；字体/图片/音频缓存一天，避免每次刷新重下。 */

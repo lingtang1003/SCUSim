@@ -444,6 +444,22 @@ emoji 的墨迹重心普遍偏低（📖 最明显，实测偏下 2.7px），用
 2. **关掉「动效」会吃掉过渡**：`.reduce-motion * { transition: none !important }` 是全站规则。
    选项卡填充**不再是例外**（之前为了调试临时开过口子，已移除）：关掉动效后填充立即到位，
    弹窗、抽屉、打字机、季节换色等动效也一并关闭。
+## 9.w 音频：季节 BGM 与音效
+
+| 场景 | 曲子 |
+|---|---|
+| 标题 / 创建 | `theme` |
+| 局内（按回合） | `SEASON_BGM[(turn-1) % 10]` → 秋/秋/秋/冬/冬/冬/春/春/春/夏 |
+| 学期结算 | `exam`（关闭后回到当前季节曲） |
+| 结局 | `ending` + 烟花音效 |
+
+- 与 ui.js 的 `SEASON_CYCLE` 保持一致（10 回合一年），`main.js` 里 `bgmForTurn(turn)` 决定播哪首；
+- `renderState()` 每次渲染都会调 `audio.playBgm(...)`，同曲重复调用不会重建 `<audio>`；
+- 音效：`click / choice / toast / bell（进下一周）/ firework（结局）`，都是 wav；
+- 换曲不打断正在播的同名曲（`bgmName === key` 直接返回）。
+
+素材放在 `assets/audio/`，音轨表在 `src/audio/audio.js` 的 `BGM_TRACKS` / `SFX_TRACKS`，细节见该目录 README。
+
 ## 9.y0 攻略对象立绘（v1.3 换图）
 
 六张新图统一处理成 `810×1080`（3:4）、透明底 webp，放在 `media/characters/`，文件名不变，配置无需改：

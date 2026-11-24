@@ -43,6 +43,15 @@ export function createController(deps) {
   let app = null;
   let appearanceId = '';
   const audio = createAudio({ doc });
+
+/** 季节曲：与 ui.js 的 SEASON_CYCLE 对齐（10 回合一年：秋秋冬冬冬春春春夏） */
+const SEASON_BGM = ['autumn', 'autumn', 'autumn', 'winter', 'winter', 'winter', 'spring', 'spring', 'spring', 'summer'];
+
+/** 某回合该放哪首 BGM（局内）。 */
+function bgmForTurn(turn) {
+  const t = Math.max(1, Number(turn) || 1);
+  return SEASON_BGM[(t - 1) % SEASON_BGM.length];
+}
   let actionSeq = 0;
 
   // ---------------- 刷新后回到原画面 ----------------
@@ -139,7 +148,7 @@ export function createController(deps) {
       payload.eventResult = view.eventResult;
     }
     app.render(state, payload);
-    audio.playBgm('campus');
+    audio.playBgm(bgmForTurn(state.turn));
     mountDevPanel();
   }
 
@@ -463,6 +472,7 @@ export function createController(deps) {
       return;
     }
     await storage.saveGame(state);
+    audio.playSfx('bell');
 
     if (Array.isArray(res.brokenLines) && res.brokenLines.length) {
       toast('有一条剧情线断在这里了', 'warning');
@@ -844,6 +854,25 @@ export function createController(deps) {
     }
     if (pref && pref.ok && pref.settings) audio.apply(pref.settings);
     app = makeApp({ config, callbacks, doc, appearance: appearanceId });
+    // 考试弹窗用 exam 曲，关掉回到当前季节；结局用 ending 曲 + 烟花音效
+    if (typeof app.showExam === 'function') {
+      const showExamRaw = app.showExam.bind(app);
+      app.showExam = (settlement, done) => {
+        audio.playBgm('exam');
+        showExamRaw(settlement, () => {
+          audio.playBgm(bgmForTurn(state && state.turn));
+          if (typeof done === 'function') done();
+        });
+      };
+    }
+    if (typeof app.showEnding === 'function') {
+      const showEndingRaw = app.showEnding.bind(app);
+      app.showEnding = (payload) => {
+        audio.playBgm('ending');
+        audio.playSfx('firework');
+        showEndingRaw(payload);
+      };
+    }
     const r = await storage.loadGame();
     hasSave = r.ok;
     app.mount(rootEl, { hasSave });

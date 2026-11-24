@@ -2,6 +2,7 @@
  * 音频层自检：默认值、0–100 换算、静音、非法值回落、Node 环境安全。
  * 运行：node tests/verify_audio.mjs
  */
+import fs from 'node:fs';
 import { createAudio } from '../src/audio/audio.js';
 
 let pass = 0;
@@ -103,7 +104,7 @@ withAudio.playSfx('click');
 eq('音效另起一个元素', made.length, 2);
 eq('音效音量', made[1].volume, 0.7);
 eq('音效不循环', made[1].loop, false);
-eq('音效路径正确', made[1].src, 'assets/audio/sfx/click.mp3');
+eq('音效路径正确', made[1].src, 'assets/audio/sfx/click.wav');
 
 withAudio.setMuted(true);
 eq('静音后 BGM 音量为 0', made[0].volume, 0);
@@ -117,6 +118,15 @@ withAudio.setMuted(false);
 withAudio.playBgm('theme');
 withAudio.playBgm('theme');
 eq('重复播放同一首不重复创建', made.length, before + 1);
+
+// 10) 季节 / 考试 / 结局音轨
+ok('BGM 含四季', ['spring', 'summer', 'autumn', 'winter'].every((k) => !!audio.BGM_TRACKS[k]));
+ok('BGM 含 exam/ending', !!audio.BGM_TRACKS.exam && !!audio.BGM_TRACKS.ending);
+ok('SFX 含 bell/firework', !!audio.SFX_TRACKS.bell && !!audio.SFX_TRACKS.firework);
+const seasonAudio = createAudio({ Audio: FakeAudio });
+['spring', 'summer', 'autumn', 'winter', 'exam', 'ending'].forEach((k) => seasonAudio.playBgm(k));
+ok('季节曲路径都存在对应文件', ['spring', 'summer', 'autumn', 'winter', 'exam', 'ending']
+  .every((k) => fs.existsSync('assets/audio/bgm/' + k + '.mp3')));
 
 console.log(rows.join('\n'));
 console.log('\n总计 ' + (pass + fail) + ' 项，PASS ' + pass + '，FAIL ' + fail);
