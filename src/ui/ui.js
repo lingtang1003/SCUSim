@@ -799,9 +799,8 @@ export function createApp(ctx) {
         body,
         chips,
       ]),
-      h('div', { class: 'vn-next' }, ['▼']),
-    ]);
-  }
+      h('div', { class: 'vn-next', title: '点击或按空格继续' }, ['▼']),
+    ]);  }
 
   function lockReason(action, av) {
     if (!av || av.ok) return '';
@@ -1156,6 +1155,39 @@ export function createApp(ctx) {
     renderTitle(!!opts.hasSave);
   }
 
+  /** 焦点在输入框 / 按钮上时，键盘交给浏览器原生处理（打字、按钮 Space/Enter 触发） */
+  function isTypingOrInteractive(el) {
+    let node = el;
+    let guard = 0;
+    while (node && node !== doc && guard < 20) {
+      guard += 1;
+      const tag = String(node.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || tag === 'option') return true;
+      if (tag === 'button' || tag === 'a' || tag === 'summary') return true;
+      if (node.isContentEditable) return true;
+      node = node.parentNode;
+    }
+    return false;
+  }
+
+  /**
+   * 空格 / 回车 = 「点击对话框」：继续下一句台词、跳过打字机、关掉结算对白。
+   * 直接派发 click，保证和鼠标点击走完全相同的逻辑（包括事件弹层里的逐句播放）。
+   * @returns {boolean} 是否消费了这次按键
+   */
+  function pressAdvanceKey() {
+    if (!rootEl) return false;
+    const q = (sel) => (typeof rootEl.querySelector === 'function' ? rootEl.querySelector(sel) : null);
+    const target =
+      q('.vn-event .vn-dialogue__box--event')
+      || q('.vn-event .vn-dialogue.is-clickable')
+      || q('.vn-stage .vn-dialogue.is-clickable')
+      || q('.vn-dialogue.is-clickable');
+    if (!target || typeof target.click !== 'function') return false;
+    target.click();
+    return true;
+  }
+
   function bindKeys() {
     if (keysBound) return;
     if (!doc || typeof doc.addEventListener !== 'function') return;
@@ -1165,7 +1197,16 @@ export function createApp(ctx) {
       if (e.key === 'Escape') {
         closeAllPickers();
         if (overlayEl && overlayDismissible) closeOverlay();
+        return;
       }
+      if (e.defaultPrevented) return;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      const key = e.key;
+      const isSpace = key === ' ' || key === 'Spacebar' || key === 'Space';
+      const isEnter = key === 'Enter';
+      if (!isSpace && !isEnter) return;
+      if (isTypingOrInteractive(e.target)) return;   // 输入框里打字、按钮上按空格：交给浏览器
+      if (pressAdvanceKey()) e.preventDefault();
     });
     doc.addEventListener('click', () => closeAllPickers());
   }
@@ -1787,7 +1828,7 @@ export function createApp(ctx) {
     const npcWrap = h('div', { class: 'vn-event__npc' }, []);
     const textEl = h('p', { class: 'vn-text' });
     const speakerEl = h('div', { class: 'vn-speaker' });
-    const nextEl = h('div', { class: 'vn-next is-on' }, ['▼ 点击继续']);
+    const nextEl = h('div', { class: 'vn-next is-on', title: '点击或按空格继续' }, ['▼ 点击 / 空格 继续']);
 
     const choiceWrap = h('div', {
       class: 'vn-choices vn-choices--event'
