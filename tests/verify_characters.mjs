@@ -427,7 +427,7 @@ check('H: 已遇见的林予显示真名',
 check('H: 未遇见的角色显示为「？？？」',
   byClass(rootUi, 'vn-rel__name').filter((n) => n.textContent === '？？？').length >= 4);
 
-// 迎新晚会选人之后：左侧立绘换成对方，说话人也换成对方
+// 迎新晚会选人之后：左侧立绘换成对方；结算正文是旁白，名牌用「旁白」
 appUi.render(sUi, {
   eventResult: {
     eventId: 'ev_fixed_welcome',
@@ -443,8 +443,8 @@ check('H: 左侧立绘指向 linyu.webp',
   !!stageArt && String(stageArt.attr_style || '').includes('linyu.webp'),
   stageArt ? stageArt.attr_style : 'no art');
 const stageSpeaker = byClass(rootUi, 'vn-speaker')[0];
-check('H: 对话框说话人换成林予',
-  !!stageSpeaker && stageSpeaker.textContent === '林予',
+check('H: 对话框名牌为「旁白」（结算正文是旁白而非角色台词）',
+  !!stageSpeaker && stageSpeaker.textContent === '旁白',
   stageSpeaker && stageSpeaker.textContent);
 check('H: 好感不再额外挂黑色标签（改由正文/说话人体现）',
   byClass(rootUi, 'vn-effect--relation').length === 0);

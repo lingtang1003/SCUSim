@@ -953,15 +953,15 @@ export function createApp(ctx) {
       // 事件选项结算：正文里的「｜ 效果：…」是给日志用的，对白里换成下面的标签行，
       // 属性变化与好感变化分别用 ▲/▼ 标签呈现，避免同一句话里重复一堆数字
       const def = findEventById(eventResult.eventId) || {};
-      ui.speaker = def.name || '事件';
+      // 结算正文是叙述「你……他/她……」的旁白，不是事件名或角色名说的话，
+      // 名牌固定为「旁白」，避免出现「林予」说「你刚开口就有点后悔」这类主语错配
+      ui.speaker = '旁白';
       ui.text = stripEffectSuffix(eventResult.text) || '（这件事就这样过去了）';
       ui.effects = relationChips(eventResult.relationDelta).concat(deltaChips(eventResult.delta));
-      // 事件带角色（或选项本身带角色，如迎新晚会选人）→ 左侧立绘换成对方，说话人也换成对方
+      // 事件带角色（或选项本身带角色，如迎新晚会选人）→ 左侧立绘仍换成对方，名牌保持旁白
       const who = eventResult.charId || def.charId || '';
       if (who) {
         ui.npc = who;
-        const ch = findCharacter(who);
-        if (ch && ch.name) ui.speaker = ch.name;
       }
       ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: ui.text });

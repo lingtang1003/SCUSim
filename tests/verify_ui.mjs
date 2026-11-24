@@ -629,6 +629,51 @@ function findNodes(root, pred) {
   return out;
 }
 
+test('L: 事件结算名牌为「旁白」（正文是叙述「你」的旁白，不是角色台词）', async () => {
+  const configs = await loadConfigsFromDisk();
+  const doc = makeStubDoc();
+  const rootEl = makeStubElement('div');
+  const app = realCreateApp({ config: configs, callbacks: {}, doc });
+  app.mount(rootEl, { hasSave: false });
+  const stubState = {
+    turn: 3, actionPoints: 4,
+    player: {
+      name: '测试生', gender: '女', collegeId: 'cs',
+      attributes: { knowledge: 5, social: 5, health: 5, money: 5 },
+      tags: ['chill'],
+    },
+    academics: { semesterScores: [], failedCourses: 0, warning: false, studyActions: 0 },
+    log: ['测试'],
+  };
+  try {
+    // 模拟林予线「图书馆邂逅 → 主动搭话」的结算：带角色 charId，正文是旁白叙述
+    app.render(stubState, {
+      eventResult: {
+        eventId: 'ev_r23',
+        text: '你刚开口就有点后悔，但她先笑了。',
+        delta: { social: 3 },
+        relationDelta: { linyu: 7 },
+        charId: 'linyu',
+      },
+    });
+  } catch (e) {
+    return 'render 抛错: ' + (e && e.message ? e.message : String(e));
+  }
+  const speakers = findNodes(rootEl, (n) => n.className && String(n.className).includes('vn-speaker'));
+  if (!speakers.length) return '未找到名牌节点 vn-speaker';
+  // DOM 桩的 h() 把文字放进文本子节点（nodeType 3），需从 children 里取
+  const nodeText = (n) => (n.children || [])
+    .filter((c) => c && c.nodeType === 3)
+    .map((c) => c.textContent || '')
+    .join('') || n._text || n.textContent || '';
+  const speakerText = speakers.map(nodeText).join('|');
+  if (speakerText !== '旁白') return '名牌应为「旁白」，实际: ' + speakerText;
+  const texts = findNodes(rootEl, (n) => n.className && String(n.className).includes('vn-text'));
+  const joined = texts.map(nodeText).join('');
+  if (!joined.includes('你刚开口就有点后悔')) return '结算正文丢失: ' + joined;
+  return true;
+});
+
 test('K: 事件选项 ≥4 个时加 is-many（≤3 个保持原尺寸）', async () => {
   const configs = await loadConfigsFromDisk();
   const doc = makeStubDoc();
