@@ -17,9 +17,10 @@ import { loadConfig } from '../src/config/loader.js';
 import {
   serializeSave, deserializeSave, checkSaveVersion, addGalleryUnlocked,
 } from '../src/storage/storage.js';
+import { createGameState } from '../src/core/state.js';
 import { createRng } from '../src/core/rng.js';
 import {
-  newGame, actionAvailability, doAction, advance,
+  newGame, actionAvailability, doAction, advance, resolvePendingEvent,
 } from '../src/core/engine.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -169,6 +170,60 @@ const forbidden = await scanForbidden(join(root, 'src', 'core'), ['Math.random',
 const forbiddenEv = await scanForbidden(join(root, 'src', 'events'), ['Math.random', 'indexedDB', 'localStorage', 'window.']);
 check('E: core/ 无 Math.random / 存储 / DOM 引用', forbidden.length === 0, forbidden.join('; '));
 check('E: events/ 无 Math.random / 存储 / DOM 引用', forbiddenEv.length === 0, forbiddenEv.join('; '));
+
+// F) 回归：负债事件被固定事件抢先时，不应提前消耗冷却
+const debtCfg = {
+  balance: {
+    turns: 40,
+    actionPointsPerTurn: 4,
+    monthsPerSemester: 5,
+    examTurns: [],
+    exam: { examTurns: [] },
+    debtThreshold: -3000,
+    debtCooldownTurns: 6,
+    randomEventBaseChance: 0,
+    attributeClamp: { knowledge: [0, 99], social: [0, 99], health: [0, 99], money: null },
+  },
+  actions: { list: [] },
+  tags: { list: [] },
+  colleges: { list: [] },
+  locations: { list: [] },
+  characters: { list: [] },
+  storylines: { lines: [] },
+  events: {
+    fixed: [
+      { id: 'ev_fixed_debt', name: '负债危机', trigger: { type: 'debt' },
+        options: [{ id: 'borrow', label: '求助', effects: {} }] },
+      { id: 'ev_fixed_exam', name: '期末考试周', trigger: { type: 'turn', value: 5 },
+        options: [{ id: 'review', label: '复习', effects: {} }] },
+    ],
+    random: [],
+  },
+};
+const debtRng = createRng(1);
+const debtState = createGameState({
+  name: '负债测试', attributes: { knowledge: 5, social: 5, health: 5, money: 5 },
+  collegeId: 'x', tags: [],
+});
+debtState.turn = 4;
+debtState.player.attributes.money = -3000;
+advance(debtState, debtCfg, debtRng); // 进入第 5 回合：固定事件抢先
+check('F: 第 5 回合显示固定事件而非负债事件',
+  debtState.pendingEvent && debtState.pendingEvent.eventId === 'ev_fixed_exam',
+  `pending=${debtState.pendingEvent && debtState.pendingEvent.eventId}`);
+check('F: 被抢先时不写入 lastDebtTurn',
+  debtState.player.flags.lastDebtTurn === undefined,
+  `lastDebtTurn=${debtState.player.flags.lastDebtTurn}`);
+if (debtState.pendingEvent) {
+  resolvePendingEvent(debtState, debtState.pendingEvent.options[0].id, debtCfg, debtRng);
+}
+advance(debtState, debtCfg, debtRng); // 第 6 回合应补弹负债事件
+check('F: 第 6 回合补弹负债事件',
+  debtState.pendingEvent && debtState.pendingEvent.eventId === 'ev_fixed_debt',
+  `pending=${debtState.pendingEvent && debtState.pendingEvent.eventId}`);
+check('F: 负债事件弹出后才写入 lastDebtTurn',
+  debtState.player.flags.lastDebtTurn === 6,
+  `lastDebtTurn=${debtState.player.flags.lastDebtTurn}`);
 
 console.log(failures === 0 ? '\n全部通过 ✅' : `\n失败 ${failures} 项 ❌`);
 process.exit(failures === 0 ? 0 : 1);

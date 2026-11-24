@@ -139,11 +139,10 @@ export function applyExtraMoney(state, amount, reason) {
 }
 
 /**
- * 负债判定：money <= debtThreshold 且距上次触发 >= debtCooldownTurns 时触发负债事件。
- * 记 state.player.flags.lastDebtTurn，避免冷却期内重复触发。
+ * 负债判定（只读）：money <= debtThreshold 且距上次触发 >= debtCooldownTurns 时，返回可触发的负债事件。
+ * 本函数不再写 state.player.flags.lastDebtTurn；真正弹出事件后由 markDebtTriggered 记账。
  *
- * 注：本函数供 engine 在 advance 中调用以把 ev_fixed_debt 挂进待处理事件；
- * 当前 engine 尚未接入，由 A 集成（本模块只提供判定，不自行改 engine）。
+ * 注：本函数供 engine 在 advance 中调用以把 ev_fixed_debt 挂进待处理事件。
  * @param {object} state
  * @param {object} config
  * @returns {{ triggered: boolean, eventId: string|null }}
@@ -159,6 +158,15 @@ export function checkDebt(state, config) {
     ? state.player.flags.lastDebtTurn
     : -Infinity;
   if (state.turn - last < cooldown) return { triggered: false, eventId: null };
-  state.player.flags.lastDebtTurn = state.turn;
   return { triggered: true, eventId: 'ev_fixed_debt' };
+}
+
+/**
+ * 负债事件真正挂到 state.pendingEvent 后才调用，记录本回合已触发以启动冷却。
+ * @param {object} state
+ */
+export function markDebtTriggered(state) {
+  if (!state || !state.player) return;
+  if (!state.player.flags) state.player.flags = {};
+  state.player.flags.lastDebtTurn = state.turn;
 }

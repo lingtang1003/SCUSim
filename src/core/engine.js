@@ -222,6 +222,10 @@ function enterTurn(state, config, rng, priorityEventId) {
     ? eventManager.checkFixedEvents(state, config)
     : [];
   let eventId = (Array.isArray(fixedIds) && fixedIds[0]) || priorityEventId || null;
+  // 负债事件只有在真正胜出并成功弹出后才记账；被固定事件抢先时不消耗冷却
+  const debtWon = !!priorityEventId
+    && !(Array.isArray(fixedIds) && fixedIds.length > 0)
+    && eventId === priorityEventId;
   let forcedLine = null;
   if (!eventId && typeof storyline.dueEvent === 'function') {
     const due = storyline.dueEvent(state, config);
@@ -252,6 +256,9 @@ function enterTurn(state, config, rng, priorityEventId) {
     return;
   }
   state.pendingEvent = buildPendingEvent(ev, state, config);
+  if (debtWon && typeof economy.markDebtTriggered === 'function') {
+    economy.markDebtTriggered(state);
+  }
   // 事件带角色 → 标记已遇见（关系面板从剪影变成彩色）
   if (ev.charId) relation.markMet(state, ev.charId, config);
   pushLog(state, `触发事件：${ev.name || ev.id}`, config);
