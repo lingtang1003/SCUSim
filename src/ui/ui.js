@@ -54,6 +54,11 @@ const ART = {
  * art 对应 assets/bg/ 下的文件名。
  */
 const BG = {
+  libraryHall: { art: 'library-hall.jpg', label: '江安 · 图书馆', line: '（白长廊把阳光切成一条条，风从柱子之间穿过去）' },
+  belltower: { art: 'belltower.jpg', label: '江安 · 不高山', line: '（钟楼的指针在树影里慢慢走，整点会响一声）' },
+  mingyuan: { art: 'mingyuan-lake.jpg', label: '江安 · 明远湖', line: '（落日把湖面染成橘色，长桥上有自行车骑过）' },
+  riverside: { art: 'riverside-hall.jpg', label: '江安 · 文科楼', line: '（临水的楼亮着灯，倒影在水里轻轻晃）' },
+  jiangjie: { art: 'jiangjie-hall.jpg', label: '望江 · 江姐纪念馆', line: '（青砖门楣上写着「江姐纪念馆」，院子里很静）' },
   library: { art: 'library.jpg', label: '江安 · 图书馆', line: '（图书馆的空调开得很足，翻书声压过了脚步声）' },
   classScreen: { art: 'classroom-screen.jpg', label: '教学楼 · 教室', line: '（投影还亮着「欢迎你，新同学」，你从第一页开始抄）', oddSemesterFirstWeek: true },
   classSunlit: { art: 'classroom-sunlit.jpg', label: '教学楼 · 午后教室', line: '（阳光斜进来，粉笔灰在光柱里慢慢往上飘）' },
@@ -93,13 +98,17 @@ const SCENES = {
   title: { files: [BG.gateScu] },
   campus: { files: [BG.avenue, BG.magnolia, BG.plaza, BG.plazaStreet, BG.duskRoad, BG.lawn, BG.river] },
   classroom: { files: [BG.library, BG.classScreen, BG.classSunlit, BG.classEmpty, BG.classPodium, BG.corridor] },
-  clubroom: { files: [BG.activityWall, BG.plaza, BG.plazaStreet, BG.corridor] },
+  clubroom: { files: [BG.activityWall, BG.jiangjie, BG.plaza, BG.plazaStreet, BG.corridor] },
   track: { files: [BG.field, BG.gym, BG.lawn] },
   store: { files: [BG.metroPlatform, BG.metroEscalator] },
   street: { files: [BG.hotpot, BG.bar, BG.canteen, BG.canteenWest] },
   dorm: { files: [BG.duskRoad, BG.river, BG.lawn, BG.avenue] },
   create: { files: [BG.createWelcome] },
   event: { files: [] },
+  libraryHall: { files: [BG.libraryHall] },
+  belltower: { files: [BG.belltower] },
+  mingyuan: { files: [BG.mingyuan] },
+  riverside: { files: [BG.riverside] },
 };
 
 /** 行动 → 场景池（决定"点这个行动会去哪儿"）。 */
