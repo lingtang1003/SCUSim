@@ -81,6 +81,20 @@ test('courses: 专业课里不混进公共课', () => {
   return bad.length ? bad.slice(0, 6).join(',') : true;
 });
 
+test('courses: 同一学年上下两学期课程不重复', () => {
+  const cols = courses.colleges || {};
+  const bad = [];
+  for (const id of Object.keys(cols)) {
+    for (const [odd, even] of [['1', '2'], ['3', '4'], ['5', '6']]) {
+      const a = cols[id][odd] || [];
+      const b = cols[id][even] || [];
+      const overlap = a.filter((x) => b.includes(x));
+      if (overlap.length) bad.push(id + ' S' + odd + '/S' + even + ':' + overlap.slice(0, 3).join(','));
+    }
+  }
+  return bad.length ? bad.slice(0, 6).join(' | ') : true;
+});
+
 // 2) 考试科目按学院/学期取
 test('subjectsFor: 同一学期不同学院科目不同', () => {
   const a = subjectsFor(stateOf('cs', 3), config);
