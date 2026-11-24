@@ -5125,3 +5125,38 @@ body { font-synthesis: none; }
   background-clip: content-box;
 }
 .vn-score__sem { min-width: 0; overflow-wrap: anywhere; }
+
+
+/* =========================================================================
+   48. 剧情对话：对方立绘固定站右侧（和事件弹层一致），遮罩调淡
+   —— 之前事件弹层里在右侧、结算回舞台后 `.vn-npc--stage` 却跑到左侧，
+      看起来像「讲着讲着换位置」；遮罩也很重，关闭弹层时背景会突然变亮
+   ========================================================================= */
+.vn-npc--stage {
+  left: auto;
+  right: 2%;
+  bottom: 10%;
+}
+.vn-stage--map .vn-npc--stage {
+  left: auto;
+  right: 2%;
+  bottom: 10%;
+  width: min(400px, 30vw);
+  height: min(70vh, 620px);
+}
+/* 弹层遮罩：去掉模糊、压到很淡，进出剧情时背景亮度几乎不变（靠卡片投影区分层次） */
+.vn-event__scrim {
+  backdrop-filter: none;
+  background: linear-gradient(180deg, rgba(14, 10, 10, 0.16), rgba(14, 10, 10, 0.1) 55%, rgba(10, 7, 7, 0.2));
+}
+/* 弹层与舞台上的「对方」用同一套尺寸，结算前后立绘大小不变 */
+.vn-event__npc {
+  width: min(400px, 30vw);
+  height: min(70vh, 620px);
+  right: 2%;
+  bottom: 8%;
+}
+.vn-npc--stage.vn-npc--cutout {
+  width: min(400px, 30vw);
+  height: min(70vh, 620px);
+}
