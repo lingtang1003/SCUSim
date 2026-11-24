@@ -1,6 +1,6 @@
 {
   "version": "1.1.0",
-  "note": "两校区地图：campuses 定义地图与比例；每个地点用 campus 归属其中一个，x/y 是该校区地图上的百分比坐标；activities 是该地点可做的行动（id 来自 actions.json）；requiresHealth 是进入门槛（健康不足就去不了）",
+  "note": "地点坐标＝图钉锚点（画布百分比）。统一规则：图钉放在手绘地图上地名文字的**正上方**、水平居中于文字，锚点距文字顶部约 2.4% 画布高，所以所有图钉与地名的相对位置一致。",
   "default": "dorm",
   "defaultCampus": "jiang-an",
   "campuses": [
@@ -23,8 +23,8 @@
       "name": "宿舍",
       "campus": "jiang-an",
       "scene": "dorm",
-      "x": 24,
-      "y": 73,
+      "x": 29.3,
+      "y": 59.1,
       "requiresHealth": 0,
       "activities": [
         "rest"
@@ -40,8 +40,8 @@
       "name": "图书馆",
       "campus": "jiang-an",
       "scene": "classroom",
-      "x": 47,
-      "y": 49,
+      "x": 48.0,
+      "y": 38.1,
       "requiresHealth": 0,
       "activities": [
         "study"
@@ -57,8 +57,8 @@
       "name": "教学楼",
       "campus": "jiang-an",
       "scene": "classroom",
-      "x": 62,
-      "y": 60,
+      "x": 61.2,
+      "y": 47.1,
       "requiresHealth": 0,
       "activities": [
         "study"
@@ -74,8 +74,8 @@
       "name": "文科楼",
       "campus": "jiang-an",
       "scene": "classroom",
-      "x": 54,
-      "y": 38,
+      "x": 58.7,
+      "y": 30.1,
       "requiresHealth": 0,
       "activities": [
         "study"
@@ -91,8 +91,8 @@
       "name": "社团活动中心",
       "campus": "jiang-an",
       "scene": "clubroom",
-      "x": 69,
-      "y": 81,
+      "x": 65.0,
+      "y": 70.1,
       "requiresHealth": 0,
       "activities": [
         "club"
@@ -108,8 +108,8 @@
       "name": "商业街",
       "campus": "jiang-an",
       "scene": "street",
-      "x": 29,
-      "y": 80,
+      "x": 30.5,
+      "y": 75.1,
       "requiresHealth": 2,
       "activities": [
         "socialize"
@@ -125,8 +125,8 @@
       "name": "二号体育场",
       "campus": "jiang-an",
       "scene": "track",
-      "x": 73,
-      "y": 30,
+      "x": 75.5,
+      "y": 26.1,
       "requiresHealth": 2,
       "activities": [
         "exercise"
@@ -142,8 +142,8 @@
       "name": "体育馆",
       "campus": "jiang-an",
       "scene": "track",
-      "x": 78,
-      "y": 11,
+      "x": 75.0,
+      "y": 6.2,
       "requiresHealth": 5,
       "activities": [
         "exercise"
@@ -159,8 +159,8 @@
       "name": "长桥",
       "campus": "jiang-an",
       "scene": "campus",
-      "x": 47,
-      "y": 70,
+      "x": 46.7,
+      "y": 62.1,
       "requiresHealth": 0,
       "activities": [
         "rest"
@@ -176,8 +176,8 @@
       "name": "不高山",
       "campus": "jiang-an",
       "scene": "campus",
-      "x": 16.5,
-      "y": 44,
+      "x": 16.7,
+      "y": 40.1,
       "requiresHealth": 0,
       "activities": [
         "rest"
@@ -193,8 +193,8 @@
       "name": "宿舍",
       "campus": "wangjiang",
       "scene": "dorm",
-      "x": 70,
-      "y": 46,
+      "x": 68.5,
+      "y": 40.1,
       "requiresHealth": 0,
       "activities": [
         "rest"
@@ -210,8 +210,8 @@
       "name": "教学楼",
       "campus": "wangjiang",
       "scene": "classroom",
-      "x": 60,
-      "y": 55,
+      "x": 56.0,
+      "y": 49.1,
       "requiresHealth": 0,
       "activities": [
         "study"
@@ -227,8 +227,8 @@
       "name": "体育场",
       "campus": "wangjiang",
       "scene": "track",
-      "x": 43,
-      "y": 71,
+      "x": 44.5,
+      "y": 63.1,
       "requiresHealth": 2,
       "activities": [
         "exercise"
@@ -244,8 +244,8 @@
       "name": "校门",
       "campus": "wangjiang",
       "scene": "gate",
-      "x": 20,
-      "y": 84,
+      "x": 24.5,
+      "y": 73.1,
       "requiresHealth": 3,
       "activities": [
         "parttime"
@@ -261,8 +261,8 @@
       "name": "食堂",
       "campus": "wangjiang",
       "scene": "canteen",
-      "x": 23,
-      "y": 37,
+      "x": 28.2,
+      "y": 26.1,
       "requiresHealth": 0,
       "activities": [
         "eat"
@@ -278,8 +278,8 @@
       "name": "食堂",
       "campus": "jiang-an",
       "scene": "canteen",
-      "x": 15.5,
-      "y": 79,
+      "x": 15.8,
+      "y": 67.1,
       "requiresHealth": 0,
       "activities": [
         "eat"
