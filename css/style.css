@@ -4917,17 +4917,9 @@ body { font-synthesis: none; }
 }
 
 
-/* 地图顶部加一层很淡的遮罩，保证 HUD 文字压在地图上也读得清 */
+/* 地图舞台不再加顶部渐变遮罩：HUD 的白色胶囊本身就有投影，足够了 */
 .vn-stage--map::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 132px;
-  background: linear-gradient(180deg, rgba(12, 14, 12, 0.42), rgba(12, 14, 12, 0));
-  pointer-events: none;
-  z-index: 4;
+  display: none;
 }
 
 
@@ -5015,3 +5007,121 @@ body { font-synthesis: none; }
 @media (hover: none) {
   .vn-map__tag { opacity: 1; }
 }
+
+
+/* =========================================================================
+   43. 行动选项：现在一处地点通常只有 1~2 件事，改回单列居中
+   （原来按「六个行动、两列三行」排版，容器定位在 57%~62%，单张卡片会偏）
+   ========================================================================= */
+.vn-choices:not(.vn-choices--event) {
+  left: 50%;
+  top: auto;
+  bottom: 350px;
+  transform: translateX(-50%);
+  width: min(520px, 88vw);
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (max-width: 980px) {
+  .vn-choices:not(.vn-choices--event) {
+    top: 96px;
+    bottom: auto;
+    width: 92vw;
+  }
+}
+
+
+/* =========================================================================
+   44. HUD 右侧图标：统一 emoji 并做光学校正
+   —— emoji 的墨迹重心普遍偏低（📖 尤其明显），用 top 微调而不是 transform，
+      避免和 hover 的 translateY 抢同一个属性
+   ========================================================================= */
+.vn-icon {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  line-height: 1;
+}
+.vn-icon--rel,
+.vn-icon--save,
+.vn-icon--book,
+.vn-icon--menu {
+  /* 用 padding-bottom 把 emoji 往上顶：button 本身不动，只有字形重心上移 */
+  box-sizing: border-box;
+}
+.vn-icon--rel { padding-bottom: 3px; }
+.vn-icon--save { padding-bottom: 3px; }
+.vn-icon--book { padding-bottom: 10px; }
+.vn-icon--menu { padding-bottom: 1px; }
+
+
+/* =========================================================================
+   45. 对话框可点击推进：点一下补全文字，再点关掉并露出选项
+   ========================================================================= */
+.vn-dialogue.is-clickable {
+  cursor: pointer;
+}
+.vn-dialogue.is-clickable .vn-dialogue__box {
+  transition: box-shadow 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+.vn-dialogue.is-clickable:hover .vn-dialogue__box {
+  box-shadow: 0 26px 64px rgba(20, 16, 15, 0.42);
+}
+.vn-dialogue.is-clickable:active .vn-dialogue__box {
+  transform: scale(0.997);
+}
+
+
+/* =========================================================================
+   46. 事件选项：≤3 个保持原样，≥4 个（如迎新晚会的 7 个）收一档字号，
+       避免每句都折成两三行；同时事件期间藏掉地图上的提示与校区标签
+   ========================================================================= */
+.vn-stage.is-event .vn-map-stage__hint,
+.vn-stage.is-event .vn-map__tabs {
+  display: none;
+}
+.vn-choices--event.is-many {
+  width: min(860px, 92vw);
+  gap: 10px 14px;
+}
+.vn-choices--event.is-many .vn-choice {
+  min-height: 62px;
+  padding: 9px 14px;
+  /* 至少要比对话框正文（.vn-text 19px）大一号 */
+  font-size: 21px;
+  letter-spacing: 0.02em;
+}
+.vn-choices--event.is-many .vn-choice__label {
+  font-size: 21px;
+  line-height: 1.35;   /* 保持原来的行高比例，别因为字号变大反而更挤 */
+}
+.vn-choices--event.is-many .vn-choice__meta {
+  font-size: 17px;
+}
+@media (max-width: 980px) {
+  .vn-choices--event.is-many .vn-choice { font-size: 19px; }
+  .vn-choices--event.is-many .vn-choice__label { font-size: 19px; }
+}
+@media (max-width: 760px) {
+  .vn-choices--event.is-many .vn-choice { font-size: 17px; }
+  .vn-choices--event.is-many .vn-choice__label { font-size: 17px; }
+}
+
+
+/* =========================================================================
+   47. 学期结算：科目多了（一学期 6~13 门）时限高滚动，别把按钮顶出屏幕
+   ========================================================================= */
+.vn-score__list {
+  max-height: min(52vh, 460px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(20, 16, 15, 0.2) transparent;
+  padding-right: 4px;
+}
+.vn-score__list::-webkit-scrollbar { width: 8px; }
+.vn-score__list::-webkit-scrollbar-thumb {
+  background: rgba(20, 16, 15, 0.2);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.vn-score__sem { min-width: 0; overflow-wrap: anywhere; }

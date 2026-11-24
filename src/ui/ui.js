@@ -204,6 +204,8 @@ export function createApp(ctx) {
     npc: '',
     npcEmotion: 'neutral',
     consumedSeq: 0,
+    // 对话框 / 选项框二选一：true 时舞台上只有对话框，点一下关掉才出现选项
+    showDialogue: false,
     lastTurn: 0,
     history: [],
     reduceMotion: false,
@@ -380,15 +382,6 @@ export function createApp(ctx) {
     ]);
   }
 
-  /** 关系变化标签（对话框下方：▲ 江叙 好感 +8）。 */
-  function relationChips(delta) {
-    if (!Array.isArray(delta) || !delta.length) return [];
-    return delta.map((d) => ({
-      kind: 'relation',
-      text: '▲ ' + (d.name || d.charId) + ' 好感' + (Number(d.delta) > 0 ? '+' : '') + Number(d.delta),
-    }));
-  }
-
   function findCollege(id) {
     return listOf('colleges').find((c) => c.id === id) || null;
   }
@@ -526,7 +519,7 @@ export function createApp(ctx) {
       const delta = Number(attrs[meta.key]);
       if (!Number.isFinite(delta) || delta === 0) continue;
       out.push({
-        text: meta.icon + ' ' + meta.name + ' ' + (delta > 0 ? '+' : '−') + Math.abs(delta),
+        text: meta.icon + ' ' + meta.name + ' ' + (delta > 0 ? '+' : '-') + Math.abs(delta),
         kind: delta > 0 ? 'up' : 'down',
       });
     }
@@ -676,7 +669,7 @@ export function createApp(ctx) {
         ]),
         line
           ? h('span', { class: 'vn-chip vn-chip--line', title: line.name }, [
-              '♡ ' + line.name + ' · ' + line.step + '/' + line.total,
+              '◆ ' + line.name + ' · ' + line.step + '/' + line.total,
             ])
           : null,
       ]),
@@ -684,24 +677,24 @@ export function createApp(ctx) {
         !locationOf(state) ? null : h('button', {
           class: 'vn-loc vn-loc--btn',
           type: 'button',
-          title: '打开校园地图',
+          title: '切换地点（不消耗行动点，本周行动点用完前可用）',
           onclick: () => {
             if (callbacks.onOpenMap) callbacks.onOpenMap();
             else showMap();
           },
-        }, ['◈ ' + (function () {
+        }, ['◆ ' + (function () {
           const loc = locationOf(state);
           if (loc) return loc.name;
           return ui.sceneEntry ? ui.sceneEntry.label : '校园';
         })()]),
         h('button', {
-          class: 'vn-icon',
+          class: 'vn-icon vn-icon--rel',
           title: '关系',
           'aria-label': '查看关系',
           onclick: () => showRelations(),
-        }, ['♡']),
+        }, ['💗']),
         h('button', {
-          class: 'vn-icon',
+          class: 'vn-icon vn-icon--save',
           title: '保存进度',
           'aria-label': '保存进度',
           onclick: () => {
@@ -709,17 +702,17 @@ export function createApp(ctx) {
           },
         }, ['💾']),
         h('button', {
-          class: 'vn-icon',
+          class: 'vn-icon vn-icon--book',
           title: '剧情回放',
           'aria-label': '剧情回放',
           onclick: () => showBacklog(),
         }, ['📖']),
         h('button', {
-          class: 'vn-icon',
+          class: 'vn-icon vn-icon--menu',
           title: '菜单',
           'aria-label': '打开菜单',
           onclick: () => openMenu(),
-        }, ['☰']),
+        }, ['≡']),
       ]),
       h('button', {
         class: 'vn-hud__name',
@@ -739,6 +732,22 @@ export function createApp(ctx) {
     ]);
   }
 
+  function dismissDialogue() {
+    ui.showDialogue = false;
+    if (callbacks.onDialogueDone) callbacks.onDialogueDone();
+    else if (lastState) render(lastState, {});
+  }
+
+  /** 打字机还没打完时，第一下点击先补全，第二下才关对话框 */
+  function dialogueContinue(body, full) {
+    if (typeRaf != null) {
+      stopTypewriter();
+      if (body) body.textContent = full == null ? '' : String(full);
+      return;
+    }
+    dismissDialogue();
+  }
+
   function dialogueBox(speaker, text, effects) {
     const body = h('p', { class: 'vn-text' });
     typeText(body, text || '');
@@ -747,7 +756,11 @@ export function createApp(ctx) {
           h('span', { class: 'vn-effect vn-effect--' + c.kind }, [c.text])
         ))
       : null;
-    return h('div', { class: 'vn-dialogue' }, [
+    const onNext = () => dialogueContinue(body, text);
+    return h('div', {
+      class: 'vn-dialogue is-clickable',
+      onclick: onNext,
+    }, [
       h('div', { class: 'vn-dialogue__box' }, [
         speaker ? h('div', { class: 'vn-speaker' }, [speaker]) : null,
         body,
@@ -871,6 +884,7 @@ export function createApp(ctx) {
       ui.text = view.moved.line || '（四处看了看）';
       ui.effects = [];
       ui.npc = '';   // 换地点后回到「我」的画面
+      ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: ui.text });
       return;
     }
@@ -884,7 +898,8 @@ export function createApp(ctx) {
       const def = findEventById(eventResult.eventId) || {};
       ui.speaker = def.name || '事件';
       ui.text = eventResult.text || '（这件事就这样过去了）';
-      ui.effects = relationChips(eventResult.relationDelta);
+      // 正文已经带「｜ 效果：林予 好感+6」，不再额外挂一行黑色标签
+      ui.effects = [];
       // 事件带角色（或选项本身带角色，如迎新晚会选人）→ 左侧立绘换成对方，说话人也换成对方
       const who = eventResult.charId || def.charId || '';
       if (who) {
@@ -892,6 +907,7 @@ export function createApp(ctx) {
         const ch = findCharacter(who);
         if (ch && ch.name) ui.speaker = ch.name;
       }
+      ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: ui.text });
     } else if (actionId && seq && seq !== ui.consumedSeq) {
       ui.consumedSeq = seq;
@@ -904,6 +920,7 @@ export function createApp(ctx) {
       ui.text = text;
       ui.effects = [];
       ui.npc = '';   // 行动时收起对方立绘，回到「我」的画面
+      ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: text });
     } else if (state.turn !== ui.lastTurn) {
       const first = ui.lastTurn === 0;
@@ -918,6 +935,7 @@ export function createApp(ctx) {
         : weekLine(state.turn);
       ui.effects = [];
       ui.npc = '';
+      ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: ui.text });
     }
     if (ui.history.length > 200) ui.history.splice(0, ui.history.length - 200);
@@ -962,13 +980,18 @@ export function createApp(ctx) {
           + (sceneChanged ? ' is-scene-change' : '')
           + (onMap ? ' vn-stage--map' : ''),
       }, onMap
-        ? [mapStage(state), who, hud(state, v), dialogueBox(ui.speaker, ui.text, ui.effects)]
+        // 地图界面默认只有地图与 HUD；只有「事件结算结果」播报期间才带出立绘与对话框，
+        // 对话一关（回到选地点）立绘要跟着消失，不然人物会留在图上
+        ? [mapStage(state), ui.showDialogue ? who : null, hud(state, v),
+           ui.showDialogue ? dialogueBox(ui.speaker, ui.text, ui.effects) : null]
         : [
             bgLayer(ui.scene, ui.sceneEntry),
             who || spriteLayer(appearance),
             hud(state, v),
-            actionChoices(state, v.availability),
-            dialogueBox(ui.speaker, ui.text, ui.effects),
+            // 对话框与选项框不同时出现：先出对话框，点掉之后才轮到选项
+            ui.showDialogue
+              ? dialogueBox(ui.speaker, ui.text, ui.effects)
+              : actionChoices(state, v.availability),
           ])
     );
   }
@@ -1185,17 +1208,46 @@ export function createApp(ctx) {
       type: 'text',
       placeholder: '例如：林夕',
       value: creation.name,
-      maxlength: String(NAME_MAX),
+      // 不用 maxlength：输入法在组合拼音时会被它卡住（就是「打几个字母打不进去」的元凶之一），
+      // 长度改由 sanitize 里 slice(0, NAME_MAX) 兜底
       autocomplete: 'off',
+      autocapitalize: 'off',
+      spellcheck: 'false',
+    });
+
+    // 输入法（拼音/五笔）组合输入期间【绝不能改写 value】：
+    // 原来每次 input 都回写一遍过滤结果，会在组合中途打断输入法，
+    // 表现就是「打了几个字母之后突然打不进字了」。组合期间这里只记录、不动 DOM。
+    let composing = false;
+    const previewName = (raw) => {
+      const node = doc.getElementById && doc.getElementById('vn-preview-name');
+      if (node) node.textContent = String(raw || '') || '（还没有名字）';
+    };
+    function sync(raw, target) {
+      const cleaned = sanitize(raw);
+      if (target && target.value !== cleaned) target.value = cleaned;
+      creation.name = cleaned;
+      previewName(cleaned);
+    }
+    input.addEventListener('compositionstart', () => { composing = true; });
+    input.addEventListener('compositionend', (e) => {
+      composing = false;
+      sync(e && e.target ? e.target.value : '', e && e.target);
     });
     input.addEventListener('input', (e) => {
-      const raw = e.target ? e.target.value : '';
-      const cleaned = sanitize(raw);
-      // 直接过滤掉数字/符号/空格，避免“能输入但提交报错”
-      if (e.target && e.target.value !== cleaned) e.target.value = cleaned;
-      creation.name = cleaned;
-      const node = doc.getElementById && doc.getElementById('vn-preview-name');
-      if (node) node.textContent = creation.name || '（还没有名字）';
+      const raw = e && e.target ? e.target.value : '';
+      // isComposing 在 Edge/Safari 上也可靠；两者任一为真都按「组合中」处理
+      if (composing || (e && e.isComposing)) {
+        creation.name = String(raw);
+        previewName(raw);
+        return;
+      }
+      sync(raw, e && e.target);
+    });
+    // 失焦兜底清理一次（组合被外部打断、或粘贴了非法字符）
+    input.addEventListener('blur', (e) => {
+      if (composing) return;
+      sync(e && e.target ? e.target.value : '', e && e.target);
     });
     return h('div', { class: 'vn-form' }, [
       h('h2', { class: 'vn-form__title' }, ['你的名字']),
@@ -1204,6 +1256,12 @@ export function createApp(ctx) {
       h('button', {
         class: 'btn btn--primary btn--block btn--lg',
         onclick: () => {
+          // 输入法还开着（组合未确认）时先别提交，否则会把拼音当成名字
+          if (composing) {
+            if (input && typeof input.blur === 'function') input.blur();
+            showError('请先按空格/回车确认输入法里的字');
+            return;
+          }
           const n = String(creation.name || '').trim();
           if (!n) {
             showError('请输入姓名');
@@ -1291,7 +1349,7 @@ export function createApp(ctx) {
       },
     }, [
       h('span', { class: 'vn-picker__value' }, [current ? current.label : '请选择']),
-      h('span', { class: 'vn-picker__caret', 'aria-hidden': 'true' }, ['⌄']),
+      h('span', { class: 'vn-picker__caret', 'aria-hidden': 'true' }, ['▼']),
     ]);
     const wrap = h('div', { class: 'vn-picker' }, [trigger, list]);
     return wrap;
@@ -1377,7 +1435,7 @@ export function createApp(ctx) {
             renderCreation();
           }
         },
-      }, ['−']);
+      }, ['-']);
       const plus = h('button', {
         class: 'vn-step-btn',
         'data-kind': 'plus',
@@ -1398,7 +1456,7 @@ export function createApp(ctx) {
       h('h2', { class: 'vn-form__title' }, ['属性']),
       h('p', { class: 'vn-form__desc' }, ['原来初入大学的你是这样的。']),
       h('div', { class: 'vn-attr-list' }, rows),
-      h('div', { class: 'vn-counter' + (remain > 0 ? ' is-ok' : '') }, [
+      h('div', { class: 'vn-counter' + (remain === 0 ? ' is-ok' : '') }, [
         '剩余 ' + remain + ' 点',
       ]),
       h('button', {
@@ -1445,8 +1503,8 @@ export function createApp(ctx) {
           )),
         ]);
       })),
-      h('div', { class: 'vn-counter' + (selected.length < REQUIRED_TAGS ? ' is-ok' : '') }, [
-        '已选 ' + selected.length + ' / ' + REQUIRED_TAGS,
+      h('div', { class: 'vn-counter' + (selected.length === REQUIRED_TAGS ? ' is-ok' : '') }, [
+        '已选 ' + selected.length + ' / ' + REQUIRED_TAGS + (selected.length === REQUIRED_TAGS ? ' · 可以继续' : ''),
       ]),
       h('p', { class: 'vn-tag-sum' }, [
         selected.length
@@ -1685,6 +1743,7 @@ export function createApp(ctx) {
     const choiceWrap = h('div', {
       class: 'vn-choices vn-choices--event'
         + (def.layout === 'grid' ? ' is-grid' : '')
+        + (options.length >= 4 ? ' is-many' : '')
         + (lines.length > 1 ? ' is-waiting' : ''),
     }, options.map((o) => {
       const hints = Array.isArray(o.hints) ? o.hints : [];
@@ -1751,7 +1810,7 @@ export function createApp(ctx) {
       h('div', { class: 'vn-event__scrim' }),
       npcWrap,
       h('div', { class: 'vn-event__inner' }, [
-        h('div', { class: 'vn-event__tag' }, ['✦ ' + title]),
+        h('div', { class: 'vn-event__tag' }, ['◆ ' + title]),
         choiceWrap,
         hintEl,
         h('div', { class: 'vn-dialogue' }, [
@@ -1930,9 +1989,18 @@ export function createApp(ctx) {
   }
 
   /** 当前应该展示哪个校区：优先「人所在的校区」，其次手动切换过的，最后默认 */
-  function activeCampus(state) {
+  /**
+   * 当前看的是哪个校区的地图：
+   *  - preferTab=true（在弹窗里点了「江安/望江」页签）→ 以页签为准，
+   *    这样站在江安也能翻到望江的地图；否则以所在地点的校区为准。
+   */
+  function activeCampus(state, preferTab) {
     const list = campusesOf();
     if (!list.length) return null;
+    if (preferTab && mapCampus) {
+      const hit = list.find((c) => c.id === mapCampus);
+      if (hit) return hit;
+    }
     const loc = locationOf(state);
     if (loc && loc.campus) {
       const hit = list.find((c) => c.id === loc.campus);
@@ -1947,17 +2015,19 @@ export function createApp(ctx) {
     return list.find((c) => c.id === def) || list[0];
   }
 
-  function campusTabs(state) {
+  function campusTabs(state, preferTab) {
     const list = campusesOf();
     if (list.length < 2) return null;
-    const cur = activeCampus(state);
+    const cur = activeCampus(state, preferTab);
     return h('div', { class: 'vn-map__tabs' }, list.map((c) =>
       h('button', {
         type: 'button',
         class: 'vn-map__tab' + (cur && cur.id === c.id ? ' is-on' : ''),
+        title: '切换到' + c.name + '校区的地图',
         onclick: () => {
           mapCampus = c.id;
-          if (overlayEl) showMap();
+          // 弹窗里点页签：按页签强制切换地图（否则会一直被「所在校区」盖回去）
+          if (overlayEl) showMap(true);
           else if (lastState) render(lastState, {});
         },
       }, [c.name])
@@ -1970,17 +2040,27 @@ export function createApp(ctx) {
     const health = Number(st.player && st.player.attributes && st.player.attributes.health) || 0;
     const need = Number(l.requiresHealth) || 0;
     const locked = health < need;
+    // 行动点用完 = 这一周的行动周期结束：这时候不让再换地点（避免把自动推进顶掉）
+    const ap = Number(st.actionPoints);
+    const noAp = Number.isFinite(ap) && ap <= 0;
     const here = (st.player && st.player.location) === l.id;
     return h('button', {
-      class: 'vn-map__pin' + (here ? ' is-here' : '') + (locked ? ' is-locked' : ''),
+      class: 'vn-map__pin' + (here ? ' is-here' : '') + (locked || noAp ? ' is-locked' : ''),
       type: 'button',
       style: 'left:' + (Number(l.x) || 50) + '%;top:' + (Number(l.y) || 50) + '%',
-      title: locked ? '需要健康 ' + need : (l.desc || l.name),
+      title: locked ? '需要健康 ' + need
+        : noAp ? '行动点用完了，这周不能再换地点'
+        : (l.desc || l.name),
       onclick: () => {
         if (locked) {
           showToast('健康 ' + health + ' 点，进「' + l.name + '」需要 ' + need + ' 点', 'warning');
           return;
         }
+        if (noAp) {
+          showToast('行动点用完了，这周不能再换地点', 'warning');
+          return;
+        }
+        if (l.campus) mapCampus = l.campus;   // 记住这次去的是哪个校区
         if (callbacks.onMoveLocation) callbacks.onMoveLocation(l.id);
       },
     }, [
@@ -1992,7 +2072,11 @@ export function createApp(ctx) {
           + (Number(l.labelDy) || 0) + 'px)',
       }, [
         h('span', { class: 'vn-map__name' }, [l.name]),
-        locked ? h('span', { class: 'vn-map__need' }, ['健康 ' + need]) : null,
+        locked
+          ? h('span', { class: 'vn-map__need' }, ['健康 ' + need])
+          : noAp
+          ? h('span', { class: 'vn-map__need' }, ['行动点用完'])
+          : null,
       ]),
     ]);
   }
@@ -2018,21 +2102,32 @@ export function createApp(ctx) {
   }
 
   // ---------------- 弹层：校园地图（选择地点） ----------------
-  function showMap() {
+  function showMap(preferTab) {
     if (!rootEl) return;
     const list = listOf('locations');
     if (!list.length) {
       showToast('还没有配置地点', 'warning');
       return;
     }
+    closeOverlay();   // 页签切换会重开弹窗，先关掉旧的，避免叠层
     const st = lastState || {};
-    const campus = activeCampus(st);
+    const campus = activeCampus(st, preferTab);
     const hereList = list.filter((l) => !campus || !l.campus || l.campus === campus.id);
     const mapArt = (campus && campus.mapArt) || '';
     const aspect = (campus && campus.aspect) || '2560 / 1440';
+    const apNow = Number(st.actionPoints) || 0;
+    const apMax = balanceOf('actionPointsPerTurn', 4);
+    const locNow = locationOf(st);
+    const canMove = apNow > 0;
 
     const body = [
-      campusTabs(st),
+      campusTabs(st, preferTab),
+      h('p', { class: 'vn-modal__lead' }, [
+        canMove
+          ? '行动点 ' + apNow + ' / ' + apMax + ' · 换地点不消耗行动点'
+            + '（当前：' + (locNow ? locNow.name : '地图上') + ' · 地图：' + (campus ? campus.name : '校园') + '）'
+          : '这周的行动点用完了，下周再换地点',
+      ]),
       h('div', {
         class: 'vn-map',
         style: 'aspect-ratio:' + aspect,
@@ -2333,7 +2428,7 @@ export function createApp(ctx) {
           },
         }, [
           h('span', {}, ['各学期成绩和绩点']),
-          h('span', { class: 'vn-score__arrow' }, ['▾']),
+          h('span', { class: 'vn-score__arrow' }, ['▼']),
         ]),
         semesterList.length
           ? (listEl = h('div', { class: 'vn-score__list is-collapsed' }, semesterList.map((it) =>

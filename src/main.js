@@ -184,7 +184,7 @@ export function createController(deps) {
     bar.appendChild(mk('社交+10', () => bump('social', 10)));
     bar.appendChild(mk('健康+10', () => bump('health', 10)));
     bar.appendChild(mk('钱+1000', () => bump('money', 1000)));
-    bar.appendChild(mk('钱−5000', () => bump('money', -5000)));
+    bar.appendChild(mk('钱-5000', () => bump('money', -5000)));
     bar.appendChild(mk('AP 清零', () => {
       if (!state) return;
       state.actionPoints = 0;
@@ -416,20 +416,19 @@ export function createController(deps) {
     actionSeq += 1;
     await storage.saveGame(state);
     renderState({ actionId, actionSeq });
+  }
 
-    // 行动点用完 → 短暂停留展示行动结果，然后自动进入下一周（回到校园地图）
-    if (state.actionPoints <= 0 && !state.endingId && !state.pendingEvent) {
+  // ---------------- 回调：对话框点掉之后 ----------------
+  // 行动结果先以对话框呈现；玩家点一下关掉后，才出现选项（或自动进入下一周）
+  function onDialogueDone() {
+    if (!state) return;
+    if (!state.endingId && !state.pendingEvent && state.actionPoints <= 0) {
+      clearAutoAdvance();
       toast('行动点用完了，进入下一周', 'info');
-      if (typeof setTimeout === 'function') {
-        clearAutoAdvance();
-        autoAdvanceTimer = setTimeout(() => {
-          autoAdvanceTimer = null;
-          if (state && state.actionPoints <= 0 && !state.pendingEvent && !state.endingId) {
-            onAdvance();
-          }
-        }, 1100);
-      }
+      onAdvance();
+      return;
     }
+    renderState({});
   }
 
   // ---------------- 回调：推进回合 ----------------
@@ -476,7 +475,7 @@ export function createController(deps) {
       const expense = Number(res.monthly.expense) || 0;
       const parts = [];
       if (income > 0) parts.push(`生活费已发放 +${income}`);
-      if (expense > 0) parts.push(`开销 −${expense}`);
+      if (expense > 0) parts.push(`开销 -${expense}`);
       parts.push(`当前金钱 ${money}`);
       toast(parts.join(' · '), 'info');
     }
@@ -737,9 +736,19 @@ export function createController(deps) {
     app.showMap();
   }
 
-  function onMoveLocation(id) {
-    clearAutoAdvance();
+  async function onMoveLocation(id) {
     if (!state) return;
+    // 换地点不消耗行动点，但只能在「本周还有行动点」的窗口里换：
+    // 4 个行动点就是这一周的行动周期，用完了就得等下一周（也避免把自动推进的定时器顶掉）
+    if ((Number(state.actionPoints) || 0) <= 0) {
+      toast('行动点用完了，这周不能再换地点', 'warning');
+      return;
+    }
+    if (state.pendingEvent) {
+      toast('先处理当前事件，再换地点', 'warning');
+      return;
+    }
+    clearAutoAdvance();
     const r = eng.moveToLocation(state, id, config);
     if (!r.ok) {
       if (r.reason === 'health') {
@@ -749,9 +758,10 @@ export function createController(deps) {
       }
       return;
     }
-    // 移动不消耗行动点，刷新舞台与旁白
+    // 移动不消耗行动点，刷新舞台与旁白；顺手存盘，刷新后还停在这个地点
     state.rngState = rng.getState();
     audio.playSfx('click');
+    await storage.saveGame(state);
     app.render(state, { moved: { name: r.location.name, line: r.location.line } });
   }
 
@@ -808,6 +818,7 @@ export function createController(deps) {
     onLoadSlot,
     onDeleteSlot,
     onAction,
+    onDialogueDone,
     onAdvance,
     onResolveEvent,
     onChangeAppearance,
