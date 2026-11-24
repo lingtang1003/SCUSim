@@ -372,6 +372,83 @@ check('E: 有未结算事件时不能换地点', st.player.location === before2,
     !!c5b && String(c5b.textContent).includes('可以继续'), c5b && c5b.textContent);
 }
 
+// ---------------------------------------------------------------------------
+// I) 事件结算：正文不再堆「｜ 效果：…」，属性 / 好感改用标签行
+// ---------------------------------------------------------------------------
+{
+  const rootEl = makeEl('div');
+  const app = createApp({ config, callbacks: {}, doc: makeDoc(), appearance: 'm_short1' });
+  app.mount(rootEl, { hasSave: false });
+  const ng = engine.newGame({
+    name: '结算生', gender: '男', collegeId: 'cs',
+    attributes: { knowledge: 5, social: 5, health: 5, money: 5 },
+    tags: ['study_hard', 'gamer', 'chill'], seed: 3,
+  }, config, createRng(3));
+  app.render(ng.state, {
+    eventResult: {
+      eventId: 'ev_fixed_welcome',
+      text: '你把一瓶水递过去。他愣了一下，接过来。 ｜ 效果：江叙 好感+6，健康+1，金钱-5',
+      relationDelta: [{ charId: 'jiangxu', name: '江叙', delta: 6 }],
+      delta: { health: 1, money: -5 },
+      charId: 'jiangxu',
+    },
+  });
+  const textEl = findByClass(rootEl, 'vn-text')[0];
+  check('I: 对白正文里不再拼「｜ 效果」',
+    !!textEl && !String(textEl.textContent).includes('效果'), textEl && textEl.textContent);
+  const chips = findByClass(rootEl, 'vn-effect');
+  const chipText = chips.map((c) => String(c.textContent)).join(' | ');
+  check('I: 好感变化以标签呈现', chipText.includes('江叙'), chipText);
+  check('I: 属性变化以标签呈现（健康 +1 / 金钱 -5）',
+    chipText.includes('健康') && chipText.includes('金钱'), chipText);
+  check('I: 标签区分涨/跌样式',
+    chips.some((c) => String(c.className).includes('vn-effect--up'))
+    && chips.some((c) => String(c.className).includes('vn-effect--down')),
+    chips.map((c) => c.className).join(' / '));
+  check('I: 三条变化对应三个标签', chips.length === 3, String(chips.length));
+}
+
+// ---------------------------------------------------------------------------
+// J) 读档：上一局的立绘 / 对白 / 好感标签不能残留
+// ---------------------------------------------------------------------------
+{
+  const { controller: c3, rootEl } = await boot();
+  await c3.callbacks.onNewGame({
+    name: '读档生', gender: '男', collegeId: 'cs',
+    attributes: { knowledge: 5, social: 5, health: 5, money: 5 },
+    tags: ['study_hard', 'gamer', 'chill'], seed: 11,
+  });
+  const s3 = c3._getState();
+  s3.pendingEvent = null;
+  // 摆一个「事件结算后」的画面：左侧是林予、对白是好感标签
+  c3._getApp().render(s3, {
+    eventResult: {
+      eventId: 'ev_fixed_welcome',
+      text: '你帮她挡了一下挤过来的人群。她说了声谢谢。 ｜ 效果：林予 好感+6',
+      relationDelta: [{ charId: 'linyu', name: '林予', delta: 6 }],
+      delta: {},
+      charId: 'linyu',
+    },
+  });
+  check('J: 准备：结算后左侧有林予立绘',
+    findByClass(rootEl, 'vn-npc--stage').length === 1,
+    String(findByClass(rootEl, 'vn-npc--stage').length));
+
+  await c3.callbacks.onSave();
+  await c3.callbacks.onLoadGame();   // 同一回合读档
+
+  check('J: 读档后不再残留上一局的立绘',
+    findByClass(rootEl, 'vn-npc--stage').length === 0,
+    String(findByClass(rootEl, 'vn-npc--stage').length));
+  check('J: 读档后不再残留好感标签',
+    findByClass(rootEl, 'vn-effect').length === 0,
+    String(findByClass(rootEl, 'vn-effect').length));
+  const spk = String((findByClass(rootEl, 'vn-speaker')[0] || {}).textContent || '');
+  check('J: 读档后旁白重置为「回到第 N 周」', spk === '旁白', spk);
+  const txt = String((findByClass(rootEl, 'vn-text')[0] || {}).textContent || '');
+  check('J: 重置文案带回合数', txt.includes('回到第 ' + s3.turn + ' 周'), txt);
+}
+
 console.log(`\n总计 ${pass + failures.length} 项，PASS ${pass}，FAIL ${failures.length}`);
 if (failures.length) console.error('失败用例: ' + failures.join(' | '));
 process.exit(failures.length === 0 ? 0 : 1);

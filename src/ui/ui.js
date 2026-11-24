@@ -526,6 +526,39 @@ export function createApp(ctx) {
     return out;
   }
 
+  /** 属性变化 → 标签（事件结算用；delta 形如 {health:1, money:-5}） */
+  function deltaChips(delta) {
+    const out = [];
+    const d = delta || {};
+    for (const meta of ATTRIBUTE_META) {
+      const v = Number(d[meta.key]);
+      if (!Number.isFinite(v) || v === 0) continue;
+      out.push({
+        text: meta.icon + ' ' + meta.name + ' ' + (v > 0 ? '+' : '-') + Math.abs(v),
+        kind: v > 0 ? 'up' : 'down',
+      });
+    }
+    return out;
+  }
+
+  /** 好感变化 → 标签（relationDelta 形如 [{charId,name,delta}]） */
+  function relationChips(list) {
+    return (Array.isArray(list) ? list : [])
+      .filter((x) => x && Number.isFinite(Number(x.delta)) && Number(x.delta) !== 0)
+      .map((x) => ({
+        text: '♡ ' + (x.name || x.charId || '') + ' ' + (Number(x.delta) > 0 ? '+' : '') + Number(x.delta),
+        kind: Number(x.delta) > 0 ? 'up' : 'down',
+      }));
+  }
+
+  /**
+   * 引擎会把实际数值变化拼在结果正文后面（「… ｜ 效果：林予 好感+6，健康+1」），
+   * 那是给 state.log 用的；对话框里改用下面的标签行呈现，正文只留叙述。
+   */
+  function stripEffectSuffix(text) {
+    return String(text || '').replace(/\s*[｜|]\s*效果：[\s\S]*$/, '').trim();
+  }
+
   function semesterLabel(turn) {
     const perSemester = balanceOf('monthsPerSemester', 5);
     const total = Math.max(1, Math.ceil(Number(turn) / perSemester));
@@ -877,8 +910,13 @@ export function createApp(ctx) {
   }
 
   // ---------------- 主视图 ----------------
-  function syncDialogue(state, view) {
+  function syncDialogue(state, view, freshState) {
     const player = state.player || {};
+    // 换了 state 对象（新开一局 / 读档 / 导入）：上一局的立绘、好感标签不能带到这一局
+    if (freshState) {
+      ui.npc = '';
+      ui.effects = [];
+    }
     if (view && view.moved) {
       ui.speaker = view.moved.name || '校园';
       ui.text = view.moved.line || '（四处看了看）';
@@ -893,13 +931,12 @@ export function createApp(ctx) {
     const eventResult = view && view.eventResult;
 
     if (eventResult) {
-      // 事件选项结算：结果文本已由引擎追加「｜ 效果：…」，对话框只显示正文，
-      // 好感变化单独用标签呈现（▲ 江叙 好感 +8），比塞进句子里清楚
+      // 事件选项结算：正文里的「｜ 效果：…」是给日志用的，对白里换成下面的标签行，
+      // 属性变化与好感变化分别用 ▲/▼ 标签呈现，避免同一句话里重复一堆数字
       const def = findEventById(eventResult.eventId) || {};
       ui.speaker = def.name || '事件';
-      ui.text = eventResult.text || '（这件事就这样过去了）';
-      // 正文已经带「｜ 效果：林予 好感+6」，不再额外挂一行黑色标签
-      ui.effects = [];
+      ui.text = stripEffectSuffix(eventResult.text) || '（这件事就这样过去了）';
+      ui.effects = relationChips(eventResult.relationDelta).concat(deltaChips(eventResult.delta));
       // 事件带角色（或选项本身带角色，如迎新晚会选人）→ 左侧立绘换成对方，说话人也换成对方
       const who = eventResult.charId || def.charId || '';
       if (who) {
@@ -923,7 +960,8 @@ export function createApp(ctx) {
       ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: text });
     } else if (state.turn !== ui.lastTurn) {
-      const first = ui.lastTurn === 0;
+      // 新开一局（换了 state 对象）也按「第一回合」处理，别显示上一局的周提示
+      const first = ui.lastTurn === 0 || !!freshState;
       ui.lastTurn = state.turn;
       ui.scene = 'campus';
       ui.sceneEntry = pickScene('campus', state.turn, 0);
@@ -933,6 +971,15 @@ export function createApp(ctx) {
             ? '（第 ' + state.turn + ' 周，故事继续）'
             : '（拖着行李箱走进校门，「川大」两个字在阳光下发亮）')
         : weekLine(state.turn);
+      ui.effects = [];
+      ui.npc = '';
+      ui.showDialogue = true;
+      ui.history.push({ who: ui.speaker, text: ui.text });
+    } else if (freshState) {
+      // 读档 / 导入到同一回合：不换旁白也得把舞台重置，否则会停在上一条对白上
+      ui.speaker = '旁白';
+      ui.text = '（回到第 ' + state.turn + ' 周'
+        + ((locationOf(state) && locationOf(state).name) ? ' · ' + locationOf(state).name : '') + '）';
       ui.effects = [];
       ui.npc = '';
       ui.showDialogue = true;
@@ -953,9 +1000,11 @@ export function createApp(ctx) {
     closeOverlay();
     stopTypewriter();
     clearRoot();
+    // state 换了个对象 = 新开一局 / 读档 / 导入存档（行动与推进都改同一个对象）
+    const freshState = state !== lastState;
     lastState = state;
     applyStateAppearance(state);
-    syncDialogue(state, view || {});
+    syncDialogue(state, view || {}, freshState);
     const v = view || {};
     const appearance = findAppearance(ui.appearanceId);
 
