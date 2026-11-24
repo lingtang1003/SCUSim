@@ -5022,12 +5022,53 @@ body { font-synthesis: none; }
   grid-template-columns: 1fr;
   gap: 10px;
 }
-@media (max-width: 980px) {
+
+/* -------------------------------------------------------------------------
+   43.1 窄桌面窗口（561–980px）：保持「对话框上方」的原布局，不要切手机排版
+   —— 这里原来写的是 top:96px / bottom:auto，把行动选项钉到了 HUD 第二行上，
+      PC 上把窗口拖窄就会糊成一片。改成：仍然靠下、靠右让开立绘，并限高可滚。
+   ------------------------------------------------------------------------- */
+@media (min-width: 561px) and (max-width: 980px) {
   .vn-choices:not(.vn-choices--event) {
-    top: 96px;
-    bottom: auto;
-    width: 92vw;
+    left: auto;
+    right: 3vw;
+    transform: none;
+    top: auto;
+    /* 对话盒大约占底部 190–290px（正文越长越高）：选项压在它上面，并给 HUD 留出头顶空间 */
+    bottom: max(300px, 40vh);
+    width: min(470px, 54vw);
+    grid-template-columns: 1fr;
+    max-height: max(96px, min(42vh, calc(100vh - 420px)));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
+  .vn-choice {
+    min-height: 56px;
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+  .vn-choice__label { font-size: 16px; }
+  .vn-choice__meta { font-size: 11px; }
+  .vn-text { font-size: 16px; }
+
+  /* HUD：优先压成一行；实在放不下就让「右侧组」整体折到第二行（胶囊组内部不折） */
+  .vn-hud { gap: 6px; flex-wrap: wrap; row-gap: 6px; }
+  .vn-hud__group { gap: 6px; flex-wrap: nowrap; min-width: 0; }
+  .vn-hud__group:first-of-type .vn-chip {
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .vn-hud__group:last-of-type { flex-shrink: 0; }
+  .vn-chip { padding: 4px 9px; font-size: 12px; gap: 4px; }
+  .vn-chip__k { font-size: 11px; }
+  .vn-icon { width: 34px; height: 34px; font-size: 15px; }
+  .vn-loc { padding: 4px 9px; font-size: 11px; letter-spacing: 0.08em; }
+  .vn-hud__name { top: 44px; padding: 4px 12px 4px 4px; font-size: 12px; max-width: 62vw; }
+  .vn-hud__name small { display: none; }
+  .vn-hud__avatar { width: 22px; height: 22px; font-size: 11px; }
 }
 
 
