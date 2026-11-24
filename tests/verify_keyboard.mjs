@@ -137,7 +137,18 @@ const state = engine.newGame({
 console.log('== SCUSim 键盘推进自检 ==');
 
 const rootEl = makeEl('div');
-const app = createApp({ config, callbacks: {}, doc, appearance: 'm_short1' });
+const acted = [];
+const resolved = [];
+const app = createApp({
+  config,
+  callbacks: {
+    onAction: (id) => acted.push(id),
+    onAdvance: () => acted.push('advance'),
+    onResolveEvent: (id) => resolved.push(id),
+  },
+  doc,
+  appearance: 'm_short1',
+});
 app.mount(rootEl, { hasSave: false });   // 标题页
 
 // ---------------------------------------------------------------------------
@@ -248,6 +259,40 @@ if (evDef) {
   const ev = pressKey('Enter');
   check('F: 回车也能关掉结算对白', !rootEl.querySelector('.vn-stage .vn-dialogue'));
   check('F: 回车同样被消费', ev.defaultPrevented === true);
+}
+
+// ---------------------------------------------------------------------------
+// G) 空格执行「本周行动」里第一个可用的卡（带 350ms 防连按）
+// ---------------------------------------------------------------------------
+{
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  state.actionPoints = 3;
+  state.player.location = 'dorm';
+  app.render(state, {});
+  const cards = rootEl.querySelectorAll('.vn-choice');
+  const btn = cards.find((b) => String(b['attr_data-key'] || '') === 'space');
+  check('G: 第一个可用行动卡被标成空格目标', !!btn, cards.map((b) => b['attr_data-key'] || '-').join(','));
+  const before = acted.length;
+  pressKey(' ');   // 刚出现就按：被防连按吃掉
+  check('G: 刚出现时立刻按空格不会误触行动', acted.length === before, String(acted.length));
+  await sleep(420);
+  pressKey(' ');
+  check('G: 等过防连按后，空格执行第一个行动', acted.length === before + 1, String(acted.length));
+  check('G: 执行的是那张卡对应的行动', acted[acted.length - 1] === 'rest', String(acted[acted.length - 1]));
+}
+
+// ---------------------------------------------------------------------------
+// H) 事件弹层的分支选项不会被空格误选
+// ---------------------------------------------------------------------------
+if (evDef) {
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  app.showEvent({ eventId: evDef.id });
+  for (let i = 0; i < 8; i += 1) pressKey(' ');   // 推完台词，选项出现
+  await sleep(420);
+  const before = resolved.length;
+  pressKey(' ');
+  check('H: 事件选项不会被空格误选', resolved.length === before, String(resolved.length));
+  app.closeOverlay();
 }
 
 console.log(`\n总计 ${pass + failures.length} 项，PASS ${pass}，FAIL ${failures.length}`);
