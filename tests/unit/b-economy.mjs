@@ -1,4 +1,4 @@
-// B 模块单测 · 经济（settleMonthly / applyExtraMoney / checkDebt / applyEffects）
+// B 模块单测 · 经济（settleMonthly / applyExtraMoney / checkDebt+markDebtTriggered / applyEffects）
 // 运行：node tests/unit/b-economy.mjs
 // 覆盖：月度收支、额外收支、负债触发与冷却、统一效果入口（属性钳制/money/flags/club/history）
 
@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 import { loadConfig } from '../../src/config/loader.js';
 import { createGameState } from '../../src/core/state.js';
-import { settleMonthly, applyExtraMoney, checkDebt } from '../../src/core/economy.js';
+import { settleMonthly, applyExtraMoney, checkDebt, markDebtTriggered } from '../../src/core/economy.js';
 import { applyEffects } from '../../src/core/effects.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -72,7 +72,7 @@ console.log('== B · 经济单测 ==');
   check('applyExtraMoney: 0 不写 log 不改 money', s.player.attributes.money === 300 && s.log.length === before);
 }
 
-// --- checkDebt：触发 + 冷却 ---
+// --- checkDebt：只读判定 + markDebtTriggered 记账 + 冷却 ---
 {
   const threshold = Number.isFinite(balance.debtThreshold) ? balance.debtThreshold : -3000;
   const cooldown = Number.isFinite(balance.debtCooldownTurns) ? balance.debtCooldownTurns : 6;
@@ -82,7 +82,11 @@ console.log('== B · 经济单测 ==');
   const first = checkDebt(s, config);
   check('checkDebt: money<=threshold 触发', first.triggered === true && first.eventId === 'ev_fixed_debt',
     JSON.stringify(first));
-  check('checkDebt: 记录 lastDebtTurn', s.player.flags && s.player.flags.lastDebtTurn === 5,
+  // 判定与记账分离：checkDebt 只读，不提前写 lastDebtTurn（事件被固定事件抢先时不能被冷却掉）
+  check('checkDebt: 只读判定不写 lastDebtTurn', !s.player.flags || !Number.isFinite(s.player.flags.lastDebtTurn),
+    JSON.stringify(s.player.flags));
+  markDebtTriggered(s); // 事件真正弹出后才由 engine 调用
+  check('markDebtTriggered: 记账写入 lastDebtTurn', s.player.flags && s.player.flags.lastDebtTurn === 5,
     JSON.stringify(s.player.flags));
   const again = checkDebt(s, config);
   check('checkDebt: 冷却期内不重复触发', again.triggered === false, JSON.stringify(again));
