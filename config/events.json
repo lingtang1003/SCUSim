@@ -161,7 +161,11 @@
       "spot": [
         "eat"
       ],
-      "topic": "meal"
+      "topic": "meal",
+      "place": [
+        "canteen",
+        "wj_canteen"
+      ]
     },
     {
       "id": "ev_r02",
@@ -197,7 +201,11 @@
       "spot": [
         "study"
       ],
-      "topic": "basics"
+      "topic": "basics",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r03",
@@ -374,7 +382,11 @@
       "spot": [
         "rest"
       ],
-      "topic": "nap"
+      "topic": "nap",
+      "place": [
+        "dorm",
+        "wj_dorm"
+      ]
     },
     {
       "id": "ev_r08",
@@ -446,7 +458,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r10",
@@ -548,7 +564,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r13",
@@ -821,7 +841,10 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "library"
+      ]
     },
     {
       "id": "ev_r20",
@@ -855,7 +878,10 @@
         "socialize",
         "eat"
       ],
-      "topic": "meal"
+      "topic": "meal",
+      "place": [
+        "wj_canteen"
+      ]
     },
     {
       "id": "ev_r21",
@@ -896,7 +922,10 @@
       "spot": [
         "club"
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r22",
@@ -942,7 +971,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r23",
@@ -1000,7 +1033,10 @@
         "study",
         "socialize"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "library"
+      ]
     },
     {
       "id": "ev_r24",
@@ -1062,7 +1098,10 @@
         "socialize",
         "eat"
       ],
-      "topic": "meal"
+      "topic": "meal",
+      "place": [
+        "street"
+      ]
     },
     {
       "id": "ev_r25",
@@ -1127,7 +1166,10 @@
         "socialize",
         "rest"
       ],
-      "topic": "stroll"
+      "topic": "stroll",
+      "place": [
+        "bridge"
+      ]
     },
     {
       "id": "ev_r26",
@@ -1231,7 +1273,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "street",
+        "wj_gate"
+      ]
     },
     {
       "id": "ev_r28",
@@ -1305,7 +1351,10 @@
       "spot": [
         "exercise"
       ],
-      "topic": "indoor"
+      "topic": "indoor",
+      "place": [
+        "gym"
+      ]
     },
     {
       "id": "ev_r30",
@@ -1514,7 +1563,10 @@
         "study",
         "socialize"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "library"
+      ]
     },
     {
       "id": "ev_r34",
@@ -1668,7 +1720,10 @@
       "spot": [
         "club"
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r37",
@@ -1706,7 +1761,11 @@
         "socialize",
         "rest"
       ],
-      "topic": "nap"
+      "topic": "nap",
+      "place": [
+        "dorm",
+        "wj_dorm"
+      ]
     },
     {
       "id": "ev_r38",
@@ -1743,7 +1802,10 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "library"
+      ]
     },
     {
       "id": "ev_r39",
@@ -1854,7 +1916,11 @@
         "socialize",
         "eat"
       ],
-      "topic": "meal"
+      "topic": "meal",
+      "place": [
+        "dorm",
+        "wj_dorm"
+      ]
     },
     {
       "id": "ev_r42",
@@ -1897,7 +1963,10 @@
       "spot": [
         "club"
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r43",
@@ -1934,7 +2003,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r44",
@@ -2007,7 +2080,11 @@
       "spot": [
         "rest"
       ],
-      "topic": "nap"
+      "topic": "nap",
+      "place": [
+        "dorm",
+        "wj_dorm"
+      ]
     },
     {
       "id": "ev_r46",
@@ -2040,7 +2117,10 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "street"
+      ]
     },
     {
       "id": "ev_c01",
@@ -2074,7 +2154,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_c02",
@@ -2108,7 +2192,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_c03",
@@ -2180,7 +2268,10 @@
         "study",
         "club"
       ],
-      "topic": "humanities"
+      "topic": "humanities",
+      "place": [
+        "humanities"
+      ]
     },
     {
       "id": "ev_c05",
@@ -2218,7 +2309,10 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "humanities"
+      ]
     },
     {
       "id": "ev_c06",
@@ -2256,7 +2350,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_c07",
@@ -2294,7 +2392,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_c08",
@@ -2329,7 +2431,11 @@
         "study",
         "socialize"
       ],
-      "topic": "mall"
+      "topic": "mall",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r60",
@@ -2365,7 +2471,11 @@
       "spot": [
         "study"
       ],
-      "topic": "basics"
+      "topic": "basics",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r61",
@@ -2401,7 +2511,10 @@
       "spot": [
         "club"
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r62",
@@ -2434,7 +2547,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r63",
@@ -2470,7 +2587,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r64",
@@ -2507,7 +2628,11 @@
       "spot": [
         "parttime"
       ],
-      "topic": "work"
+      "topic": "work",
+      "place": [
+        "street",
+        "wj_gate"
+      ]
     },
     {
       "id": "ev_r65",
@@ -2582,7 +2707,12 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "library",
+        "dorm",
+        "wj_dorm"
+      ]
     },
     {
       "id": "ev_r67",
@@ -2615,7 +2745,11 @@
       "spot": [
         "study"
       ],
-      "topic": "basics"
+      "topic": "basics",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r68",
@@ -2647,7 +2781,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r69",
@@ -2681,7 +2819,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r70",
@@ -2713,7 +2855,10 @@
       "spot": [
         "club"
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r71",
@@ -2752,7 +2897,10 @@
         "club",
         "socialize"
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r72",
@@ -2788,7 +2936,11 @@
       "spot": [
         "exercise"
       ],
-      "topic": "run"
+      "topic": "run",
+      "place": [
+        "track",
+        "wj_track"
+      ]
     },
     {
       "id": "ev_r73",
@@ -2825,7 +2977,11 @@
       "spot": [
         "eat"
       ],
-      "topic": "meal"
+      "topic": "meal",
+      "place": [
+        "canteen",
+        "wj_canteen"
+      ]
     },
     {
       "id": "ev_r74",
@@ -2913,7 +3069,11 @@
           "effects": {}
         }
       ],
-      "spot": []
+      "spot": [],
+      "place": [
+        "dorm",
+        "wj_dorm"
+      ]
     },
     {
       "id": "ev_r77",
@@ -2948,7 +3108,10 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "library"
+      ]
     },
     {
       "id": "ev_r78",
@@ -3019,7 +3182,11 @@
         "study",
         "parttime"
       ],
-      "topic": "work"
+      "topic": "work",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r80",
@@ -3166,7 +3333,10 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "library"
+      ]
     },
     {
       "id": "ev_r84",
@@ -3203,7 +3373,11 @@
       "spot": [
         "rest"
       ],
-      "topic": "nap"
+      "topic": "nap",
+      "place": [
+        "dorm",
+        "wj_dorm"
+      ]
     },
     {
       "id": "ev_r85",
@@ -3270,7 +3444,10 @@
           "effects": {}
         }
       ],
-      "spot": []
+      "spot": [],
+      "place": [
+        "wj_gate"
+      ]
     },
     {
       "id": "ev_r87",
@@ -3377,7 +3554,11 @@
         "socialize",
         "eat"
       ],
-      "topic": "meal"
+      "topic": "meal",
+      "place": [
+        "street",
+        "wj_gate"
+      ]
     },
     {
       "id": "ev_c09",
@@ -3411,7 +3592,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "dorm",
+        "wj_dorm"
+      ]
     },
     {
       "id": "ev_c10",
@@ -3450,7 +3635,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_c11",
@@ -3484,7 +3673,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_c12",
@@ -3522,7 +3715,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_c13",
@@ -3631,7 +3828,10 @@
       "spot": [
         "club"
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_c16",
@@ -3671,7 +3871,10 @@
         "study",
         "club"
       ],
-      "topic": "humanities"
+      "topic": "humanities",
+      "place": [
+        "street"
+      ]
     },
     {
       "id": "ev_c17",
@@ -3709,7 +3912,10 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "humanities"
+      ]
     },
     {
       "id": "ev_c18",
@@ -3743,7 +3949,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_c19",
@@ -3898,7 +4108,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_c23",
@@ -3974,7 +4188,11 @@
       "spot": [
         "study"
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     },
     {
       "id": "ev_r90",
@@ -4010,7 +4228,10 @@
           }
         }
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r91",
@@ -4047,7 +4268,10 @@
           }
         }
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r92",
@@ -4084,7 +4308,10 @@
           }
         }
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r93",
@@ -4121,7 +4348,10 @@
           }
         }
       ],
-      "topic": "club"
+      "topic": "club",
+      "place": [
+        "clubroom"
+      ]
     },
     {
       "id": "ev_r94",
@@ -4157,7 +4387,10 @@
           }
         }
       ],
-      "topic": "humanities"
+      "topic": "humanities",
+      "place": [
+        "humanities"
+      ]
     },
     {
       "id": "ev_r95",
@@ -4193,7 +4426,10 @@
           }
         }
       ],
-      "topic": "humanities"
+      "topic": "humanities",
+      "place": [
+        "humanities"
+      ]
     },
     {
       "id": "ev_r96",
@@ -4230,7 +4466,10 @@
           }
         }
       ],
-      "topic": "humanities"
+      "topic": "humanities",
+      "place": [
+        "humanities"
+      ]
     },
     {
       "id": "ev_r97",
@@ -4267,7 +4506,10 @@
           }
         }
       ],
-      "topic": "chill"
+      "topic": "chill",
+      "place": [
+        "hill"
+      ]
     },
     {
       "id": "ev_r98",
@@ -4304,7 +4546,10 @@
           }
         }
       ],
-      "topic": "chill"
+      "topic": "chill",
+      "place": [
+        "hill"
+      ]
     },
     {
       "id": "ev_r99",
@@ -4341,7 +4586,10 @@
           }
         }
       ],
-      "topic": "stroll"
+      "topic": "stroll",
+      "place": [
+        "bridge"
+      ]
     },
     {
       "id": "ev_r100",
@@ -4378,7 +4626,11 @@
           }
         }
       ],
-      "topic": "run"
+      "topic": "run",
+      "place": [
+        "track",
+        "wj_track"
+      ]
     },
     {
       "id": "ev_r101",
@@ -4415,7 +4667,11 @@
           }
         }
       ],
-      "topic": "run"
+      "topic": "run",
+      "place": [
+        "track",
+        "wj_track"
+      ]
     },
     {
       "id": "ev_r102",
@@ -4452,7 +4708,10 @@
           }
         }
       ],
-      "topic": "indoor"
+      "topic": "indoor",
+      "place": [
+        "gym"
+      ]
     },
     {
       "id": "ev_r103",
@@ -4488,7 +4747,10 @@
           }
         }
       ],
-      "topic": "indoor"
+      "topic": "indoor",
+      "place": [
+        "gym"
+      ]
     },
     {
       "id": "ev_r104",
@@ -4524,7 +4786,10 @@
           }
         }
       ],
-      "topic": "basics"
+      "topic": "basics",
+      "place": [
+        "library"
+      ]
     },
     {
       "id": "ev_r105",
@@ -4598,7 +4863,11 @@
           }
         }
       ],
-      "topic": "nap"
+      "topic": "nap",
+      "place": [
+        "dorm",
+        "wj_dorm"
+      ]
     },
     {
       "id": "ev_r107",
@@ -4635,7 +4904,10 @@
           }
         }
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "library"
+      ]
     },
     {
       "id": "ev_r108",
@@ -4671,7 +4943,904 @@
           }
         }
       ],
-      "topic": "major"
+      "topic": "major",
+      "place": [
+        "library"
+      ]
+    },
+    {
+      "id": "ev_pl_bridge_1",
+      "name": "桥上的老同学",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "走到桥中间，迎面撞见一个很久没见的同学。",
+      "options": [
+        {
+          "id": "chat",
+          "label": "停下来聊几句",
+          "resultText": "你们在桥栏边站着聊了半小时，从近况聊到当年的课。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "wave",
+          "label": "挥挥手就走",
+          "resultText": "你点头示意，脚步没停，风把话吹散在桥面上。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "socialize",
+        "rest"
+      ],
+      "topic": "stroll",
+      "place": [
+        "bridge"
+      ]
+    },
+    {
+      "id": "ev_pl_bridge_2",
+      "name": "桥头卖唱",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "桥头有人抱着吉他唱歌，脚边放着一个纸盒。",
+      "options": [
+        {
+          "id": "give",
+          "label": "投十块钱听完这首",
+          "resultText": "唱到副歌时你跟着哼了两句，他朝你点头致意。",
+          "effects": {
+            "money": -10,
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "listen",
+          "label": "站着听完就走",
+          "resultText": "歌很好听，你没掏钱，但记住了那个旋律。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "rest",
+        "socialize"
+      ],
+      "topic": "stroll",
+      "place": [
+        "bridge"
+      ]
+    },
+    {
+      "id": "ev_pl_bridge_3",
+      "name": "桥上看落日",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "傍晚的桥面被落日染成橘色，河堤上有人在拍照。",
+      "options": [
+        {
+          "id": "shoot",
+          "label": "拍一张落日",
+          "resultText": "你把落日收进相框，回宿舍时还翻了两遍。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "blank",
+          "label": "靠着栏杆发呆",
+          "resultText": "你什么都没做，只是看着天色一点点暗下来。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "rest"
+      ],
+      "topic": "stroll",
+      "place": [
+        "bridge"
+      ]
+    },
+    {
+      "id": "ev_pl_hill_1",
+      "name": "半山腰背书",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "半山腰的石阶很凉，风把书页吹得哗哗响。",
+      "options": [
+        {
+          "id": "study",
+          "label": "就着风背两页",
+          "resultText": "你在石阶上把一段定义背了下来，比在教室记得还牢。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            },
+            "money": 0
+          }
+        },
+        {
+          "id": "rest",
+          "label": "合上书躺着",
+          "resultText": "你把书盖在脸上，听着树叶的声音睡了一会儿。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "rest"
+      ],
+      "topic": "chill",
+      "place": [
+        "hill"
+      ]
+    },
+    {
+      "id": "ev_pl_hill_2",
+      "name": "山道上遛狗的人",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "一位阿姨牵着狗从山道下来，狗在你脚边转了两圈。",
+      "options": [
+        {
+          "id": "pet",
+          "label": "蹲下来摸摸它",
+          "resultText": "你摸了两把，阿姨笑着说它见谁都亲。心情莫名轻了。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "侧身让开",
+          "resultText": "你往旁边让了让，狗绳擦过你的裤脚。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "rest",
+        "socialize"
+      ],
+      "topic": "chill",
+      "place": [
+        "hill"
+      ]
+    },
+    {
+      "id": "ev_pl_hill_3",
+      "name": "山顶的夜景",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "爬到山顶时天已经黑了，整片校园的灯一盏盏亮起来。",
+      "options": [
+        {
+          "id": "view",
+          "label": "坐着看一会儿",
+          "resultText": "你找了块石头坐下，把整个校园的灯火看了个遍。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "down",
+          "label": "看两眼就下山",
+          "resultText": "风有点大，你裹紧外套往回走。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "rest"
+      ],
+      "topic": "chill",
+      "place": [
+        "hill"
+      ]
+    },
+    {
+      "id": "ev_pl_canteen_1",
+      "name": "窗口新套餐",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "三食堂新上了小炒套餐，队伍排到了门口。",
+      "options": [
+        {
+          "id": "buy",
+          "label": "排一份",
+          "resultText": "锅气很足，你吃完连汤都喝了。",
+          "effects": {
+            "money": -18,
+            "attributes": {
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "cheap",
+          "label": "还是打两荤一素",
+          "resultText": "老套餐稳稳当当，你吃得很踏实。",
+          "effects": {
+            "money": -8
+          }
+        }
+      ],
+      "spot": [
+        "eat"
+      ],
+      "topic": "meal",
+      "place": [
+        "canteen"
+      ]
+    },
+    {
+      "id": "ev_pl_canteen_2",
+      "name": "饭卡余额告急",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "刷卡时机器响了一声，屏幕显示余额不足。",
+      "options": [
+        {
+          "id": "recharge",
+          "label": "去充两百",
+          "resultText": "充值窗口前排了几个人，你充完卡顺手买了瓶水。",
+          "effects": {
+            "money": -200
+          }
+        },
+        {
+          "id": "borrow",
+          "label": "跟室友借卡刷一顿",
+          "resultText": "室友把卡递过来，说下次记得还他。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "eat"
+      ],
+      "topic": "meal",
+      "place": [
+        "canteen"
+      ]
+    },
+    {
+      "id": "ev_pl_canteen_3",
+      "name": "打饭时遇见老师",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "端着餐盘转身，正撞上给你上专业课的老师。",
+      "options": [
+        {
+          "id": "greet",
+          "label": "坐下陪老师吃",
+          "resultText": "老师问了你几句课上的事，还提了个可以去听的讲座。",
+          "effects": {
+            "attributes": {
+              "social": 1,
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "nod",
+          "label": "点头就走",
+          "resultText": "你端着盘子找了个靠窗的位子。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "eat",
+        "socialize"
+      ],
+      "topic": "meal",
+      "place": [
+        "canteen"
+      ]
+    },
+    {
+      "id": "ev_pl_wjcanteen_1",
+      "name": "望江的加班食堂",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "望江食堂到九点还有热菜，落地窗外是写字楼的灯。",
+      "options": [
+        {
+          "id": "eat",
+          "label": "吃一份夜宵",
+          "resultText": "你端着盘子坐在窗边，觉得这座城市比想象中忙。",
+          "effects": {
+            "money": -16,
+            "attributes": {
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "drink",
+          "label": "只要一碗汤",
+          "resultText": "热汤下肚，胃里舒服了很多。",
+          "effects": {
+            "money": -6
+          }
+        }
+      ],
+      "spot": [
+        "eat"
+      ],
+      "topic": "meal",
+      "place": [
+        "wj_canteen"
+      ]
+    },
+    {
+      "id": "ev_pl_wjcanteen_2",
+      "name": "食堂里的小组会",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "隔壁桌几个同学摊开电脑在讨论课程项目，缺一个人。",
+      "options": [
+        {
+          "id": "join",
+          "label": "端着饭凑过去",
+          "resultText": "你边吃边听，顺手补上了他们卡住的那个思路。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "own",
+          "label": "安静吃完自己的饭",
+          "resultText": "你听着他们讨论，把自己的饭吃完。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "eat",
+        "socialize"
+      ],
+      "topic": "meal",
+      "place": [
+        "wj_canteen"
+      ]
+    },
+    {
+      "id": "ev_pl_gym_1",
+      "name": "泳池开放了",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "体育馆泳池这周开放，票价二十。",
+      "options": [
+        {
+          "id": "swim",
+          "label": "买票游一小时",
+          "resultText": "游完出来整个人都松了，肩膀也不酸了。",
+          "effects": {
+            "money": -20,
+            "attributes": {
+              "health": 2
+            }
+          }
+        },
+        {
+          "id": "skip",
+          "label": "下次再说",
+          "resultText": "你在泳池门口看了看时间表就走了。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "exercise"
+      ],
+      "topic": "indoor",
+      "place": [
+        "gym"
+      ]
+    },
+    {
+      "id": "ev_pl_gym_2",
+      "name": "健身卡促销",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "健身房在门口摆摊，季卡打折，教练拉着你讲了一路。",
+      "options": [
+        {
+          "id": "buy",
+          "label": "办一张季卡",
+          "resultText": "教练给你做了体测，还排了个训练计划。",
+          "effects": {
+            "money": -100,
+            "attributes": {
+              "health": 2
+            }
+          }
+        },
+        {
+          "id": "no",
+          "label": "留个电话先走",
+          "resultText": "你说了句再考虑，绕过了那排传单。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "exercise"
+      ],
+      "topic": "indoor",
+      "place": [
+        "gym"
+      ]
+    },
+    {
+      "id": "ev_pl_track_1",
+      "name": "跑道上的配速员",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "跑道上有个学长在带配速，问你要不要跟一组。",
+      "options": [
+        {
+          "id": "follow",
+          "label": "跟一圈",
+          "resultText": "配速稳得惊人，你跟完两圈喘得说不出话，但很痛快。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "alone",
+          "label": "自己慢慢跑",
+          "resultText": "你按自己的节奏跑完了三圈。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "exercise"
+      ],
+      "topic": "run",
+      "place": [
+        "track"
+      ]
+    },
+    {
+      "id": "ev_pl_track_2",
+      "name": "操场边的比赛",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "操场在办院系接力赛，看台上有人喊你名字。",
+      "options": [
+        {
+          "id": "cheer",
+          "label": "停下来当观众",
+          "resultText": "你靠在栏杆上看完了整场，喊得嗓子有点哑。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "run",
+          "label": "下场替补跑一棒",
+          "resultText": "你临时补了一棒，冲线时全队都在喊你的名字。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "exercise",
+        "rest"
+      ],
+      "topic": "run",
+      "place": [
+        "track"
+      ]
+    },
+    {
+      "id": "ev_pl_street_1",
+      "name": "打印店涨价",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "打印店贴出通知，双面打印涨到两毛一张。",
+      "options": [
+        {
+          "id": "print",
+          "label": "把资料全打出来",
+          "resultText": "抱着一摞纸回宿舍，手感比屏幕踏实。",
+          "effects": {
+            "money": -15,
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "screen",
+          "label": "还是看电子版",
+          "resultText": "你拍了张价目表，转身走了。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major",
+      "place": [
+        "street"
+      ]
+    },
+    {
+      "id": "ev_pl_street_2",
+      "name": "奶茶第二杯半价",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "奶茶店在做活动，第二杯半价，室友在群里喊人拼。",
+      "options": [
+        {
+          "id": "buy",
+          "label": "买两杯分室友一杯",
+          "resultText": "两个人蹲在街边喝完了，聊到天黑。",
+          "effects": {
+            "money": -25,
+            "attributes": {
+              "social": 1,
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "不喝了",
+          "resultText": "你在门口看了两眼菜单，还是走了。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall",
+      "place": [
+        "street"
+      ]
+    },
+    {
+      "id": "ev_pl_hum_1",
+      "name": "走廊上的诗展",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "文科楼走廊挂了一排手写的诗，落款都是学生。",
+      "options": [
+        {
+          "id": "read",
+          "label": "一首一首读过去",
+          "resultText": "你在最后一首前面站了很久，抄了两句在本子上。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "glance",
+          "label": "扫一眼就走",
+          "resultText": "句子没记住，只记得纸的颜色很旧。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "study",
+        "socialize"
+      ],
+      "topic": "humanities",
+      "place": [
+        "humanities"
+      ]
+    },
+    {
+      "id": "ev_pl_hum_2",
+      "name": "政治课的小组辩论",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "政治课分组辩论，你们组抽到了最难的那个立场。",
+      "options": [
+        {
+          "id": "prepare",
+          "label": "翻材料写提纲",
+          "resultText": "你把两页笔记整理成三条论点，课上发言被老师点了头。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "listen",
+          "label": "听队友准备",
+          "resultText": "你负责记时间，队友负责讲，配合还算顺。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "humanities",
+      "place": [
+        "humanities"
+      ]
+    },
+    {
+      "id": "ev_pl_lib_1",
+      "name": "闭馆前十分钟",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "广播提示还有十分钟闭馆，你手头那章还差最后几页。",
+      "options": [
+        {
+          "id": "finish",
+          "label": "一鼓作气读完",
+          "resultText": "你在关灯前把那一章读完了，走出馆门时脑子很满。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "leave",
+          "label": "收拾东西先走",
+          "resultText": "你夹好书签，赶在人流前出了门。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major",
+      "place": [
+        "library"
+      ]
+    },
+    {
+      "id": "ev_pl_lib_2",
+      "name": "借的书超期了",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "还书台提示你有两本书逾期，罚金按天算。",
+      "options": [
+        {
+          "id": "pay",
+          "label": "交了罚金",
+          "resultText": "罚金不多，但那个红色提示让你记了很久。",
+          "effects": {
+            "money": -12
+          }
+        },
+        {
+          "id": "renew",
+          "label": "在系统里续借",
+          "resultText": "你掏出手机续借，才发现自己已经拖了一周。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "major",
+      "place": [
+        "library"
+      ]
+    },
+    {
+      "id": "ev_pl_wjgate_1",
+      "name": "校门口的公交",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "校门口的公交半小时一班，站牌下站满了赶去实习的人。",
+      "options": [
+        {
+          "id": "wait",
+          "label": "跟人群一起等",
+          "resultText": "车来时你挤上去，抓着扶手站了四十分钟。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            },
+            "money": 20
+          }
+        },
+        {
+          "id": "walk",
+          "label": "走两站去换地铁",
+          "resultText": "你抄近路走了两站，鞋底磨得发热。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work",
+      "place": [
+        "wj_gate"
+      ]
+    },
+    {
+      "id": "ev_pl_col_1",
+      "name": "教室里的英语角",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "英语老师在课后留了半小时，说愿意留下来练口语的可以留下。",
+      "options": [
+        {
+          "id": "stay",
+          "label": "留下来练一轮",
+          "resultText": "你和同桌对练了三个话题，发音被纠正了两次。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "go",
+          "label": "收拾书包走人",
+          "resultText": "你从后门出去，走廊里已经没什么人。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "basics",
+      "place": [
+        "college",
+        "wj_college"
+      ]
+    },
+    {
+      "id": "ev_pl_col_2",
+      "name": "数学课的小测",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "高数课一进门，老师把一叠小测卷发了下来。",
+      "options": [
+        {
+          "id": "do",
+          "label": "认真做完",
+          "resultText": "最后一道题卡了十分钟，你还是写满了过程。",
+          "effects": {
+            "attributes": {
+              "knowledge": 1
+            }
+          }
+        },
+        {
+          "id": "guess",
+          "label": "能写多少写多少",
+          "resultText": "你蒙了两道选择，剩下的空着交了上去。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "study"
+      ],
+      "topic": "basics",
+      "place": [
+        "college",
+        "wj_college"
+      ]
     }
   ],
   "note": "fixed 三条：社团招新/毕业论文/负债；random 按 spot 场景归类：study 学习、club 社团、exercise 运动、parttime 兼职、socialize 社交、rest 休息、eat 吃饭；spot 为空为通用兜底事件。混合抽取：优先当前场景 → 通用 → 其他场景。"

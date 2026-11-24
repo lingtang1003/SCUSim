@@ -165,5 +165,48 @@ console.log('== B · 事件单测 ==');
     `roll=${roll.eventId}, recent=${JSON.stringify(s.__recentEvents)}`);
 }
 
+// --- 地点隔离：带 place 的事件只在对应地点出现 ---
+{
+  const locs = config.locations.list;
+  const allRandom = events.random;
+  const placeEvents = allRandom.filter((e) => Array.isArray(e.place) && e.place.length);
+  check('place: 至少 90 条事件带地点标签', placeEvents.length >= 90, 'n=' + placeEvents.length);
+
+  const tooThin = locs.filter((l) => placeEvents.filter((e) => e.place.includes(l.id)).length < 3);
+  check('place: 每个地点至少 3 条专属事件', tooThin.length === 0,
+    tooThin.map((l) => l.id).join(','));
+
+  let crossCount = 0;
+  for (const loc of locs) {
+    const s = state(['study_hard']);
+    s.turn = 5;
+    for (let i = 0; i < 60; i++) {
+      s.turn = (i % 6) + 3;
+      s.__recentEvents = [];
+      s.history = [
+        { type: 'move', location: loc.id },
+        { type: 'action', actionId: loc.activities[0], location: loc.id },
+      ];
+      const rng = { next: () => 0.0001, chance: () => true };
+      const roll = rollEvent(s, config, rng);
+      const ev = allRandom.find((e) => e.id === roll.eventId);
+      if (ev && Array.isArray(ev.place) && !ev.place.includes(loc.id)) crossCount++;
+    }
+  }
+  check('place: 任何地点都不会抽到别处的事件', crossCount === 0, 'cross=' + crossCount);
+
+  const noCtx = state(['chill']);
+  noCtx.history = [];
+  const rolls = [];
+  for (let i = 0; i < 60; i++) {
+    rolls.push(rollEvent(noCtx, config, { next: () => 0.0001, chance: () => true }).eventId);
+  }
+  const placeHit = rolls.filter((id) => {
+    const e = allRandom.find((x) => x.id === id);
+    return e && Array.isArray(e.place);
+  });
+  check('place: 无地点上下文时不抽地点专属事件', placeHit.length === 0, placeHit.join(','));
+}
+
 console.log(failures === 0 ? '\n事件单测全部通过 ✅' : `\n失败 ${failures} 项 ❌`);
 process.exit(failures === 0 ? 0 : 1);

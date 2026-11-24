@@ -346,8 +346,8 @@ export function createApp(ctx) {
     return allEvents().filter((e) => e && e.charId === charId).length;
   }
 
-  /** 事件立绘：有图用图，没图画剪影卡（配角占位）。 */
-  function npcLayer(charId, emotion) {
+  /** 事件立绘：有图用图，没图画剪影卡（配角占位）。variant='stage' 时站在左下（替换玩家立绘位）。 */
+  function npcLayer(charId, emotion, variant) {
     const ch = findCharacter(charId);
     if (!ch) return null;
     const file = (ch.portrait && ch.portrait.file) || '';
@@ -361,7 +361,9 @@ export function createApp(ctx) {
           class: 'vn-npc__art',
           style: 'background-image:url("' + file + '")',
         });
-    const mods = (silhouette ? ' vn-npc--silhouette' : '') + (cutout ? ' vn-npc--cutout' : '');
+    const mods = (silhouette ? ' vn-npc--silhouette' : '')
+      + (cutout ? ' vn-npc--cutout' : '')
+      + (variant === 'stage' ? ' vn-npc--stage' : '');
     return h('div', {
       class: 'vn-npc vn-npc--' + emo + mods,
       'aria-hidden': 'true',
@@ -784,7 +786,13 @@ export function createApp(ctx) {
         (opts.locked ? ' is-locked' : ''),
       style: '--i:' + (Number.isFinite(opts.index) ? opts.index : 0),
       /* 只在进入卡片那一刻定起点；移动中改写会让填充「重启」第二次 */
-      onpointerenter: trackPointer,
+      onpointerenter: (e) => {
+        trackPointer(e);
+        if (opts.onEnter) opts.onEnter();
+      },
+      onpointerleave: () => {
+        if (opts.onLeave) opts.onLeave();
+      },
       onpointerdown: trackPointer,
       disabled: !!opts.locked,
       title: opts.title || '',
@@ -862,6 +870,7 @@ export function createApp(ctx) {
       ui.speaker = view.moved.name || '校园';
       ui.text = view.moved.line || '（四处看了看）';
       ui.effects = [];
+      ui.npc = '';   // 换地点后回到「我」的画面
       ui.history.push({ who: ui.speaker, text: ui.text });
       return;
     }
@@ -876,7 +885,13 @@ export function createApp(ctx) {
       ui.speaker = def.name || '事件';
       ui.text = eventResult.text || '（这件事就这样过去了）';
       ui.effects = relationChips(eventResult.relationDelta);
-      if (def.charId) ui.npc = def.charId;
+      // 事件带角色（或选项本身带角色，如迎新晚会选人）→ 左侧立绘换成对方，说话人也换成对方
+      const who = eventResult.charId || def.charId || '';
+      if (who) {
+        ui.npc = who;
+        const ch = findCharacter(who);
+        if (ch && ch.name) ui.speaker = ch.name;
+      }
       ui.history.push({ who: ui.speaker, text: ui.text });
     } else if (actionId && seq && seq !== ui.consumedSeq) {
       ui.consumedSeq = seq;
@@ -888,6 +903,7 @@ export function createApp(ctx) {
       ui.speaker = player.name || '你';
       ui.text = text;
       ui.effects = [];
+      ui.npc = '';   // 行动时收起对方立绘，回到「我」的画面
       ui.history.push({ who: ui.speaker, text: text });
     } else if (state.turn !== ui.lastTurn) {
       const first = ui.lastTurn === 0;
@@ -938,16 +954,18 @@ export function createApp(ctx) {
     lastSceneSig = sceneSig;
 
     const onMap = !hereLoc;
+    // 事件结算后左侧立绘换成「对方」；没有事件时是自己的立绘
+    const who = ui.npc ? npcLayer(ui.npc, ui.npcEmotion, 'stage') : null;
     rootEl.appendChild(
       h('div', {
         class: 'vn-stage'
           + (sceneChanged ? ' is-scene-change' : '')
           + (onMap ? ' vn-stage--map' : ''),
       }, onMap
-        ? [mapStage(state), hud(state, v)]
+        ? [mapStage(state), who, hud(state, v), dialogueBox(ui.speaker, ui.text, ui.effects)]
         : [
             bgLayer(ui.scene, ui.sceneEntry),
-            spriteLayer(appearance),
+            who || spriteLayer(appearance),
             hud(state, v),
             actionChoices(state, v.availability),
             dialogueBox(ui.speaker, ui.text, ui.effects),
@@ -1677,6 +1695,8 @@ export function createApp(ctx) {
         meta: locked ? (o.reason || '暂时没法选') : meta,
         locked,
         title: locked ? (o.reason || '') : '',
+        // 选项绑定了角色（迎新晚会选人）：悬停即预览对方立绘
+        onEnter: o.charId && !locked ? () => previewNpc(o.charId) : null,
         onClick: () => {
           if (callbacks.onResolveEvent) callbacks.onResolveEvent(o.id);
         },
@@ -1689,6 +1709,16 @@ export function createApp(ctx) {
       if (!npcEl || !npcEl.classList) return;
       for (const e of EMOTIONS) npcEl.classList.remove('vn-npc--' + e);
       npcEl.classList.add('vn-npc--' + (emo || 'neutral'));
+    }
+
+    /** 悬停某个「选人」选项时，右侧立刻换成那个人的立绘。 */
+    function previewNpc(charId) {
+      const layer = npcLayer(charId, 'neutral');
+      if (!layer) return;
+      while (npcWrap.children && npcWrap.children.length) {
+        npcWrap.removeChild(npcWrap.children[0]);
+      }
+      npcWrap.appendChild(layer);
     }
 
     let idx = 0;

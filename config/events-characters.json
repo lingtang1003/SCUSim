@@ -36,79 +36,43 @@
           "id": "approach_jiangxu",
           "label": "江叙 · 靠在音响旁看手机",
           "resultText": "你把一瓶水递过去。他愣了一下，接过来，说了句谢谢。",
-          "effects": {
-            "flags": {
-              "route_jiangxu": true
-            },
-            "relation": {
-              "jiangxu": 6
-            }
-          }
+          "charId": "jiangxu",
+          "effects": { "flags": { "route_jiangxu": true }, "relation": { "jiangxu": 6 } }
         },
         {
           "id": "approach_guchi",
           "label": "顾迟 · 在人群外系领带",
           "resultText": "你问他领带是不是系反了。他低头看了两秒，说：「你眼神不错。」",
-          "effects": {
-            "flags": {
-              "route_guchi": true
-            },
-            "relation": {
-              "guchi": 6
-            }
-          }
+          "charId": "guchi",
+          "effects": { "flags": { "route_guchi": true }, "relation": { "guchi": 6 } }
         },
         {
           "id": "approach_linyu",
           "label": "林予 · 举着相机拍舞台",
           "resultText": "你帮她挡了一下挤过来的人群。她说了声谢谢，镜头没有放下。",
-          "effects": {
-            "flags": {
-              "route_linyu": true
-            },
-            "relation": {
-              "linyu": 6
-            }
-          }
+          "charId": "linyu",
+          "effects": { "flags": { "route_linyu": true }, "relation": { "linyu": 6 } }
         },
         {
           "id": "approach_suwan",
           "label": "苏晚 · 抱着琴谱往门口走",
           "resultText": "你替她推开侧门。她小声说：「谢谢……里面太吵了。」",
-          "effects": {
-            "flags": {
-              "route_suwan": true
-            },
-            "relation": {
-              "suwan": 6
-            }
-          }
+          "charId": "suwan",
+          "effects": { "flags": { "route_suwan": true }, "relation": { "suwan": 6 } }
         },
         {
           "id": "approach_zhouye",
           "label": "周野 · 刚从操场跑过来",
           "resultText": "他一身汗，笑着跟你击了个掌：「你身上有股新生的味道。」",
-          "effects": {
-            "flags": {
-              "route_zhouye": true
-            },
-            "relation": {
-              "zhouye": 6
-            }
-          }
+          "charId": "zhouye",
+          "effects": { "flags": { "route_zhouye": true }, "relation": { "zhouye": 6 } }
         },
         {
           "id": "approach_tangtang",
           "label": "唐棠 · 拿着话筒在串场",
           "resultText": "她冲你眨了眨眼，把话筒往你嘴边递了一下就收回去，笑得很得意。",
-          "effects": {
-            "flags": {
-              "route_tangtang": true
-            },
-            "relation": {
-              "tangtang": 6
-            }
-          }
+          "charId": "tangtang",
+          "effects": { "flags": { "route_tangtang": true }, "relation": { "tangtang": 6 } }
         },
         {
           "id": "alone",

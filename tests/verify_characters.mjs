@@ -156,6 +156,18 @@ for (const c of withArt) {
 check('A: 有立绘的角色文件都存在', artOk, artMissing.join(','));
 check('A: 6 名角色都有正式立绘（不再是剪影占位）', withArt.length === chars.length, '=' + withArt.length);
 
+// 迎新晚会：选人选项要自带 charId（选了之后左侧立绘换成对方）
+const hubEvent = findEvent(config, 'ev_fixed_welcome');
+const hubPick = ((hubEvent && hubEvent.options) || []).filter((o) => o.id !== 'alone');
+check('A: 迎新晚会 6 个选人选项都带 charId 且角色存在',
+  hubPick.length === 6 && hubPick.every((o) => !!o.charId && chars.some((c) => c.id === o.charId)),
+  hubPick.map((o) => o.id + ':' + (o.charId || '-')).join(','));
+check('A: 选人选项同时写入 route_<id>（剧情线衔接）',
+  hubPick.every((o) => {
+    const flags = o.effects && o.effects.flags;
+    return !!(flags && flags['route_' + o.charId] === true);
+  }));
+
 // 剧情线：步骤事件都存在、窗口合法、next 指向合法
 const S = config.storylines.lines || [];
 check('A: 6 条剧情线', S.length === 6, '=' + S.length);
@@ -413,6 +425,28 @@ check('H: 已遇见的林予显示真名',
   byClass(rootUi, 'vn-rel__name').some((n) => n.textContent === '林予'));
 check('H: 未遇见的角色显示为「？？？」',
   byClass(rootUi, 'vn-rel__name').filter((n) => n.textContent === '？？？').length >= 4);
+
+// 迎新晚会选人之后：左侧立绘换成对方，说话人也换成对方
+appUi.render(sUi, {
+  eventResult: {
+    eventId: 'ev_fixed_welcome',
+    text: '你把一瓶水递过去。他愣了一下，接过来，说了句谢谢。',
+    relationDelta: [{ charId: 'linyu', name: '林予', delta: 6 }],
+    charId: 'linyu',
+  },
+});
+const stageNpc = byClass(rootUi, 'vn-npc--stage');
+check('H: 选人后左侧出现对方立绘', stageNpc.length === 1, String(stageNpc.length));
+const stageArt = stageNpc.length ? byClass(stageNpc[0], 'vn-npc__art')[0] : null;
+check('H: 左侧立绘指向 linyu.webp',
+  !!stageArt && String(stageArt.attr_style || '').includes('linyu.webp'),
+  stageArt ? stageArt.attr_style : 'no art');
+const stageSpeaker = byClass(rootUi, 'vn-speaker')[0];
+check('H: 对话框说话人换成林予',
+  !!stageSpeaker && stageSpeaker.textContent === '林予',
+  stageSpeaker && stageSpeaker.textContent);
+check('H: 选人结果里带好感标签',
+  byClass(rootUi, 'vn-effect').some((x) => String(x.textContent).includes('林予')));
 
 // =====================================================================
 console.log(`\n总计 ${pass + failures.length} 项，PASS ${pass}，FAIL ${failures.length}`);

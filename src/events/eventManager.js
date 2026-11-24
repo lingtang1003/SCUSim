@@ -80,6 +80,20 @@ function currentTopic(state, config) {
 }
 
 /**
+ * 读取玩家最近一次前往的具体地点 id（与 locations.json 的 id 一致）。
+ * 用于地点级事件约束：图书馆 / 教学楼 / 文科楼虽然同为 study 场景，
+ * 但各自只应触发带自身 place 的事件，避免「在图书馆考随堂测验」这类串场。
+ */
+function currentPlace(state) {
+  const history = Array.isArray(state && state.history) ? state.history : [];
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const entry = history[i];
+    if (entry && entry.type === 'move' && entry.location) return entry.location;
+  }
+  return null;
+}
+
+/**
  * 剧情线保证触发（v2.1）：真正的「哪条线、哪一步、什么窗口」全部在 config/storylines.json，
  * 由 core/storyline.js 的状态机决定；这里只负责在回合开始时问它一句「现在该不该强制出事件」。
  */
@@ -223,19 +237,37 @@ export function rollEvent(state, config, rng) {
   // 避免「上一回合刚领完十佳歌手门票、这一回合又来同一事件」的情况。
   const recent = (state && Array.isArray(state.__recentEvents)) ? state.__recentEvents : [];
 
-  // 场景 + 细分主题分组（混合模式）：主题匹配 → 同大类其他主题 → 通用事件（无 spot）→ 其他场景；逐级兜底，避免空池卡死。
+  // 分组优先级：地点专属 → 主题匹配 → 同场景其他主题 → 通用 → 其他场景；逐级兜底，避免空池卡死。
+  // 带 place 的事件只在命中的地点出现（跨地点一律排除），保证「图书馆不会冒出教室事件」。
   const cur = currentSpot(state);
   const curTopic = currentTopic(state, config);
+  const curPlace = currentPlace(state);
+  const placeOf = (x) => (Array.isArray(x.e.place) ? x.e.place : null);
+  const inPlace = (x) => {
+    const p = placeOf(x);
+    if (!p) return false;
+    return curPlace ? p.includes(curPlace) : true;
+  };
+  const placeMismatch = (x) => {
+    const p = placeOf(x);
+    return !!p && !!curPlace && !p.includes(curPlace);
+  };
   let groups;
   if (!cur) {
-    groups = [weighted];
+    // 没有可用的地点上下文时，先只抽与地点无关的事件；实在没有才放宽。
+    const noPlace = weighted.filter((x) => !placeOf(x));
+    groups = noPlace.length
+      ? [noPlace, weighted.filter((x) => !placeMismatch(x))]
+      : [weighted];
   } else {
     const inSpot = (x) => Array.isArray(x.e.spot) && x.e.spot.includes(cur);
-    const topicMatch = weighted.filter((x) => inSpot(x) && curTopic && x.e.topic === curTopic);
-    const spotMatch = weighted.filter((x) => inSpot(x) && !(curTopic && x.e.topic === curTopic));
-    const general = weighted.filter((x) => !Array.isArray(x.e.spot) || x.e.spot.length === 0);
-    const other = weighted.filter((x) => Array.isArray(x.e.spot) && x.e.spot.length > 0 && !inSpot(x));
-    groups = [topicMatch, spotMatch, general, other];
+    const placeMatch = weighted.filter((x) => inPlace(x) && inSpot(x));
+    const placeTopicMatch = weighted.filter((x) => inPlace(x) && !inSpot(x));
+    const topicMatch = weighted.filter((x) => !placeOf(x) && inSpot(x) && curTopic && x.e.topic === curTopic);
+    const spotMatch = weighted.filter((x) => !placeOf(x) && inSpot(x) && !(curTopic && x.e.topic === curTopic));
+    const general = weighted.filter((x) => !placeOf(x) && (!Array.isArray(x.e.spot) || x.e.spot.length === 0));
+    const other = weighted.filter((x) => !placeOf(x) && Array.isArray(x.e.spot) && x.e.spot.length > 0 && !inSpot(x));
+    groups = [placeMatch, placeTopicMatch, topicMatch, spotMatch, general, other];
   }
 
   // 在给定候选组内做轮盘赌；只返回至少含一个可用选项的事件，前置未满足的跳过。
@@ -373,7 +405,15 @@ export function availableOptions(event, state, config) {
         }
       }
     }
-    return { id: o.id, label: o.label, enabled, reason, hints: optionHints(o, config) };
+    return {
+      id: o.id,
+      label: o.label,
+      enabled,
+      reason,
+      hints: optionHints(o, config),
+      // 选项自带角色（迎新晚会选人）：结算后 UI 用它在左侧立绘位显示对方
+      charId: o.charId || '',
+    };
   });
 }
 
@@ -463,7 +503,12 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
   }
   return {
     ok: true,
-    result: { eventId, choiceId, effects: option.effects || {} },
+    result: {
+      eventId,
+      choiceId,
+      effects: option.effects || {},
+      charId: option.charId || '',
+    },
     message: text,
   };
 }
