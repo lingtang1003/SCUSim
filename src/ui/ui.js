@@ -198,6 +198,9 @@ export function createApp(ctx) {
   // 场景指纹：用来判断这一帧要不要播放「场景切换」动效（不能每次操作都重放）
   let lastSceneSig = '';
   let keysBound = false;
+  // 行动选项出现的时刻：用来吃掉「连按空格」里的第二下，避免误触行动
+  let choicesArmedAt = 0;
+  const CHOICE_ARM_DELAY = 350;
   let typeRaf = null;
   let eventHintEl = null;
   let eventHintTimer = null;
@@ -850,6 +853,8 @@ export function createApp(ctx) {
       onpointerdown: trackPointer,
       disabled: !!opts.locked,
       title: opts.title || '',
+      // 标记「空格可以执行的那一项」；样式里挂一个「空格」小胶囊做提示
+      'data-key': opts.spaceKey ? 'space' : null,
       onclick: () => {
         if (!opts.locked && opts.onClick) opts.onClick();
       },
@@ -880,6 +885,7 @@ export function createApp(ctx) {
     const actions = actionsHere(state);
     const apLeft = Number(state.actionPoints) || 0;
     const items = [];
+    let spaced = false;   // 只给「第一个可用行动」挂空格提示
     for (let i = 0; i < actions.length; i += 1) {
       const a = actions[i];
       const av = (availability && availability[a.id]) || { ok: true };
@@ -888,12 +894,15 @@ export function createApp(ctx) {
       const meta = locked
         ? lockReason(a, av)
         : (chips.length ? chips.map((c) => c.text).join(' · ') : '消耗 ' + (a.cost != null ? a.cost : 0) + ' 行动点');
+      const spaceKey = !locked && !spaced;
+      if (spaceKey) spaced = true;
       items.push(
         choiceButton({
           label: a.name || a.id,
           meta: meta,
           locked: locked,
           index: i,
+          spaceKey: spaceKey,
           title: a.desc || a.name || a.id,
           onClick: () => {
             if (callbacks.onAction) callbacks.onAction(a.id);
@@ -908,6 +917,7 @@ export function createApp(ctx) {
           label: NEXT_WEEK_TEXT,
           meta: '行动点已用完',
           variant: 'gold',
+          spaceKey: true,
           onClick: () => {
             if (callbacks.onAdvance) callbacks.onAdvance();
           },
@@ -1029,6 +1039,8 @@ export function createApp(ctx) {
     lastSceneSig = sceneSig;
 
     const onMap = !hereLoc;
+    // 这一帧出现行动选项了吗？（对白压住选项时不算）—— 键盘要用这个时间做「防连按」
+    choicesArmedAt = (!onMap && !ui.showDialogue) ? Date.now() : 0;
     // 事件结算后左侧立绘换成「对方」；没有事件时是自己的立绘
     const who = ui.npc ? npcLayer(ui.npc, ui.npcEmotion, 'stage') : null;
     rootEl.appendChild(
@@ -1187,14 +1199,31 @@ export function createApp(ctx) {
   function pressAdvanceKey() {
     if (!rootEl) return false;
     const q = (sel) => (typeof rootEl.querySelector === 'function' ? rootEl.querySelector(sel) : null);
+
+    // 1) 先推进对白：事件弹层的逐句台词 → 舞台上的结算/旁白对白
     const target =
       q('.vn-event .vn-dialogue__box--event')
       || q('.vn-event .vn-dialogue.is-clickable')
       || q('.vn-stage .vn-dialogue.is-clickable')
       || q('.vn-dialogue.is-clickable');
-    if (!target || typeof target.click !== 'function') return false;
-    target.click();
-    return true;
+    if (target && typeof target.click === 'function') {
+      target.click();
+      return true;
+    }
+
+    // 2) 没有对白时，空格执行「本周行动 / 进入下一周」里第一个可用的那张卡。
+    //    只在没有弹层时生效：事件弹层的选项是不可逆分支，必须显式点击或 Tab 后按空格。
+    if (!overlayEl && typeof rootEl.querySelectorAll === 'function') {
+      const list = Array.prototype.slice.call(rootEl.querySelectorAll('.vn-choices .vn-choice'));
+      const choice = list.find((b) => !(b.classList && b.classList.contains('is-locked')));
+      if (choice && typeof choice.click === 'function') {
+        // 刚出现的一瞬间先吃掉按键，避免「连按空格」把上一段的第二下打进行动里
+        if (Date.now() - choicesArmedAt < CHOICE_ARM_DELAY) return true;
+        choice.click();
+        return true;
+      }
+    }
+    return false;
   }
 
   function bindKeys() {

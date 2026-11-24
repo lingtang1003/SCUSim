@@ -883,6 +883,22 @@ a:hover {
   white-space: nowrap;
 }
 
+/* 空格键能直接执行的那张卡：右上角挂一个小胶囊（纯提示，pointer-events:none 不挡点击） */
+.vn-choice[data-key="space"]::after {
+  content: '空格';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.vn-choice[data-key="space"]:hover::after { opacity: 0.85; }
+
 .vn-choice--gold {
   grid-column: 1 / -1;
   color: var(--red-deep);
