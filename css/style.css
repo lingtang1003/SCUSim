@@ -4600,11 +4600,6 @@ body { font-synthesis: none; }
   filter: drop-shadow(0 22px 26px rgba(20, 16, 15, 0.38));
 }
 .vn-event__npc .vn-npc--cutout { height: 100%; }
-/* 事件弹层里的立绘底下没有对话框挡着，给最后一段加一点渐隐，避免看到「截断的胸口」 */
-.vn-event__npc .vn-npc--cutout .vn-npc__art {
-  -webkit-mask-image: linear-gradient(180deg, #000 86%, rgba(0, 0, 0, 0) 100%);
-  mask-image: linear-gradient(180deg, #000 86%, rgba(0, 0, 0, 0) 100%);
-}
 .vn-rel__art.is-cutout {
   background-color: transparent;
   background-size: contain;
@@ -5214,4 +5209,28 @@ body { font-synthesis: none; }
   top: calc(100% + 5px);
   left: 50%;
   transform: translateX(-50%);
+}
+
+
+/* =========================================================================
+   51. 事件弹层里的对方立绘放到对话框后面
+   —— .vn-event__npc 原来是 z-index: 2，而承载对话框的 .vn-event__inner 是 1，
+      于是立绘压在对话框前面；现在立绘 0、内容 1，和主角立绘一样在文字后面
+   ========================================================================= */
+.vn-event__npc { z-index: 0; }
+.vn-event__inner { z-index: 1; }
+.vn-npc { z-index: var(--z-sprite); }
+
+
+/* =========================================================================
+   52. 对方立绘也贴底
+   —— 主角 .vn-sprite 是 bottom: 0，而对方立绘在舞台是 10%、弹层是 8%，
+      看起来像「浮在半空」。统一贴到底线，和主角一致。
+   ========================================================================= */
+.vn-npc--stage,
+.vn-stage--map .vn-npc--stage {
+  bottom: 0;
+}
+.vn-event__npc {
+  bottom: 0;
 }
