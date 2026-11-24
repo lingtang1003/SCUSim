@@ -5292,3 +5292,22 @@ body { font-synthesis: none; }
 .vn-event__npc {
   right: max(2%, calc((100vw - 1060px) / 2 - 200px));
 }
+
+
+/* =========================================================================
+   54. 攻略对象立绘：所有剧情场景同一套尺寸与位置
+   —— 之前事件弹层是 min(60vh,540)、舞台/地图是 min(72vh,640)，
+      同一角色在不同剧情里忽大忽小。这里统一成一份，后面的规则覆盖前面所有。
+   ========================================================================= */
+.vn-npc--cutout,
+.vn-npc--stage.vn-npc--cutout,
+.vn-stage--map .vn-npc--stage,
+.vn-event__npc {
+  width: auto;
+  height: min(72vh, 640px);
+  aspect-ratio: 3 / 4;
+  max-width: min(560px, 40vw);
+  left: auto;
+  right: max(2%, calc((100vw - 1060px) / 2 - 200px));
+  bottom: 0;
+}

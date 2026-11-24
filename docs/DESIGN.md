@@ -445,6 +445,36 @@ emoji 的墨迹重心普遍偏低（📖 最明显，实测偏下 2.7px），用
    选项卡填充**不再是例外**（之前为了调试临时开过口子，已移除）：关掉动效后填充立即到位，
    弹窗、抽屉、打字机、季节换色等动效也一并关闭。
 <<<<<<< Updated upstream
+## 9.t 对方立绘的尺寸统一
+
+之前同一角色在不同剧情里大小不一，原因是三处规则各写了一套：
+
+| 场景 | 原规则 |
+|---|---|
+| 事件弹层 `.vn-event__npc` | `height: min(60vh, 540px)` |
+| 舞台 `.vn-npc--stage.vn-npc--cutout` | `height: min(72vh, 640px)` |
+| 地图 `.vn-stage--map .vn-npc--stage` | `width: min(400px,30vw) / height: min(70vh,620px)` |
+| 底层 `.vn-npc--cutout` | `height: min(76vh, 700px)` |
+
+现在合并成一条（`css/style.css` §54），三种场景共用：
+
+```css
+.vn-npc--cutout,
+.vn-npc--stage.vn-npc--cutout,
+.vn-stage--map .vn-npc--stage,
+.vn-event__npc {
+  width: auto;
+  height: min(72vh, 640px);
+  aspect-ratio: 3 / 4;
+  max-width: min(560px, 40vw);
+  left: auto;
+  right: max(2%, calc((100vw - 1060px) / 2 - 200px));
+  bottom: 0;
+}
+```
+
+实测三种场景渲染结果完全一致：**403 × 537，x=1116，y=209**（1600×900 视口）。
+
 ## 9.u 对方立绘与对话框的遮挡关系
 
 两个问题叠在一起，都已修：
