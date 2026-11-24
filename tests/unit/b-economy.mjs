@@ -43,6 +43,23 @@ console.log('== B · 经济单测 ==');
     `money=${s.player.attributes.money}`);
 }
 
+// --- settleMonthly：兼职/消费流水不混入固定生活费（修复「兼职收入被显示成生活费」） ---
+{
+  const s = baseState();
+  s.__monthFlow = { income: 100, expense: 40 };
+  const r = settleMonthly(s, config);
+  const income = Number(balance.monthlyIncome) || 0;
+  const expense = Number(balance.monthlyExpense) || 0;
+  check('settleMonthly: fixedIncome 只含固定生活费', r.fixedIncome === income, `fixedIncome=${r.fixedIncome}`);
+  check('settleMonthly: fixedExpense 只含固定开销', r.fixedExpense === expense, `fixedExpense=${r.fixedExpense}`);
+  check('settleMonthly: 兼职/消费流水单独返回', r.flowIncome === 100 && r.flowExpense === 40, JSON.stringify(r));
+  check('settleMonthly: 旧字段 income/expense/net 保持兼容（含流水）',
+    r.income === income + 100 && r.expense === expense + 40 && r.net === (income + 100) - (expense + 40),
+    JSON.stringify(r));
+  check('settleMonthly: money 仍只入账固定净额（流水已即时入账，不重复）',
+    s.player.attributes.money === income - expense, `money=${s.player.attributes.money}`);
+}
+
 // --- applyExtraMoney：正/负/零 ---
 {
   const s = baseState();

@@ -73,7 +73,10 @@ const MONTH_LABEL = { knowledge: '学识', social: '社交', health: '健康' };
  * 金钱只加「固定净额」（固定收入-固定支出）；兼职/消费已由行动/事件即时入账，不重复计入。
  * @param {object} state
  * @param {object} config
- * @returns {{ ok: boolean, income: number, expense: number, net: number }}
+ * @returns {{ ok: boolean, income: number, expense: number, net: number,
+ *            fixedIncome: number, fixedExpense: number, flowIncome: number, flowExpense: number }}
+ *   income/expense 为含兼职/消费流水的合计（保持旧调用兼容）；fixedIncome/fixedExpense 仅为固定收支，
+ *   flowIncome/flowExpense 为当月兼职收入/消费支出，供 UI 区分展示。
  */
 export function settleMonthly(state, config) {
   const balance = (config && config.balance) || {};
@@ -108,7 +111,17 @@ export function settleMonthly(state, config) {
   // 重置当月追踪
   delete state.__monthDelta;
   delete state.__monthFlow;
-  return { ok: true, income: totalIncome, expense: totalExpense, net };
+  return {
+    ok: true,
+    income: totalIncome,
+    expense: totalExpense,
+    net,
+    // 拆分字段：固定收支 / 当月兼职收入 / 当月消费支出，供 UI 正确标注来源。
+    fixedIncome: income,
+    fixedExpense: expense,
+    flowIncome: Number.isFinite(flow.income) ? flow.income : 0,
+    flowExpense: Number.isFinite(flow.expense) ? flow.expense : 0,
+  };
 }
 
 /**
