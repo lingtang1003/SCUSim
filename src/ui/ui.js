@@ -558,7 +558,8 @@ export function createApp(ctx) {
     return (Array.isArray(list) ? list : [])
       .filter((x) => x && Number.isFinite(Number(x.delta)) && Number(x.delta) !== 0)
       .map((x) => ({
-        text: '♡ ' + (x.name || x.charId || '') + ' ' + (Number(x.delta) > 0 ? '+' : '') + Number(x.delta),
+        // 用 emoji 爱心（系统 emoji 字体渲染），别再用 ♡ —— 那是正文字体里的字符，和旁边的数字不搭
+        text: '💗 ' + (x.name || x.charId || '') + ' ' + (Number(x.delta) > 0 ? '+' : '') + Number(x.delta),
         kind: Number(x.delta) > 0 ? 'up' : 'down',
       }));
   }
