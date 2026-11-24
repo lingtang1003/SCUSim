@@ -5227,6 +5227,7 @@ body { font-synthesis: none; }
   transform: translateX(-50%);
 }
 
+<<<<<<< Updated upstream
 
 /* =========================================================================
    51. 事件弹层里的对方立绘放到对话框后面
@@ -5249,4 +5250,35 @@ body { font-synthesis: none; }
 }
 .vn-event__npc {
   bottom: 0;
+=======
+/* =========================================================================
+   50. 立绘容器按素材真实比例给尺寸
+   —— 主角素材 assets/char/*.webp = 880×1120 = 11:14；
+      攻略对象 media/characters/*.webp = 810×1080 = 3:4。
+      容器按各自比例设置后 background-size: contain 正好铺满，不裁切也不拉伸。
+   ========================================================================= */
+.vn-sprite {
+  width: auto;
+  height: min(86vh, 800px);
+  aspect-ratio: 11 / 14;
+  max-width: min(640px, 44vw);
+}
+.vn-npc--cutout {
+  width: auto;
+  height: min(76vh, 700px);
+  aspect-ratio: 3 / 4;
+  max-width: min(560px, 40vw);
+}
+.vn-npc--stage.vn-npc--cutout {
+  width: auto;
+  height: min(72vh, 640px);
+  aspect-ratio: 3 / 4;
+  max-width: min(560px, 40vw);
+}
+.vn-event__npc {
+  width: auto;
+  height: min(60vh, 540px);
+  aspect-ratio: 3 / 4;
+  max-width: min(460px, 32vw);
+>>>>>>> Stashed changes
 }
