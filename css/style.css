@@ -5434,3 +5434,50 @@ body { font-synthesis: none; }
   /* 原来 top: 96px 会压在「江安 / 望江」页签上，往下让开 */
   top: 118px;
 }
+
+
+/* =========================================================================
+   57. 地图图钉改成「圆点 + 独立三角尾巴」
+   —— 原来是 一个旋转 -45° 的圆角方块：图标小时还行，放大/悬停后
+      那个"尖角"会拖成一条斜向的长条，看起来像一道斜杠。
+      现在圆点保持正圆，尾巴用 ::after 画一个小三角，悬停只放大不旋转。
+   ========================================================================= */
+.vn-map__dot {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: var(--red);
+  box-shadow: 0 4px 10px rgba(20, 16, 15, 0.28);
+  transform: none;
+  transition: transform 160ms var(--ease-out), background 160ms linear;
+}
+.vn-map__dot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% - 3px);
+  width: 0;
+  height: 0;
+  /* 零宽三角不能用 translateX(-50%) 居中（自身宽度是 0），用负 margin 抵半个宽度 */
+  margin-left: -5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 8px solid var(--red);
+}
+.vn-map__pin.is-here .vn-map__dot::after { border-top-color: var(--ink); }
+.vn-map__pin.is-locked .vn-map__dot::after { border-top-color: var(--ink-3); }
+.vn-map__pin:hover .vn-map__dot {
+  transform: scale(1.12);
+}
+.vn-map__pin.is-here .vn-map__dot {
+  background: var(--ink);
+}
+.vn-map__pin.is-locked .vn-map__dot {
+  background: var(--ink-3);
+}
+.vn-stage--map .vn-map__dot {
+  width: 22px;
+  height: 22px;
+}

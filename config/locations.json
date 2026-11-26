@@ -292,6 +292,23 @@
       "desc": "江安的食堂，吃顿好的。",
       "line": "（食堂的窗口排起长队，餐盘碰撞声此起彼伏）",
       "topic": "meal"
+    },
+    {
+      "id": "gate",
+      "name": "校门",
+      "campus": "jiang-an",
+      "scene": "gate",
+      "x": 47.5,
+      "y": 77.6,
+      "requiresHealth": 0,
+      "activities": [
+        "parttime"
+      ],
+      "desc": "出校门去打工，金钱 +30、健康 -1。",
+      "line": "（校门外的车流一直没停，门柱被晒得发烫）",
+      "labelDx": 0,
+      "labelDy": 0,
+      "topic": "work"
     }
   ]
 }

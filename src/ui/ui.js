@@ -2544,7 +2544,7 @@ export function createApp(ctx) {
     });
     const body = [
       h('p', { class: 'vn-modal__lead' }, [
-        '好感来自剧情线里的选择。一局只能认真走近一个人——选了谁，就在迎新晚会那一晚。其他人也会认识、也会聊几句，但都停在说出那句话之前。',
+        '朋友有很多，恋爱对象只有一个哦。',
       ]),
       chars.length
         ? h('div', { class: 'vn-rel-grid' }, rows)
