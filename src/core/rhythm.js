@@ -15,6 +15,8 @@
 const DEFAULT_ATTRS = ['knowledge', 'social', 'health'];
 const LABELS = { knowledge: '学识', social: '社交', health: '健康', money: '金钱' };
 
+import * as relation from './relation.js';
+
 function getRules(config) {
   const b = (config && config.balance) || {};
   const r = b.weeklyRules;
@@ -237,5 +239,65 @@ export function checkDropout(state, config) {
   const endingId = cfg.endingId || 'ending_warning';
   state.endingId = endingId;
   return { ended: true, endingId, message: cfg.message || '学识归零，被退学' };
+}
+
+/**
+ * 社交太低的两条后果（由 engine.advance 每个回合结算一次）：
+ *  - 社交 < `affinity.below`（默认 30）：已经遇见过的可攻略角色好感 −`affinity.penalty`（默认 20）。
+ *    这是**掉线触发**：跌破 30 的那一刻扣一次，之后继续低于 30 不会每周连扣，
+ *    回到 30 以上再跌破才会再扣一次（避免一次失误直接把人扣没）。
+ *  - 社交 < `scarcity.below`（默认 20）的影响在别处：
+ *    `eventManager.computeWeight` 降低角色事件权重、`storyline.dueEvent` 按 `skipChance`
+ *    让「见人」这一步有概率不登场（等于降低人物对话的触发概率）。
+ * @returns {{ notices: Array<{type:string,text:string,tone?:string}>, penalized: Array<{charId:string,affinity:number,delta:number}>, low: boolean }}
+ */
+export function applySocialRules(state, config) {
+  const out = { notices: [], penalized: [], low: false };
+  const cfg = (config && config.balance && config.balance.socialRules) || null;
+  if (!cfg || !state || !state.player) return out;
+  const social = Number(state.player.attributes && state.player.attributes.social) || 0;
+  const penaltyCfg = cfg.affinity || {};
+  const below = Number.isFinite(Number(penaltyCfg.below)) ? Number(penaltyCfg.below) : 30;
+  const penalty = Number.isFinite(Number(penaltyCfg.penalty)) ? Number(penaltyCfg.penalty) : 20;
+  const scarcity = cfg.scarcity || {};
+  const scarcityBelow = Number.isFinite(Number(scarcity.below)) ? Number(scarcity.below) : 20;
+
+  out.low = social < scarcityBelow;
+  if (!state.player.socialWarn) state.player.socialWarn = { penalized: false };
+
+  if (social >= below) {
+    // 回到安全线以上：下次再跌破还能再扣一次
+    if (state.player.socialWarn.penalized) state.player.socialWarn.penalized = false;
+    return out;
+  }
+
+  // 已经在低位扣过：不重复扣
+  if (state.player.socialWarn.penalized) return out;
+
+  state.player.socialWarn.penalized = true;
+  const rels = (state.player && state.player.relations) || {};
+  const hits = [];
+  for (const charId of Object.keys(rels)) {
+    const rel = rels[charId];
+    // 只惩罚「已经遇见过」的角色（未遇见的角色还没见过你，谈不上好感下降）
+    if (!rel || rel.met !== true) continue;
+    const res = relation.changeAffinity(state, charId, -penalty, config);
+    if (res && res.changed) {
+      hits.push({ charId, affinity: res.after, delta: res.applied });
+      out.penalized.push({ charId, affinity: res.after, delta: res.applied });
+    }
+  }
+  if (hits.length) {
+    const names = hits.map((h) => {
+      const c = relation.findCharacter(config, h.charId);
+      return (c ? c.name : h.charId) + ' −' + Math.abs(h.delta);
+    });
+    out.notices.push({
+      type: 'social',
+      tone: 'warning',
+      text: `社交只有 ${social}（低于 ${below}）：${names.join('、')}（好感）`,
+    });
+  }
+  return out;
 }
 

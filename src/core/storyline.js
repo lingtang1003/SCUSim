@@ -97,6 +97,23 @@ export function currentStep(state, line) {
   return { index: idx, step: steps[idx] };
 }
 
+/**
+ * 社交太低时，这周「见不到人」的概率（配置：balance.socialRules.scarcity）。
+ * 只影响"人物剧情"的登场，其它事件（固定事件 / 学期考试等）不受影响。
+ * @returns {number} 0 = 正常登场；0~1 = 有这么大比例的概率跳过本周
+ */
+export function meetingSkipChance(state, config) {
+  const rules = (config && config.balance && config.balance.socialRules) || null;
+  const scarcity = rules && rules.scarcity;
+  if (!scarcity) return 0;
+  const below = Number(scarcity.below);
+  if (!Number.isFinite(below)) return 0;
+  const social = Number(state && state.player && state.player.attributes && state.player.attributes.social) || 0;
+  if (social >= below) return 0;
+  const chance = Number(scarcity.skipChance);
+  return Number.isFinite(chance) ? Math.max(0, Math.min(1, chance)) : 0.75;
+}
+
 /** 前置条件求值：relationAtLeast / flag / notFlag / college / minTurn / maxTurn。 */
 export function gateOk(state, gate, config) {
   if (!gate || typeof gate !== 'object') return true;
@@ -124,7 +141,7 @@ export function gateOk(state, gate, config) {
  * 本回合是否有剧情线要强制触发（固定事件之下的最高优先级）。
  * @returns {{eventId:string, lineId:string, stepIndex:number, stepId:string}|null}
  */
-export function dueEvent(state, config) {
+export function dueEvent(state, config, rng) {
   if (!state || !state.player) return null;
   const lines = linesOf(config).slice().sort((a, b) => num(a.priority, 100) - num(b.priority, 100));
   const turn = num(state.turn, 1);
@@ -150,6 +167,10 @@ export function dueEvent(state, config) {
     }
     if (!gateOk(state, cur.step.gate, config)) continue;
     if (!cur.step.eventId) { entry.step = cur.index + 1; continue; }
+    // 社交太低（默认 < 20）：这周有 skipChance 的概率见不到人 —— 相当于降低人物剧情的触发概率；
+    // 窗口过了就自然按「错过」处理（这条线断在这里）
+    const skip = meetingSkipChance(state, config);
+    if (skip > 0 && rng && typeof rng.next === 'function' && rng.next() < skip) continue;
     return {
       eventId: cur.step.eventId,
       lineId: line.id,

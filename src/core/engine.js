@@ -229,7 +229,7 @@ function enterTurn(state, config, rng, priorityEventId) {
     && eventId === priorityEventId;
   let forcedLine = null;
   if (!eventId && typeof eventManager.dueStorylineEvent === 'function') {
-    const due = eventManager.dueStorylineEvent(state, config);
+    const due = eventManager.dueStorylineEvent(state, config, rng);
     if (due && due.eventId) {
       eventId = due.eventId;
       forcedLine = due.lineId;
@@ -659,6 +659,16 @@ export function advance(state, config, rng) {
   for (const n of (weekly.notices || [])) {
     pushLog(state, `每周结算：${n.text}`, config);
     pushHistory(state, { type: 'weekly', kind: n.type, text: n.text }, config);
+  }
+
+  // 社交太低：已遇见角色好感 −20（掉线触发一次，配置见 balance.socialRules）
+  const socialRes = (typeof rhythm.applySocialRules === 'function')
+    ? rhythm.applySocialRules(state, config)
+    : { notices: [] };
+  for (const n of (socialRes.notices || [])) {
+    weekly.notices.push(n);
+    pushLog(state, `社交：${n.text}`, config);
+    pushHistory(state, { type: 'social', text: n.text }, config);
   }
 
   // 学识归零 = 退学：本局直接结束，不再往下跑事件 / 考试

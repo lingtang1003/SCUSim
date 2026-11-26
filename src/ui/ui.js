@@ -703,17 +703,27 @@ export function createApp(ctx) {
     const apMax = balanceOf('actionPointsPerTurn', 4);
     const player = state.player || {};
     const line = view && view.line;
-    // 每周固定规则的提醒（学识快归零 / 没钱只能兼职 / 这周还没吃饭）
+    // 每周固定规则 / 社交惩罚的提醒（按危险程度取第一条）
     const weekly = player.weekly || {};
     const money = Number(player.attributes && player.attributes.money) || 0;
     const knowledge = Number(player.attributes && player.attributes.knowledge) || 0;
     const health = Number(player.attributes && player.attributes.health) || 0;
+    const social = Number(player.attributes && player.attributes.social) || 0;
+    const socialRules = (config && config.balance && config.balance.socialRules) || null;
+    const socialLow = socialRules && socialRules.scarcity
+      ? Number(socialRules.scarcity.below) : 20;
+    const socialWarn = socialRules && socialRules.affinity
+      ? Number(socialRules.affinity.below) : 30;
     const weeklyWarn = knowledge <= 5
       ? '📖 学识 ' + knowledge + ' · 归零即退学'
       : health <= 0
       ? '💔 健康 0 · 只能做加健康的活动'
+      : (Number.isFinite(socialLow) && social < socialLow)
+      ? '💬 社交 ' + social + ' · 见不到可攻略角色'
       : money < 0
       ? '💰 钱包见底 · 这周只能兼职'
+      : (Number.isFinite(socialWarn) && social < socialWarn)
+      ? '💬 社交 ' + social + ' · 角色好感 −' + ((socialRules.affinity && socialRules.affinity.penalty) || 20)
       : (Number(weekly.lastEatTurn) !== Number(state.turn) ? '🍚 这周还没吃饭' : '');
     return h('div', { class: 'vn-hud' }, [
       h('div', { class: 'vn-hud__group' }, [

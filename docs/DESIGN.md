@@ -208,15 +208,18 @@ HUD 左侧胶囊组里多了一枚按需出现的红色胶囊 `.vn-chip--warn`�
 |---|---|---|
 | 1 | 学识 ≤ 5 | `📖 学识 N · 归零即退学` |
 | 2 | 健康 ≤ 0 | `💔 健康 0 · 只能做加健康的活动` |
-| 3 | 金钱 < 0 | `💰 钱包见底 · 这周只能兼职` |
-| 4 | 这周还没吃饭（`player.weekly.lastEatTurn !== turn`） | `🍚 这周还没吃饭` |
+| 3 | 社交 < `socialRules.scarcity.below`（20） | `💬 社交 N · 见不到可攻略角色` |
+| 4 | 金钱 < 0 | `💰 钱包见底 · 这周只能兼职` |
+| 5 | 社交 < `socialRules.affinity.below`（30） | `💬 社交 N · 角色好感 −20` |
+| 6 | 这周还没吃饭（`player.weekly.lastEatTurn !== turn`） | `🍚 这周还没吃饭` |
 | — | 都不满足 | 不渲染 |
 
-规则本身在 `balance.weeklyRules` / `dropout` / `healthZeroRule`，实现在 `src/core/rhythm.js`
-（每周固定开销、吃饭、生活费、负债锁行动、健康归零只许加健康、两周一档属性荒废、学识归零退学），
-`advance()` 结算时把每条变化写进 `log`，`main` 里再 `toast` 一次；回合结束后 HUD 自动复位。
+规则本身在 `balance.weeklyRules` / `dropout` / `healthZeroRule` / `socialRules`，实现在 `src/core/rhythm.js`
+（每周固定开销、吃饭、生活费、负债锁行动、健康归零只许加健康、两周一档属性荒废、学识归零退学、
+社交过低扣好感/降低见人概率），`advance()` 结算时把每条变化写进 `log`，`main` 里再 `toast` 一次；
+回合结束后 HUD 自动复位。
 退学这步 `advance()` 会直接返回 `endingId`，`main.onAdvance` 立刻放结局（不再等第 40 回合）。
-回归：`tests/verify_rules.mjs`（39 条）。
+回归：`tests/verify_rules.mjs`（39 条）+ `tests/verify_social.mjs`（18 条）。
 
 ### 8.4 提示窗 `.vn-notice`（生活费到账）
 

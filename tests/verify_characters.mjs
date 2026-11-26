@@ -120,11 +120,12 @@ const config = await loadConfig(reader).catch((e) => {
   return null;
 });
 // 这个文件测的是「角色 / 剧情线 / 结局判定」，跑的是把一周行动全部用于推进剧情的脚本；
-// 每周固定规则（吃饭扣血、学识荒废、学识归零退学）会让这种脚本很早就退学，
-// 因此这里关掉它们——那套规则由 tests/verify_rules.mjs 专门覆盖。
+// 每周固定规则（吃饭扣血、学识荒废、学识归零退学）与「社交太低会跳过一次见面」
+// 都会干扰这种脚本，因此这里一起关掉——那两套规则由 verify_rules / verify_social 专测。
 if (config && config.balance) {
   config.balance.weeklyRules = null;
   config.balance.dropout = null;
+  config.balance.socialRules = null;
 }
 check('A: 9 份配置加载成功', !!config);
 const v = validateConfigs(config || {});

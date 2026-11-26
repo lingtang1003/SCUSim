@@ -225,6 +225,18 @@
     "note": "健康归零时，只能做「能加健康」的活动（效果里 health > 0）",
     "onlyPositiveHealthActions": true
   },
+  "socialRules": {
+    "note": "社交太低的两条后果：1) 社交 < affinity.below（30）时，已遇见的可攻略角色好感 −affinity.penalty（20），掉线触发一次，回到 30 以上再跌破才会再扣；2) 社交 < scarcity.below（20）时，人物剧情这周有 skipChance（0.75）的概率不登场、可攻略角色的事件权重 ×eventWeightScale（0.25）——也就是「见面被限制、对话触发概率下降」。社交每两周没涨会 −10（见 weeklyRules.neglect）。",
+    "affinity": {
+      "below": 30,
+      "penalty": 20
+    },
+    "scarcity": {
+      "below": 20,
+      "skipChance": 0.75,
+      "eventWeightScale": 0.25
+    }
+  },
   "weeklyRules": {
     "note": "每周固定规则（core/rhythm.js）：1) 这周必须吃一次饭，否则扣健康；2) 每周固定扣一笔开销 fee；3) 每 everyTurns 周发一次生活费；4) 金钱为负时只能做 allowedActions，其余锁死；5) 某属性连续 afterTurns 周没涨过就掉 amount 点（amounts 可按属性覆盖，学识更轻）。idleDecay 已置 null（旧的「按行动空窗」扣减，由 neglect 接管）。",
     "fee": {

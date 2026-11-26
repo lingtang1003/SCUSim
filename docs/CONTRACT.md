@@ -59,6 +59,7 @@
 | `weeklyRules` | object | 否 | ✅ 已生效 | core/rhythm.js（advance / doAction / actionAvailability 调用） | 每周固定规则：`fee`（每周固定开销，默认 −20）、`eat`（这周必须吃一次饭，否则扣健康，默认 −15；`actions`+`locations` 决定什么算吃饭）、`allowance`（每 `everyTurns` 周 +`amount`，默认 **4 周 +80**，到账时 UI 弹 `.vn-notice` 提示窗）、`broke`（金钱 < 0 时只能做 `allowedActions`，默认兼职/休息）、`neglect`（属性连续 `afterTurns` 周没涨就 −`amount`，默认 2 周 −10；`amounts` 可按属性覆盖，学识默认 −5，掉完重新计时）。缺省则全部不生效 |
 | `dropout` | object | 否 | ✅ 已生效 | core/rhythm.checkDropout（advance 里调用） | 学识归零 = 退学：`{attribute:'knowledge', atMost:0, endingId:'ending_warning'}`，触发后直接把 `state.endingId` 定死，`advance()` 返回该 `endingId`，不再生成事件 / 考试 |
 | `healthZeroRule` | object | 否 | ✅ 已生效 | core/rhythm.blockedByZeroHealth + engine.actionAvailability | 健康归零时只允许「效果里 health > 0」的活动（默认 `onlyPositiveHealthActions: true`）；低健康（< `healthRestrictThreshold`）也按同一条「能加健康就放行」判断 |
+| `socialRules` | object | 否 | ✅ 已生效 | core/rhythm.applySocialRules + storyline.meetingSkipChance + eventManager.computeWeight | 社交过低的后果：`affinity`（社交 < `below`(30) 时已遇见角色好感 −`penalty`(20)，掉线触发一次，回到线上才重新计数）、`scarcity`（社交 < `below`(20) 时人物剧情按 `skipChance`(0.75) 概率不登场、带 charId 的事件权重 ×`eventWeightScale`(0.25)） |
 
 当前实际片段（节选）：
 

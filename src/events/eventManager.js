@@ -155,8 +155,8 @@ export function finalizeSideCast(state, config, routeCharId) {
  */
 const SIDE_LINE_GAP_TURNS = 3;
 
-export function dueStorylineEvent(state, config) {
-  const due = storyline.dueEvent(state, config);
+export function dueStorylineEvent(state, config, rng) {
+  const due = storyline.dueEvent(state, config, rng);
   if (!due || !due.eventId) return null;
   if (String(due.lineId).endsWith('_side')) {
     if (!state.player.flags) state.player.flags = {};
@@ -279,6 +279,15 @@ export function computeWeight(event, state, config) {
     const max = relation.affinityMax(config);
     w *= 1 + Math.max(0, Math.min(1, aff / max));
     if (char && Array.isArray(char.likedEvents) && char.likedEvents.indexOf(event.id) >= 0) w *= 1.3;
+    // 社交太低（默认 < 20）：见不到人，角色事件的权重再打个折
+    const socialRules = (config && config.balance && config.balance.socialRules) || null;
+    const scarcity = socialRules && socialRules.scarcity;
+    if (scarcity) {
+      const below = Number(scarcity.below);
+      const scale = Number(scarcity.eventWeightScale);
+      const social = Number(state.player && state.player.attributes && state.player.attributes.social) || 0;
+      if (Number.isFinite(below) && Number.isFinite(scale) && social < below) w *= Math.max(0, scale);
+    }
   }
 
   return w;
