@@ -2502,7 +2502,6 @@ export function createApp(ctx) {
             score: Number(x && x.score),
             gpa: Number(x && x.gpa),
             passed: !(x && x.passed === false),
-            difficulty: Number(x && x.difficulty),
           })),
         });
       });
@@ -2579,9 +2578,6 @@ export function createApp(ctx) {
                     class: 'vn-score__row vn-score__row--sub' + (sub.passed ? '' : ' is-fail'),
                   }, [
                     h('span', { class: 'vn-score__subname' }, [sub.name]),
-                    Number.isFinite(sub.difficulty)
-                      ? h('span', { class: 'vn-score__diff' }, ['难 ' + sub.difficulty])
-                      : null,
                     h('span', { class: 'vn-score__val' }, [Number.isFinite(sub.score) ? sub.score + ' 分' : '—']),
                     Number.isFinite(sub.gpa)
                       ? h('span', { class: 'vn-score__gpa' }, ['绩点 ' + sub.gpa.toFixed(2)])

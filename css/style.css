@@ -3046,7 +3046,6 @@ a:hover {
 }
 .vn-score__row--sub:last-child { border-bottom: 0; }
 .vn-score__subname { color: var(--ink-2); }
-.vn-score__diff { font-size: 11px; color: var(--ink-3); letter-spacing: 0.02em; }
 .vn-score__row--sub.is-fail .vn-score__val { color: var(--red); }
 .vn-score__total {
   display: flex;

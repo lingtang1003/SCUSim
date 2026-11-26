@@ -193,7 +193,7 @@ check('C: 逐科成绩带课程名与分数',
   subText.includes('大学英语（综合）') && subText.includes('微积分（Ⅰ）')
   && subText.includes('60 分') && subText.includes('74 分'), subText);
 check('C: 逐科成绩带绩点', subText.includes('绩点 1.00') && subText.includes('绩点 2.70'), subText);
-check('C: 逐科成绩带难度标记', subText.includes('难 5') && subText.includes('难 9'), subText);
+check('C: 逐科成绩不再显示难度标记（「难 N」）', !subText.includes('难 '), subText);
 
 const s2 = subsOf(sems[1]);
 check('C: 第 2 学期保持收起', !!s2 && !s2.classList.contains('is-open'), s2 && s2.className);
