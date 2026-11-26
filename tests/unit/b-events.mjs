@@ -208,5 +208,52 @@ console.log('== B · 事件单测 ==');
   check('place: 无地点上下文时不抽地点专属事件', placeHit.length === 0, placeHit.join(','));
 }
 
+// --- 单一地点也能刷到通用事件：分层混合而非"地点专属独占" ---
+{
+  const s = state(['chill'], 'cs', 8);
+  const mkHist = (loc, act) => [
+    { type: 'move', location: loc },
+    { type: 'action', actionId: act, location: loc },
+  ];
+  s.history = mkHist('bridge', 'rest');
+  const ids = [];
+  let seed = 20261126;
+  const rand = () => {
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    return seed / 2147483648;
+  };
+  for (let i = 0; i < 40; i += 1) {
+    const roll = rollEvent(s, config, { next: rand, chance: () => true });
+    if (!roll.eventId) continue;
+    const ev = events.random.find((x) => x.id === roll.eventId);
+    const opt = availableOptions(ev, s, config).find((o) => o.enabled);
+    const res = resolveEvent(s, roll.eventId, opt && opt.id, config, { next: rand, chance: () => true });
+    if (res.ok) ids.push(roll.eventId);
+  }
+  const isGeneral = (id) => {
+    const e = events.random.find((x) => x.id === id);
+    return e && !(Array.isArray(e.place) && e.place.length);
+  };
+  const general = ids.filter(isGeneral);
+  const distinct = new Set(ids.filter(Boolean));
+  check('rollEvent: 死守长桥也能刷到通用事件', general.length > 0,
+    `general=${general.length}/${ids.length}`);
+  check('rollEvent: 单地点 40 次抽取至少覆盖 12 种不同事件', distinct.size >= 12,
+    `distinct=${distinct.size}`);
+}
+
+// --- 基率读取 balance.randomEventBaseChance ---
+{
+  let seen = null;
+  rollEvent(state(['chill']), config, {
+    next: () => 0.5,
+    chance: (p) => { seen = p; return false; },
+  });
+  const cfgChance = Number(config.balance.randomEventBaseChance);
+  check('rollEvent: 掷骰基率来自 balance.randomEventBaseChance',
+    Number.isFinite(seen) && Math.abs(seen - cfgChance) < 1e-9,
+    `seen=${seen}, cfg=${cfgChance}`);
+}
+
 console.log(failures === 0 ? '\n事件单测全部通过 ✅' : `\n失败 ${failures} 项 ❌`);
 process.exit(failures === 0 ? 0 : 1);

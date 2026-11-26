@@ -5837,6 +5837,401 @@
         "college",
         "wj_college"
       ]
+    },
+    {
+      "id": "ev_pl_canteen_4",
+      "name": "打菜手抖",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "打菜阿姨今天手有点抖，红烧肉多舀了两块，后面排队的人已经在看你了。",
+      "options": [
+        {
+          "id": "eat",
+          "label": "道声谢，多吃两口",
+          "resultText": "你端着盘子找位置坐下，红烧肉比平时多了两块。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "share",
+          "label": "夹给同桌一半",
+          "resultText": "同桌愣了一下，笑着把碗往你这边推了推。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            }
+          }
+        }
+      ],
+      "spot": [
+        "eat"
+      ],
+      "topic": "meal",
+      "place": [
+        "canteen"
+      ]
+    },
+    {
+      "id": "ev_pl_canteen_5",
+      "name": "食堂勤工俭学",
+      "weight": 8,
+      "termRange": [
+        2,
+        24
+      ],
+      "text": "食堂窗口贴了张纸：招勤工俭学，一小时十二块，管一顿饭。",
+      "options": [
+        {
+          "id": "take",
+          "label": "今晚顶两个小时",
+          "resultText": "收餐盘收到手腕发酸，交接时阿姨塞给你一个鸡腿。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            },
+            "money": 24
+          }
+        },
+        {
+          "id": "no",
+          "label": "先把自己的饭吃完",
+          "resultText": "你端着饭坐下，窗口那边还在招人。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work",
+      "place": [
+        "canteen"
+      ]
+    },
+    {
+      "id": "ev_pl_wjcanteen_3",
+      "name": "望江的深夜窗口",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "十一点，望江食堂只剩一个窗口还亮着灯，师傅正在收最后一屉蒸笼。",
+      "options": [
+        {
+          "id": "noodle",
+          "label": "要一碗热汤面",
+          "resultText": "师傅多给了半勺臊子，说这个点吃面最舒服。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "money": -12
+          }
+        },
+        {
+          "id": "back",
+          "label": "回去泡面",
+          "resultText": "你在宿舍泡了面，汤有点咸。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            },
+            "money": -4
+          }
+        }
+      ],
+      "spot": [
+        "eat"
+      ],
+      "topic": "meal",
+      "place": [
+        "wj_canteen"
+      ]
+    },
+    {
+      "id": "ev_pl_wjgate_2",
+      "name": "门禁前十分钟",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "校门口的闸机开始倒数，你还在等最后一班公交，手机显示还有八分钟。",
+      "options": [
+        {
+          "id": "taxi",
+          "label": "打车回去",
+          "resultText": "司机抄了近路，你在门禁关上前两分钟刷了进去。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "money": -30
+          }
+        },
+        {
+          "id": "run",
+          "label": "撒腿跑回去",
+          "resultText": "你一路跑回宿舍，后背全湿了，但没被记晚归。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        }
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work",
+      "place": [
+        "wj_gate"
+      ]
+    },
+    {
+      "id": "ev_pl_wjgate_3",
+      "name": "校门口的花摊",
+      "weight": 8,
+      "termRange": [
+        2,
+        16
+      ],
+      "text": "校门口有人摆摊卖花，纸牌上写「最后一把，十五块」。",
+      "options": [
+        {
+          "id": "buy",
+          "label": "买一把",
+          "resultText": "你抱着花往回走，路上被两个同学问是不是有人送。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            },
+            "money": -25
+          }
+        },
+        {
+          "id": "photo",
+          "label": "只拍张照",
+          "resultText": "你拍下那把花，摊主也没催。",
+          "effects": {
+            "attributes": {
+              "social": 1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "mall",
+      "place": [
+        "wj_gate"
+      ]
+    },
+    {
+      "id": "ev_pl_bridge_4",
+      "name": "桥上的雨",
+      "weight": 8,
+      "termRange": [
+        1,
+        34
+      ],
+      "text": "走到桥中间，雨突然下大了，桥面上开始积水。",
+      "options": [
+        {
+          "id": "run",
+          "label": "淋着跑完",
+          "resultText": "你跑到桥那头，衣服贴在背上，风一吹有点冷。",
+          "effects": {
+            "attributes": {
+              "health": -1
+            }
+          }
+        },
+        {
+          "id": "umbrella",
+          "label": "折返便利店买伞",
+          "resultText": "伞骨有点歪，但总算没淋透。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            },
+            "money": -15
+          }
+        }
+      ],
+      "spot": [
+        "rest"
+      ],
+      "topic": "stroll",
+      "place": [
+        "bridge"
+      ]
+    },
+    {
+      "id": "ev_pl_bridge_5",
+      "name": "桥下拍毕业照",
+      "weight": 8,
+      "termRange": [
+        25,
+        40
+      ],
+      "text": "一群人在桥下架起三脚架，看见你路过，喊你帮忙按一下快门。",
+      "options": [
+        {
+          "id": "help",
+          "label": "帮他们拍一组",
+          "resultText": "你连着按了二十多张，最后被拉进去合了影。",
+          "effects": {
+            "attributes": {
+              "social": 2
+            }
+          }
+        },
+        {
+          "id": "go",
+          "label": "挥挥手走开",
+          "resultText": "你走过去时，取景框里的笑还在继续。",
+          "effects": {
+            "attributes": {}
+          }
+        }
+      ],
+      "spot": [
+        "socialize"
+      ],
+      "topic": "stroll",
+      "place": [
+        "bridge"
+      ]
+    },
+    {
+      "id": "ev_pl_track_3",
+      "name": "跑道边的旧伤",
+      "weight": 8,
+      "termRange": [
+        1,
+        36
+      ],
+      "text": "跑到第三圈，膝盖开始提醒你上周那处旧伤，跑道上的人一个个超过去。",
+      "options": [
+        {
+          "id": "slow",
+          "label": "慢走收尾",
+          "resultText": "你走了半圈，膝盖的酸胀慢慢退下去。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "push",
+          "label": "咬牙跑完这圈",
+          "resultText": "你冲过终点，坐下来揉了很久的膝盖。",
+          "effects": {
+            "attributes": {
+              "health": -2
+            }
+          }
+        }
+      ],
+      "spot": [
+        "exercise"
+      ],
+      "topic": "run",
+      "place": [
+        "track"
+      ]
+    },
+    {
+      "id": "ev_pl_wjtrack_1",
+      "name": "体育场的看台",
+      "weight": 8,
+      "termRange": [
+        1,
+        30
+      ],
+      "text": "望江体育场的看台没什么人，夕阳把跑道照成一片橘色。",
+      "options": [
+        {
+          "id": "sit",
+          "label": "坐着看完日落",
+          "resultText": "太阳落到看台后面，你才想起该回去了。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "run",
+          "label": "下去跑两圈",
+          "resultText": "跑道上没人，你跑得很慢，风从背后推着。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        }
+      ],
+      "spot": [
+        "rest"
+      ],
+      "topic": "run",
+      "place": [
+        "wj_track"
+      ]
+    },
+    {
+      "id": "ev_pl_gym_3",
+      "name": "羽毛球场地满了",
+      "weight": 8,
+      "termRange": [
+        2,
+        30
+      ],
+      "text": "羽毛球场地全满，门口贴着等场名单，你的名字排在第七。",
+      "options": [
+        {
+          "id": "wait",
+          "label": "排队等一场",
+          "resultText": "等了四十分钟，上场时手感反而热了，还认识了对面的人。",
+          "effects": {
+            "attributes": {
+              "social": 1,
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "gym",
+          "label": "改去器械区",
+          "resultText": "你练了一组背，第二天抬手都酸。",
+          "effects": {
+            "attributes": {
+              "health": 2
+            }
+          }
+        }
+      ],
+      "spot": [
+        "exercise"
+      ],
+      "topic": "indoor",
+      "place": [
+        "gym"
+      ]
     }
   ],
   "note": "fixed 三条：社团招新/毕业论文/负债；random 按 spot 场景归类：study 学习、club 社团、exercise 运动、parttime 兼职、socialize 社交、rest 休息、eat 吃饭；spot 为空为通用兜底事件。混合抽取：优先当前场景 → 通用 → 其他场景。"

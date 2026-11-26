@@ -4,8 +4,9 @@
   "actionPointsPerTurn": 4,
   "monthsPerSemester": 5,
   "examTurns": [5, 10, 15, 20, 25, 30, 35, 40],
-  "randomEventBaseChance": 0.70,
-  "recentEventCooldown": 8,
+  "randomEventBaseChance": 0.85,
+  "recentEventCooldown": 5,
+  "eventTierWeights": { "placeSpot": 12.0, "placeOnly": 4.0, "generalSpotTopic": 1.2, "generalSpot": 0.9, "generalAny": 0.5, "generalOtherSpot": 0.35, "placePityWindow": 6 },
   "attributePointTotal": 20,
   "attributeKeys": ["knowledge", "social", "health", "money"],
   "healthRestrictThreshold": 3,
@@ -97,3 +98,10 @@
 
   "note": "数值为初值，期末公式已切换为：单门 score = round(学识 × (1 ± 波动))，绩点查 gpaTable；平衡需经 40 回合模拟调优"
 }
+
+
+
+
+
+
+

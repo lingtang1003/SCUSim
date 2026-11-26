@@ -237,8 +237,9 @@ export function rollEvent(state, config, rng) {
   // 避免「上一回合刚领完十佳歌手门票、这一回合又来同一事件」的情况。
   const recent = (state && Array.isArray(state.__recentEvents)) ? state.__recentEvents : [];
 
-  // 分组优先级：地点专属 → 主题匹配 → 同场景其他主题 → 通用 → 其他场景；逐级兜底，避免空池卡死。
-  // 带 place 的事件只在命中的地点出现（跨地点一律排除），保证「图书馆不会冒出教室事件」。
+  // 池子分层：地点不符的事件严格排除（避免图书馆冒教室事件）；地点相符 / 通用 / 跨场景
+  // 按 tier 倍率混在一个池里做一次轮盘赌——不再"地点专属有货就只抽地点专属"，
+  // 否则死守一个地点会反复只见到那几条，通用事件永远出不来。
   const cur = currentSpot(state);
   const curTopic = currentTopic(state, config);
   const curPlace = currentPlace(state);
@@ -252,25 +253,36 @@ export function rollEvent(state, config, rng) {
     const p = placeOf(x);
     return !!p && !!curPlace && !p.includes(curPlace);
   };
-  let groups;
+  const tierCfg = (balance.eventTierWeights && typeof balance.eventTierWeights === 'object')
+    ? balance.eventTierWeights : {};
+  const tier = (key, def) => (Number.isFinite(tierCfg[key]) ? tierCfg[key] : def);
+  let pool;
   if (!cur) {
     // 没有可用的地点上下文时，先只抽与地点无关的事件；实在没有才放宽。
     const noPlace = weighted.filter((x) => !placeOf(x));
-    groups = noPlace.length
-      ? [noPlace, weighted.filter((x) => !placeMismatch(x))]
-      : [weighted];
+    pool = noPlace.length
+      ? noPlace
+      : weighted.filter((x) => !placeMismatch(x));
   } else {
     const inSpot = (x) => Array.isArray(x.e.spot) && x.e.spot.includes(cur);
-    const placeMatch = weighted.filter((x) => inPlace(x) && inSpot(x));
-    const placeTopicMatch = weighted.filter((x) => inPlace(x) && !inSpot(x));
-    const topicMatch = weighted.filter((x) => !placeOf(x) && inSpot(x) && curTopic && x.e.topic === curTopic);
-    const spotMatch = weighted.filter((x) => !placeOf(x) && inSpot(x) && !(curTopic && x.e.topic === curTopic));
-    const general = weighted.filter((x) => !placeOf(x) && (!Array.isArray(x.e.spot) || x.e.spot.length === 0));
-    const other = weighted.filter((x) => !placeOf(x) && Array.isArray(x.e.spot) && x.e.spot.length > 0 && !inSpot(x));
-    groups = [placeMatch, placeTopicMatch, topicMatch, spotMatch, general, other];
+    pool = weighted.map((x) => {
+      if (placeOf(x)) {
+        if (!curPlace || !inPlace(x)) return null;
+        return { e: x.e, w: x.w * (inSpot(x) ? tier('placeSpot', 4) : tier('placeOnly', 2) ) };
+      }
+      const spots = Array.isArray(x.e.spot) ? x.e.spot : [];
+      if (spots.length === 0) return { e: x.e, w: x.w * tier('generalAny', 0.5) };
+      if (inSpot(x)) {
+        const w = (curTopic && x.e.topic === curTopic)
+          ? tier('generalSpotTopic', 1.2)
+          : tier('generalSpot', 0.9);
+        return { e: x.e, w: x.w * w };
+      }
+      return { e: x.e, w: x.w * tier('generalOtherSpot', 0.35) };
+    }).filter(Boolean);
   }
 
-  // 在给定候选组内做轮盘赌；只返回至少含一个可用选项的事件，前置未满足的跳过。
+  // 在池内做轮盘赌；只返回至少含一个可用选项的事件，前置未满足的跳过。
   const pickFrom = (pool) => {
     let cand = pool.filter((x) => !recent.includes(x.e.id));
     if (cand.length === 0) cand = pool; // 防卡：去重窗口内全重复时回退整组
@@ -295,11 +307,8 @@ export function rollEvent(state, config, rng) {
     return null;
   };
 
-  for (const group of groups) {
-    if (group.length === 0) continue;
-    const res = pickFrom(group);
-    if (res) return res;
-  }
+  const res = pickFrom(pool);
+  if (res) return res;
   return { eventId: null, options: [] };
 }
 
