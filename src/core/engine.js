@@ -23,6 +23,7 @@ import * as academy from './academy.js';
 import * as eventManager from '../events/eventManager.js';
 import * as relation from './relation.js';
 import * as storyline from './storyline.js';
+import * as rhythm from './rhythm.js';
 import { judgeEnding, evaluateEnding } from './ending.js';
 
 const MAX_TURN_DEFAULT = 40;
@@ -393,6 +394,8 @@ export function newGame(options, config, rng) {
   // v2.1：初始化角色好感与剧情线（缺配置时各自为空操作）
   relation.initRelations(state, config);
   storyline.initStorylines(state, config);
+  // 每周固定规则：从第 1 回合开始记「吃饭 / 涨属性」的时钟
+  if (typeof rhythm.ensureWeekly === 'function') rhythm.ensureWeekly(state, config);
   // 相识圈候选：开局先记 3 个眼熟的人，迎新晚会选完主角后再收口成「主角 + 2 位」
   const sideCast = eventManager.assignSideCast(state, config, state.seed);
   if (sideCast && sideCast.length) {
@@ -472,6 +475,9 @@ export function availableActivities(state, config) {
 export function actionAvailability(state, actionId, config) {
   const action = findAction(config, actionId);
   if (!action) return { ok: false, reason: 'unknown_action' };
+  // 钱包为负：只能做允许的行动（默认兼职 / 休息），其余锁死
+  const broke = (typeof rhythm.brokeCheck === 'function') ? rhythm.brokeCheck(state, actionId, config) : null;
+  if (broke && broke.blocked) return { ok: false, reason: 'broke' };
   if (state.actionPoints < (action.cost ?? 0)) return { ok: false, reason: 'AP' };
 
   const activities = availableActivities(state, config);
@@ -507,6 +513,12 @@ export function doAction(state, actionId, config, rng) {
   const healthBefore = Number(attrs.health) || 0;
   const mainAttr = action.mainAttr;
   const mainBefore = mainAttr ? Number(attrs[mainAttr]) || 0 : 0;
+  // 每周固定规则：结算前的属性快照（用于判断这周涨了哪些属性）
+  const attrsBefore = {
+    knowledge: Number(attrs.knowledge) || 0,
+    social: Number(attrs.social) || 0,
+    health: Number(attrs.health) || 0,
+  };
 
   state.actionPoints -= (action.cost ?? 0);
 
@@ -540,6 +552,9 @@ export function doAction(state, actionId, config, rng) {
   }
 
   clampAttrs(state, config);
+  // 每周固定规则：这一周吃过饭了吗 / 哪些属性涨了（供 advance 时结算）
+  if (typeof rhythm.markEat === 'function') rhythm.markEat(state, actionId, config);
+  if (typeof rhythm.markGains === 'function') rhythm.markGains(state, attrsBefore, config);
   pushLog(state, `行动：${action.name || actionId}`, config);
   pushHistory(state, { type: 'action', actionId, text: `行动：${action.name || actionId}` }, config);
   state.rngState = rng.getState();
@@ -627,8 +642,17 @@ export function advance(state, config, rng) {
     pushLog(state, `月度收支：+${monthly.income} / −${monthly.expense}（净 ${monthly.net > 0 ? '+' : ''}${monthly.net}）`, config);
   }
 
-  // D-18：连续空窗扣减（学识 / 健康）
+  // D-18：连续空窗扣减（学识 / 健康）—— 默认配置已交给 weeklyRules.neglect，配置缺失时不生效
   applyIdleDecay(state, config);
+
+  // 每周固定规则：这一周没吃饭扣健康 / 每 N 周发生活费 / 连续 N 周没涨的属性掉点
+  const weekly = (typeof rhythm.applyWeeklyRules === 'function')
+    ? rhythm.applyWeeklyRules(state, config, state.turn - 1)
+    : { notices: [] };
+  for (const n of (weekly.notices || [])) {
+    pushLog(state, `每周结算：${n.text}`, config);
+    pushHistory(state, { type: 'weekly', kind: n.type, text: n.text }, config);
+  }
 
   // v2.1：好感跌破底线 → 剧情线中断（本局错过这条线）
   const brokenLines = storyline.checkBreak(state, config);
@@ -694,11 +718,13 @@ export function advance(state, config, rng) {
     ok: true,
     state,
     monthly,
+    weekly,
     settlement,
     pendingEvent: state.pendingEvent,
     endingId,
     endingSubs,
     brokenLines,
+    notices: (weekly && weekly.notices) || [],
     message: `推进至第 ${state.turn} 回合（学期 ${semester}）`,
   };
 }
@@ -715,12 +741,19 @@ export function resolvePendingEvent(state, choiceId, config, rng) {
   if (typeof eventManager.resolveEvent !== 'function') {
     return { ok: false, state, reason: 'event_manager_unavailable' };
   }
+  const attrsPre = {
+    knowledge: Number(state.player.attributes.knowledge) || 0,
+    social: Number(state.player.attributes.social) || 0,
+    health: Number(state.player.attributes.health) || 0,
+  };
   const res = eventManager.resolveEvent(state, eventId, choiceId, config, rng);
   if (!res.ok) {
     return { ok: false, state, reason: res.reason, message: res.message };
   }
   state.pendingEvent = null;
   clampAttrs(state, config);
+  // 事件也会涨属性：算进「这周涨了什么」，避免被当成荒废
+  if (typeof rhythm.markGains === 'function') rhythm.markGains(state, attrsPre, config);
 
   // 迎新晚会选完主角：相识圈收口为「主角 + 2 位」，一局最多只跟 3 个 NPC 有交集
   if (eventId === 'ev_fixed_welcome' && typeof eventManager.finalizeSideCast === 'function') {

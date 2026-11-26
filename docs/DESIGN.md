@@ -200,6 +200,20 @@
 
 回归：`tests/verify_profile.mjs`（21 条）。
 
+### 8.3 HUD 的「每周固定规则」提醒
+
+HUD 左侧胶囊组里多了一枚按需出现的红色胶囊 `.vn-chip--warn`：
+
+| 状态 | 文案 |
+|---|---|
+| 金钱 < 0 | `💰 钱包见底 · 这周只能兼职` |
+| 这周还没吃饭（`player.weekly.lastEatTurn !== turn`） | `🍚 这周还没吃饭` |
+| 都不满足 | 不渲染 |
+
+规则本身在 `balance.weeklyRules` / `src/core/rhythm.js`（吃饭、生活费、负债锁行动、两周一档属性荒废），
+`advance()` 结算时把每条变化写进 `log`，`main` 里再 `toast` 一次；回合结束后 HUD 自动复位。
+回归：`tests/verify_rules.mjs`（27 条）。
+
 ## 9. Agent Prompt Guide
 
 要改这套界面时，按这个顺序描述需求：

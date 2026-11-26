@@ -703,6 +703,12 @@ export function createApp(ctx) {
     const apMax = balanceOf('actionPointsPerTurn', 4);
     const player = state.player || {};
     const line = view && view.line;
+    // 每周固定规则的提醒（没钱只能兼职 / 这周还没吃饭）
+    const weekly = player.weekly || {};
+    const money = Number(player.attributes && player.attributes.money) || 0;
+    const weeklyWarn = money < 0
+      ? '💰 钱包见底 · 这周只能兼职'
+      : (Number(weekly.lastEatTurn) !== Number(state.turn) ? '🍚 这周还没吃饭' : '');
     return h('div', { class: 'vn-hud' }, [
       h('div', { class: 'vn-hud__group' }, [
         h('span', { class: 'vn-chip vn-chip--gold' }, [
@@ -713,6 +719,9 @@ export function createApp(ctx) {
           h('span', { class: 'vn-chip__k' }, ['行动点']),
           apDots(state.actionPoints, apMax),
         ]),
+        weeklyWarn
+          ? h('span', { class: 'vn-chip vn-chip--warn', title: '每周固定规则提醒' }, [weeklyWarn])
+          : null,
         line
           ? h('span', { class: 'vn-chip vn-chip--line', title: line.name }, [
               '◆ ' + line.name + ' · ' + line.step + '/' + line.total,
@@ -819,6 +828,7 @@ export function createApp(ctx) {
     if (!av || av.ok) return '';
     if (av.reason === 'AP') return '行动点不足';
     if (av.reason === 'health') return '需要健康 ≥ ' + (action.requiresHealth || 0);
+    if (av.reason === 'broke') return '钱包见底了，只能去兼职';
     if (av.reason === 'unknown_action') return '未知行动';
     return '当前不可用';
   }

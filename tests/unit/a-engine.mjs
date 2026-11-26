@@ -188,10 +188,12 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
 
 // ---------------- 4) advance ----------------
 {
-  const s = stateWithoutPending(base);
+  // 这一段只测「月度净额入账」：把每周固定规则（生活费 / 吃饭 / 荒废）关掉，避免叠加
+  const cfgMonthly = patch((c) => { c.balance.weeklyRules = null; });
+  const s = stateWithoutPending(cfgMonthly);
   const moneyBefore = s.player.attributes.money;
-  const r = advance(s, base, createRng(11));
-  const net = Number(base.balance.monthlyIncome) - Number(base.balance.monthlyExpense);
+  const r = advance(s, cfgMonthly, createRng(11));
+  const net = Number(cfgMonthly.balance.monthlyIncome) - Number(cfgMonthly.balance.monthlyExpense);
   check('advance: 回合 +1 且 AP 重置为 4', s.turn === 2 && s.actionPoints === 4, `turn=${s.turn} ap=${s.actionPoints}`);
   check('advance: 月初结算按配置净额入账', s.player.attributes.money === moneyBefore + net,
     `money=${s.player.attributes.money} net=${net}`);
@@ -367,6 +369,8 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
 // ---------------- 8) 连续空窗扣减（D-18） ----------------
 {
   const cfgDecay = patch((c) => {
+    // 这一段只测 idleDecay 本身：关掉每周固定规则（吃饭 / 生活费 / 荒废），避免两套扣减叠加
+    c.balance.weeklyRules = null;
     c.balance.idleDecay = {
       everyTurns: 4,
       resetPerYear: true,
@@ -411,7 +415,7 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
   check('空窗：属性不会被扣成负数（1 → 0）', s4.player.attributes.knowledge === 0, String(s4.player.attributes.knowledge));
 
   // 配置缺省时不生效（旧配置/旧存档兼容）
-  const cfgOff = patch((c) => { delete c.balance.idleDecay; });
+  const cfgOff = patch((c) => { delete c.balance.idleDecay; c.balance.weeklyRules = null; });
   const s5 = stateWithoutPending(cfgOff);
   const k5 = s5.player.attributes.knowledge;
   for (let i = 0; i < 4; i += 1) advance(s5, cfgOff, createRng(140 + i));

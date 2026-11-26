@@ -478,6 +478,11 @@ function bgmForTurn(turn) {
       toast('有一条剧情线断在这里了', 'warning');
     }
 
+    // 每周固定规则（没吃饭 / 生活费到账 / 属性荒废）的提示
+    if (Array.isArray(res.notices) && res.notices.length) {
+      for (const n of res.notices.slice(0, 3)) toast(n.text || '', n.tone || 'warning');
+    }
+
     // 生活费 / 开销反馈（每次结算都提示，并带上当前金钱）
     // 兼职/消费流水与固定生活费分开显示，避免把兼职收入误报为「生活费已发放」。
     if (res.monthly && (Number(res.monthly.income) > 0 || Number(res.monthly.net) !== 0)) {

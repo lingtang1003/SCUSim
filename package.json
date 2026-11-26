@@ -6,7 +6,7 @@
   "description": "基于配置驱动的川大校园生活模拟器（原生 ES Modules，纯静态）",
   "scripts": {
     "dev": "node server.js",
-    "test": "node tests/smoke.mjs && node tests/verify_ui.mjs && node tests/verify_audio.mjs && node tests/verify_settings.mjs && node tests/verify_locations.mjs && node tests/verify_characters.mjs && node tests/verify_tags.mjs && node tests/verify_resume.mjs && node tests/verify_creation.mjs && node tests/verify_courses.mjs && node tests/verify_profile.mjs && node tests/verify_layout.mjs && node tests/verify_keyboard.mjs",
+    "test": "node tests/smoke.mjs && node tests/verify_ui.mjs && node tests/verify_audio.mjs && node tests/verify_settings.mjs && node tests/verify_locations.mjs && node tests/verify_characters.mjs && node tests/verify_tags.mjs && node tests/verify_resume.mjs && node tests/verify_creation.mjs && node tests/verify_courses.mjs && node tests/verify_profile.mjs && node tests/verify_rules.mjs && node tests/verify_layout.mjs && node tests/verify_keyboard.mjs",
     "fonts:check": "python tools/subset-fonts.py --check",
     "fonts": "python tools/subset-fonts.py",
     "balance:events": "node tools/events_exposure.mjs"

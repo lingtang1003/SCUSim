@@ -55,7 +55,8 @@
 | `studyPenalty` + `healthStudyPenaltyBelow` | object/number | 否 | ⏳ 可选 | engine | 低健康学习惩罚 `{dropChance,dropAmount}`；缺席则不生效 |
 | `endingPriorityOrder` | `"asc"｜"desc"` | 否 | ⏳ D-W3 | ending.sortByPriority | `asc` = 数值越小越高；缺省 `desc` 兼容现配置 |
 | `historyLimit` / `logLimit` | number | 否 | 默认 60 | state | 履历/日志环形上限 |
-| `idleDecay` | object | 否 | ✅ 已生效 | engine.applyIdleDecay | 连续空窗扣属性：`{everyTurns:4, resetPerYear:true, knowledge:{actions:['study'],amount:3}, health:{actions:['exercise','rest'],amount:2}}`；缺省则不扣（兼容旧存档） |
+| `idleDecay` | object | 否 | ⏸ 默认关闭（已由 `weeklyRules.neglect` 接管） | engine.applyIdleDecay | 连续空窗扣属性：`{everyTurns:4, resetPerYear:true, knowledge:{actions:['study'],amount:3}, health:{actions:['exercise','rest'],amount:2}}`；缺省则不扣（兼容旧存档）。仓库里已置 `null`，机制保留但默认不生效 |
+| `weeklyRules` | object | 否 | ✅ 已生效 | core/rhythm.js（advance / doAction / actionAvailability 调用） | 每周固定规则：`eat`（这周必须吃一次饭，否则扣健康，默认 −15；`actions`+`locations` 决定什么算吃饭）、`allowance`（每 `everyTurns` 周 +`amount`，默认 2 周 +80）、`broke`（金钱 < 0 时只能做 `allowedActions`，默认兼职/休息）、`neglect`（属性连续 `afterTurns` 周没涨就 −`amount`，默认 2 周 −10，掉完重新计时）。缺省则全部不生效 |
 
 当前实际片段（节选）：
 

@@ -4703,6 +4703,14 @@ body { font-synthesis: none; }
   font-variant-numeric: tabular-nums;
 }
 
+/* 每周固定规则提醒（这周还没吃饭 / 钱包见底只能兼职） */
+.vn-chip--warn {
+  background: color-mix(in srgb, var(--red) 12%, #fff);
+  color: var(--red);
+  border-color: color-mix(in srgb, var(--red) 22%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
 /* 37.5 关系面板 */
 .vn-rel-grid {
   display: grid;
