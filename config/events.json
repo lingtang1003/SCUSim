@@ -210,7 +210,7 @@
     {
       "id": "ev_r03",
       "name": "校园马拉松",
-      "weight": 8,
+      "weight": 9,
       "termRange": [
         2,
         12
@@ -283,7 +283,7 @@
     {
       "id": "ev_r05",
       "name": "失恋了",
-      "weight": 6,
+      "weight": 8,
       "termRange": [
         6,
         20
@@ -467,7 +467,7 @@
     {
       "id": "ev_r10",
       "name": "校园歌手赛",
-      "weight": 7,
+      "weight": 8,
       "termRange": [
         4,
         16
@@ -1806,7 +1806,7 @@
     {
       "id": "ev_r39",
       "name": "选课大战",
-      "weight": 7,
+      "weight": 9,
       "termRange": [
         3,
         28
@@ -1879,7 +1879,7 @@
     {
       "id": "ev_r41",
       "name": "深夜外卖拼单",
-      "weight": 8,
+      "weight": 9,
       "termRange": [
         2,
         30
@@ -2008,7 +2008,7 @@
     {
       "id": "ev_r44",
       "name": "校医院体检",
-      "weight": 6,
+      "weight": 8,
       "termRange": [
         4,
         34
@@ -2515,10 +2515,10 @@
     {
       "id": "ev_r62",
       "name": "师兄带你进实验室",
-      "weight": 7,
+      "weight": 9,
       "termRange": [
         3,
-        8
+        14
       ],
       "text": "实验室师兄问你有没有兴趣跟着做项目，从打杂开始。",
       "options": [
@@ -2633,10 +2633,10 @@
     {
       "id": "ev_r65",
       "name": "家教机会",
-      "weight": 7,
+      "weight": 11,
       "termRange": [
         2,
-        8
+        16
       ],
       "text": "邻居想请人给初中生补数学，一小时八十。",
       "options": [
@@ -2713,10 +2713,10 @@
     {
       "id": "ev_r67",
       "name": "挂科预警",
-      "weight": 6,
+      "weight": 8,
       "termRange": [
-        4,
-        8
+        3,
+        14
       ],
       "text": "辅导员找你谈话，说你这门课平时分不太行。",
       "options": [
@@ -2786,10 +2786,10 @@
     {
       "id": "ev_r69",
       "name": "双学位咨询",
-      "weight": 6,
+      "weight": 8,
       "termRange": [
         3,
-        8
+        14
       ],
       "text": "学院宣传双学位项目，读完要多上两年课。",
       "options": [
@@ -2982,10 +2982,10 @@
     {
       "id": "ev_r74",
       "name": "快递站排长队",
-      "weight": 7,
+      "weight": 8,
       "termRange": [
         1,
-        8
+        40
       ],
       "text": "快递站取件队伍绕了两圈，你的包裹在里面。",
       "options": [
@@ -3011,10 +3011,10 @@
     {
       "id": "ev_r75",
       "name": "校园网又断了",
-      "weight": 7,
+      "weight": 8,
       "termRange": [
         1,
-        8
+        40
       ],
       "text": "正在交作业，校园网忽然断了，网页转圈圈。",
       "options": [
@@ -3043,10 +3043,10 @@
     {
       "id": "ev_r76",
       "name": "手机碎屏",
-      "weight": 6,
+      "weight": 11,
       "termRange": [
         2,
-        8
+        16
       ],
       "text": "手机从床上掉下来，屏幕裂了一道缝。",
       "options": [
@@ -3074,10 +3074,10 @@
     {
       "id": "ev_r77",
       "name": "论文查重",
-      "weight": 7,
+      "weight": 9,
       "termRange": [
-        6,
-        8
+        5,
+        14
       ],
       "text": "论文查重率 28%，导师要求降到 15% 以下。",
       "options": [
@@ -3112,10 +3112,10 @@
     {
       "id": "ev_r78",
       "name": "保研夏令营",
-      "weight": 7,
+      "weight": 13,
       "termRange": [
-        5,
-        8
+        4,
+        12
       ],
       "text": "外校保研夏令营开始报名，需要准备一堆材料。",
       "options": [
@@ -3145,10 +3145,10 @@
     {
       "id": "ev_r79",
       "name": "秋招宣讲会",
-      "weight": 7,
+      "weight": 9,
       "termRange": [
-        6,
-        8
+        5,
+        14
       ],
       "text": "大厂来学校宣讲，现场收简历，队伍排到门外。",
       "options": [
@@ -3189,8 +3189,8 @@
       "name": "毕业照拍摄",
       "weight": 6,
       "termRange": [
-        7,
-        8
+        32,
+        38
       ],
       "text": "毕业照开拍，学士服租一天要一百块。",
       "options": [
@@ -3224,10 +3224,10 @@
     {
       "id": "ev_r81",
       "name": "实习通勤两小时",
-      "weight": 7,
+      "weight": 9,
       "termRange": [
-        6,
-        8
+        4,
+        16
       ],
       "text": "实习单位在城另一头，每天通勤来回两小时。",
       "options": [
@@ -3262,10 +3262,10 @@
     {
       "id": "ev_r82",
       "name": "房东要涨租",
-      "weight": 6,
+      "weight": 8,
       "termRange": [
         5,
-        8
+        20
       ],
       "text": "房东打电话说下个月房租要涨两百。",
       "options": [
@@ -3297,10 +3297,10 @@
     {
       "id": "ev_r83",
       "name": "考研自习室抢座",
-      "weight": 7,
+      "weight": 9,
       "termRange": [
-        5,
-        8
+        4,
+        14
       ],
       "text": "考研自习室六点开门，七点就没位置了。",
       "options": [
@@ -3378,10 +3378,10 @@
     {
       "id": "ev_r85",
       "name": "校园歌手大赛",
-      "weight": 7,
+      "weight": 9,
       "termRange": [
         2,
-        6
+        12
       ],
       "text": "校园歌手大赛报名开始，室友怂恿你去试试。",
       "options": [
@@ -3415,10 +3415,10 @@
     {
       "id": "ev_r86",
       "name": "校园献血车",
-      "weight": 6,
+      "weight": 8,
       "termRange": [
         2,
-        8
+        16
       ],
       "text": "校门口停了辆献血车，志愿者招呼你过去。",
       "options": [
@@ -3448,10 +3448,10 @@
     {
       "id": "ev_r87",
       "name": "兼职被骗",
-      "weight": 6,
+      "weight": 8,
       "termRange": [
         3,
-        8
+        20
       ],
       "text": "网上兼职说先交押金才能接单，你交了钱对方就没影了。",
       "options": [
@@ -3483,10 +3483,10 @@
     {
       "id": "ev_r88",
       "name": "学长卖复习笔记",
-      "weight": 8,
+      "weight": 13,
       "termRange": [
-        3,
-        8
+        2,
+        12
       ],
       "text": "学长在群里卖手写复习笔记，一份五十块。",
       "options": [
@@ -4790,7 +4790,7 @@
     {
       "id": "ev_r105",
       "name": "数学课作业",
-      "weight": 7,
+      "weight": 13,
       "termRange": [
         1,
         12
