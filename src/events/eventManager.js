@@ -94,11 +94,81 @@ function currentPlace(state) {
 }
 
 /**
- * 剧情线保证触发（v2.1）：真正的「哪条线、哪一步、什么窗口」全部在 config/storylines.json，
- * 由 core/storyline.js 的状态机决定；这里只负责在回合开始时问它一句「现在该不该强制出事件」。
+ * 开局分配「相识圈」候选：从有恋爱线的角色里确定性地挑 3 位，暂写 flags.side_<charId>。
+ * 迎新晚会选定主角后由 finalizeSideCast 收口：主角 + 另外 2 位，一局最多只跟 3 个 NPC 有交集。
+ * 不用随机函数，靠 seed 做 xorshift，保证同 seed 复现、旧存档不受影响。
+ * @returns {string[]} 被选中的角色 id
  */
-function nextStoryline(state, config) {
+function shuffleCharacterIds(config, seed, count) {
+  const list = (config && config.characters && Array.isArray(config.characters.list))
+    ? config.characters.list.filter((c) => c && c.id && c.lineId)
+    : [];
+  if (list.length < 4) return [];
+  let x = (Number(seed) || 1) >>> 0;
+  x ^= x << 13; x >>>= 0;
+  x ^= x >> 17;
+  x ^= x << 5; x >>>= 0;
+  const ids = list.map((c) => c.id);
+  for (let i = ids.length - 1; i > 0; i -= 1) {
+    x ^= x << 13; x >>>= 0;
+    x ^= x >> 17;
+    x ^= x << 5; x >>>= 0;
+    const j = x % (i + 1);
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+  }
+  return ids.slice(0, count);
+}
+
+export function assignSideCast(state, config, seed) {
+  if (!state || !state.player) return [];
+  const picked = shuffleCharacterIds(config, seed, 3);
+  if (!picked.length) return [];
+  const flags = state.player.flags || (state.player.flags = {});
+  for (const id of picked) flags[`side_${id}`] = true;
+  return picked;
+}
+
+/**
+ * 迎新晚会选定主角后收口相识圈：主角走主线，另外只留 2 位有相识线，
+ * 保证一局最多 3 个 NPC 有交集（主角 + 2）。同 seed 结果稳定。
+ * @param {string} routeCharId 迎新晚会选定角色
+ * @returns {string[]} 最终除主角外的 2 位
+ */
+export function finalizeSideCast(state, config, routeCharId) {
+  if (!state || !state.player) return [];
+  const picked = shuffleCharacterIds(config, state.seed, 6).filter((id) => id !== routeCharId).slice(0, 2);
+  const flags = state.player.flags || (state.player.flags = {});
+  // 清掉候选阶段可能多写的 side_ 标记（含主角自己的）
+  const chars = (config && config.characters && Array.isArray(config.characters.list))
+    ? config.characters.list.filter((c) => c && c.id && c.lineId)
+    : [];
+  for (const c of chars) {
+    if (!picked.includes(c.id)) delete flags[`side_${c.id}`];
+  }
+  for (const id of picked) flags[`side_${id}`] = true;
+  return picked;
+}
+
+/**
+ * 相识线两段之间至少隔几个回合（避免三个人的相识事件连着刷屏；主线不受影响）。
+ * 导出版本返回完整 due（含 lineId），供引擎在固定事件未命中时兜底派发时也遵守同一节奏。
+ */
+const SIDE_LINE_GAP_TURNS = 3;
+
+export function dueStorylineEvent(state, config) {
   const due = storyline.dueEvent(state, config);
+  if (!due || !due.eventId) return null;
+  if (String(due.lineId).endsWith('_side')) {
+    if (!state.player.flags) state.player.flags = {};
+    const last = Number.isFinite(state.player.flags.lastSideTurn) ? state.player.flags.lastSideTurn : -999;
+    if (Number(state.turn) - last < SIDE_LINE_GAP_TURNS) return null;
+    state.player.flags.lastSideTurn = Number(state.turn);
+  }
+  return due;
+}
+
+function nextStoryline(state, config) {
+  const due = dueStorylineEvent(state, config);
   return due && due.eventId ? due.eventId : null;
 }
 
@@ -123,7 +193,7 @@ function examTurnEvent(state, config) {
  * @param {object} config
  * @returns {string[]}
  */
-export function checkFixedEvents(state, config) {
+export function checkFixedEvents(state, config, opts = {}) {
   const { fixed } = getAllEvents(config);
   const result = [];
   const history = Array.isArray(state.eventHistory) ? state.eventHistory : [];
@@ -139,7 +209,8 @@ export function checkFixedEvents(state, config) {
   const exam = examTurnEvent(state, config);
   if (exam) return [exam];
   // 剧情线保证触发：窗口回合且该线未触发时，强制返回其起始事件（优先于固定/随机）
-  const lineEvent = nextStoryline(state, config);
+  // 负债事件当回合已触发时让位（负债优先于剧情线），剧情线下一回合窗口仍会派发
+  const lineEvent = opts.skipStoryline ? null : nextStoryline(state, config);
   if (lineEvent) {
     return [lineEvent].concat(result.filter((id) => id !== lineEvent));
   }
@@ -388,6 +459,13 @@ export function availableOptions(event, state, config) {
           enabled = false; reason = hint || `需要标记「${req.flag.key}」`;
         }
       }
+      // notFlag 前置（标记等于该值时禁用）：用于"没走这条恋爱线才出现"的相识线
+      if (enabled && req.notFlag && req.notFlag.key) {
+        if (String(flags[req.notFlag.key]) !== 'undefined'
+          && String(flags[req.notFlag.key]) === String(req.notFlag.value)) {
+          enabled = false; reason = hint || '你已经和别人走到这一步了';
+        }
+      }
       // moneyAtLeast 前置
       if (enabled && req.moneyAtLeast !== undefined) {
         if ((Number(attrs.money) || 0) < Number(req.moneyAtLeast)) {
@@ -521,3 +599,4 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
     message: text,
   };
 }
+

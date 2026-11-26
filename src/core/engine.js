@@ -219,7 +219,7 @@ function buildPendingEvent(ev, state, config) {
 function enterTurn(state, config, rng, priorityEventId) {
   if (state.pendingEvent && state.pendingEvent.eventId) return;
   const fixedIds = (typeof eventManager.checkFixedEvents === 'function')
-    ? eventManager.checkFixedEvents(state, config)
+    ? eventManager.checkFixedEvents(state, config, priorityEventId ? { skipStoryline: true } : {})
     : [];
   let eventId = (Array.isArray(fixedIds) && fixedIds[0]) || priorityEventId || null;
   // 负债事件只有在真正胜出并成功弹出后才记账；被固定事件抢先时不消耗冷却
@@ -227,8 +227,8 @@ function enterTurn(state, config, rng, priorityEventId) {
     && !(Array.isArray(fixedIds) && fixedIds.length > 0)
     && eventId === priorityEventId;
   let forcedLine = null;
-  if (!eventId && typeof storyline.dueEvent === 'function') {
-    const due = storyline.dueEvent(state, config);
+  if (!eventId && typeof eventManager.dueStorylineEvent === 'function') {
+    const due = eventManager.dueStorylineEvent(state, config);
     if (due && due.eventId) {
       eventId = due.eventId;
       forcedLine = due.lineId;
@@ -393,6 +393,15 @@ export function newGame(options, config, rng) {
   // v2.1：初始化角色好感与剧情线（缺配置时各自为空操作）
   relation.initRelations(state, config);
   storyline.initStorylines(state, config);
+  // 相识圈候选：开局先记 3 个眼熟的人，迎新晚会选完主角后再收口成「主角 + 2 位」
+  const sideCast = eventManager.assignSideCast(state, config, state.seed);
+  if (sideCast && sideCast.length) {
+    const names = sideCast.map((id) => {
+      const c = relation.findCharacter(config, id);
+      return c ? c.name : id;
+    });
+    pushHistory(state, { type: 'side_cast', text: `同届常碰到的人：${names.join('、')}（晚会之后才定下谁真正常联系）`, ids: sideCast }, config);
+  }
 
   pushHistory(state, {
     type: 'creation',
@@ -712,6 +721,27 @@ export function resolvePendingEvent(state, choiceId, config, rng) {
   }
   state.pendingEvent = null;
   clampAttrs(state, config);
+
+  // 迎新晚会选完主角：相识圈收口为「主角 + 2 位」，一局最多只跟 3 个 NPC 有交集
+  if (eventId === 'ev_fixed_welcome' && typeof eventManager.finalizeSideCast === 'function') {
+    const ids = (config.characters && Array.isArray(config.characters.list))
+      ? config.characters.list.filter((c) => c && c.id && c.lineId).map((c) => c.id)
+      : [];
+    const routeId = ids.find((id) => state.player.flags && state.player.flags[`route_${id}`]) || null;
+    const kept = eventManager.finalizeSideCast(state, config, routeId);
+    if (routeId && state.player.flags) delete state.player.flags[`side_${routeId}`];
+    if (kept.length) {
+      const names = kept.map((id) => {
+        const c = relation.findCharacter(config, id);
+        return c ? c.name : id;
+      });
+      pushHistory(state, {
+        type: 'side_cast',
+        text: `这一届真正说得上话的人：${names.join('、')}（加上晚会选的那位，一局最多三位）`,
+        ids: kept,
+      }, config);
+    }
+  }
 
   // v2.1：推进剧情线（选择的 next 分支 / 步进 / 收束），并同步恋爱状态
   const line = storyline.onEventResolved(state, eventId, choiceId, config);

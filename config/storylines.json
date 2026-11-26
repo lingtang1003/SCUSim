@@ -1044,7 +1044,322 @@
         "affinityBelow": 6,
         "forTurns": 5
       }
+    },
+    {
+      "id": "line_jiangxu_side",
+      "charId": "jiangxu",
+      "name": "江叙 · 相识线",
+      "priority": 40,
+      "startIf": {
+        "flag": {
+          "key": "side_jiangxu",
+          "value": true
+        },
+        "notFlag": {
+          "key": "route_jiangxu",
+          "value": true
+        }
+      },
+      "steps": [
+        {
+          "id": "meet",
+          "eventId": "ev_side_jiangxu_1",
+          "window": [
+            5, 16
+          ]
+        },
+        {
+          "id": "talk",
+          "eventId": "ev_side_jiangxu_2",
+          "window": [
+            16, 28
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "jiangxu",
+              "value": 3
+            }
+          }
+        },
+        {
+          "id": "last",
+          "eventId": "ev_side_jiangxu_3",
+          "window": [
+            28, 38
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "jiangxu",
+              "value": 6
+            }
+          }
+        }
+      ],
+      "note": "只到\"没说的话\"为止，不进入告白；告白只属于迎新晚会选定的那条线。"
+    },
+    {
+      "id": "line_guchi_side",
+      "charId": "guchi",
+      "name": "顾迟 · 相识线",
+      "priority": 41,
+      "startIf": {
+        "flag": {
+          "key": "side_guchi",
+          "value": true
+        },
+        "notFlag": {
+          "key": "route_guchi",
+          "value": true
+        }
+      },
+      "steps": [
+        {
+          "id": "meet",
+          "eventId": "ev_side_guchi_1",
+          "window": [
+            5, 16
+          ]
+        },
+        {
+          "id": "talk",
+          "eventId": "ev_side_guchi_2",
+          "window": [
+            16, 28
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "guchi",
+              "value": 3
+            }
+          }
+        },
+        {
+          "id": "last",
+          "eventId": "ev_side_guchi_3",
+          "window": [
+            28, 38
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "guchi",
+              "value": 6
+            }
+          }
+        }
+      ],
+      "note": "只到\"没说的话\"为止，不进入告白；告白只属于迎新晚会选定的那条线。"
+    },
+    {
+      "id": "line_linyu_side",
+      "charId": "linyu",
+      "name": "林予 · 相识线",
+      "priority": 42,
+      "startIf": {
+        "flag": {
+          "key": "side_linyu",
+          "value": true
+        },
+        "notFlag": {
+          "key": "route_linyu",
+          "value": true
+        }
+      },
+      "steps": [
+        {
+          "id": "meet",
+          "eventId": "ev_side_linyu_1",
+          "window": [
+            5, 16
+          ]
+        },
+        {
+          "id": "talk",
+          "eventId": "ev_side_linyu_2",
+          "window": [
+            16, 28
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "linyu",
+              "value": 3
+            }
+          }
+        },
+        {
+          "id": "last",
+          "eventId": "ev_side_linyu_3",
+          "window": [
+            28, 38
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "linyu",
+              "value": 6
+            }
+          }
+        }
+      ],
+      "note": "只到\"没说的话\"为止，不进入告白；告白只属于迎新晚会选定的那条线。"
+    },
+    {
+      "id": "line_suwan_side",
+      "charId": "suwan",
+      "name": "苏晚 · 相识线",
+      "priority": 43,
+      "startIf": {
+        "flag": {
+          "key": "side_suwan",
+          "value": true
+        },
+        "notFlag": {
+          "key": "route_suwan",
+          "value": true
+        }
+      },
+      "steps": [
+        {
+          "id": "meet",
+          "eventId": "ev_side_suwan_1",
+          "window": [
+            5, 16
+          ]
+        },
+        {
+          "id": "talk",
+          "eventId": "ev_side_suwan_2",
+          "window": [
+            16, 28
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "suwan",
+              "value": 3
+            }
+          }
+        },
+        {
+          "id": "last",
+          "eventId": "ev_side_suwan_3",
+          "window": [
+            28, 38
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "suwan",
+              "value": 6
+            }
+          }
+        }
+      ],
+      "note": "只到\"没说的话\"为止，不进入告白；告白只属于迎新晚会选定的那条线。"
+    },
+    {
+      "id": "line_zhouye_side",
+      "charId": "zhouye",
+      "name": "周野 · 相识线",
+      "priority": 44,
+      "startIf": {
+        "flag": {
+          "key": "side_zhouye",
+          "value": true
+        },
+        "notFlag": {
+          "key": "route_zhouye",
+          "value": true
+        }
+      },
+      "steps": [
+        {
+          "id": "meet",
+          "eventId": "ev_side_zhouye_1",
+          "window": [
+            5, 16
+          ]
+        },
+        {
+          "id": "talk",
+          "eventId": "ev_side_zhouye_2",
+          "window": [
+            16, 28
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "zhouye",
+              "value": 3
+            }
+          }
+        },
+        {
+          "id": "last",
+          "eventId": "ev_side_zhouye_3",
+          "window": [
+            28, 38
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "zhouye",
+              "value": 6
+            }
+          }
+        }
+      ],
+      "note": "只到\"没说的话\"为止，不进入告白；告白只属于迎新晚会选定的那条线。"
+    },
+    {
+      "id": "line_tangtang_side",
+      "charId": "tangtang",
+      "name": "唐棠 · 相识线",
+      "priority": 45,
+      "startIf": {
+        "flag": {
+          "key": "side_tangtang",
+          "value": true
+        },
+        "notFlag": {
+          "key": "route_tangtang",
+          "value": true
+        }
+      },
+      "steps": [
+        {
+          "id": "meet",
+          "eventId": "ev_side_tangtang_1",
+          "window": [
+            5, 16
+          ]
+        },
+        {
+          "id": "talk",
+          "eventId": "ev_side_tangtang_2",
+          "window": [
+            16, 28
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "tangtang",
+              "value": 3
+            }
+          }
+        },
+        {
+          "id": "last",
+          "eventId": "ev_side_tangtang_3",
+          "window": [
+            28, 38
+          ],
+          "gate": {
+            "relationAtLeast": {
+              "charId": "tangtang",
+              "value": 6
+            }
+          }
+        }
+      ],
+      "note": "只到\"没说的话\"为止，不进入告白；告白只属于迎新晚会选定的那条线。"
     }
   ],
   "note": "一条线 = 一局只走一条（startIf 由迎新晚会的 route_* 决定）。9 步弧光：初遇→再次邂逅→单独相处→散步同行→深入了解→暧昧升温→吵架误会→复合和解→告白。gate 不满足 → 停在本步；窗口过期 → 本局错过（broken）；next 里 '@break'/'@done' 是保留目标。"
 }
+
+
+

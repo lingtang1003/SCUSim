@@ -91,7 +91,7 @@
         {
           "id": "approach_zhouye",
           "label": "周野 · 刚从操场跑过来",
-          "resultText": "他一身汗，笑着跟你击了个掌：「你身上有股新生的味道。」",
+          "resultText": "他一身汗，笑着跟你击了个掌。",
           "charId": "zhouye",
           "effects": {
             "flags": {
@@ -105,7 +105,7 @@
         {
           "id": "approach_tangtang",
           "label": "唐棠 · 拿着话筒在串场",
-          "resultText": "她冲你眨了眨眼，把话筒往你嘴边递了一下就收回去，笑得很得意。",
+          "resultText": "她站在台上，悄悄冲你眨了眨眼。",
           "charId": "tangtang",
           "effects": {
             "flags": {
@@ -141,7 +141,7 @@
         1,
         8
       ],
-      "text": "凌晨一点，你在便利店撞见他。他把咖啡放在台面上，没有立刻走。",
+      "text": "凌晨，你在便利店撞见他，他坐在靠窗的台子边上，看见你愣了一下。",
       "lines": [
         {
           "speaker": "旁白",
@@ -154,14 +154,14 @@
         },
         {
           "speaker": "旁白",
-          "text": "他把两瓶咖啡换到一只手上，另一只手去扶快要掉下来的网线。电脑包拉链没拉严，露出一角写满铅笔字的便签。"
+          "text": "他把咖啡换到一只手上，另一只手去扶快要掉下来的网线。电脑包拉链没拉严，露出一角写满字的便签。"
         }
       ],
       "options": [
         {
           "id": "sit",
           "label": "在他旁边坐下，不说话",
-          "resultText": "微波炉响了三声。他把热好的关东煮推到你面前：「你先吃。」自己低头绕网线，一圈一圈，绕得特别慢。",
+          "resultText": "微波炉叮叮地响，他拿出热好的关东煮推到你面前：「饿了么？」自己低头绕网线。",
           "effects": {
             "attributes": {
               "social": 1
@@ -174,7 +174,7 @@
         {
           "id": "greet",
           "label": "说一句早点睡就走",
-          "resultText": "「嗯，你也是。」他应得很快。你转身时，身后才传来拉开易拉罐的声音。",
+          "resultText": "「嗯，你也是。」他应得很快。",
           "effects": {
             "relation": {
               "jiangxu": 2
@@ -3187,6 +3187,1237 @@
           }
         }
       ]
+    },
+    {
+      "id": "ev_side_jiangxu_1",
+      "charId": "jiangxu",
+      "name": "打印店门口的笔记本",
+      "weight": 1,
+      "termRange": [
+        4,
+        14
+      ],
+      "text": "打印店门口的地上摊着一本写满代码的笔记本，扉页只有一句“别翻”。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "打印店的机箱一直在响，门口的地上摊着一本笔记本，边角被翻得发毛。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "扉页上写着两个字：别翻。字迹很轻，像怕被人看见。"
+        },
+        {
+          "speaker": "江叙",
+          "text": "……那是我的。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他站在两步外，手里拎着刚打印好的一沓纸，没有伸手来抢。"
+        }
+      ],
+      "options": [
+        {
+          "id": "return",
+          "label": "合上，递还给他",
+          "resultText": "你把本子合上递过去。他接过时说了句“谢谢”，走了两步又回头：“里面第三页那个循环写法，别学，是错的。”",
+          "effects": {
+            "relation": {
+              "jiangxu": 6
+            },
+            "flags": {
+              "met_jiangxu": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_jiangxu",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "peek",
+          "label": "顺手翻开一页看",
+          "resultText": "你只看到半页注释，他就把本子抽走了，耳朵有点红：“说过别翻。”第二天打印店老板说，那台机子被人连夜清过缓存。",
+          "effects": {
+            "relation": {
+              "jiangxu": 3
+            },
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "met_jiangxu": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_jiangxu",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_jiangxu_2",
+      "charId": "jiangxu",
+      "name": "图书馆四楼的两块屏幕",
+      "weight": 1,
+      "termRange": [
+        15,
+        28
+      ],
+      "text": "图书馆四楼靠窗的位置并排摆着两台笔记本，其中一台的屏幕正卡在报错页。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "四楼的空调开得很低。他把外接键盘往旁边挪了挪，空出半张桌子。"
+        },
+        {
+          "speaker": "江叙",
+          "text": "这个 bug 我卡了两个小时。你要不要……看一眼。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "报错行标红，注释写着“先别动，等我回来”。"
+        }
+      ],
+      "options": [
+        {
+          "id": "help",
+          "label": "坐下，跟着他一起看代码",
+          "resultText": "你看了十分钟，指着一处变量名说这里拼错了。他盯着屏幕三秒，往后靠在椅背上，很轻地笑了一下：“行，你比我快。”",
+          "effects": {
+            "relation": {
+              "jiangxu": 7
+            },
+            "attributes": {
+              "knowledge": 1
+            },
+            "flags": {
+              "close_jiangxu": true,
+              "met_jiangxu": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_jiangxu",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "decline",
+          "label": "说这学期课太满，帮不上",
+          "resultText": "“没事。”他把椅子推回去，屏幕转向自己。你走到楼梯口时，听见后面有人轻轻叹了口气。",
+          "effects": {
+            "relation": {
+              "jiangxu": 2
+            },
+            "flags": {
+              "met_jiangxu": true,
+              "close_jiangxu": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_jiangxu",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_jiangxu_3",
+      "charId": "jiangxu",
+      "name": "便利店里的第二杯咖啡",
+      "weight": 1,
+      "termRange": [
+        28,
+        38
+      ],
+      "text": "凌晨的便利店只剩一个店员，收银台边并排放着两杯热咖啡。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "关东煮的汤在锅里冒泡。他从货架后绕出来，把其中一杯往你面前推了推。"
+        },
+        {
+          "speaker": "江叙",
+          "text": "第二杯半价。你……别熬太晚。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他没等你回答，先低头去撕糖包，撕了两次都没撕开。"
+        }
+      ],
+      "options": [
+        {
+          "id": "stay",
+          "label": "坐下，陪他把这杯喝完",
+          "resultText": "你们隔着收银台坐了很久，谁也没说什么。出门时他把空杯捏扁扔进垃圾桶，说了句“明天见”，声音比平时低。有些话两个人都没提，也就不必提。",
+          "effects": {
+            "relation": {
+              "jiangxu": 5
+            },
+            "attributes": {
+              "social": 1
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_jiangxu",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "leave",
+          "label": "说太晚了，先回宿舍",
+          "resultText": "“嗯。”他应得很干脆，把两杯都收走了。你走到街口回头，便利店的门还开着，灯很白。",
+          "effects": {
+            "relation": {
+              "jiangxu": 3
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_jiangxu",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_guchi_1",
+      "charId": "guchi",
+      "name": "辩论队缺一个计时员",
+      "weight": 1,
+      "termRange": [
+        4,
+        14
+      ],
+      "text": "文科楼的公告栏前贴着一张招新海报，字写得很硬，落款只有一个姓。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "海报上写着“校辩论队招计时员一名”，下面用马克笔补了一行：不会也行。"
+        },
+        {
+          "speaker": "顾迟",
+          "text": "会看表吗。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他站在你身后，手里还捏着胶带，指节沾了一点墨。"
+        }
+      ],
+      "options": [
+        {
+          "id": "yes",
+          "label": "说会，问什么时候开始",
+          "resultText": "“周四晚上七点，文科楼 302。”他把胶带塞进兜里，“迟到一分钟，我就不等。”你发现他说这话时，海报的边角被他按得很平。",
+          "effects": {
+            "relation": {
+              "guchi": 6
+            },
+            "flags": {
+              "met_guchi": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_guchi",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "maybe",
+          "label": "说自己课多，可能来不了",
+          "resultText": "“那就别来。”他答得很快，转身继续贴海报。胶带撕了一长条，用不完，也没剪。",
+          "effects": {
+            "relation": {
+              "guchi": 2
+            },
+            "flags": {
+              "met_guchi": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_guchi",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_guchi_2",
+      "charId": "guchi",
+      "name": "模拟法庭的旁听席",
+      "weight": 1,
+      "termRange": [
+        15,
+        28
+      ],
+      "text": "模拟法庭的门半开着，里面在走最后一轮流程，旁听席空了大半。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "他站在控方席，念结案陈词时把稿子压在桌上，几乎不看。"
+        },
+        {
+          "speaker": "顾迟",
+          "text": "……以上。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "评委席在打分。他抬眼，正好看见门口的你，停了半秒才收起材料。"
+        }
+      ],
+      "options": [
+        {
+          "id": "wait",
+          "label": "在门口等到他出来",
+          "resultText": "他出来时先把领带松了半圈。“听懂了？”你说只听懂一半。他哼了一声：“下次坐前排。”",
+          "effects": {
+            "relation": {
+              "guchi": 7
+            },
+            "attributes": {
+              "knowledge": 1
+            },
+            "flags": {
+              "close_guchi": true,
+              "met_guchi": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_guchi",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "walk",
+          "label": "看一会儿就走",
+          "resultText": "你退到楼梯口，里面的声音还在继续。台阶上落了一层粉笔灰，踩上去会响。",
+          "effects": {
+            "relation": {
+              "guchi": 2
+            },
+            "flags": {
+              "met_guchi": true,
+              "close_guchi": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_guchi",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_guchi_3",
+      "charId": "guchi",
+      "name": "闭庭之后的一瓶水",
+      "weight": 1,
+      "termRange": [
+        28,
+        38
+      ],
+      "text": "最后一场模拟法庭散场，他把材料塞进包里，桌上留着一瓶没开封的水。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "灯一排排关掉，走廊只剩安全出口的绿光。"
+        },
+        {
+          "speaker": "顾迟",
+          "text": "你今天一直在。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他把那瓶水推过来，自己拧开另一瓶，喝得很慢。"
+        }
+      ],
+      "options": [
+        {
+          "id": "take",
+          "label": "接过水，说辩得不错",
+          "resultText": "“第二段有个漏洞，你没抓到。”他嘴上这么说，走出去时替你按住了电梯门。有些话他说不出口，就换成了挑剔。",
+          "effects": {
+            "relation": {
+              "guchi": 5
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_guchi",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "no",
+          "label": "摆手，说只是路过",
+          "resultText": "“路过三次？”他没再追问，把水留在桌上，先走了。瓶子后来在教室里放了很久。",
+          "effects": {
+            "relation": {
+              "guchi": 3
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_guchi",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_linyu_1",
+      "charId": "linyu",
+      "name": "长桥上的取景框",
+      "weight": 1,
+      "termRange": [
+        4,
+        14
+      ],
+      "text": "她蹲在桥栏边，镜头对着水面，帽檐压得很低。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "桥下的水很浅，有片落叶卡在石缝里，被水推得一直转。"
+        },
+        {
+          "speaker": "林予",
+          "text": "……你挡光了。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她说完就把相机稍微偏了偏，留出半步位置。"
+        }
+      ],
+      "options": [
+        {
+          "id": "step",
+          "label": "往旁边让半步，站着看她拍",
+          "resultText": "快门响了两声，她把相机翻过来给你看：那张照片里，落叶占了大半幅，桥栏只剩一条边。“好看吗。”她问得很轻，帽子还没抬。",
+          "effects": {
+            "relation": {
+              "linyu": 6
+            },
+            "flags": {
+              "met_linyu": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_linyu",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "sorry",
+          "label": "道歉，快步走开",
+          "resultText": "“不用道歉。”她重新低下头。你走远时，又听见一声快门。",
+          "effects": {
+            "relation": {
+              "linyu": 2
+            },
+            "flags": {
+              "met_linyu": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_linyu",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_linyu_2",
+      "charId": "linyu",
+      "name": "暗房里的显影液",
+      "weight": 1,
+      "termRange": [
+        15,
+        28
+      ],
+      "text": "校报的暗房借在桥边的小屋，红灯亮着，显影盘里浮着一张照片。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "门没关严，红灯从缝里透出来，照得整条走廊都发暖。"
+        },
+        {
+          "speaker": "林予",
+          "text": "别开大灯。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她用夹子夹起照片，水一滴一滴落回盘里。"
+        }
+      ],
+      "options": [
+        {
+          "id": "watch",
+          "label": "站在门口，等照片显出来",
+          "resultText": "图像一点点浮现，是长桥，是那天傍晚。她小声说：“本来想扔的。”你说别扔。她就把照片挂在绳子上，夹子挑了最正的那一个。",
+          "effects": {
+            "relation": {
+              "linyu": 7
+            },
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "close_linyu": true,
+              "met_linyu": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_linyu",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "leave",
+          "label": "退出去，替她把门带上",
+          "resultText": "门合上的一瞬间，红灯灭了。里面传来水声，很久没停。",
+          "effects": {
+            "relation": {
+              "linyu": 2
+            },
+            "flags": {
+              "met_linyu": true,
+              "close_linyu": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_linyu",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_linyu_3",
+      "charId": "linyu",
+      "name": "校报排版到熄灯",
+      "weight": 1,
+      "termRange": [
+        28,
+        38
+      ],
+      "text": "校报最后一版还空着一块，她的相机放在桌角，电池已经换过两次。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "编辑部的灯只开了半排，显示器上是没排完的版面。"
+        },
+        {
+          "speaker": "林予",
+          "text": "这块空着，他们说放我的照片。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她把帽子摘下来放在桌上，头发压出一道痕。"
+        }
+      ],
+      "options": [
+        {
+          "id": "stay",
+          "label": "坐下来，陪她把版面排完",
+          "resultText": "你们把照片挪了三次位置，最后留在右下角，很小一张。她盯着屏幕看了会儿，说：“这样就好，别人不一定看得见。”署名那一栏，她还是空着。",
+          "effects": {
+            "relation": {
+              "linyu": 5
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_linyu",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "go",
+          "label": "说太晚了，明天再弄",
+          "resultText": "“嗯，你先走。”她把帽子重新扣上。你到门口回头，屏幕的光把她整个人照得很白。",
+          "effects": {
+            "relation": {
+              "linyu": 3
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_linyu",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_suwan_1",
+      "charId": "suwan",
+      "name": "琴房门口的音阶",
+      "weight": 1,
+      "termRange": [
+        4,
+        14
+      ],
+      "text": "琴房的门留了一条缝，里面的音阶弹到一半停住，又从头开始。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "走廊很静，只有琴声和暖气片的轻响。门缝里能看见一小截琴凳。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "音阶第三次断在同一个音上。门开了，她抱着一沓谱子出来，差点撞到你。"
+        },
+        {
+          "speaker": "苏晚",
+          "text": "对、对不起……"
+        }
+      ],
+      "options": [
+        {
+          "id": "hold",
+          "label": "帮她扶住快掉的谱子",
+          "resultText": "谱子最上面那张写着“演出用，别折”。她低头说了声谢谢，声音很小。走远两步又回头：“刚才那段……很难听吧。”你说不难，她耳朵红了。",
+          "effects": {
+            "relation": {
+              "suwan": 6
+            },
+            "flags": {
+              "met_suwan": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_suwan",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "nod",
+          "label": "点点头，让开路",
+          "resultText": "她侧身过去，抱谱子的手一直没松。琴房的门在她身后合上，音阶又响了一遍。",
+          "effects": {
+            "relation": {
+              "suwan": 2
+            },
+            "flags": {
+              "met_suwan": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_suwan",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_suwan_2",
+      "charId": "suwan",
+      "name": "四楼琴房的两杯热水",
+      "weight": 1,
+      "termRange": [
+        15,
+        28
+      ],
+      "text": "琴房外的暖气片边上放着两杯热水，其中一杯没动过，杯壁还挂着水汽。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "她坐在琴凳上，手放在琴键上没动，谱子摊在一边。"
+        },
+        {
+          "speaker": "苏晚",
+          "text": "这段我总弹不对……你、你要听吗。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "说完她就后悔了，手指在琴键上轻轻缩了一下。"
+        }
+      ],
+      "options": [
+        {
+          "id": "listen",
+          "label": "说想听，坐在旁边等",
+          "resultText": "她弹了三遍，第三遍中间没有断。停下时她没抬头，只把另一杯热水往你那边推了推：“有点凉了。”",
+          "effects": {
+            "relation": {
+              "suwan": 7
+            },
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "close_suwan": true,
+              "met_suwan": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_suwan",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "quiet",
+          "label": "说怕打扰她练习，改天",
+          "resultText": "“好。”她把谱子合上，还是笑着的。你关门前听见她重新开始弹，弹的是刚才那段。",
+          "effects": {
+            "relation": {
+              "suwan": 2
+            },
+            "flags": {
+              "met_suwan": true,
+              "close_suwan": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_suwan",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_suwan_3",
+      "charId": "suwan",
+      "name": "演出前的空座位",
+      "weight": 1,
+      "termRange": [
+        28,
+        38
+      ],
+      "text": "小演奏厅的第三排靠边空着一个位置，椅背上贴着一张写了她名字的便签。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "后台的帘子动了一下，又停住。观众席还没坐满，灯光在调。"
+        },
+        {
+          "speaker": "苏晚",
+          "text": "那个位置……我留的。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她说完就退回帘子后面，只留下便签的一角翘着。"
+        }
+      ],
+      "options": [
+        {
+          "id": "sit",
+          "label": "坐到那个位置上",
+          "resultText": "整场她都弹得很稳。谢幕时她朝第三排看了一眼，很快又移开。散场后便签被撕掉了，只剩一点胶痕。她没提这件事，你也没提。",
+          "effects": {
+            "relation": {
+              "suwan": 5
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_suwan",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "stand",
+          "label": "站在后排听完整场",
+          "resultText": "灯亮起来时你已经走到门口。她抱着谱子从后台出来，隔着人群朝这边点了点头。",
+          "effects": {
+            "relation": {
+              "suwan": 3
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_suwan",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_zhouye_1",
+      "charId": "zhouye",
+      "name": "跑道边的第 4 道",
+      "weight": 1,
+      "termRange": [
+        4,
+        14
+      ],
+      "text": "第 4 道上放着一只秒表，跑道上没人，看台边有人在压腿。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "傍晚的塑胶跑道还烫着，风一阵一阵地来。"
+        },
+        {
+          "speaker": "周野",
+          "text": "帮我按一下表？我跑两组。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他把外套扔在栏杆上，鞋尖在起跑线上蹭了两下。"
+        }
+      ],
+      "options": [
+        {
+          "id": "press",
+          "label": "接过秒表，站到终点线边",
+          "resultText": "第二组他比第一组快了半秒。冲过线时喘得厉害，还是抬手跟你击了个掌：“你按表挺准。”汗甩到你手背上，烫的。",
+          "effects": {
+            "relation": {
+              "zhouye": 6
+            },
+            "attributes": {
+              "health": 1
+            },
+            "flags": {
+              "met_zhouye": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_zhouye",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "no",
+          "label": "说自己还要去上自习",
+          "resultText": "“行，那你快去。”他把秒表收进兜里，一个人重新站上起跑线。",
+          "effects": {
+            "relation": {
+              "zhouye": 2
+            },
+            "flags": {
+              "met_zhouye": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_zhouye",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_zhouye_2",
+      "charId": "zhouye",
+      "name": "训练后的盐汽水",
+      "weight": 1,
+      "termRange": [
+        15,
+        28
+      ],
+      "text": "训练结束，他从包里掏出两瓶盐汽水，瓶身上全是水珠。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "跑道灯一盏盏亮起来，草坪上有人在收标志桶。"
+        },
+        {
+          "speaker": "周野",
+          "text": "喝这个，补盐的。别嫌难喝。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他自己先灌了半瓶，喝完打了个嗝，笑得有点不好意思。"
+        }
+      ],
+      "options": [
+        {
+          "id": "drink",
+          "label": "接过来，坐在看台上喝完",
+          "resultText": "你们并排坐着，看别人一圈一圈地跑。“我下学期想跑接力。”他说，“第四棒。”你问为什么是第四棒，他说最后一个跑，能看见所有人。",
+          "effects": {
+            "relation": {
+              "zhouye": 7
+            },
+            "attributes": {
+              "health": 1
+            },
+            "flags": {
+              "close_zhouye": true,
+              "met_zhouye": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_zhouye",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "说自己喝不惯这个味道",
+          "resultText": "“哦，那我自己喝。”他把两瓶都收回去，喝得比刚才快。",
+          "effects": {
+            "relation": {
+              "zhouye": 2
+            },
+            "flags": {
+              "met_zhouye": true,
+              "close_zhouye": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_zhouye",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_zhouye_3",
+      "charId": "zhouye",
+      "name": "校运会报名表",
+      "weight": 1,
+      "termRange": [
+        28,
+        38
+      ],
+      "text": "看台栏杆上压着一张报名表，第四棒那一栏写着他的名字，后面还有一处空着。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "表格被风掀起来一角，他用矿泉水瓶压住。"
+        },
+        {
+          "speaker": "周野",
+          "text": "这行是给替补留的。你要不要写？"
+        },
+        {
+          "speaker": "旁白",
+          "text": "他说得像开玩笑，笔却已经递过来了。"
+        }
+      ],
+      "options": [
+        {
+          "id": "sign",
+          "label": "把名字写在替补那一栏",
+          "resultText": "他看了一眼，把表折好塞进外套内袋：“那我就不许自己跑崩了。”比赛那天你没上场，他跑完第四棒，绕场时特意从你面前经过。",
+          "effects": {
+            "relation": {
+              "zhouye": 5
+            },
+            "attributes": {
+              "health": 1
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_zhouye",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "no",
+          "label": "说怕拖他后腿，不写",
+          "resultText": "“也行。”他把笔收回去，表角还是翘着。风一吹，哗啦响。",
+          "effects": {
+            "relation": {
+              "zhouye": 3
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_zhouye",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_tangtang_1",
+      "charId": "tangtang",
+      "name": "话剧社缺个搬道具的",
+      "weight": 1,
+      "termRange": [
+        4,
+        14
+      ],
+      "text": "社团活动中心一楼堆着半屋子的道具，一把木椅子倒在地上，椅腿缠着胶带。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "排练厅的门开着，里面在放录音，台词和笑声混在一起。"
+        },
+        {
+          "speaker": "唐棠",
+          "text": "来得正好——缺个搬椅子的。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她手里还拿着话筒，说话带着回声。"
+        }
+      ],
+      "options": [
+        {
+          "id": "help",
+          "label": "卷起袖子把椅子搬进去",
+          "resultText": "椅子比看上去重。她替你扶住门，等你放下才松手：“力气不小。”台上有人喊她，她应了一声，走两步又回头：“下次排练还来啊。”",
+          "effects": {
+            "relation": {
+              "tangtang": 6
+            },
+            "attributes": {
+              "health": 1
+            },
+            "flags": {
+              "met_tangtang": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_tangtang",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "decline",
+          "label": "说只是路过，看看就走",
+          "resultText": "“看可以，别站在门口挡光。”她笑着把门推开了些，回去接着念台词。",
+          "effects": {
+            "relation": {
+              "tangtang": 2
+            },
+            "flags": {
+              "met_tangtang": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_tangtang",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_tangtang_2",
+      "charId": "tangtang",
+      "name": "后台的台词本",
+      "weight": 1,
+      "termRange": [
+        15,
+        28
+      ],
+      "text": "后台的化妆镜前摊着一本台词本，边角写满铅笔批注，最后一页被折了起来。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "镜子边的灯泡坏了一只，剩下几只把她的影子拉得很长。"
+        },
+        {
+          "speaker": "唐棠",
+          "text": "帮我对一段？我一个人念总不对味。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她把本子递过来，折起来的那一页没让你翻。"
+        }
+      ],
+      "options": [
+        {
+          "id": "read",
+          "label": "接过来，跟她对词",
+          "resultText": "对到一半她忽然改了词，接了一句本子上没有的。你愣住，她笑得眼睛弯起来：“反应太慢，观众会笑你的。”镜子里她的影子跟着晃。",
+          "effects": {
+            "relation": {
+              "tangtang": 7
+            },
+            "attributes": {
+              "social": 1
+            },
+            "flags": {
+              "close_tangtang": true,
+              "met_tangtang": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_tangtang",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "shy",
+          "label": "说自己不会演戏，站远点看",
+          "resultText": "“不会才要学。”她也不勉强，自己对着镜子念下去，声音一段比一段轻。",
+          "effects": {
+            "relation": {
+              "tangtang": 2
+            },
+            "flags": {
+              "met_tangtang": true,
+              "close_tangtang": true
+            }
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_tangtang",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
+    },
+    {
+      "id": "ev_side_tangtang_3",
+      "charId": "tangtang",
+      "name": "谢幕之后的后门",
+      "weight": 1,
+      "termRange": [
+        28,
+        38
+      ],
+      "text": "演出散场，观众从正门走光了，后台的后门还开着一条缝，风把幕布吹得直响。",
+      "lines": [
+        {
+          "speaker": "旁白",
+          "text": "她卸了半边妆，头发用一根笔别着，手里拎着戏服的下摆。"
+        },
+        {
+          "speaker": "唐棠",
+          "text": "你还没走啊。"
+        },
+        {
+          "speaker": "旁白",
+          "text": "她说这话时没有笑，和台上那个人不太一样。"
+        }
+      ],
+      "options": [
+        {
+          "id": "stay",
+          "label": "说等她一起走",
+          "resultText": "“那我得快点了。”她进去换衣服，隔着幕布喊了一句什么，你没听清。出来时她把戏服搭在手臂上，两个人从后门走到路灯下，谁都没提台上那场戏。",
+          "effects": {
+            "relation": {
+              "tangtang": 5
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_tangtang",
+              "value": true
+            }
+          }
+        },
+        {
+          "id": "leave",
+          "label": "说该回去了，明天见",
+          "resultText": "“明天见。”她挥了挥手，转身把后门关上。门缝里的光随即灭了。",
+          "effects": {
+            "relation": {
+              "tangtang": 3
+            },
+            "flags": {}
+          },
+          "requires": {
+            "notFlag": {
+              "key": "route_tangtang",
+              "value": true
+            }
+          }
+        }
+      ],
+      "storylineOnly": true,
+      "once": true
     }
   ]
 }
