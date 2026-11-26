@@ -73,7 +73,10 @@ const MONTH_LABEL = { knowledge: '学识', social: '社交', health: '健康' };
  * 金钱只加「固定净额」（固定收入-固定支出）；兼职/消费已由行动/事件即时入账，不重复计入。
  * @param {object} state
  * @param {object} config
- * @returns {{ ok: boolean, income: number, expense: number, net: number }}
+ * @returns {{ ok: boolean, income: number, expense: number, net: number,
+ *            fixedIncome: number, fixedExpense: number, flowIncome: number, flowExpense: number }}
+ *   income/expense 为含兼职/消费流水的合计（保持旧调用兼容）；fixedIncome/fixedExpense 仅为固定收支，
+ *   flowIncome/flowExpense 为当月兼职收入/消费支出，供 UI 区分展示。
  */
 export function settleMonthly(state, config) {
   const balance = (config && config.balance) || {};
@@ -108,7 +111,17 @@ export function settleMonthly(state, config) {
   // 重置当月追踪
   delete state.__monthDelta;
   delete state.__monthFlow;
-  return { ok: true, income: totalIncome, expense: totalExpense, net };
+  return {
+    ok: true,
+    income: totalIncome,
+    expense: totalExpense,
+    net,
+    // 拆分字段：固定收支 / 当月兼职收入 / 当月消费支出，供 UI 正确标注来源。
+    fixedIncome: income,
+    fixedExpense: expense,
+    flowIncome: Number.isFinite(flow.income) ? flow.income : 0,
+    flowExpense: Number.isFinite(flow.expense) ? flow.expense : 0,
+  };
 }
 
 /**
@@ -139,11 +152,10 @@ export function applyExtraMoney(state, amount, reason) {
 }
 
 /**
- * 负债判定：money <= debtThreshold 且距上次触发 >= debtCooldownTurns 时触发负债事件。
- * 记 state.player.flags.lastDebtTurn，避免冷却期内重复触发。
+ * 负债判定（只读）：money <= debtThreshold 且距上次触发 >= debtCooldownTurns 时，返回可触发的负债事件。
+ * 本函数不再写 state.player.flags.lastDebtTurn；真正弹出事件后由 markDebtTriggered 记账。
  *
- * 注：本函数供 engine 在 advance 中调用以把 ev_fixed_debt 挂进待处理事件；
- * 当前 engine 尚未接入，由 A 集成（本模块只提供判定，不自行改 engine）。
+ * 注：本函数供 engine 在 advance 中调用以把 ev_fixed_debt 挂进待处理事件。
  * @param {object} state
  * @param {object} config
  * @returns {{ triggered: boolean, eventId: string|null }}
@@ -159,6 +171,15 @@ export function checkDebt(state, config) {
     ? state.player.flags.lastDebtTurn
     : -Infinity;
   if (state.turn - last < cooldown) return { triggered: false, eventId: null };
-  state.player.flags.lastDebtTurn = state.turn;
   return { triggered: true, eventId: 'ev_fixed_debt' };
+}
+
+/**
+ * 负债事件真正挂到 state.pendingEvent 后才调用，记录本回合已触发以启动冷却。
+ * @param {object} state
+ */
+export function markDebtTriggered(state) {
+  if (!state || !state.player) return;
+  if (!state.player.flags) state.player.flags = {};
+  state.player.flags.lastDebtTurn = state.turn;
 }

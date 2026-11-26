@@ -94,11 +94,81 @@ function currentPlace(state) {
 }
 
 /**
- * 剧情线保证触发（v2.1）：真正的「哪条线、哪一步、什么窗口」全部在 config/storylines.json，
- * 由 core/storyline.js 的状态机决定；这里只负责在回合开始时问它一句「现在该不该强制出事件」。
+ * 开局分配「相识圈」候选：从有恋爱线的角色里确定性地挑 3 位，暂写 flags.side_<charId>。
+ * 迎新晚会选定主角后由 finalizeSideCast 收口：主角 + 另外 2 位，一局最多只跟 3 个 NPC 有交集。
+ * 不用随机函数，靠 seed 做 xorshift，保证同 seed 复现、旧存档不受影响。
+ * @returns {string[]} 被选中的角色 id
  */
-function nextStoryline(state, config) {
+function shuffleCharacterIds(config, seed, count) {
+  const list = (config && config.characters && Array.isArray(config.characters.list))
+    ? config.characters.list.filter((c) => c && c.id && c.lineId)
+    : [];
+  if (list.length < 4) return [];
+  let x = (Number(seed) || 1) >>> 0;
+  x ^= x << 13; x >>>= 0;
+  x ^= x >> 17;
+  x ^= x << 5; x >>>= 0;
+  const ids = list.map((c) => c.id);
+  for (let i = ids.length - 1; i > 0; i -= 1) {
+    x ^= x << 13; x >>>= 0;
+    x ^= x >> 17;
+    x ^= x << 5; x >>>= 0;
+    const j = x % (i + 1);
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+  }
+  return ids.slice(0, count);
+}
+
+export function assignSideCast(state, config, seed) {
+  if (!state || !state.player) return [];
+  const picked = shuffleCharacterIds(config, seed, 3);
+  if (!picked.length) return [];
+  const flags = state.player.flags || (state.player.flags = {});
+  for (const id of picked) flags[`side_${id}`] = true;
+  return picked;
+}
+
+/**
+ * 迎新晚会选定主角后收口相识圈：主角走主线，另外只留 2 位有相识线，
+ * 保证一局最多 3 个 NPC 有交集（主角 + 2）。同 seed 结果稳定。
+ * @param {string} routeCharId 迎新晚会选定角色
+ * @returns {string[]} 最终除主角外的 2 位
+ */
+export function finalizeSideCast(state, config, routeCharId) {
+  if (!state || !state.player) return [];
+  const picked = shuffleCharacterIds(config, state.seed, 6).filter((id) => id !== routeCharId).slice(0, 2);
+  const flags = state.player.flags || (state.player.flags = {});
+  // 清掉候选阶段可能多写的 side_ 标记（含主角自己的）
+  const chars = (config && config.characters && Array.isArray(config.characters.list))
+    ? config.characters.list.filter((c) => c && c.id && c.lineId)
+    : [];
+  for (const c of chars) {
+    if (!picked.includes(c.id)) delete flags[`side_${c.id}`];
+  }
+  for (const id of picked) flags[`side_${id}`] = true;
+  return picked;
+}
+
+/**
+ * 相识线两段之间至少隔几个回合（避免三个人的相识事件连着刷屏；主线不受影响）。
+ * 导出版本返回完整 due（含 lineId），供引擎在固定事件未命中时兜底派发时也遵守同一节奏。
+ */
+const SIDE_LINE_GAP_TURNS = 3;
+
+export function dueStorylineEvent(state, config) {
   const due = storyline.dueEvent(state, config);
+  if (!due || !due.eventId) return null;
+  if (String(due.lineId).endsWith('_side')) {
+    if (!state.player.flags) state.player.flags = {};
+    const last = Number.isFinite(state.player.flags.lastSideTurn) ? state.player.flags.lastSideTurn : -999;
+    if (Number(state.turn) - last < SIDE_LINE_GAP_TURNS) return null;
+    state.player.flags.lastSideTurn = Number(state.turn);
+  }
+  return due;
+}
+
+function nextStoryline(state, config) {
+  const due = dueStorylineEvent(state, config);
   return due && due.eventId ? due.eventId : null;
 }
 
@@ -123,7 +193,7 @@ function examTurnEvent(state, config) {
  * @param {object} config
  * @returns {string[]}
  */
-export function checkFixedEvents(state, config) {
+export function checkFixedEvents(state, config, opts = {}) {
   const { fixed } = getAllEvents(config);
   const result = [];
   const history = Array.isArray(state.eventHistory) ? state.eventHistory : [];
@@ -139,7 +209,8 @@ export function checkFixedEvents(state, config) {
   const exam = examTurnEvent(state, config);
   if (exam) return [exam];
   // 剧情线保证触发：窗口回合且该线未触发时，强制返回其起始事件（优先于固定/随机）
-  const lineEvent = nextStoryline(state, config);
+  // 负债事件当回合已触发时让位（负债优先于剧情线），剧情线下一回合窗口仍会派发
+  const lineEvent = opts.skipStoryline ? null : nextStoryline(state, config);
   if (lineEvent) {
     return [lineEvent].concat(result.filter((id) => id !== lineEvent));
   }
@@ -237,8 +308,9 @@ export function rollEvent(state, config, rng) {
   // 避免「上一回合刚领完十佳歌手门票、这一回合又来同一事件」的情况。
   const recent = (state && Array.isArray(state.__recentEvents)) ? state.__recentEvents : [];
 
-  // 分组优先级：地点专属 → 主题匹配 → 同场景其他主题 → 通用 → 其他场景；逐级兜底，避免空池卡死。
-  // 带 place 的事件只在命中的地点出现（跨地点一律排除），保证「图书馆不会冒出教室事件」。
+  // 池子分层：地点不符的事件严格排除（避免图书馆冒教室事件）；地点相符 / 通用 / 跨场景
+  // 按 tier 倍率混在一个池里做一次轮盘赌——不再"地点专属有货就只抽地点专属"，
+  // 否则死守一个地点会反复只见到那几条，通用事件永远出不来。
   const cur = currentSpot(state);
   const curTopic = currentTopic(state, config);
   const curPlace = currentPlace(state);
@@ -252,25 +324,36 @@ export function rollEvent(state, config, rng) {
     const p = placeOf(x);
     return !!p && !!curPlace && !p.includes(curPlace);
   };
-  let groups;
+  const tierCfg = (balance.eventTierWeights && typeof balance.eventTierWeights === 'object')
+    ? balance.eventTierWeights : {};
+  const tier = (key, def) => (Number.isFinite(tierCfg[key]) ? tierCfg[key] : def);
+  let pool;
   if (!cur) {
     // 没有可用的地点上下文时，先只抽与地点无关的事件；实在没有才放宽。
     const noPlace = weighted.filter((x) => !placeOf(x));
-    groups = noPlace.length
-      ? [noPlace, weighted.filter((x) => !placeMismatch(x))]
-      : [weighted];
+    pool = noPlace.length
+      ? noPlace
+      : weighted.filter((x) => !placeMismatch(x));
   } else {
     const inSpot = (x) => Array.isArray(x.e.spot) && x.e.spot.includes(cur);
-    const placeMatch = weighted.filter((x) => inPlace(x) && inSpot(x));
-    const placeTopicMatch = weighted.filter((x) => inPlace(x) && !inSpot(x));
-    const topicMatch = weighted.filter((x) => !placeOf(x) && inSpot(x) && curTopic && x.e.topic === curTopic);
-    const spotMatch = weighted.filter((x) => !placeOf(x) && inSpot(x) && !(curTopic && x.e.topic === curTopic));
-    const general = weighted.filter((x) => !placeOf(x) && (!Array.isArray(x.e.spot) || x.e.spot.length === 0));
-    const other = weighted.filter((x) => !placeOf(x) && Array.isArray(x.e.spot) && x.e.spot.length > 0 && !inSpot(x));
-    groups = [placeMatch, placeTopicMatch, topicMatch, spotMatch, general, other];
+    pool = weighted.map((x) => {
+      if (placeOf(x)) {
+        if (!curPlace || !inPlace(x)) return null;
+        return { e: x.e, w: x.w * (inSpot(x) ? tier('placeSpot', 4) : tier('placeOnly', 2) ) };
+      }
+      const spots = Array.isArray(x.e.spot) ? x.e.spot : [];
+      if (spots.length === 0) return { e: x.e, w: x.w * tier('generalAny', 0.5) };
+      if (inSpot(x)) {
+        const w = (curTopic && x.e.topic === curTopic)
+          ? tier('generalSpotTopic', 1.2)
+          : tier('generalSpot', 0.9);
+        return { e: x.e, w: x.w * w };
+      }
+      return { e: x.e, w: x.w * tier('generalOtherSpot', 0.35) };
+    }).filter(Boolean);
   }
 
-  // 在给定候选组内做轮盘赌；只返回至少含一个可用选项的事件，前置未满足的跳过。
+  // 在池内做轮盘赌；只返回至少含一个可用选项的事件，前置未满足的跳过。
   const pickFrom = (pool) => {
     let cand = pool.filter((x) => !recent.includes(x.e.id));
     if (cand.length === 0) cand = pool; // 防卡：去重窗口内全重复时回退整组
@@ -295,11 +378,8 @@ export function rollEvent(state, config, rng) {
     return null;
   };
 
-  for (const group of groups) {
-    if (group.length === 0) continue;
-    const res = pickFrom(group);
-    if (res) return res;
-  }
+  const res = pickFrom(pool);
+  if (res) return res;
   return { eventId: null, options: [] };
 }
 
@@ -377,6 +457,13 @@ export function availableOptions(event, state, config) {
       if (enabled && req.flag && req.flag.key) {
         if (String(flags[req.flag.key]) !== String(req.flag.value)) {
           enabled = false; reason = hint || `需要标记「${req.flag.key}」`;
+        }
+      }
+      // notFlag 前置（标记等于该值时禁用）：用于"没走这条恋爱线才出现"的相识线
+      if (enabled && req.notFlag && req.notFlag.key) {
+        if (String(flags[req.notFlag.key]) !== 'undefined'
+          && String(flags[req.notFlag.key]) === String(req.notFlag.value)) {
+          enabled = false; reason = hint || '你已经和别人走到这一步了';
         }
       }
       // moneyAtLeast 前置
@@ -512,3 +599,4 @@ export function resolveEvent(state, eventId, choiceId, config, rng) {
     message: text,
   };
 }
+

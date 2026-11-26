@@ -953,15 +953,15 @@ export function createApp(ctx) {
       // 事件选项结算：正文里的「｜ 效果：…」是给日志用的，对白里换成下面的标签行，
       // 属性变化与好感变化分别用 ▲/▼ 标签呈现，避免同一句话里重复一堆数字
       const def = findEventById(eventResult.eventId) || {};
-      ui.speaker = def.name || '事件';
+      // 结算正文是叙述「你……他/她……」的旁白，不是事件名或角色名说的话，
+      // 名牌固定为「旁白」，避免出现「林予」说「你刚开口就有点后悔」这类主语错配
+      ui.speaker = '旁白';
       ui.text = stripEffectSuffix(eventResult.text) || '（这件事就这样过去了）';
       ui.effects = relationChips(eventResult.relationDelta).concat(deltaChips(eventResult.delta));
-      // 事件带角色（或选项本身带角色，如迎新晚会选人）→ 左侧立绘换成对方，说话人也换成对方
+      // 事件带角色（或选项本身带角色，如迎新晚会选人）→ 左侧立绘仍换成对方，名牌保持旁白
       const who = eventResult.charId || def.charId || '';
       if (who) {
         ui.npc = who;
-        const ch = findCharacter(who);
-        if (ch && ch.name) ui.speaker = ch.name;
       }
       ui.showDialogue = true;
       ui.history.push({ who: ui.speaker, text: ui.text });
@@ -2406,7 +2406,11 @@ export function createApp(ctx) {
               h('b', { class: 'vn-rel__name' }, [rel.met ? c.name : '？？？']),
               h('span', { class: 'vn-rel__stage' }, [rel.met ? stage.name : '未遇见']),
             ]),
+            // 称号：config 里写好但此前从未渲染；未遇见时不剧透
+            rel.met && c.title ? h('div', { class: 'vn-rel__title' }, [c.title]) : null,
             h('p', { class: 'vn-rel__role' }, [rel.met ? (c.role || '') : '还没在校园里遇见。']),
+            // 人物简介：同上，已遇见才显示
+            rel.met && c.intro ? h('p', { class: 'vn-rel__intro' }, [c.intro]) : null,
             h('div', { class: 'vn-rel__bar' }, [
               h('i', { style: 'width:' + pct + '%' }),
             ]),
@@ -2420,7 +2424,7 @@ export function createApp(ctx) {
     });
     const body = [
       h('p', { class: 'vn-modal__lead' }, [
-        '好感来自剧情线里的选择。一局只能认真走近一个人——选了谁，就在迎新晚会那一晚。',
+        '好感来自剧情线里的选择。一局只能认真走近一个人——选了谁，就在迎新晚会那一晚。其他人也会认识、也会聊几句，但都停在说出那句话之前。',
       ]),
       chars.length
         ? h('div', { class: 'vn-rel-grid' }, rows)

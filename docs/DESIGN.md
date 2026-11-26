@@ -444,7 +444,6 @@ emoji 的墨迹重心普遍偏低（📖 最明显，实测偏下 2.7px），用
 2. **关掉「动效」会吃掉过渡**：`.reduce-motion * { transition: none !important }` 是全站规则。
    选项卡填充**不再是例外**（之前为了调试临时开过口子，已移除）：关掉动效后填充立即到位，
    弹窗、抽屉、打字机、季节换色等动效也一并关闭。
-<<<<<<< Updated upstream
 ## 9.t 对方立绘的尺寸统一
 
 之前同一角色在不同剧情里大小不一，原因是三处规则各写了一套：
@@ -550,17 +549,16 @@ right: max(2%, calc((100vw - 1060px) / 2 - 200px));
 - 对方立绘 `bottom` 由 10%（舞台）/ 8%（弹层）统一改为 **0**，和主角 `.vn-sprite` 一样**贴住画面底线**；
 - 同时删掉了 `.vn-event__npc .vn-npc--cutout .vn-npc__art` 上的底部渐隐遮罩（原来为了遮「截断的胸口」），现在立绘贴底、由对话框负责遮挡，不再需要渐隐；
   实测 `innerHeight - rect.bottom = 0`（事件 / 舞台 / 地图三种场景）。
-=======
-## 9.y1 立绘比例
+
+### 素材比例
 
 | 素材 | 尺寸 | 比例 | 容器 |
 |---|---|---|---|
 | 主角 `assets/char/*.webp` | 880 × 1120 | **11 : 14** | `.vn-sprite` 高 `min(86vh, 800px)`、`aspect-ratio: 11 / 14`、宽 auto |
-| 攻略对象 `media/characters/*.webp` | 810 × 1080 | **3 : 4** | `.vn-npc--cutout` 高 `min(76vh, 700px)`、`aspect-ratio: 3 / 4`、宽 auto |
+| 攻略对象 `media/characters/*.webp` | 810 × 1080 | **3 : 4** | `.vn-npc--cutout` 高 `min(72vh, 640px)`、`aspect-ratio: 3 / 4`、宽 auto |
 
 两边都是 `background-size: contain`，容器与素材同比例后正好铺满：**不裁切、不拉伸、也没有多余留白**。
 窄屏靠 `max-width` 兜底，比例被限制时会回到 contain 的 letterbox，仍然不变形。
->>>>>>> Stashed changes
 
 ## 9.y2 实景照片地点
 

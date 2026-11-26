@@ -170,7 +170,15 @@ check('A: 选人选项同时写入 route_<id>（剧情线衔接）',
 
 // 剧情线：步骤事件都存在、窗口合法、next 指向合法
 const S = config.storylines.lines || [];
-check('A: 6 条剧情线', S.length === 6, '=' + S.length);
+const SIDE = S.filter((l) => String(l.id).endsWith('_side'));
+const MAIN = S.filter((l) => !String(l.id).endsWith('_side'));
+check('A: 12 条剧情线（6 恋爱主线 + 6 相识线）', S.length === 12 && MAIN.length === 6 && SIDE.length === 6,
+  'total=' + S.length + ' main=' + MAIN.length + ' side=' + SIDE.length);
+check('A: 相识线是 3 步、只在"没走这条主线"的人身上开',
+  SIDE.every((l) => l.steps.length === 3
+    && l.startIf && l.startIf.flag && l.startIf.flag.key === 'side_' + l.charId
+    && l.startIf.notFlag && l.startIf.notFlag.key === 'route_' + l.charId),
+  SIDE.map((l) => l.id + ':' + l.steps.length).join(','));
 check('A: 每条线 3–4 步且事件都存在',
   S.every((l) => l.steps.length >= 3 && l.steps.every((s) => !!findEvent(config, s.eventId))));
 check('A: 剧情事件都标了 storylineOnly + once + charId',
@@ -187,8 +195,8 @@ const s0 = g0.state;
 check('B: 新局写入 6 条关系，好感全 0、未遇见',
   Object.keys(s0.player.relations || {}).length === 6
   && Object.values(s0.player.relations).every((r) => r.affinity === 0 && r.met === false));
-check('B: 新局写入 6 条剧情线，全部 idle',
-  Object.keys(s0.storylines || {}).length === 6
+check('B: 新局写入 12 条剧情线（主线 + 相识线），全部 idle',
+  Object.keys(s0.storylines || {}).length === 12
   && Object.values(s0.storylines).every((x) => x.status === 'idle' && x.step === 0));
 check('B: buildViewModel 带出关系列表与线进度',
   Array.isArray(buildViewModel(s0, config).relations)
@@ -261,7 +269,7 @@ check('E: 旧状态能被补全（不崩、不覆盖已有数据）',
     try {
       const vm = buildViewModel(old, config);
       return Object.keys(old.player.relations || {}).length === 6
-        && Object.keys(old.storylines || {}).length === 6
+        && Object.keys(old.storylines || {}).length === 12
         && Array.isArray(vm.relations);
     } catch (_) { return false; }
   })());
@@ -426,8 +434,14 @@ check('H: 已遇见的林予显示真名',
   byClass(rootUi, 'vn-rel__name').some((n) => n.textContent === '林予'));
 check('H: 未遇见的角色显示为「？？？」',
   byClass(rootUi, 'vn-rel__name').filter((n) => n.textContent === '？？？').length >= 4);
+check('H: 已遇见的林予显示称号与人物简介（此前遗漏未渲染）',
+  byClass(rootUi, 'vn-rel__title').some((n) => n.textContent === '校报上没署名的作者')
+  && byClass(rootUi, 'vn-rel__intro').some((n) => String(n.textContent).includes('校报的摄影兼写手')));
+check('H: 未遇见的角色不显示称号与简介（不剧透）',
+  byClass(rootUi, 'vn-rel__title').length === 1 && byClass(rootUi, 'vn-rel__intro').length === 1,
+  `title=${byClass(rootUi, 'vn-rel__title').length} intro=${byClass(rootUi, 'vn-rel__intro').length}`);
 
-// 迎新晚会选人之后：左侧立绘换成对方，说话人也换成对方
+// 迎新晚会选人之后：左侧立绘换成对方；结算正文是旁白，名牌用「旁白」
 appUi.render(sUi, {
   eventResult: {
     eventId: 'ev_fixed_welcome',
@@ -443,8 +457,8 @@ check('H: 左侧立绘指向 linyu.webp',
   !!stageArt && String(stageArt.attr_style || '').includes('linyu.webp'),
   stageArt ? stageArt.attr_style : 'no art');
 const stageSpeaker = byClass(rootUi, 'vn-speaker')[0];
-check('H: 对话框说话人换成林予',
-  !!stageSpeaker && stageSpeaker.textContent === '林予',
+check('H: 对话框名牌为「旁白」（结算正文是旁白而非角色台词）',
+  !!stageSpeaker && stageSpeaker.textContent === '旁白',
   stageSpeaker && stageSpeaker.textContent);
 check('H: 好感不再额外挂黑色标签（改由正文/说话人体现）',
   byClass(rootUi, 'vn-effect--relation').length === 0);
@@ -453,3 +467,4 @@ check('H: 好感不再额外挂黑色标签（改由正文/说话人体现）',
 console.log(`\n总计 ${pass + failures.length} 项，PASS ${pass}，FAIL ${failures.length}`);
 if (failures.length) console.error('失败用例: ' + failures.join(' | '));
 process.exit(failures.length === 0 ? 0 : 1);
+

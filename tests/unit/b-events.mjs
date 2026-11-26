@@ -9,7 +9,8 @@ import { fileURLToPath } from 'node:url';
 import { loadConfig } from '../../src/config/loader.js';
 import { createGameState } from '../../src/core/state.js';
 import {
-  computeWeight, rollEvent, availableOptions, resolveEvent, checkFixedEvents,
+  computeWeight, rollEvent, availableOptions, resolveEvent, checkFixedEvents, assignSideCast,
+  finalizeSideCast,
 } from '../../src/events/eventManager.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -207,6 +208,183 @@ console.log('== B · 事件单测 ==');
   });
   check('place: 无地点上下文时不抽地点专属事件', placeHit.length === 0, placeHit.join(','));
 }
+
+// --- 单一地点也能刷到通用事件：分层混合而非"地点专属独占" ---
+{
+  const s = state(['chill'], 'cs', 8);
+  const mkHist = (loc, act) => [
+    { type: 'move', location: loc },
+    { type: 'action', actionId: act, location: loc },
+  ];
+  s.history = mkHist('bridge', 'rest');
+  const ids = [];
+  let seed = 20261126;
+  const rand = () => {
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    return seed / 2147483648;
+  };
+  for (let i = 0; i < 40; i += 1) {
+    const roll = rollEvent(s, config, { next: rand, chance: () => true });
+    if (!roll.eventId) continue;
+    const ev = events.random.find((x) => x.id === roll.eventId);
+    const opt = availableOptions(ev, s, config).find((o) => o.enabled);
+    const res = resolveEvent(s, roll.eventId, opt && opt.id, config, { next: rand, chance: () => true });
+    if (res.ok) ids.push(roll.eventId);
+  }
+  const isGeneral = (id) => {
+    const e = events.random.find((x) => x.id === id);
+    return e && !(Array.isArray(e.place) && e.place.length);
+  };
+  const general = ids.filter(isGeneral);
+  const distinct = new Set(ids.filter(Boolean));
+  check('rollEvent: 死守长桥也能刷到通用事件', general.length > 0,
+    `general=${general.length}/${ids.length}`);
+  check('rollEvent: 单地点 40 次抽取至少覆盖 12 种不同事件', distinct.size >= 12,
+    `distinct=${distinct.size}`);
+}
+
+// --- 基率读取 balance.randomEventBaseChance ---
+{
+  let seen = null;
+  rollEvent(state(['chill']), config, {
+    next: () => 0.5,
+    chance: (p) => { seen = p; return false; },
+  });
+  const cfgChance = Number(config.balance.randomEventBaseChance);
+  check('rollEvent: 掷骰基率来自 balance.randomEventBaseChance',
+    Number.isFinite(seen) && Math.abs(seen - cfgChance) < 1e-9,
+    `seen=${seen}, cfg=${cfgChance}`);
+}
+
+// --- 相识线：非路线 NPC 也能认识，但只停在告白前 ---
+{
+  const SIDE_CHARS = ['jiangxu', 'guchi', 'linyu', 'suwan', 'zhouye', 'tangtang'];
+  const sideOf = (cid, n) => events.random.find((e) => e.id === `ev_side_${cid}_${n}`);
+  const missing = [];
+  const badFlags = [];
+  for (const cid of SIDE_CHARS) {
+    for (const n of [1, 2, 3]) {
+      const e = sideOf(cid, n);
+      if (!e) { missing.push(`ev_side_${cid}_${n}`); continue; }
+      for (const o of (e.options || [])) {
+        const flags = (o.effects && o.effects.flags) || {};
+        for (const k of Object.keys(flags)) {
+          if (k.startsWith('route_') || k === 'romance') badFlags.push(`${e.id}/${o.id}:${k}`);
+        }
+      }
+    }
+  }
+  check('相识线: 六位角色各 3 段事件齐备', missing.length === 0, missing.join(','));
+  check('相识线: 不写 route_/romance 标记（到不了告白）', badFlags.length === 0, badFlags.join(','));
+
+  // 选了林予之后，林予的相识事件全部禁用；江叙的仍可用
+  const s = state(['chill'], 'cs', 8);
+  s.player.flags = { route_linyu: true, side_linyu: true, side_jiangxu: true };
+  s.history = [
+    { type: 'move', location: 'street' },
+    { type: 'action', actionId: 'socialize', location: 'street' },
+  ];
+  const linyuOpts = availableOptions(sideOf('linyu', 1), s, config);
+  const jiangxuOpts = availableOptions(sideOf('jiangxu', 1), s, config);
+  check('相识线: 选定林予后，林予的相识选项全部禁用',
+    linyuOpts.length > 0 && linyuOpts.every((o) => !o.enabled),
+    JSON.stringify(linyuOpts));
+  check('相识线: 选定林予后，江叙的相识选项仍可用',
+    jiangxuOpts.some((o) => o.enabled));
+
+  // 三步都由剧情线顺序推进，事件本身不进随机池；最后一步没有分支（到不了告白）
+  const sideLines = (config.storylines.lines || []).filter((l) => String(l.id).endsWith('_side'));
+  const sideOk = sideLines.length === 6 && sideLines.every((l) => l.steps.length === 3
+    && l.steps.every((st) => {
+      const e = events.random.find((x) => x.id === st.eventId);
+      return e && e.storylineOnly === true && e.once === true;
+    })
+    && !l.steps.some((st) => st.next));
+  check('相识线: 六条线各 3 步、事件进剧情池且末步无分支', sideOk,
+    sideLines.map((l) => l.id + ':' + l.steps.length).join(','));
+
+  // 随机池里永远抽不到相识线事件（storylineOnly 权重为 0）
+  const r = state(['chill'], 'cs', 20);
+  r.player.flags = { route_linyu: true, side_linyu: true, side_jiangxu: true };
+  r.history = [
+    { type: 'move', location: 'library' },
+    { type: 'action', actionId: 'study', location: 'library' },
+  ];
+  let seed2 = 424242;
+  const rnd = () => { seed2 = (seed2 * 1103515245 + 12345) % 2147483648; return seed2 / 2147483648; };
+  const hit = [];
+  for (let i = 0; i < 60; i += 1) hit.push(rollEvent(r, config, { next: rnd, chance: () => true }).eventId);
+  check('相识线: 随机抽取不会直接抛出相识线事件',
+    !hit.some((id) => typeof id === 'string' && id.startsWith('ev_side_')));
+}
+
+  // 开局相识圈：同 seed 稳定、挑 3 人、不与路线冲突地写 side_ 标记
+  {
+    const idsOf = (seed) => {
+      const a = state(['chill'], 'cs', 1);
+      a.player.flags = {};
+      const cast = assignSideCast(a, config, seed);
+      return { cast, flags: Object.keys(a.player.flags).sort() };
+    };
+    const one = idsOf(20261020);
+    const again = idsOf(20261020);
+    const other = idsOf(20260609);
+    check('相识圈: 每局挑 3 位角色', one.cast.length === 3, JSON.stringify(one.cast));
+    check('相识圈: 同 seed 结果一致', JSON.stringify(one.cast) === JSON.stringify(again.cast));
+    check('相识圈: 不同 seed 会换人', JSON.stringify(one.cast) !== JSON.stringify(other.cast),
+      `${one.cast} vs ${other.cast}`);
+    check('相识圈: 写的是 side_ 标记', one.flags.every((k) => k.startsWith('side_')), one.flags.join(','));
+  }
+
+  // 迎新晚会后收口：主角 + 2 位，一局最多 3 个 NPC 有交集
+  {
+    const setup = (seed, route) => {
+      const a = state(['chill'], 'cs', 1);
+      a.player.flags = {};
+      a.seed = seed;
+      assignSideCast(a, config, seed); // 开局先写 3 个候选
+      const kept = finalizeSideCast(a, config, route);
+      return { kept, sides: Object.keys(a.player.flags).filter((k) => k.startsWith('side_')).sort() };
+    };
+    const x = setup(2024, 'jiangxu');
+    const same = setup(2024, 'jiangxu');
+    check('相识圈收口: 除主角外只留 2 位', x.kept.length === 2, JSON.stringify(x.kept));
+    check('相识圈收口: 主角不会留在相识圈', !x.kept.includes('jiangxu') && !x.sides.includes('side_jiangxu'),
+      JSON.stringify(x.sides));
+    check('相识圈收口: 同 seed 结果一致', JSON.stringify(x.kept) === JSON.stringify(same.kept));
+    check('相识圈收口: 主角 + 2 位 = 一局最多 3 人', x.kept.length + 1 === 3);
+  }
+
+  // 负债当回合触发时，剧情线（含相识线）必须让位，避免借钱事件被相识事件顶掉
+  {
+    const d = state(['chill'], 'cs', 1);
+    d.player.flags = { side_jiangxu: true };
+    d.eventHistory = [];
+    d.turn = 6; // 江叙相识线第一段窗口 6–12 的开头，且不是考试周
+    const normal = checkFixedEvents(d, config);
+    const skip = checkFixedEvents(d, config, { skipStoryline: true });
+    check('相识线: 负债优先时剧情线事件让位',
+      normal.includes('ev_side_jiangxu_1') && !skip.some((id) => String(id).startsWith('ev_side_')),
+      `normal=${JSON.stringify(normal)} skip=${JSON.stringify(skip)}`);
+  }
+
+  // 相识线节奏：两段之间至少隔 3 回合，不许连着刷
+  {
+    const p = state(['chill'], 'cs', 1);
+    p.player.flags = { side_jiangxu: true };
+    p.eventHistory = [];
+    p.turn = 6;
+    const at6 = checkFixedEvents(p, config); // 触发并记下 lastSideTurn=6
+    p.turn = 8;
+    const at8 = checkFixedEvents(p, config); // 6→8 只隔 2，应被拦
+    p.turn = 9;
+    const at9 = checkFixedEvents(p, config); // 6→9 隔 3，放行
+    check('相识线: 两段之间至少隔 3 回合',
+      at6.includes('ev_side_jiangxu_1')
+      && !at8.some((id) => String(id).startsWith('ev_side_'))
+      && at9.includes('ev_side_jiangxu_1'),
+      `at6=${JSON.stringify(at6)} at8=${JSON.stringify(at8)} at9=${JSON.stringify(at9)}`);
+  }
 
 console.log(failures === 0 ? '\n事件单测全部通过 ✅' : `\n失败 ${failures} 项 ❌`);
 process.exit(failures === 0 ? 0 : 1);

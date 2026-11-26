@@ -15,14 +15,33 @@ import { pushLog } from './state.js';
 
 const DEFAULT_EXAM = {
   subjects: ['科目'],
-  fluctuation: 0.10,
   passLine: 60,
-  base: 60,
-  knowledgeWeight: 1.0,
-  growthRate: 0.6,
-  studyBonusPerAction: 3,
-  difficultyBase: 10,
+  progSatiety: 12,
+  progBonus: 32,
+  progCap: 2.0,
+  base: 46,
+  knowledgeWeight: 0.30,
+  healthWeight: 0.15,
+  healthClamp: 12,
+  noiseAmp: 8,
+  gpaWeightByDifficulty: 0.1,
+  defaultTopic: 'major',
+  defaultDifficulty: 6,
 };
+
+// 课名规则缓存：同一 pattern 只编译一次正则
+const NAME_RULE_CACHE = new Map();
+
+/** 课名规则匹配：match 当作「|」分隔的正则（编译失败则退化成子串包含）。 */
+function matchesName(name, pattern) {
+  if (typeof name !== 'string' || typeof pattern !== 'string' || !pattern) return false;
+  let re = NAME_RULE_CACHE.get(pattern);
+  if (re === undefined) {
+    try { re = new RegExp(pattern); } catch (err) { re = null; }
+    NAME_RULE_CACHE.set(pattern, re);
+  }
+  return re ? re.test(name) : name.includes(pattern);
+}
 
 function getBalance(config) {
   return (config && config.balance) || {};
@@ -72,15 +91,62 @@ function pushGpaPoints(state, gpa) {
 }
 
 /**
- * 每学期期末考试（对每门科目）。
- * 单门公式：score = round( knowledge * (1 + (rng.next()*2 - 1) * exam.fluctuation) )，夹 [0,100]；
- * passed = score >= exam.passLine；failedCourses += 未通过门数。
+ * 单门课程画像：该课考哪个学习方向（major/basics/humanities）+ 难度 + 绩点权重。
+ * 优先用 exam.subjectTopics 精确名映射（老配置兼容），否则按 exam.courseTopicRules /
+ * exam.courseDifficultyRules 的课名规则匹配（第一条命中即止），都不命中走 default。
+ * @param {string} name 课程名
+ * @param {object} config 全量配置
+ * @param {object} [examCfg] balance.exam
+ * @returns {{ topic: string, difficulty: number, weight: number }}
+ */
+export function courseProfile(name, config, examCfg) {
+  const exam = examCfg || getExamConfig(config);
+  const exactTopics = (exam.subjectTopics && typeof exam.subjectTopics === 'object') ? exam.subjectTopics : {};
+  let topic = exactTopics[name];
+  if (typeof topic !== 'string' || !topic) {
+    const rules = Array.isArray(exam.courseTopicRules) ? exam.courseTopicRules : [];
+    for (const r of rules) {
+      if (r && r.topic && r.match && matchesName(name, r.match)) { topic = r.topic; break; }
+    }
+  }
+  if (typeof topic !== 'string' || !topic) topic = exam.defaultTopic || DEFAULT_EXAM.defaultTopic;
+
+  let difficulty = null;
+  const diffRules = Array.isArray(exam.courseDifficultyRules) ? exam.courseDifficultyRules : [];
+  for (const r of diffRules) {
+    if (r && Number.isFinite(r.difficulty) && r.match && matchesName(name, r.match)) {
+      difficulty = r.difficulty;
+      break;
+    }
+  }
+  if (!Number.isFinite(difficulty)) {
+    difficulty = Number.isFinite(exam.defaultDifficulty) ? exam.defaultDifficulty : DEFAULT_EXAM.defaultDifficulty;
+  }
+
+  const perDiff = Number.isFinite(exam.gpaWeightByDifficulty)
+    ? exam.gpaWeightByDifficulty
+    : DEFAULT_EXAM.gpaWeightByDifficulty;
+  // 越难的课在学期绩点里权重越高（1.0 ≈ 送给分课，1.9 ≈ 数学/实验类硬课）
+  const weight = round2(1 + Math.max(0, difficulty) * perDiff);
+  return { topic, difficulty, weight };
+}
+
+/**
+ * 每学期期末考试（对每门科目逐门算分）。
+ * 单门公式：
+ *   raw = base + progBonus × √min(该方向进度 / progSatiety, progCap)
+ *         + knowledgeWeight × 学识
+ *         + clamp(healthWeight × (健康 - 60), ±healthClamp)
+ *         - 该课难度 + 随机项(-noiseAmp~+noiseAmp)
+ *   score = clamp(round(raw), passLine, 100)
+ * 说明：拆分「进度/学识/健康/课难/随机」五项相加，使不同课不同方向有区分度；
+ * 保留「永不挂科」决议——低于及格线一律钳到 passLine，挂科数恒为 0。
+ * 学期绩点按课程难度加权平均（硬课权重大），避免门数多时被水课拉平。
  * 写 academics.semesterRecords（详细），并累计 gpaPoints 计算 totalGpa。
- * （semesterScores 由 engine 通过 takeExam 的返回值维护，本函数不写，避免重复。）
  * @param {object} state
  * @param {object} config
  * @param {object} rng
- * @returns {{ ok: boolean, subjects: Array<{name,score,passed,gpa}>, semesterGpa: number, totalGpa: number, failedThisSemester: number }}
+ * @returns {{ ok: boolean, subjects: Array<{name,score,passed,gpa,topic,difficulty}>, semesterGpa: number, totalGpa: number, failedThisSemester: number }}
  */
 /**
  * 本学期考试科目 = 该学期 2 门公共课 + 该学院 2 门专业课（config/courses.json）。
@@ -98,38 +164,21 @@ function majorsAt(collegeMap, semester) {
 }
 
 /**
- * 「课程名 → 学习方向」的默认关键词表（可用 balance.exam.topicRules 覆盖）。
- * 背景：考试科目现在是 courses.json 里的真实课程名（如「大学英语（综合）」），
- * 而 subjectProgress 是按 major / basics / humanities 累计的；
- * 缺了这层解析，每门课都查不到主题，分科进度加成会永远是 0。
- */
-const DEFAULT_TOPIC_RULES = [
-  { topic: 'basics', words: ['英语', '体育', '微积分', '线性代数', '大学物理', '概率统计', '数学', '物理', '化学'] },
-  { topic: 'humanities', words: ['形势与政策', '思想道德', '马克思主义', '毛泽东思想', '近现代史', '军事理论', '职业发展', '就业指导', '文学', '历史', '哲学'] },
-];
-
-/**
  * 科目名 → 学习方向（major / basics / humanities）。
- * 解析顺序：exam.subjectTopics 显式映射 → exam.topicRules 关键词 → exam.defaultTopic → 'major'
+ *
+ * 合并说明：这层解析现在统一走 `courseProfile()`（规则在 balance.exam.courseTopicRules
+ * / courseDifficultyRules），本函数保留成薄包装，给外部和测试一个稳定入口；
+ * 不要在这里再维护第二份关键词表 —— 之前就是因为两份表对不上，
+ * 课程名一个都匹配不到，分科进度加成恒为 0。
+ *
  * @param {string} name 科目 / 课程名
- * @param {object} exam balance.exam
+ * @param {object} exam balance.exam（可省略，省略时取配置里的）
+ * @param {object} [config] 完整配置（可选）
  * @returns {string}
  */
-export function resolveTopic(name, exam) {
-  const e = exam || {};
-  const label = String(name == null ? '' : name);
-  const map = (e.subjectTopics && typeof e.subjectTopics === 'object') ? e.subjectTopics : {};
-  if (map[label]) return map[label];
-  const rules = Array.isArray(e.topicRules) && e.topicRules.length ? e.topicRules : DEFAULT_TOPIC_RULES;
-  for (const rule of rules) {
-    const topic = rule && rule.topic;
-    const words = rule && Array.isArray(rule.words) ? rule.words : [];
-    if (!topic) continue;
-    for (const w of words) {
-      if (w && label.indexOf(String(w)) >= 0) return topic;
-    }
-  }
-  return e.defaultTopic || 'major';
+export function resolveTopic(name, exam, config) {
+  const cfg = config || { balance: { exam: exam || {} } };
+  return courseProfile(name, cfg, exam).topic;
 }
 
 export function subjectsFor(state, config, examCfg) {
@@ -167,44 +216,56 @@ export function subjectsFor(state, config, examCfg) {
 export function runFinalExam(state, config, rng) {
   const exam = getExamConfig(config);
   const knowledge = Number(state.player.attributes.knowledge) || 0;
-  const fluctuation = Number.isFinite(exam.fluctuation) ? exam.fluctuation : DEFAULT_EXAM.fluctuation;
+  const health = Number(state.player.attributes.health) || 0;
   const passLine = Number.isFinite(exam.passLine) ? exam.passLine : DEFAULT_EXAM.passLine;
   const base = Number.isFinite(exam.base) ? exam.base : DEFAULT_EXAM.base;
   const kWeight = Number.isFinite(exam.knowledgeWeight) ? exam.knowledgeWeight : DEFAULT_EXAM.knowledgeWeight;
-  const growth = Number.isFinite(exam.growthRate) ? exam.growthRate : DEFAULT_EXAM.growthRate;
+  const hWeight = Number.isFinite(exam.healthWeight) ? exam.healthWeight : DEFAULT_EXAM.healthWeight;
+  const hClamp = Number.isFinite(exam.healthClamp) ? exam.healthClamp : DEFAULT_EXAM.healthClamp;
+  // 兼容旧字段：没配新字段时退回 subjectSatiety / subjectBonus / fluctuation
+  const satiety = Number.isFinite(exam.progSatiety)
+    ? exam.progSatiety
+    : (Number.isFinite(exam.subjectSatiety) ? exam.subjectSatiety : DEFAULT_EXAM.progSatiety);
+  const progBonus = Number.isFinite(exam.progBonus)
+    ? exam.progBonus
+    : (Number.isFinite(exam.subjectBonus) ? exam.subjectBonus : DEFAULT_EXAM.progBonus);
+  const progCap = Number.isFinite(exam.progCap) ? exam.progCap : DEFAULT_EXAM.progCap;
+  const noiseAmp = Number.isFinite(exam.noiseAmp)
+    ? exam.noiseAmp
+    : (Number.isFinite(exam.fluctuation) ? exam.fluctuation * 100 : DEFAULT_EXAM.noiseAmp);
   const subjects = subjectsFor(state, config, exam);
+  const progress = (state.academics && state.academics.subjectProgress) || {};
 
   const next = (rng && typeof rng.next === 'function') ? () => rng.next() : () => 0.5;
-  const health = Number(state.player.attributes.health) || 0;
-  const progress = (state.academics && state.academics.subjectProgress) || {};
-  const satiety = Number.isFinite(exam.subjectSatiety) ? exam.subjectSatiety : 12;
-  const subjBonus = Number.isFinite(exam.subjectBonus) ? exam.subjectBonus : 30;
+  const clampNum = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
   const results = subjects.map((name) => {
     const n = next();
-    // 课程名先解析成学习方向（major / basics / humanities），才能取到对应方向的学习进度
-    const topic = resolveTopic(name, exam);
-    const prog = topic ? (Number(progress[topic]) || 0) : 0;
-    // 分科进度加成（开根号边际递减）：刷满 satiety 次该方向学习 → subjBonus 分
-    const progGain = subjBonus * Math.sqrt(Math.max(0, prog) / satiety);
-    // 学识兜底：没怎么刷该方向也保留一点基础分，不挂科
-    const knowFloor = 10 * Math.sqrt(Math.max(0, knowledge) / 100);
-    // 健康调节：60为基准，偏离每点0.1
-    const healthMod = (health - 60) * 0.1;
-    // 整体乘随机波动，保底 passLine(60)、封顶100（永不挂科）
-    const baseScore = passLine + progGain + knowFloor + healthMod;
-    const raw = baseScore * (1 + (n * 2 - 1) * fluctuation);
-    let score = Math.round(raw);
-    score = Math.max(passLine, Math.min(100, score));
+    const profile = courseProfile(name, config, exam);
+    // 该课所属方向的学习进度：学满 satiety 次即 1 个档位，最多吃 progCap 个档位（边际递减）
+    const prog = Math.max(0, Number(progress[profile.topic]) || 0);
+    const progGain = progBonus * Math.sqrt(Math.min(prog / satiety, progCap));
+    // 学识是通用底子（每点 0.30 分）；健康低于 60 扣分、高于 60 加分，最多 ±healthClamp
+    const knowGain = kWeight * knowledge;
+    const healthMod = clampNum(hWeight * (health - 60), -hClamp, hClamp);
+    // 课程自身难度（形势/体育 2 分 → 数学/实验 9 分）
+    const raw = base + progGain + knowGain + healthMod - profile.difficulty + (n * 2 - 1) * noiseAmp;
+    // 夹到 [passLine,100]：永不挂科决议（低于及格线一律抬到 passLine）
+    const score = clampNum(Math.round(raw), passLine, 100);
     const passed = score >= passLine;
     const gpa = gradePoint(score, config);
-    return { name, score, passed, gpa };
+    return {
+      name, score, passed, gpa,
+      topic: profile.topic, difficulty: profile.difficulty, weight: profile.weight,
+    };
   });
 
   const failedThisSemester = results.filter((s) => !s.passed).length;
   state.academics.failedCourses = (Number(state.academics.failedCourses) || 0) + failedThisSemester;
 
-  const semesterGpa = round2(average(results.map((s) => s.gpa)));
+  // 学期绩点 = 按课程难度加权平均，硬课权重更大
+  const wSum = results.reduce((acc, s) => acc + (Number(s.weight) || 1), 0) || 1;
+  const semesterGpa = round2(results.reduce((acc, s) => acc + s.gpa * (Number(s.weight) || 1), 0) / wSum);
   const totalGpa = pushGpaPoints(state, semesterGpa);
   state.academics.totalGpa = totalGpa; // 写回累计绩点，供 judgeThesis 等读取
 

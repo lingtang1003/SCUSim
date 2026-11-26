@@ -479,13 +479,20 @@ function bgmForTurn(turn) {
     }
 
     // 生活费 / 开销反馈（每次结算都提示，并带上当前金钱）
+    // 兼职/消费流水与固定生活费分开显示，避免把兼职收入误报为「生活费已发放」。
     if (res.monthly && (Number(res.monthly.income) > 0 || Number(res.monthly.net) !== 0)) {
       const money = Number((state.player && state.player.attributes && state.player.attributes.money) || 0);
-      const income = Number(res.monthly.income) || 0;
-      const expense = Number(res.monthly.expense) || 0;
+      const monthly = res.monthly;
+      // 缺省回退到合计字段，兼容任何未走 economy.settleMonthly 的调用方。
+      const fixedIncome = Number.isFinite(monthly.fixedIncome) ? monthly.fixedIncome : (Number(monthly.income) || 0);
+      const fixedExpense = Number.isFinite(monthly.fixedExpense) ? monthly.fixedExpense : (Number(monthly.expense) || 0);
+      const flowIncome = Number(monthly.flowIncome) || 0;
+      const flowExpense = Number(monthly.flowExpense) || 0;
       const parts = [];
-      if (income > 0) parts.push(`生活费已发放 +${income}`);
-      if (expense > 0) parts.push(`开销 -${expense}`);
+      if (fixedIncome > 0) parts.push(`生活费已发放 +${fixedIncome}`);
+      if (fixedExpense > 0) parts.push(`开销 -${fixedExpense}`);
+      const flowNet = flowIncome - flowExpense;
+      if (flowNet !== 0) parts.push(`兼职/消费净 ${flowNet > 0 ? '+' : ''}${flowNet}`);
       parts.push(`当前金钱 ${money}`);
       toast(parts.join(' · '), 'info');
     }

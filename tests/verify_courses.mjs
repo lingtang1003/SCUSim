@@ -7,7 +7,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadConfig } from '../src/config/loader.js';
 import { newGame } from '../src/core/engine.js';
-import { runFinalExam, subjectsFor, resolveTopic } from '../src/core/academy.js';
+import { runFinalExam, subjectsFor, resolveTopic, courseProfile } from '../src/core/academy.js';
 import { createRng } from '../src/core/rng.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -171,12 +171,11 @@ test('resolveTopic: 每门课程都能解析成 major / basics / humanities', ()
   const bad = allCourseNames.filter((n) => !['major', 'basics', 'humanities'].includes(resolveTopic(n, EXAM)));
   return bad.length ? bad.slice(0, 6).join(',') : true;
 });
-test('resolveTopic: 英语/体育/数学类落到 basics，思政/形势与政策落到 humanities', () => {
+test('resolveTopic: 外语/体育→basics，思政类→humanities，专业课默认 major', () => {
   const cases = [
     ['大学英语（综合）', 'basics'],
     ['体育-1', 'basics'],
-    ['微积分（Ⅰ）', 'basics'],
-    ['概率统计（理工）', 'basics'],
+    ['西班牙语（Ⅱ）', 'basics'],
     ['思想道德与法治', 'humanities'],
     ['形势与政策（三）', 'humanities'],
     ['马克思主义基本原理', 'humanities'],
@@ -185,6 +184,18 @@ test('resolveTopic: 英语/体育/数学类落到 basics，思政/形势与政�
   ];
   const bad = cases.filter(([name, want]) => resolveTopic(name, EXAM) !== want);
   return bad.length ? bad.map(([n, w]) => n + '→' + resolveTopic(n, EXAM) + '(期望' + w + ')').join(',') : true;
+});
+test('courseProfile: 难度落在 2~9，绩点权重 = 1 + 难度×gpaWeightByDifficulty', () => {
+  const per = Number.isFinite(EXAM.gpaWeightByDifficulty) ? EXAM.gpaWeightByDifficulty : 0.1;
+  const bad = [];
+  for (const n of allCourseNames) {
+    const p = courseProfile(n, config);
+    if (!(p.difficulty >= 2 && p.difficulty <= 9)) bad.push(n + ':' + p.difficulty);
+    else if (Math.abs(p.weight - Math.round((1 + p.difficulty * per) * 100) / 100) > 0.011) {
+      bad.push(n + ':w=' + p.weight);
+    }
+  }
+  return bad.length ? bad.slice(0, 6).join(',') : true;
 });
 
 /** 造一个「学识/健康都 60、随机取中性 0.5」的考场，方便比较分差 */
@@ -197,7 +208,7 @@ function examState(collegeId, progress) {
 }
 const neutralRng = { next: () => 0.5 };
 
-test('runFinalExam: 刷「专业方向」后专业课分数明显更高（分科进度真的生效了）', () => {
+test('runFinalExam: 刷「专业方向」后该方向的课明显更高（分科进度真的生效了）', () => {
   const s = examState('cs', { major: 12, basics: 0, humanities: 0 });
   const subs = subjectsFor(s, config);
   const majorName = subs.find((n) => resolveTopic(n, EXAM) === 'major');
@@ -206,7 +217,7 @@ test('runFinalExam: 刷「专业方向」后专业课分数明显更高（分科
   const r = runFinalExam(s, config, neutralRng);
   const scoreOf = (n) => (r.subjects.find((x) => x.name === n) || {}).score;
   const diff = scoreOf(majorName) - scoreOf(basicsName);
-  return diff >= 25 ? true : `专业课 ${scoreOf(majorName)} vs 基础课 ${scoreOf(basicsName)}（差 ${diff}）`;
+  return diff >= 12 ? true : `专业课 ${scoreOf(majorName)} vs 基础课 ${scoreOf(basicsName)}（差 ${diff}）`;
 });
 
 test('runFinalExam: 加成只给对应方向，不会给所有科目一起加分', () => {
@@ -217,16 +228,27 @@ test('runFinalExam: 加成只给对应方向，不会给所有科目一起加分
   if (!majorName || !humanName) return '该学期缺 major/humanities 科目: ' + subs.join(',');
   const r = runFinalExam(s, config, neutralRng);
   const scoreOf = (n) => (r.subjects.find((x) => x.name === n) || {}).score;
-  return scoreOf(humanName) - scoreOf(majorName) >= 25
+  return scoreOf(humanName) - scoreOf(majorName) >= 12
     ? true
     : `人文科目 ${scoreOf(humanName)} vs 专业科目 ${scoreOf(majorName)}`;
 });
 
-test('runFinalExam: 完全没有进度时所有科目同分（不加成也不惩罚）', () => {
+test('runFinalExam: 没有进度时按课程难度区分，且仍然全部 ≥ 及格线（永不挂科）', () => {
   const s = examState('cs', { major: 0, basics: 0, humanities: 0 });
   const r = runFinalExam(s, config, neutralRng);
-  const scores = new Set(r.subjects.map((x) => x.score));
-  return scores.size === 1 ? true : [...scores].join(',');
+  const passLine = Number(EXAM.passLine) || 60;
+  const allPass = r.subjects.every((x) => x.score >= passLine && x.score <= 100);
+  const distinct = new Set(r.subjects.map((x) => x.score)).size;
+  if (!allPass) return '有科目低于及格线: ' + r.subjects.map((x) => x.name + ':' + x.score).join(',');
+  return distinct > 1 ? true : '所有科目同分（难度没生效）: ' + [...new Set(r.subjects.map((x) => x.score))].join(',');
+});
+
+test('runFinalExam: 每门课都回填 topic / difficulty / weight（结算弹窗与绩点要读）', () => {
+  const s = examState('cs', { major: 4, basics: 0, humanities: 0 });
+  const r = runFinalExam(s, config, neutralRng);
+  const bad = r.subjects.filter((x) => !['major', 'basics', 'humanities'].includes(x.topic)
+    || !Number.isFinite(x.difficulty) || !Number.isFinite(x.weight));
+  return bad.length ? bad.map((x) => x.name).join(',') : true;
 });
 
 console.log(`\n== verify_courses 结果 ==`);
