@@ -5429,4 +5429,8 @@ body { font-synthesis: none; }
       改成不画，左右内边距对称。
    ========================================================================= */
 .vn-notice::before { content: none; }
-.vn-notice { padding-left: 16px; }
+.vn-notice {
+  padding-left: 16px;
+  /* 原来 top: 96px 会压在「江安 / 望江」页签上，往下让开 */
+  top: 118px;
+}
