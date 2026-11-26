@@ -64,6 +64,29 @@ console.log('== B · 事件单测 ==');
   check('computeWeight: termRange 内 > 0', wIn > 0, `w=${wIn}`);
 }
 
+// --- 大四专属事件不能提前出现（秋招/求职/毕设） ---
+{
+  const byId = (id) => events.random.find((e) => e.id === id);
+  const qiu = byId('ev_r79'); // 秋招宣讲会
+  check('秋招: 第 13 回合权重为 0', computeWeight(qiu, state(['chill'], 'cs', 13), config) === 0);
+  check('秋招: 第 35 回合可出现', computeWeight(qiu, state(['chill'], 'cs', 35), config) > 0);
+
+  const seniorOnly = [
+    ['ev_r79', 30, '秋招宣讲会'],
+    ['ev_r77', 30, '论文查重'],
+    ['ev_r80', 35, '毕业照拍摄'],
+    ['ev_r32', 28, '实习转正邀请'],
+    ['ev_r78', 20, '保研夏令营'],
+    ['ev_r83', 20, '考研自习室'],
+    ['ev_c18', 20, '法考备考'],
+  ];
+  const early = seniorOnly.filter(([id, min]) => {
+    const e = byId(id);
+    return !e || !e.termRange || e.termRange[0] < min;
+  });
+  check('大四/升学事件: 起始回合不早于设定', early.length === 0, early.map((x) => x[2]).join(','));
+}
+
 // --- rollEvent：chance 恒 true 且权重>0 时返回某个事件 ---
 {
   const rngAlways = { next: () => 0.0001, chance: () => true };
