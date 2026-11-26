@@ -478,9 +478,16 @@ function bgmForTurn(turn) {
       toast('有一条剧情线断在这里了', 'warning');
     }
 
-    // 每周固定规则（没吃饭 / 生活费到账 / 属性荒废）的提示
+    // 每周固定规则（没吃饭 / 固定开销 / 生活费到账 / 属性荒废）的提示
     if (Array.isArray(res.notices) && res.notices.length) {
       for (const n of res.notices.slice(0, 3)) toast(n.text || '', n.tone || 'warning');
+    }
+
+    // 学识归零 → 退学：直接放结局（不走学期的期末考试）
+    if (res.endingId) {
+      const judged = (typeof judgedEndingOf === 'function') ? judgedEndingOf(state) : { endingId: res.endingId, subEndings: res.endingSubs || [] };
+      await showEndingFor(judged.endingId || res.endingId, judged.subEndings || res.endingSubs || []);
+      return;
     }
 
     // 生活费 / 开销反馈（每次结算都提示，并带上当前金钱）

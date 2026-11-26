@@ -119,6 +119,13 @@ const config = await loadConfig(reader).catch((e) => {
   console.error('  loadConfig 抛错:', e && e.errors ? e.errors.join(' | ') : e);
   return null;
 });
+// 这个文件测的是「角色 / 剧情线 / 结局判定」，跑的是把一周行动全部用于推进剧情的脚本；
+// 每周固定规则（吃饭扣血、学识荒废、学识归零退学）会让这种脚本很早就退学，
+// 因此这里关掉它们——那套规则由 tests/verify_rules.mjs 专门覆盖。
+if (config && config.balance) {
+  config.balance.weeklyRules = null;
+  config.balance.dropout = null;
+}
 check('A: 9 份配置加载成功', !!config);
 const v = validateConfigs(config || {});
 check('A: 配置通过结构校验', v.ok, v.errors.join(' | '));

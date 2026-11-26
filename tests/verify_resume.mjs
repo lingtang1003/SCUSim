@@ -110,7 +110,14 @@ const config = await (async () => {
       return readFile(join(root, 'config', `${n}.json`), 'utf8');
     },
   };
-  return (await import('../src/config/loader.js')).loadConfig(reader);
+  const cfg = await (await import('../src/config/loader.js')).loadConfig(reader);
+  // 这里只测「刷新续玩 / 存档恢复」，不受每周固定规则影响：关掉退学与每周结算，
+  // 免得造存档时角色因为学识荒废被退学，pendingEvent 也就没了（规则由 verify_rules 专测）
+  if (cfg.balance) {
+    cfg.balance.weeklyRules = null;
+    cfg.balance.dropout = null;
+  }
+  return cfg;
 })();
 
 const loader = { loadConfig: async () => config };

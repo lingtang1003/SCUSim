@@ -56,7 +56,9 @@
 | `endingPriorityOrder` | `"asc"｜"desc"` | 否 | ⏳ D-W3 | ending.sortByPriority | `asc` = 数值越小越高；缺省 `desc` 兼容现配置 |
 | `historyLimit` / `logLimit` | number | 否 | 默认 60 | state | 履历/日志环形上限 |
 | `idleDecay` | object | 否 | ⏸ 默认关闭（已由 `weeklyRules.neglect` 接管） | engine.applyIdleDecay | 连续空窗扣属性：`{everyTurns:4, resetPerYear:true, knowledge:{actions:['study'],amount:3}, health:{actions:['exercise','rest'],amount:2}}`；缺省则不扣（兼容旧存档）。仓库里已置 `null`，机制保留但默认不生效 |
-| `weeklyRules` | object | 否 | ✅ 已生效 | core/rhythm.js（advance / doAction / actionAvailability 调用） | 每周固定规则：`eat`（这周必须吃一次饭，否则扣健康，默认 −15；`actions`+`locations` 决定什么算吃饭）、`allowance`（每 `everyTurns` 周 +`amount`，默认 2 周 +80）、`broke`（金钱 < 0 时只能做 `allowedActions`，默认兼职/休息）、`neglect`（属性连续 `afterTurns` 周没涨就 −`amount`，默认 2 周 −10，掉完重新计时）。缺省则全部不生效 |
+| `weeklyRules` | object | 否 | ✅ 已生效 | core/rhythm.js（advance / doAction / actionAvailability 调用） | 每周固定规则：`fee`（每周固定开销，默认 −20）、`eat`（这周必须吃一次饭，否则扣健康，默认 −15；`actions`+`locations` 决定什么算吃饭）、`allowance`（每 `everyTurns` 周 +`amount`，默认 2 周 +80）、`broke`（金钱 < 0 时只能做 `allowedActions`，默认兼职/休息）、`neglect`（属性连续 `afterTurns` 周没涨就 −`amount`，默认 2 周 −10；`amounts` 可按属性覆盖，学识默认 −5，掉完重新计时）。缺省则全部不生效 |
+| `dropout` | object | 否 | ✅ 已生效 | core/rhythm.checkDropout（advance 里调用） | 学识归零 = 退学：`{attribute:'knowledge', atMost:0, endingId:'ending_warning'}`，触发后直接把 `state.endingId` 定死，`advance()` 返回该 `endingId`，不再生成事件 / 考试 |
+| `healthZeroRule` | object | 否 | ✅ 已生效 | core/rhythm.blockedByZeroHealth + engine.actionAvailability | 健康归零时只允许「效果里 health > 0」的活动（默认 `onlyPositiveHealthActions: true`）；低健康（< `healthRestrictThreshold`）也按同一条「能加健康就放行」判断 |
 
 当前实际片段（节选）：
 

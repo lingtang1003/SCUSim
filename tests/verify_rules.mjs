@@ -33,10 +33,10 @@ const baseConfig = await loadConfig({ read: (p) => readFile(join(root, 'config',
 const RULES = baseConfig.balance.weeklyRules;
 const clone = (o) => JSON.parse(JSON.stringify(o));
 
-// 三套开局属性（合计都是 20 点）：纯健康 / 带钱 / 学识压满
-const A_NO_MONEY = { knowledge: 0, social: 0, health: 20, money: 0 };
-const A_WITH_MONEY = { knowledge: 0, social: 0, health: 15, money: 5 };
-const A_RICH = { knowledge: 0, social: 0, health: 14, money: 6 };
+// 三套开局属性（合计都是 20 点）；学识一律 > 0，否则第一次推进就触发「退学」
+const A_NO_MONEY = { knowledge: 5, social: 0, health: 15, money: 0 };
+const A_WITH_MONEY = { knowledge: 4, social: 0, health: 11, money: 5 };
+const A_RICH = { knowledge: 4, social: 0, health: 10, money: 6 };
 const D_NOBLE = { knowledge: 18, social: 1, health: 1, money: 0 };
 
 /** 开一局并把开局固定事件结算掉，返回 { state, rng } */
@@ -101,27 +101,32 @@ console.log('== SCUSim 每周固定规则自检 ==');
 }
 
 // ---------------------------------------------------------------------------
-// B) 每两周发一次生活费
+// B) 每周固定扣费 −20；每两周再发生活费 +80
 // ---------------------------------------------------------------------------
 {
   const { s, rng } = boot(A_NO_MONEY);
   const amount = RULES.allowance.amount;
   const every = RULES.allowance.everyTurns;
+  const fee = RULES.fee.amount;
   const m0 = s.player.attributes.money;
-  const r1 = advance(s, baseConfig, rng);       // → 第 2 周
-  check(`B: 第 2 周生活费 +${amount}`,
-    s.player.attributes.money === m0 + amount,
+  const r1 = advance(s, baseConfig, rng);       // → 第 2 周（扣开销 + 发生活费）
+  check(`B: 第 2 周 = 生活费 +${amount} − 固定开销 ${fee}`,
+    s.player.attributes.money === m0 + amount - fee,
     m0 + ' → ' + s.player.attributes.money);
   check('B: 生活费给 success 提示',
     (r1.notices || []).some((n) => n.type === 'allowance' && n.tone === 'success'));
+  check('B: 固定开销给 fee 提示',
+    (r1.notices || []).some((n) => n.type === 'fee' && String(n.text).includes(String(fee))),
+    JSON.stringify(r1.notices || []));
   const m2 = s.player.attributes.money;
-  advance(s, baseConfig, rng);                  // → 第 3 周
-  check('B: 第 3 周不发（每 ' + every + ' 周一次）',
-    s.player.attributes.money === m2, m2 + ' → ' + s.player.attributes.money);
-  advance(s, baseConfig, rng);                  // → 第 4 周
-  check(`B: 第 4 周再 +${amount}`,
-    s.player.attributes.money === m2 + amount,
-    m2 + ' → ' + s.player.attributes.money);
+  advance(s, baseConfig, rng);                  // → 第 3 周（只扣开销）
+  check('B: 第 3 周只扣固定开销（每 ' + every + ' 周才发一次）',
+    s.player.attributes.money === m2 - fee, m2 + ' → ' + s.player.attributes.money);
+  const m3 = s.player.attributes.money;
+  advance(s, baseConfig, rng);                  // → 第 4 周（扣开销 + 发生活费）
+  check(`B: 第 4 周再 +${amount} − ${fee}`,
+    s.player.attributes.money === m3 + amount - fee,
+    m3 + ' → ' + s.player.attributes.money);
 }
 
 // ---------------------------------------------------------------------------
@@ -152,24 +157,31 @@ console.log('== SCUSim 每周固定规则自检 ==');
 }
 
 // ---------------------------------------------------------------------------
-// D) 连续两周属性没涨 → −10
+// D) 连续两周属性没涨 → 学识 −5 / 其他 −10
 // ---------------------------------------------------------------------------
+const KNEG = Number.isFinite(Number(RULES.neglect.amounts && RULES.neglect.amounts.knowledge))
+  ? Number(RULES.neglect.amounts.knowledge)
+  : RULES.neglect.amount;
 {
   const { s, rng } = boot(D_NOBLE);
   const k0 = s.player.attributes.knowledge;
+  const s0 = s.player.attributes.social;   // 开局社团事件会给一点社交，这里取"结算后的值"
   advance(s, baseConfig, rng);   // → 第 2 周（只过了一周）
   check('D: 只过一周不扣（还没满两周）',
     s.player.attributes.knowledge === k0, k0 + ' → ' + s.player.attributes.knowledge);
   const r2 = advance(s, baseConfig, rng);   // → 第 3 周（两周没涨）
-  check('D: 连续两周没涨学识 → 扣 ' + RULES.neglect.amount,
-    s.player.attributes.knowledge === k0 - RULES.neglect.amount,
+  check(`D: 连续两周没涨学识 → 扣 ${KNEG}（比社交/健康轻）`,
+    s.player.attributes.knowledge === k0 - KNEG,
     k0 + ' → ' + s.player.attributes.knowledge);
   check('D: 扣属性会给出提示',
     (r2.notices || []).some((n) => n.type === 'neglect' && String(n.text).includes('学识')));
   const k2 = s.player.attributes.knowledge;
-  advance(s, baseConfig, rng);   // → 第 4 周（刚扣过，重新计时）
+  advance(s, baseConfig, rng);   // → 第 4 周（学识刚扣过，重新计时；社交这时才满两周）
   check('D: 扣完重新计时，不会每周连扣',
     s.player.attributes.knowledge === k2, k2 + ' → ' + s.player.attributes.knowledge);
+  check('D: 社交没涨掉 ' + RULES.neglect.amount + '（用基础值，不受学识覆盖影响）',
+    s.player.attributes.social === Math.max(0, s0 - RULES.neglect.amount),
+    s0 + ' → ' + s.player.attributes.social);
 }
 {
   // 这一周涨过 → 计时重置
@@ -185,9 +197,57 @@ console.log('== SCUSim 每周固定规则自检 ==');
   check('D: 第 2 周没涨但只隔一周 → 仍不扣',
     s.player.attributes.knowledge === k1, k1 + ' → ' + s.player.attributes.knowledge);
   advance(s, baseConfig, rng);                 // → 第 4 周（第 2、3 周都没涨）
-  check('D: 连着两周没涨 → 扣 ' + RULES.neglect.amount + '（不够扣就到 0）',
-    s.player.attributes.knowledge === Math.max(0, k1 - RULES.neglect.amount),
+  check(`D: 连着两周没涨 → 扣 ${KNEG}（不够扣就到 0）`,
+    s.player.attributes.knowledge === Math.max(0, k1 - KNEG),
     k1 + ' → ' + s.player.attributes.knowledge);
+}
+
+// ---------------------------------------------------------------------------
+// F) 健康 0 → 只能做「加健康」的活动
+// ---------------------------------------------------------------------------
+{
+  const { s } = boot(A_WITH_MONEY);
+  s.player.attributes.health = 0;
+  moveToLocation(s, 'library', baseConfig);
+  const study = actionAvailability(s, 'study', baseConfig);
+  check('F: 健康 0 不能学习（reason=zero_health）',
+    study.ok === false && study.reason === 'zero_health', JSON.stringify(study));
+  moveToLocation(s, 'dorm', baseConfig);
+  const rest = actionAvailability(s, 'rest', baseConfig);
+  check('F: 健康 0 可以休息（+3 健康）', rest.ok === true, JSON.stringify(rest));
+  moveToLocation(s, 'canteen', baseConfig);
+  const eat = actionAvailability(s, 'eat', baseConfig);
+  check('F: 健康 0 可以吃饭（+3 健康，但要钱）', eat.ok === true, JSON.stringify(eat));
+}
+
+// ---------------------------------------------------------------------------
+// G) 学识归零 = 退学，直接触发「学业警示」结局
+// ---------------------------------------------------------------------------
+{
+  const { s, rng } = boot({ knowledge: 4, social: 8, health: 8, money: 0 });
+  s.player.attributes.knowledge = 0;
+  const r = advance(s, baseConfig, rng);
+  const want = (baseConfig.balance.dropout && baseConfig.balance.dropout.endingId) || 'ending_warning';
+  check('G: 学识归零 → 立即结束本局', r.ok === true && r.endingId === want,
+    JSON.stringify({ ok: r.ok, endingId: r.endingId }));
+  check('G: state.endingId 被写成学业警示', s.endingId === want, String(s.endingId));
+  check('G: 退学这一步不再生成事件', !s.pendingEvent, JSON.stringify(s.pendingEvent));
+  check('G: 退学写进履历', (s.history || []).some((h) => h.type === 'dropout'));
+}
+{
+  const { s, rng } = boot({ knowledge: 8, social: 6, health: 6, money: 0 });
+  const r = advance(s, baseConfig, rng);
+  check('G: 学识 > 0 时不会退学', !r.endingId && !s.endingId,
+    JSON.stringify({ endingId: r.endingId, stateEnding: s.endingId }));
+}
+{
+  // 没配 dropout 的旧配置：学识 0 也不退学
+  const cfg = clone(baseConfig);
+  delete cfg.balance.dropout;
+  const { s, rng } = boot({ knowledge: 4, social: 8, health: 8, money: 0 }, cfg);
+  s.player.attributes.knowledge = 0;
+  const r = advance(s, cfg, rng);
+  check('G: 没配 dropout 时不退学（向后兼容）', !r.endingId && !s.endingId);
 }
 
 // ---------------------------------------------------------------------------

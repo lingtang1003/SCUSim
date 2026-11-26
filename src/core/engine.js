@@ -478,6 +478,11 @@ export function actionAvailability(state, actionId, config) {
   // 钱包为负：只能做允许的行动（默认兼职 / 休息），其余锁死
   const broke = (typeof rhythm.brokeCheck === 'function') ? rhythm.brokeCheck(state, actionId, config) : null;
   if (broke && broke.blocked) return { ok: false, reason: 'broke' };
+  // 健康归零：只能做「能加健康」的活动（默认休息 / 吃饭这类）
+  if (typeof rhythm.blockedByZeroHealth === 'function'
+    && rhythm.blockedByZeroHealth(state, action, config)) {
+    return { ok: false, reason: 'zero_health' };
+  }
   if (state.actionPoints < (action.cost ?? 0)) return { ok: false, reason: 'AP' };
 
   const activities = availableActivities(state, config);
@@ -487,7 +492,9 @@ export function actionAvailability(state, actionId, config) {
 
   const health = Number(state.player.attributes.health) || 0;
   const restrict = num(getBalance(config).healthRestrictThreshold, HEALTH_RESTRICT_DEFAULT);
-  if (health < restrict && LOW_HEALTH_ALLOWED.indexOf(action.id) < 0) {
+  // 低健康时只允许「能加健康」的活动（休息 / 吃饭 / 锻炼都算），而不是写死的白名单
+  const heals = Number(action.effects && action.effects.attributes && action.effects.attributes.health) > 0;
+  if (health < restrict && LOW_HEALTH_ALLOWED.indexOf(action.id) < 0 && !heals) {
     return { ok: false, reason: 'health' };
   }
   if (health < (action.requiresHealth ?? 0)) return { ok: false, reason: 'health' };
@@ -645,13 +652,40 @@ export function advance(state, config, rng) {
   // D-18：连续空窗扣减（学识 / 健康）—— 默认配置已交给 weeklyRules.neglect，配置缺失时不生效
   applyIdleDecay(state, config);
 
-  // 每周固定规则：这一周没吃饭扣健康 / 每 N 周发生活费 / 连续 N 周没涨的属性掉点
+  // 每周固定规则：这一周没吃饭扣健康 / 固定开销 / 每 N 周发生活费 / 连续 N 周没涨的属性掉点
   const weekly = (typeof rhythm.applyWeeklyRules === 'function')
     ? rhythm.applyWeeklyRules(state, config, state.turn - 1)
     : { notices: [] };
   for (const n of (weekly.notices || [])) {
     pushLog(state, `每周结算：${n.text}`, config);
     pushHistory(state, { type: 'weekly', kind: n.type, text: n.text }, config);
+  }
+
+  // 学识归零 = 退学：本局直接结束，不再往下跑事件 / 考试
+  const dropout = (typeof rhythm.checkDropout === 'function')
+    ? rhythm.checkDropout(state, config)
+    : { ended: false };
+  if (dropout.ended) {
+    const id = dropout.endingId || 'ending_warning';
+    if (dropout.message) {
+      pushLog(state, `退学：${dropout.message}`, config);
+      pushHistory(state, { type: 'dropout', text: dropout.message }, config);
+    }
+    clampAttrs(state, config);
+    state.rngState = rng.getState();
+    return {
+      ok: true,
+      state,
+      monthly,
+      weekly,
+      settlement: null,
+      pendingEvent: null,
+      endingId: id,
+      endingSubs: [],
+      brokenLines: [],
+      notices: (weekly && weekly.notices) || [],
+      message: `学识归零，退学：${id}`,
+    };
   }
 
   // v2.1：好感跌破底线 → 剧情线中断（本局错过这条线）

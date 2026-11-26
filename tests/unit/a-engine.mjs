@@ -44,6 +44,13 @@ const base = await loadConfig(reader);
 if (base.locations && Array.isArray(base.locations.list)) {
   for (const l of base.locations.list) delete l.activities;
 }
+// 每周固定规则 / 学识归零退学：本文件测的是回合、考试、结局这些旧机制，
+// 这里统一关掉（否则角色会在第 5 周因为不学习退学，把多回合断言全带偏）；
+// 这些新规则由 tests/verify_rules.mjs 专门覆盖。
+if (base.balance) {
+  base.balance.weeklyRules = null;
+  base.balance.dropout = null;
+}
 
 const OPTIONS = {
   name: '引擎生', gender: '男', collegeId: 'cs',
@@ -149,7 +156,10 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
     sNoMain.player.attributes.knowledge === 22, String(sNoMain.player.attributes.knowledge));
 
   const s0 = stateWithoutPending(); s0.player.attributes.health = 0;
-  check('健康 0：学习被拒绝（health）', actionAvailability(s0, 'study', base).reason === 'health');
+  const avStudy0 = actionAvailability(s0, 'study', base);
+  check('健康 0：学习被拒绝（health / zero_health）',
+    avStudy0.ok === false && (avStudy0.reason === 'health' || avStudy0.reason === 'zero_health'),
+    JSON.stringify(avStudy0));
   check('健康 0：休息可用', actionAvailability(s0, 'rest', base).ok === true);
   const s2 = stateWithoutPending(); s2.player.attributes.health = 2;
   check('健康 2：锻炼可用', actionAvailability(s2, 'exercise', base).ok === true);
@@ -200,7 +210,12 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
   check('advance: 返回 monthly {income,expense,net}', r.monthly && typeof r.monthly.net === 'number');
 
   // 考试周：先弹「全力复习 / 佛系应考」，成绩延后到事件结算之后
-  const cfgExam = patch((c) => { c.balance.examTurns = [5]; });
+  const cfgExam = patch((c) => {
+    c.balance.examTurns = [5];
+    // 这一段只测考试流程：关掉每周固定规则（否则五周不学习会先触发「学识归零退学」）
+    c.balance.weeklyRules = null;
+    c.balance.dropout = null;
+  });
   const se = stateWithoutPending(cfgExam);
   const resolveFirst = (s, cfg, rngSeed) => {
     if (!s.pendingEvent) return null;

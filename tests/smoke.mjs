@@ -100,7 +100,9 @@ try {
   console.error('  B 抛错:', e && e.message ? e.message : e);
 }
 check('B: 全程不抛错', !bThrew);
-check('B: turn 停在 40', bState && bState.turn === 40, `turn=${bState && bState.turn}`);
+check('B: 跑到结局（可能因退学/学业警示提前结束）',
+  bState && (bState.turn === 40 || !!bState.endingId),
+  `turn=${bState && bState.turn} ending=${bState && bState.endingId}`);
 check('B: endingId 非空', bState && !!bState.endingId, `endingId=${bState && bState.endingId}`);
 check('B: rngState 为数字', bState && typeof bState.rngState === 'number', `rngState=${bState && bState.rngState}`);
 

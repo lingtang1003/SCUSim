@@ -351,7 +351,9 @@ test('D: 经 controller 驱动完整一局不抛错且到达结局', async () =>
       await controller.callbacks.onResolveEvent(opt);
     }
   }
-  if (s.turn !== 40) return '未到达终局回合: ' + s.turn;
+  // 每周固定规则上线后，「学识归零 = 退学」会让一局提前收场（这是设计，不是 bug）：
+  // 所以断言放宽成「跑到 40 回合 或 已拿到结局」都算完整一局
+  if (s.turn !== 40 && !s.endingId) return '未到达终局回合也没有结局: ' + s.turn;
   if (!s.endingId || typeof s.endingId !== 'string') {
     return '结局 id 为空: ' + s.endingId;
   }

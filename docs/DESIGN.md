@@ -202,17 +202,21 @@
 
 ### 8.3 HUD 的「每周固定规则」提醒
 
-HUD 左侧胶囊组里多了一枚按需出现的红色胶囊 `.vn-chip--warn`：
+HUD 左侧胶囊组里多了一枚按需出现的红色胶囊 `.vn-chip--warn`（按危险程度取第一条）：
 
-| 状态 | 文案 |
-|---|---|
-| 金钱 < 0 | `💰 钱包见底 · 这周只能兼职` |
-| 这周还没吃饭（`player.weekly.lastEatTurn !== turn`） | `🍚 这周还没吃饭` |
-| 都不满足 | 不渲染 |
+| 优先级 | 状态 | 文案 |
+|---|---|---|
+| 1 | 学识 ≤ 5 | `📖 学识 N · 归零即退学` |
+| 2 | 健康 ≤ 0 | `💔 健康 0 · 只能做加健康的活动` |
+| 3 | 金钱 < 0 | `💰 钱包见底 · 这周只能兼职` |
+| 4 | 这周还没吃饭（`player.weekly.lastEatTurn !== turn`） | `🍚 这周还没吃饭` |
+| — | 都不满足 | 不渲染 |
 
-规则本身在 `balance.weeklyRules` / `src/core/rhythm.js`（吃饭、生活费、负债锁行动、两周一档属性荒废），
+规则本身在 `balance.weeklyRules` / `dropout` / `healthZeroRule`，实现在 `src/core/rhythm.js`
+（每周固定开销、吃饭、生活费、负债锁行动、健康归零只许加健康、两周一档属性荒废、学识归零退学），
 `advance()` 结算时把每条变化写进 `log`，`main` 里再 `toast` 一次；回合结束后 HUD 自动复位。
-回归：`tests/verify_rules.mjs`（27 条）。
+退学这步 `advance()` 会直接返回 `endingId`，`main.onAdvance` 立刻放结局（不再等第 40 回合）。
+回归：`tests/verify_rules.mjs`（38 条）。
 
 ## 9. Agent Prompt Guide
 

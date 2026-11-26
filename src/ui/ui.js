@@ -703,10 +703,16 @@ export function createApp(ctx) {
     const apMax = balanceOf('actionPointsPerTurn', 4);
     const player = state.player || {};
     const line = view && view.line;
-    // 每周固定规则的提醒（没钱只能兼职 / 这周还没吃饭）
+    // 每周固定规则的提醒（学识快归零 / 没钱只能兼职 / 这周还没吃饭）
     const weekly = player.weekly || {};
     const money = Number(player.attributes && player.attributes.money) || 0;
-    const weeklyWarn = money < 0
+    const knowledge = Number(player.attributes && player.attributes.knowledge) || 0;
+    const health = Number(player.attributes && player.attributes.health) || 0;
+    const weeklyWarn = knowledge <= 5
+      ? '📖 学识 ' + knowledge + ' · 归零即退学'
+      : health <= 0
+      ? '💔 健康 0 · 只能做加健康的活动'
+      : money < 0
       ? '💰 钱包见底 · 这周只能兼职'
       : (Number(weekly.lastEatTurn) !== Number(state.turn) ? '🍚 这周还没吃饭' : '');
     return h('div', { class: 'vn-hud' }, [
@@ -828,6 +834,7 @@ export function createApp(ctx) {
     if (!av || av.ok) return '';
     if (av.reason === 'AP') return '行动点不足';
     if (av.reason === 'health') return '需要健康 ≥ ' + (action.requiresHealth || 0);
+    if (av.reason === 'zero_health') return '健康 0，只能做「加健康」的活动';
     if (av.reason === 'broke') return '钱包见底了，只能去兼职';
     if (av.reason === 'unknown_action') return '未知行动';
     return '当前不可用';

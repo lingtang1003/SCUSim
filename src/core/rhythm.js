@@ -106,16 +106,16 @@ export function brokeCheck(state, actionId, config) {
 }
 
 /**
- * 回合结束时结算三条"周期性"规则（吃饭 / 生活费 / 属性荒废）。
+ * 回合结束时结算"周期性"规则（固定开销 / 吃饭 / 生活费 / 属性荒废）。
  * 由 engine.advance 在进入新回合后调用，endedTurn 为刚结束的那一回合。
  * @param {object} state
  * @param {object} config
  * @param {number} endedTurn
- * @returns {{ notices: Array<{type:string, text:string, tone?:string}>, eatPenalty:number, allowance:number, neglect:Array }}
+ * @returns {{ notices: Array<{type:string, text:string, tone?:string}>, eatPenalty:number, allowance:number, fee:number, neglect:Array }}
  */
 export function applyWeeklyRules(state, config, endedTurn) {
   const rules = getRules(config);
-  const out = { notices: [], eatPenalty: 0, allowance: 0, neglect: [] };
+  const out = { notices: [], eatPenalty: 0, allowance: 0, fee: 0, neglect: [] };
   if (!rules || !state || !state.player) return out;
   const attrs = state.player.attributes || {};
   const w = ensureWeekly(state, config);
@@ -141,7 +141,22 @@ export function applyWeeklyRules(state, config, endedTurn) {
     }
   }
 
-  // 2) 生活费：每 everyTurns 周发一次
+  // 2) 每周固定开销（先扣固定开销，再发生活费，顺序固定便于对账）
+  const fee = rules.fee;
+  if (fee) {
+    const amount = num(fee.amount, 0);
+    if (amount > 0) {
+      attrs.money = (Number(attrs.money) || 0) - amount;
+      out.fee = amount;
+      out.notices.push({
+        type: 'fee',
+        tone: 'info',
+        text: `${fee.message || '本周固定开销'}：金钱 −${amount}`,
+      });
+    }
+  }
+
+  // 3) 生活费：每 everyTurns 周发一次
   const allowance = rules.allowance;
   if (allowance) {
     const every = Math.max(1, num(allowance.everyTurns, 2));
@@ -158,11 +173,12 @@ export function applyWeeklyRules(state, config, endedTurn) {
     }
   }
 
-  // 3) 连着 N 周没涨过的属性 → 掉一截（掉完清零重算，不会每周连扣）
+  // 4) 连着 N 周没涨过的属性 → 掉一截（掉完清零重算，不会每周连扣）
   const neglect = rules.neglect;
   if (neglect) {
     const after = Math.max(1, num(neglect.afterTurns, 2));
-    const amount = num(neglect.amount, 10);
+    const baseAmount = num(neglect.amount, 10);
+    const perAttr = (neglect.amounts && typeof neglect.amounts === 'object') ? neglect.amounts : {};
     for (const k of trackedAttrs(config)) {
       const gained = Number(w.gainedTurn[k]);
       if (Number.isFinite(gained) && gained === ended) {
@@ -172,6 +188,7 @@ export function applyWeeklyRules(state, config, endedTurn) {
       const miss = (Number(w.miss[k]) || 0) + 1;
       w.miss[k] = miss;
       if (miss < after) continue;
+      const amount = Number.isFinite(Number(perAttr[k])) ? Number(perAttr[k]) : baseAmount;
       const before = Number(attrs[k]) || 0;
       attrs[k] = Math.max(0, before - amount);
       const applied = before - attrs[k];
@@ -190,3 +207,35 @@ export function applyWeeklyRules(state, config, endedTurn) {
 
   return out;
 }
+
+/**
+ * 健康归零时，这个行动还允不允许做（默认只允许「效果里加健康」的活动）。
+ * @returns {boolean} true = 被拦下
+ */
+export function blockedByZeroHealth(state, action, config) {
+  const rules = getRules(config);
+  const cfg = (config && config.balance && config.balance.healthZeroRule) || null;
+  if (!cfg || cfg.onlyPositiveHealthActions === false) return false;
+  const health = Number(state.player && state.player.attributes && state.player.attributes.health) || 0;
+  if (health > 0) return false;
+  const gain = Number(action && action.effects && action.effects.attributes && action.effects.attributes.health) || 0;
+  return !(gain > 0);
+}
+
+/**
+ * 学识归零 = 退学：直接把结局定死。
+ * @returns {{ ended: boolean, endingId?: string, message?: string }}
+ */
+export function checkDropout(state, config) {
+  const cfg = (config && config.balance && config.balance.dropout) || null;
+  if (!cfg || !state || !state.player) return { ended: false };
+  if (state.endingId) return { ended: false };
+  const attr = cfg.attribute || 'knowledge';
+  const value = Number(state.player.attributes && state.player.attributes[attr]) || 0;
+  const atMost = Number.isFinite(Number(cfg.atMost)) ? Number(cfg.atMost) : 0;
+  if (value > atMost) return { ended: false };
+  const endingId = cfg.endingId || 'ending_warning';
+  state.endingId = endingId;
+  return { ended: true, endingId, message: cfg.message || '学识归零，被退学' };
+}
+
