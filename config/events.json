@@ -3066,10 +3066,7 @@
         }
       ],
       "spot": [],
-      "place": [
-        "dorm",
-        "wj_dorm"
-      ]
+      "place": ["street","wj_gate"]
     },
     {
       "id": "ev_r77",
@@ -4384,9 +4381,7 @@
         }
       ],
       "topic": "humanities",
-      "place": [
-        "humanities"
-      ]
+      "place": ["college"]
     },
     {
       "id": "ev_r95",
@@ -4623,10 +4618,7 @@
         }
       ],
       "topic": "run",
-      "place": [
-        "track",
-        "wj_track"
-      ]
+      "place": ["gym"]
     },
     {
       "id": "ev_r101",

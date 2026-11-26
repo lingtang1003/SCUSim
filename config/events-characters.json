@@ -132,6 +132,7 @@
   "random": [
     {
       "id": "ev_story_jiangxu_1",
+      "place": ["street"],
       "charId": "jiangxu",
       "name": "凌晨的便利店",
       "weight": 1,
@@ -233,6 +234,7 @@
     },
     {
       "id": "ev_story_jiangxu_3",
+      "place": ["college"],
       "charId": "jiangxu",
       "name": "天台的彩蛋",
       "weight": 1,
@@ -331,6 +333,7 @@
     },
     {
       "id": "ev_story_guchi_1",
+      "place": ["college"],
       "charId": "guchi",
       "name": "第一排的观众",
       "weight": 1,
@@ -384,6 +387,7 @@
     },
     {
       "id": "ev_story_guchi_2",
+      "place": ["humanities"],
       "charId": "guchi",
       "name": "模拟法庭组队",
       "weight": 1,
@@ -487,6 +491,7 @@
     },
     {
       "id": "ev_story_guchi_4",
+      "place": ["humanities"],
       "charId": "guchi",
       "name": "闭庭之后",
       "weight": 1,
@@ -532,6 +537,7 @@
     },
     {
       "id": "ev_story_suwan_1",
+      "place": ["clubroom"],
       "charId": "suwan",
       "name": "四楼的琴房",
       "weight": 1,
@@ -584,6 +590,7 @@
     },
     {
       "id": "ev_story_suwan_2",
+      "place": ["college"],
       "charId": "suwan",
       "name": "通识课分组",
       "weight": 1,
@@ -636,6 +643,7 @@
     },
     {
       "id": "ev_story_suwan_3",
+      "place": ["bridge"],
       "charId": "suwan",
       "name": "白石桥边",
       "weight": 1,
@@ -688,6 +696,7 @@
     },
     {
       "id": "ev_story_suwan_4",
+      "place": ["clubroom"],
       "charId": "suwan",
       "name": "最后一个音",
       "weight": 1,
@@ -744,6 +753,7 @@
     },
     {
       "id": "ev_story_zhouye_1",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "第 4 道",
       "weight": 1,
@@ -796,6 +806,7 @@
     },
     {
       "id": "ev_story_zhouye_2",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "训练搭子",
       "weight": 1,
@@ -851,6 +862,7 @@
     },
     {
       "id": "ev_story_zhouye_3",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "最后一圈",
       "weight": 1,
@@ -900,6 +912,7 @@
     },
     {
       "id": "ev_story_tangtang_1",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "后排的替补",
       "weight": 1,
@@ -955,6 +968,7 @@
     },
     {
       "id": "ev_story_tangtang_2",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "排练到熄灯",
       "weight": 1,
@@ -1007,6 +1021,7 @@
     },
     {
       "id": "ev_story_tangtang_3",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "谢幕之后",
       "weight": 1,
@@ -1052,6 +1067,7 @@
     },
     {
       "id": "ev_story_jiangxu_5",
+      "place": ["dorm"],
       "charId": "jiangxu",
       "name": "好友申请",
       "weight": 1,
@@ -1100,6 +1116,7 @@
     },
     {
       "id": "ev_story_jiangxu_6",
+      "place": ["library"],
       "charId": "jiangxu",
       "name": "图书馆的一道题",
       "weight": 1,
@@ -1156,6 +1173,7 @@
     },
     {
       "id": "ev_story_jiangxu_7",
+      "place": ["bridge"],
       "charId": "jiangxu",
       "name": "说不出口的心意",
       "weight": 1,
@@ -1265,6 +1283,7 @@
     },
     {
       "id": "ev_story_jiangxu_9",
+      "place": ["library"],
       "charId": "jiangxu",
       "name": "台阶上的咖啡",
       "weight": 1,
@@ -1308,6 +1327,7 @@
     },
     {
       "id": "ev_story_guchi_5",
+      "place": ["college"],
       "charId": "guchi",
       "name": "公告栏前的改稿人",
       "weight": 1,
@@ -1361,6 +1381,7 @@
     },
     {
       "id": "ev_story_guchi_6",
+      "place": ["track"],
       "charId": "guchi",
       "name": "操场三圈",
       "weight": 1,
@@ -1413,6 +1434,7 @@
     },
     {
       "id": "ev_story_guchi_7",
+      "place": ["library"],
       "charId": "guchi",
       "name": "磨辩词的傍晚",
       "weight": 1,
@@ -1514,6 +1536,7 @@
     },
     {
       "id": "ev_story_guchi_9",
+      "place": ["street"],
       "charId": "guchi",
       "name": "赔罪的美式",
       "weight": 1,
@@ -1556,6 +1579,7 @@
     },
     {
       "id": "ev_story_linyu_5",
+      "place": ["bridge"],
       "charId": "linyu",
       "name": "镜头里的你",
       "weight": 1,
@@ -1608,6 +1632,7 @@
     },
     {
       "id": "ev_story_linyu_7",
+      "place": ["library"],
       "charId": "linyu",
       "name": "没给人看过的本子",
       "weight": 1,
@@ -1660,6 +1685,7 @@
     },
     {
       "id": "ev_story_linyu_8",
+      "place": ["clubroom"],
       "charId": "linyu",
       "name": "暗房里的心动",
       "weight": 1,
@@ -1715,6 +1741,7 @@
     },
     {
       "id": "ev_story_linyu_9",
+      "place": ["bridge"],
       "charId": "linyu",
       "name": "长桥的纸条",
       "weight": 1,
@@ -1757,6 +1784,7 @@
     },
     {
       "id": "ev_story_linyu_10",
+      "place": ["college"],
       "charId": "linyu",
       "name": "校报上的署名",
       "weight": 1,
@@ -1802,6 +1830,7 @@
     },
     {
       "id": "ev_story_suwan_5",
+      "place": ["clubroom"],
       "charId": "suwan",
       "name": "走廊里的琴声",
       "weight": 1,
@@ -1854,6 +1883,7 @@
     },
     {
       "id": "ev_story_suwan_6",
+      "place": ["library"],
       "charId": "suwan",
       "name": "课后小组作业",
       "weight": 1,
@@ -1906,6 +1936,7 @@
     },
     {
       "id": "ev_story_suwan_7",
+      "place": ["bridge"],
       "charId": "suwan",
       "name": "说不清的心事",
       "weight": 1,
@@ -1961,6 +1992,7 @@
     },
     {
       "id": "ev_story_suwan_8",
+      "place": ["college"],
       "charId": "suwan",
       "name": "不合的想法",
       "weight": 1,
@@ -2010,6 +2042,7 @@
     },
     {
       "id": "ev_story_suwan_9",
+      "place": ["clubroom"],
       "charId": "suwan",
       "name": "第二天的歉意",
       "weight": 1,
@@ -2052,6 +2085,7 @@
     },
     {
       "id": "ev_story_zhouye_5",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "跑道边的水",
       "weight": 1,
@@ -2104,6 +2138,7 @@
     },
     {
       "id": "ev_story_zhouye_6",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "赛后慢走",
       "weight": 1,
@@ -2156,6 +2191,7 @@
     },
     {
       "id": "ev_story_zhouye_7",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "直球下的心动",
       "weight": 1,
@@ -2211,6 +2247,7 @@
     },
     {
       "id": "ev_story_zhouye_8",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "夕阳跑道",
       "weight": 1,
@@ -2263,6 +2300,7 @@
     },
     {
       "id": "ev_story_zhouye_9",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "训练与你",
       "weight": 1,
@@ -2312,6 +2350,7 @@
     },
     {
       "id": "ev_story_zhouye_10",
+      "place": ["dorm"],
       "charId": "zhouye",
       "name": "笨笨的赔礼",
       "weight": 1,
@@ -2354,6 +2393,7 @@
     },
     {
       "id": "ev_story_tangtang_5",
+      "place": ["dorm"],
       "charId": "tangtang",
       "name": "外联群的求助",
       "weight": 1,
@@ -2406,6 +2446,7 @@
     },
     {
       "id": "ev_story_tangtang_6",
+      "place": ["street"],
       "charId": "tangtang",
       "name": "散场夜路",
       "weight": 1,
@@ -2455,6 +2496,7 @@
     },
     {
       "id": "ev_story_tangtang_7",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "卸下的笑容",
       "weight": 1,
@@ -2503,6 +2545,7 @@
     },
     {
       "id": "ev_story_tangtang_8",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "卸不下的笑容",
       "weight": 1,
@@ -2558,6 +2601,7 @@
     },
     {
       "id": "ev_story_tangtang_9",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "笑容的回避",
       "weight": 1,
@@ -2607,6 +2651,7 @@
     },
     {
       "id": "ev_story_tangtang_10",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "第一次不笑",
       "weight": 1,
@@ -2649,6 +2694,7 @@
     },
     {
       "id": "ev_story_suwan_happy",
+      "place": ["clubroom"],
       "charId": "suwan",
       "weight": 1,
       "storylineOnly": true,
@@ -2698,6 +2744,7 @@
     },
     {
       "id": "ev_story_suwan_miss",
+      "place": ["clubroom"],
       "charId": "suwan",
       "weight": 1,
       "storylineOnly": true,
@@ -2737,6 +2784,7 @@
     },
     {
       "id": "ev_story_suwan_drift",
+      "place": ["clubroom"],
       "charId": "suwan",
       "weight": 1,
       "storylineOnly": true,
@@ -2862,6 +2910,7 @@
     },
     {
       "id": "ev_story_guchi_miss",
+      "place": ["humanities"],
       "charId": "guchi",
       "weight": 1,
       "storylineOnly": true,
@@ -2901,6 +2950,7 @@
     },
     {
       "id": "ev_story_guchi_drift",
+      "place": ["college"],
       "charId": "guchi",
       "weight": 1,
       "storylineOnly": true,
@@ -2944,6 +2994,7 @@
     },
     {
       "id": "ev_story_linyu_miss",
+      "place": ["bridge"],
       "charId": "linyu",
       "weight": 1,
       "storylineOnly": true,
@@ -2983,6 +3034,7 @@
     },
     {
       "id": "ev_story_linyu_drift",
+      "place": ["dorm"],
       "charId": "linyu",
       "weight": 1,
       "storylineOnly": true,
@@ -3026,6 +3078,7 @@
     },
     {
       "id": "ev_story_zhouye_miss",
+      "place": ["track"],
       "charId": "zhouye",
       "weight": 1,
       "storylineOnly": true,
@@ -3065,6 +3118,7 @@
     },
     {
       "id": "ev_story_zhouye_drift",
+      "place": ["track"],
       "charId": "zhouye",
       "weight": 1,
       "storylineOnly": true,
@@ -3108,6 +3162,7 @@
     },
     {
       "id": "ev_story_tangtang_miss",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "weight": 1,
       "storylineOnly": true,
@@ -3147,6 +3202,7 @@
     },
     {
       "id": "ev_story_tangtang_drift",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "weight": 1,
       "storylineOnly": true,
@@ -3190,6 +3246,7 @@
     },
     {
       "id": "ev_side_jiangxu_1",
+      "place": ["street"],
       "charId": "jiangxu",
       "name": "打印店门口的笔记本",
       "weight": 1,
@@ -3264,6 +3321,7 @@
     },
     {
       "id": "ev_side_jiangxu_2",
+      "place": ["library"],
       "charId": "jiangxu",
       "name": "图书馆四楼的两块屏幕",
       "weight": 1,
@@ -3336,6 +3394,7 @@
     },
     {
       "id": "ev_side_jiangxu_3",
+      "place": ["street"],
       "charId": "jiangxu",
       "name": "便利店里的第二杯咖啡",
       "weight": 1,
@@ -3402,6 +3461,7 @@
     },
     {
       "id": "ev_side_guchi_1",
+      "place": ["humanities"],
       "charId": "guchi",
       "name": "辩论队缺一个计时员",
       "weight": 1,
@@ -3469,6 +3529,7 @@
     },
     {
       "id": "ev_side_guchi_2",
+      "place": ["humanities"],
       "charId": "guchi",
       "name": "模拟法庭的旁听席",
       "weight": 1,
@@ -3541,6 +3602,7 @@
     },
     {
       "id": "ev_side_guchi_3",
+      "place": ["humanities"],
       "charId": "guchi",
       "name": "闭庭之后的一瓶水",
       "weight": 1,
@@ -3604,6 +3666,7 @@
     },
     {
       "id": "ev_side_linyu_1",
+      "place": ["bridge"],
       "charId": "linyu",
       "name": "长桥上的取景框",
       "weight": 1,
@@ -3671,6 +3734,7 @@
     },
     {
       "id": "ev_side_linyu_2",
+      "place": ["clubroom"],
       "charId": "linyu",
       "name": "暗房里的显影液",
       "weight": 1,
@@ -3743,6 +3807,7 @@
     },
     {
       "id": "ev_side_linyu_3",
+      "place": ["college"],
       "charId": "linyu",
       "name": "校报排版到熄灯",
       "weight": 1,
@@ -3806,6 +3871,7 @@
     },
     {
       "id": "ev_side_suwan_1",
+      "place": ["clubroom"],
       "charId": "suwan",
       "name": "琴房门口的音阶",
       "weight": 1,
@@ -3873,6 +3939,7 @@
     },
     {
       "id": "ev_side_suwan_2",
+      "place": ["clubroom"],
       "charId": "suwan",
       "name": "四楼琴房的两杯热水",
       "weight": 1,
@@ -3945,6 +4012,7 @@
     },
     {
       "id": "ev_side_suwan_3",
+      "place": ["clubroom"],
       "charId": "suwan",
       "name": "演出前的空座位",
       "weight": 1,
@@ -4008,6 +4076,7 @@
     },
     {
       "id": "ev_side_zhouye_1",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "跑道边的第 4 道",
       "weight": 1,
@@ -4078,6 +4147,7 @@
     },
     {
       "id": "ev_side_zhouye_2",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "训练后的盐汽水",
       "weight": 1,
@@ -4150,6 +4220,7 @@
     },
     {
       "id": "ev_side_zhouye_3",
+      "place": ["track"],
       "charId": "zhouye",
       "name": "校运会报名表",
       "weight": 1,
@@ -4216,6 +4287,7 @@
     },
     {
       "id": "ev_side_tangtang_1",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "话剧社缺个搬道具的",
       "weight": 1,
@@ -4286,6 +4358,7 @@
     },
     {
       "id": "ev_side_tangtang_2",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "后台的台词本",
       "weight": 1,
@@ -4358,6 +4431,7 @@
     },
     {
       "id": "ev_side_tangtang_3",
+      "place": ["clubroom"],
       "charId": "tangtang",
       "name": "谢幕之后的后门",
       "weight": 1,

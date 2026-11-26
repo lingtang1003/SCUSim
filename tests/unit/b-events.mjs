@@ -386,5 +386,14 @@ console.log('== B · 事件单测 ==');
       `at6=${JSON.stringify(at6)} at8=${JSON.stringify(at8)} at9=${JSON.stringify(at9)}`);
   }
 
+  // 剧情线事件的地点标记：必须是真实地点 id，且文案里有地点的都写上了 place
+  {
+    const locIds = new Set(((config.locations && config.locations.list) || []).map((l) => l.id));
+    const story = events.random.filter((e) => String(e.id).startsWith('ev_story_') || String(e.id).startsWith('ev_side_'));
+    const badPlace = story.filter((e) => Array.isArray(e.place) && e.place.some((p) => !locIds.has(p)));
+    check('剧情线事件: place 都是有效地点', badPlace.length === 0,
+      badPlace.map((e) => `${e.id}:${e.place}`).join(','));
+  }
+
 console.log(failures === 0 ? '\n事件单测全部通过 ✅' : `\n失败 ${failures} 项 ❌`);
 process.exit(failures === 0 ? 0 : 1);

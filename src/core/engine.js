@@ -247,6 +247,30 @@ function enterTurn(state, config, rng, priorityEventId) {
     if (forcedLine) storyline.markBroken(state, forcedLine, config);
     return;
   }
+  // 剧情线事件写明了地点：把玩家带过去，避免「人在宿舍、剧情在图书馆」的错位（只对强制剧情线生效）
+  if ((forcedLine || ev.storylineOnly) && Array.isArray(ev.place) && ev.place.length && state.player) {
+    const locs = (config.locations && Array.isArray(config.locations.list)) ? config.locations.list : [];
+    const lastMove = Array.isArray(state.history)
+      ? [...state.history].reverse().find((x) => x && x.type === 'move' && x.location)
+      : null;
+    const hereId = state.player.location || (lastMove && lastMove.location) || null;
+    const here = locs.find((l) => l.id === hereId) || null;
+    const target = (hereId && ev.place.includes(hereId))
+      ? hereId
+      : (ev.place.find((id) => {
+        const l = locs.find((x) => x.id === id);
+        return !!(l && here && l.campus && here.campus && l.campus === here.campus);
+      }) || ev.place[0]);
+    const targetLoc = locs.find((l) => l.id === target);
+    if (target && target !== state.player.location) {
+      state.player.location = target;
+      pushHistory(state, {
+        type: 'move',
+        location: target,
+        text: `剧情把你带到了${targetLoc ? targetLoc.name : target}`,
+      }, config);
+    }
+  }
   // 防卡：一个选项都点不了的事件不弹（剧情线步骤则直接判定中断，避免每回合重复派发）
   const available = (typeof eventManager.availableOptions === 'function')
     ? eventManager.availableOptions(ev, state, config)
