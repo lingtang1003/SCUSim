@@ -2333,6 +2333,62 @@ a:hover {
   to { opacity: 1; transform: translate(-50%, 0); }
 }
 
+/* -------------------------------------------------------------------------
+   非阻塞提示窗（生活费到账这类需要看清的通知）
+   —— 不走 overlay：不挡点击、不排队，3.5s 自动消失，也可以点 × 关掉
+   ------------------------------------------------------------------------- */
+.vn-notice {
+  position: fixed;
+  left: 50%;
+  top: 96px;
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 260px;
+  max-width: 86vw;
+  padding: 14px 16px 14px 18px;
+  border-radius: var(--r-lg, 16px);
+  background: var(--paper, #fff);
+  border: 1px solid color-mix(in srgb, var(--red) 18%, transparent);
+  box-shadow: 0 18px 44px rgba(20, 16, 15, 0.22);
+  animation: notice-in 260ms var(--ease) both;
+}
+.vn-notice::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--red);
+}
+.vn-notice__icon { font-size: 24px; line-height: 1; }
+.vn-notice__body { min-width: 0; }
+.vn-notice__title { font-size: var(--t-base, 16px); font-weight: 700; color: var(--ink); letter-spacing: 0.02em; }
+.vn-notice__text { margin-top: 3px; font-size: 12px; color: var(--ink-2); }
+.vn-notice__close {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.vn-notice__close:hover { background: color-mix(in srgb, var(--red) 8%, transparent); color: var(--red); }
+.vn-notice--success { border-color: color-mix(in srgb, var(--red) 26%, transparent); }
+@keyframes notice-in {
+  from { opacity: 0; transform: translate(-50%, -10px) scale(0.98); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+.reduce-motion .vn-notice { animation: none !important; }
+
 /* ----------------------------- 17. 响应式 ------------------------------ */
 @media (max-width: 880px) {
   .vn-create {

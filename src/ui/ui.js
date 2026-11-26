@@ -2838,6 +2838,40 @@ export function createApp(ctx) {
   }
 
   /**
+   * 非阻塞提示窗：居中的小卡片，「生活费到账」这类需要玩家明确看到的通知。
+   * 不占 overlay 槽位、不挡点击，3.5 秒后自动消失（也可以点 × 关掉）。
+   * @param {{title?:string, text?:string, icon?:string, tone?:string, duration?:number}} opts
+   */
+  function showNotice(opts) {
+    if (!rootEl) return null;
+    const o = opts || {};
+    const node = h('div', {
+      class: 'vn-notice' + (o.tone ? ' vn-notice--' + o.tone : ''),
+      role: 'status',
+      'aria-live': 'polite',
+    }, [
+      h('span', { class: 'vn-notice__icon' }, [o.icon || '🔔']),
+      h('div', { class: 'vn-notice__body' }, [
+        h('div', { class: 'vn-notice__title' }, [o.title || '提示']),
+        o.text ? h('div', { class: 'vn-notice__text' }, [String(o.text)]) : null,
+      ]),
+      h('button', {
+        class: 'vn-notice__close',
+        type: 'button',
+        'aria-label': '关闭提示',
+        onclick: () => { if (node.parentNode) node.parentNode.removeChild(node); },
+      }, ['×']),
+    ]);
+    rootEl.appendChild(node);
+    if (typeof setTimeout === 'function') {
+      setTimeout(() => {
+        if (node.parentNode) node.parentNode.removeChild(node);
+      }, o.duration || 3500);
+    }
+    return node;
+  }
+
+  /**
    * 事件选项前置不足时的说明：优先显示在事件弹层里（不挡选项），
    * 没有事件弹层时退回 toast。
    */
@@ -2868,6 +2902,7 @@ export function createApp(ctx) {
     showRelations,
     showError,
     showToast,
+    showNotice,
     showGallery,
     showSlots,
     showMap,

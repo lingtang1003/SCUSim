@@ -101,32 +101,48 @@ console.log('== SCUSim 每周固定规则自检 ==');
 }
 
 // ---------------------------------------------------------------------------
-// B) 每周固定扣费 −20；每两周再发生活费 +80
+// B) 每周固定扣费 −20；每 4 周发一次生活费 +80
 // ---------------------------------------------------------------------------
 {
-  const { s, rng } = boot(A_NO_MONEY);
+  // 这一段跑 8 周只看钱的进出：把吃饭扣血 / 属性荒废 / 退学关掉，
+  // 否则学识先归零、提前退学，就没法验证第 8 周那次发薪
+  const cfgMoney = clone(baseConfig);
+  cfgMoney.balance.dropout = null;
+  cfgMoney.balance.weeklyRules.eat = null;
+  cfgMoney.balance.weeklyRules.neglect = null;
+
+  const { s, rng } = boot(A_NO_MONEY, cfgMoney);
   const amount = RULES.allowance.amount;
   const every = RULES.allowance.everyTurns;
   const fee = RULES.fee.amount;
-  const m0 = s.player.attributes.money;
-  const r1 = advance(s, baseConfig, rng);       // → 第 2 周（扣开销 + 发生活费）
-  check(`B: 第 2 周 = 生活费 +${amount} − 固定开销 ${fee}`,
-    s.player.attributes.money === m0 + amount - fee,
-    m0 + ' → ' + s.player.attributes.money);
-  check('B: 生活费给 success 提示',
-    (r1.notices || []).some((n) => n.type === 'allowance' && n.tone === 'success'));
-  check('B: 固定开销给 fee 提示',
-    (r1.notices || []).some((n) => n.type === 'fee' && String(n.text).includes(String(fee))),
-    JSON.stringify(r1.notices || []));
-  const m2 = s.player.attributes.money;
-  advance(s, baseConfig, rng);                  // → 第 3 周（只扣开销）
-  check('B: 第 3 周只扣固定开销（每 ' + every + ' 周才发一次）',
-    s.player.attributes.money === m2 - fee, m2 + ' → ' + s.player.attributes.money);
-  const m3 = s.player.attributes.money;
-  advance(s, baseConfig, rng);                  // → 第 4 周（扣开销 + 发生活费）
-  check(`B: 第 4 周再 +${amount} − ${fee}`,
-    s.player.attributes.money === m3 + amount - fee,
-    m3 + ' → ' + s.player.attributes.money);
+  const rows = [];
+  for (let i = 0; i < 8; i += 1) {
+    const before = s.player.attributes.money;
+    const r = advance(s, cfgMoney, rng);
+    rows.push({
+      turn: s.turn,
+      before,
+      after: s.player.attributes.money,
+      allow: (r.notices || []).some((n) => n.type === 'allowance' && n.tone === 'success'),
+      fee: (r.notices || []).some((n) => n.type === 'fee' && String(n.text).includes(String(fee))),
+    });
+  }
+  const at = (t) => rows.find((x) => x.turn === t);
+  check('B: 生活费配置为每 ' + every + ' 周一次', Number(every) === 4, String(every));
+  check(`B: 第 2 周只扣固定开销 ${fee}`,
+    at(2) && at(2).after === at(2).before - fee && !at(2).allow && at(2).fee,
+    JSON.stringify(at(2)));
+  check(`B: 第 3 周只扣固定开销 ${fee}`,
+    at(3) && at(3).after === at(3).before - fee && !at(3).allow, JSON.stringify(at(3)));
+  check(`B: 第 4 周 = 生活费 +${amount} − 固定开销 ${fee}（带 success 提示）`,
+    at(4) && at(4).after === at(4).before + amount - fee && at(4).allow,
+    JSON.stringify(at(4)));
+  check('B: 第 5~7 周都不发生活费',
+    [5, 6, 7].every((t) => at(t) && !at(t).allow && at(t).after === at(t).before - fee),
+    JSON.stringify([5, 6, 7].map(at)));
+  check(`B: 第 8 周再发一次 +${amount} − ${fee}`,
+    at(8) && at(8).after === at(8).before + amount - fee && at(8).allow,
+    JSON.stringify(at(8)));
 }
 
 // ---------------------------------------------------------------------------

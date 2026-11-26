@@ -479,8 +479,11 @@ function bgmForTurn(turn) {
     }
 
     // 每周固定规则（没吃饭 / 固定开销 / 生活费到账 / 属性荒废）的提示
-    if (Array.isArray(res.notices) && res.notices.length) {
-      for (const n of res.notices.slice(0, 3)) toast(n.text || '', n.tone || 'warning');
+    // 生活费单独走"提示窗"，其余走轻量 toast，避免同一件事说两遍
+    const weeklyNotes = Array.isArray(res.notices) ? res.notices : [];
+    const allowanceNote = weeklyNotes.find((n) => n && n.type === 'allowance');
+    for (const n of weeklyNotes.filter((x) => x && x.type !== 'allowance').slice(0, 3)) {
+      toast(n.text || '', n.tone || 'warning');
     }
 
     // 学识归零 → 退学：直接放结局（不走学期的期末考试）
@@ -534,6 +537,16 @@ function bgmForTurn(turn) {
 
     // 结算与事件同回合时：学期结算先、事件后（D-13），由弹窗队列串行弹出
     renderState();
+    // 生活费到账：用提示窗（非阻塞，3.5 秒自动消失）明确告诉玩家「发了 80」
+    if (allowanceNote && typeof app.showNotice === 'function') {
+      const moneyNow = Number((state.player && state.player.attributes && state.player.attributes.money) || 0);
+      app.showNotice({
+        icon: '💰',
+        tone: 'success',
+        title: (allowanceNote.text || '生活费到账').replace('：+', ' +'),
+        text: '第 ' + state.turn + ' 周 · 每 4 周发放一次 · 当前金钱 ' + moneyNow,
+      });
+    }
     const settlement = res.settlement;
     const pendingEvent = state.pendingEvent;
     if (settlement) {
