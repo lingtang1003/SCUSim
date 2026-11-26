@@ -4,6 +4,7 @@
   "fixed": [
     {
       "id": "ev_fixed_welcome",
+      "place": ["gym"],
       "code": "WELCOME",
       "name": "迎新晚会",
       "type": "fixed",
@@ -234,7 +235,7 @@
     },
     {
       "id": "ev_story_jiangxu_3",
-      "place": ["college"],
+      "place": ["dorm"],
       "charId": "jiangxu",
       "name": "天台的彩蛋",
       "weight": 1,
@@ -288,6 +289,7 @@
     },
     {
       "id": "ev_story_jiangxu_4",
+      "place": ["library"],
       "charId": "jiangxu",
       "name": "致谢里的名字",
       "weight": 1,
@@ -1283,7 +1285,7 @@
     },
     {
       "id": "ev_story_jiangxu_9",
-      "place": ["library"],
+      "place": ["street"],
       "charId": "jiangxu",
       "name": "台阶上的咖啡",
       "weight": 1,
@@ -1381,7 +1383,7 @@
     },
     {
       "id": "ev_story_guchi_6",
-      "place": ["track"],
+      "place": ["bridge"],
       "charId": "guchi",
       "name": "操场三圈",
       "weight": 1,
@@ -1434,7 +1436,7 @@
     },
     {
       "id": "ev_story_guchi_7",
-      "place": ["library"],
+      "place": ["college"],
       "charId": "guchi",
       "name": "磨辩词的傍晚",
       "weight": 1,
@@ -1536,7 +1538,7 @@
     },
     {
       "id": "ev_story_guchi_9",
-      "place": ["street"],
+      "place": ["college"],
       "charId": "guchi",
       "name": "赔罪的美式",
       "weight": 1,
@@ -1579,7 +1581,7 @@
     },
     {
       "id": "ev_story_linyu_5",
-      "place": ["bridge"],
+      "place": ["clubroom"],
       "charId": "linyu",
       "name": "镜头里的你",
       "weight": 1,
@@ -1685,7 +1687,7 @@
     },
     {
       "id": "ev_story_linyu_8",
-      "place": ["clubroom"],
+      "place": ["bridge"],
       "charId": "linyu",
       "name": "暗房里的心动",
       "weight": 1,
@@ -1883,7 +1885,7 @@
     },
     {
       "id": "ev_story_suwan_6",
-      "place": ["library"],
+      "place": ["college"],
       "charId": "suwan",
       "name": "课后小组作业",
       "weight": 1,
@@ -1936,7 +1938,7 @@
     },
     {
       "id": "ev_story_suwan_7",
-      "place": ["bridge"],
+      "place": ["college"],
       "charId": "suwan",
       "name": "说不清的心事",
       "weight": 1,
@@ -2446,7 +2448,7 @@
     },
     {
       "id": "ev_story_tangtang_6",
-      "place": ["street"],
+      "place": ["dorm"],
       "charId": "tangtang",
       "name": "散场夜路",
       "weight": 1,
@@ -2828,6 +2830,7 @@
     },
     {
       "id": "ev_story_jiangxu_miss",
+      "place": ["library"],
       "charId": "jiangxu",
       "weight": 1,
       "storylineOnly": true,
@@ -3034,7 +3037,7 @@
     },
     {
       "id": "ev_story_linyu_drift",
-      "place": ["dorm"],
+      "place": ["college"],
       "charId": "linyu",
       "weight": 1,
       "storylineOnly": true,
@@ -3734,7 +3737,7 @@
     },
     {
       "id": "ev_side_linyu_2",
-      "place": ["clubroom"],
+      "place": ["bridge"],
       "charId": "linyu",
       "name": "暗房里的显影液",
       "weight": 1,

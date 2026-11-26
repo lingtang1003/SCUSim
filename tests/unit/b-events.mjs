@@ -395,5 +395,39 @@ console.log('== B · 事件单测 ==');
       badPlace.map((e) => `${e.id}:${e.place}`).join(','));
   }
 
+  // 文案写死的地点必须和 place 一致，避免「图在食堂、字写图书馆」
+  {
+    const RULES = [
+      ['canteen', ['食堂']],
+      ['library', ['图书馆']],
+      ['college', ['教学楼', '空教室']],
+      ['humanities', ['文科楼']],
+      ['clubroom', ['活动中心', '活动室']],
+      ['street', ['商业街', '火锅店', '酒吧', '奶茶店']],
+      ['track', ['体育场', '跑道', '操场', '田径场']],
+      ['gym', ['体育馆', '球馆', '羽毛球']],
+      ['bridge', ['长桥', '桥栏', '江安河', '白石桥']],
+      ['hill', ['不高山', '钟楼']],
+      ['dorm', ['宿舍', '寝室', '床铺', '天台']],
+      ['wj_gate', ['校门', '东门', '北门']],
+    ];
+    const GROUPS = {
+      canteen: ['canteen', 'wj_canteen'], college: ['college', 'wj_college'],
+      track: ['track', 'wj_track'], dorm: ['dorm', 'wj_dorm'],
+    };
+    const all = [].concat(events.fixed || [], events.random || []);
+    const bad = [];
+    for (const e of all) {
+      const text = [e.text || ''].concat((e.lines || []).map((l) => l.text || '')).join(' ');
+      for (const [pid, words] of RULES) {
+        const hit = words.find((w) => text.includes(w));
+        if (!hit) continue;
+        const group = GROUPS[pid] || [pid];
+        if (!(e.place || []).some((p) => group.includes(p))) bad.push(`${e.id}:${hit}`);
+      }
+    }
+    check('文案地点与 place 一致', bad.length === 0, bad.join(','));
+  }
+
 console.log(failures === 0 ? '\n事件单测全部通过 ✅' : `\n失败 ${failures} 项 ❌`);
 process.exit(failures === 0 ? 0 : 1);

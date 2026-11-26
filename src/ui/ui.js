@@ -56,17 +56,17 @@ const ART = {
 const BG = {
   libraryHall: { art: 'library-hall.jpg', label: '江安 · 图书馆', line: '（白长廊把阳光切成一条条，风从柱子之间穿过去）' },
   belltower: { art: 'belltower.jpg', label: '江安 · 不高山', line: '（钟楼的指针在树影里慢慢走，整点会响一声）' },
-  mingyuan: { art: 'mingyuan-lake.jpg', label: '江安 · 明远湖', line: '（落日把湖面染成橘色，长桥上有自行车骑过）' },
+  mingyuan: { art: 'mingyuan-lake.jpg', label: '江安 · 明远湖', line: '（落日把湖面染成橘色，湖边的树叶被风翻过来）' },
   riverside: { art: 'riverside-hall.jpg', label: '江安 · 文科楼', line: '（临水的楼亮着灯，倒影在水里轻轻晃）' },
   jiangjie: { art: 'jiangjie-hall.jpg', label: '望江 · 江姐纪念馆', line: '（青砖门楣上写着「江姐纪念馆」，院子里很静）' },
-  library: { art: 'library.jpg', label: '江安 · 图书馆', line: '（图书馆的空调开得很足，翻书声压过了脚步声）' },
+  library: { art: 'library.jpg', label: '江安 · 图书馆', line: '（图书馆的玻璃幕墙反着光，台阶上有人坐着背书）' },
   classScreen: { art: 'classroom-screen.jpg', label: '教学楼 · 教室', line: '（投影还亮着「欢迎你，新同学」，你从第一页开始抄）', oddSemesterFirstWeek: true },
   classSunlit: { art: 'classroom-sunlit.jpg', label: '教学楼 · 午后教室', line: '（阳光斜进来，粉笔灰在光柱里慢慢往上飘）' },
   classEmpty: { art: 'classroom-empty.jpg', label: '教学楼 · 空教室', line: '（教室里只有你和窗外的树影，安静得能听见笔尖）' },
   classPodium: { art: 'classroom-podium.jpg', label: '教学楼 · 讲台旁', line: '（讲台上摊着上节课的讲义，粉笔灰在光里飘）' },
   corridor: { art: 'corridor.jpg', label: '教学楼 · 走廊', line: '（走廊尽头的门虚掩着，夕阳把地砖照成一条光带）' },
   activityWall: { art: 'activity-wall.jpg', label: '活动室 · 展板墙', line: '（展板上钉满了活动照片，有人把「不止画画」写得很大）' },
-  plaza: { art: 'plaza-flowerbed.jpg', label: '江安 · 商业街', line: '（活动中心门口停满了共享单车，花坛开得正热闹）' },
+  plaza: { art: 'plaza-flowerbed.jpg', label: '江安 · 活动中心门口', line: '（活动中心门口停满了共享单车，花坛开得正热闹）' },
   field: { art: 'field-track.jpg', label: '江安 · 二号体育场', line: '（足球场上有人在跑，红色跑道被太阳晒得发烫）' },
   gym: { art: 'gym-badminton.jpg', label: '江安 · 体育馆', line: '（球拍挥到手臂发酸，馆里的灯白得有点刺眼）' },
   canteen: { art: 'canteen.jpg', label: '江安 · 东园食堂', line: '（食堂的窗口排起长队，餐盘碰撞的声音此起彼伏）' },
@@ -101,7 +101,7 @@ const SCENES = {
   clubroom: { files: [BG.activityWall, BG.plaza, BG.plazaStreet] },
   track: { files: [BG.field] },
   store: { files: [BG.metroPlatform, BG.metroEscalator] },
-  street: { files: [BG.hotpot, BG.bar, BG.plaza, BG.plazaStreet] },
+  street: { files: [BG.plazaStreet, BG.hotpot, BG.bar] },
   dorm: { files: [BG.avenue, BG.duskRoad] },
   canteen: { files: [BG.canteen, BG.canteenWest] },
   gate: { files: [BG.gate] },
@@ -706,6 +706,7 @@ export function createApp(ctx) {
     const maxTurn = balanceOf('turns', 40);
     const apMax = balanceOf('actionPointsPerTurn', 4);
     const player = state.player || {};
+    const hudLoc = eventPlaceLoc(state) || locationOf(state);
     const line = view && view.line;
     // 每周固定规则 / 社交惩罚的提醒（按危险程度取第一条）
     const weekly = player.weekly || {};
@@ -749,7 +750,7 @@ export function createApp(ctx) {
           : null,
       ]),
       h('div', { class: 'vn-hud__group' }, [
-        !locationOf(state) ? null : h('button', {
+        !hudLoc ? null : h('button', {
           class: 'vn-loc vn-loc--btn',
           type: 'button',
           title: '切换地点（不消耗行动点，本周行动点用完前可用）',
@@ -758,8 +759,7 @@ export function createApp(ctx) {
             else showMap();
           },
         }, ['◆ ' + (function () {
-          const loc = locationOf(state);
-          if (loc) return loc.name;
+          if (hudLoc) return hudLoc.name;
           return ui.sceneEntry ? ui.sceneEntry.label : '校园';
         })()]),
         h('button', {
@@ -903,6 +903,86 @@ export function createApp(ctx) {
     const id = state && state.player ? state.player.location : null;
     if (!id) return null;   // 本回合还没选地点 → 停在地图界面
     return list.find((l) => l.id === id) || list.find((l) => l.id === 'dorm') || null;
+  }
+
+  /**
+   * 事件背景按事件写明的地点走：事件是「切到那个地方演的一幕」，
+   * 不要求玩家本人已经站在那儿（固定事件、异地剧情都能对上画面）。
+   */
+  function eventPlaceLoc(state) {
+    const pending = state && state.pendingEvent;
+    if (!pending || !pending.eventId) return null;
+    const def = findEventById(pending.eventId);
+    if (!def || !Array.isArray(def.place) || !def.place.length) return null;
+    const list = listOf('locations');
+    if (!list.length) return null;
+    const here = locationOf(state);
+    const id = here && def.place.indexOf(here.id) >= 0
+      ? here.id
+      : (def.place.find((pid) => {
+          const l = list.find((x) => x.id === pid);
+          return !!(l && here && l.campus && here.campus && l.campus === here.campus);
+        }) || def.place[0]);
+    return list.find((l) => l.id === id) || null;
+  }
+
+  /**
+   * 事件文本 → 背景图关键词匹配：同一个地点池里，文本提到火锅就出火锅店，
+   * 提到奶茶/商业街就出商业街，避免「文字写食堂、图却是酒吧」。
+   */
+  const BG_HINTS = {
+    'hotpot.jpg': ['火锅', '牛油', '锅底', '涮'],
+    'bar-live.jpg': ['酒吧', '驻唱', '麦克风', 'livehouse'],
+    'plaza-street.jpg': ['商业街', '奶茶', '小吃', '店铺', '买东西'],
+    'plaza-flowerbed.jpg': ['活动中心', '花坛', '共享单车', '广场', '招新', '摊位'],
+    'canteen.jpg': ['食堂', '餐盘', '打饭', '窗口', '饭菜'],
+    'canteen-west.jpg': ['西园'],
+    'field-track.jpg': ['跑道', '足球', '操场', '体育场', '看台'],
+    'gym-badminton.jpg': ['体育馆', '羽毛球', '球馆', '球拍'],
+    'classroom-screen.jpg': ['投影', '新同学', '第一节课'],
+    'classroom-sunlit.jpg': ['午后', '阳光'],
+    'classroom-empty.jpg': ['空教室'],
+    'classroom-podium.jpg': ['讲台', '讲义', '点名'],
+    'corridor.jpg': ['走廊'],
+    'avenue.jpg': ['回宿舍', '林荫', '落叶', '宿舍楼'],
+    'dusk-road.jpg': ['路灯', '环行大道'],
+    'river-bridge.jpg': ['长桥', '桥栏', '江安河'],
+    'lawn-pavilion.jpg': ['亭子', '草坪'],
+    'library-hall.jpg': ['长廊', '书架', '图书馆'],
+    'library.jpg': ['图书馆', '台阶', '幕墙'],
+    'belltower.jpg': ['钟楼', '不高山'],
+    'riverside-hall.jpg': ['文科楼', '临水'],
+    'gate.jpg': ['校门', '东门', '门柱'],
+    'gate-scu.jpg': ['北门', '望江'],
+    'magnolia.jpg': ['玉兰'],
+    'activity-wall.jpg': ['展板', '活动室'],
+    'metro-platform.jpg': ['地铁', '站台'],
+    'metro-escalator.jpg': ['扶梯'],
+  };
+
+  function eventTextOf(def) {
+    if (!def) return '';
+    return [def.text || '', def.name || '']
+      .concat((def.lines || []).map((l) => (l && l.text) || ''))
+      .join(' ');
+  }
+
+  /** 在事件对应地点的场景池里，按事件文本挑最贴的一张。 */
+  function pickEventScene(loc, def, turn) {
+    const pool = loc && loc.scene ? scenePool(loc.scene) : [];
+    if (!pool.length) return pickScene(loc && loc.scene, turn, 0);
+    const text = eventTextOf(def);
+    let best = pool[0];
+    let bestScore = -1;
+    for (const entry of pool) {
+      const hints = BG_HINTS[entry.art] || [];
+      const score = hints.reduce((n, w) => n + (text.indexOf(w) >= 0 ? 1 : 0), 0);
+      if (score > bestScore) {
+        best = entry;
+        bestScore = score;
+      }
+    }
+    return best;
   }
 
   /** 当前地点可做的行动；没有地点配置时返回全部 */
@@ -1064,9 +1144,14 @@ export function createApp(ctx) {
 
     applySeasonTheme(state.turn);
 
-    // 场景跟随所在地点（未由行动指定时）
-    const hereLoc = locationOf(state);
-    if (hereLoc && hereLoc.scene && ui.scene !== hereLoc.scene) {
+    // 场景跟随所在地点；有未结算事件且事件写明地点时，画面切到事件地点
+    const evLoc = eventPlaceLoc(state);
+    const evDef = evLoc ? findEventById(state.pendingEvent.eventId) : null;
+    const hereLoc = evLoc || locationOf(state);
+    if (evLoc) {
+      ui.scene = evLoc.scene;
+      ui.sceneEntry = pickEventScene(evLoc, evDef, state.turn);
+    } else if (hereLoc && hereLoc.scene && ui.scene !== hereLoc.scene) {
       ui.scene = hereLoc.scene;
       ui.sceneEntry = pickScene(hereLoc.scene, state.turn, 0);
     }

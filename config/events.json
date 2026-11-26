@@ -3,6 +3,7 @@
   "fixed": [
     {
       "id": "ev_fixed_club_recruit",
+      "place": ["clubroom"],
       "name": "社团招新",
       "code": "CLUB",
       "trigger": {
@@ -605,6 +606,7 @@
     },
     {
       "id": "ev_r14",
+      "place": ["library"],
       "name": "期末考试周",
       "weight": 10,
       "examWeekOnly": true,
@@ -3066,7 +3068,7 @@
         }
       ],
       "spot": [],
-      "place": ["street","wj_gate"]
+      "place": ["dorm","wj_dorm"]
     },
     {
       "id": "ev_r77",
@@ -3374,6 +3376,7 @@
     },
     {
       "id": "ev_r85",
+      "place": ["dorm"],
       "name": "校园歌手大赛",
       "weight": 9,
       "termRange": [
@@ -3549,7 +3552,6 @@
       ],
       "topic": "meal",
       "place": [
-        "street",
         "wj_gate"
       ]
     },
@@ -4590,7 +4592,7 @@
         2,
         30
       ],
-      "text": "体育场半场缺人，球友招手喊你凑一局。",
+      "text": "体育馆羽毛球场还空着一片，球友招手喊你凑一局。",
       "spot": [
         "exercise"
       ],
