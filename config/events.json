@@ -987,8 +987,8 @@
       "storylineOnly": true,
       "once": true,
       "termRange": [
-        1,
-        12
+        3,
+        9
       ],
       "text": "你在书架前伸手取书，另一只手也同时落在同一本书的书脊上。",
       "lines": [
@@ -1047,8 +1047,8 @@
       "storylineOnly": true,
       "once": true,
       "termRange": [
-        2,
-        16
+        12,
+        17
       ],
       "text": "那个在书架前遇见的人，约你去校外吃饭。",
       "lines": [
@@ -1111,8 +1111,8 @@
       "storylineOnly": true,
       "once": true,
       "termRange": [
-        3,
-        20
+        24,
+        29
       ],
       "text": "晚饭后她约你去河边走，走到桥中间忽然停住了。",
       "lines": [
@@ -1178,8 +1178,8 @@
       "storylineOnly": true,
       "once": true,
       "termRange": [
-        4,
-        30
+        28,
+        32
       ],
       "text": "因为一件小事，你们起了争执，走廊里的气氛降到冰点。",
       "lines": [
