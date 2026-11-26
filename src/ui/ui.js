@@ -2496,11 +2496,19 @@ export function createApp(ctx) {
           score: mean,
           gpa: Number.isFinite(recGpa) ? recGpa : null,
           failed: Number(rec.failed) || 0,
+          // 逐科明细：点这一行展开（老存档没有 subjects，就只显示学期汇总）
+          subjects: subs.map((x) => ({
+            name: (x && x.name) || '科目',
+            score: Number(x && x.score),
+            gpa: Number(x && x.gpa),
+            passed: !(x && x.passed === false),
+            difficulty: Number(x && x.difficulty),
+          })),
         });
       });
     } else if (legacyScores.length) {
       legacyScores.forEach((v, idx) => {
-        semesterList.push({ label: '第 ' + (idx + 1) + ' 学期', score: v, gpa: null, failed: 0 });
+        semesterList.push({ label: '第 ' + (idx + 1) + ' 学期', score: v, gpa: null, failed: 0, subjects: [] });
       });
     }
 
@@ -2564,8 +2572,38 @@ export function createApp(ctx) {
           h('span', { class: 'vn-score__arrow' }, ['▼']),
         ]),
         semesterList.length
-          ? (listEl = h('div', { class: 'vn-score__list is-collapsed' }, semesterList.map((it) =>
-              h('div', { class: 'vn-score__row' }, [
+          ? (listEl = h('div', { class: 'vn-score__list is-collapsed' }, semesterList.map((it) => {
+              // 逐科成绩容器（默认收起；点学期行展开）
+              const subsEl = h('div', { class: 'vn-score__subs' }, it.subjects.length
+                ? it.subjects.map((sub) => h('div', {
+                    class: 'vn-score__row vn-score__row--sub' + (sub.passed ? '' : ' is-fail'),
+                  }, [
+                    h('span', { class: 'vn-score__subname' }, [sub.name]),
+                    Number.isFinite(sub.difficulty)
+                      ? h('span', { class: 'vn-score__diff' }, ['难 ' + sub.difficulty])
+                      : null,
+                    h('span', { class: 'vn-score__val' }, [Number.isFinite(sub.score) ? sub.score + ' 分' : '—']),
+                    Number.isFinite(sub.gpa)
+                      ? h('span', { class: 'vn-score__gpa' }, ['绩点 ' + sub.gpa.toFixed(2)])
+                      : null,
+                    sub.passed ? null : h('span', { class: 'vn-score__fail' }, ['挂科']),
+                  ]))
+                : [h('p', { class: 'vn-score__empty' }, ['这学期没有逐科记录。'])]);
+
+              const headEl = h('button', {
+                class: 'vn-score__row vn-score__row--sem',
+                type: 'button',
+                'aria-expanded': 'false',
+                title: it.subjects.length ? '展开这学期的逐科成绩' : '这次没有逐科记录',
+                onclick: () => {
+                  if (!it.subjects.length) return;
+                  const open = subsEl.className.indexOf('is-open') >= 0;
+                  subsEl.className = 'vn-score__subs' + (open ? '' : ' is-open');
+                  headEl.className = 'vn-score__row vn-score__row--sem' + (open ? '' : ' is-open');
+                  headEl.setAttribute('aria-expanded', open ? 'false' : 'true');
+                },
+              }, [
+                h('span', { class: 'vn-score__caret' }, ['▸']),
                 h('span', { class: 'vn-score__sem' }, [it.label]),
                 h('span', { class: 'vn-score__val' }, [it.score == null ? '—' : it.score + ' 分']),
                 it.gpa != null
@@ -2574,8 +2612,10 @@ export function createApp(ctx) {
                 it.failed > 0
                   ? h('span', { class: 'vn-score__fail' }, ['挂 ' + it.failed + ' 门'])
                   : null,
-              ])
-            )))
+              ]);
+
+              return h('div', { class: 'vn-score__group' }, [headEl, subsEl]);
+            })))
           : h('p', { class: 'vn-score__empty' }, ['还没有期末成绩记录。']),
       ]),
     ];
