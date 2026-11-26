@@ -1,6 +1,6 @@
 // B 模块单测 · 学业（runFinalExam / gradePoint / checkWarning / judgeThesis）
 // 运行：node tests/unit/b-academy.mjs
-// 覆盖：期末多门考试（rng 极值）、绩点表边界、挂科警告阈值、毕业论文等级
+// 覆盖：新课表逐门算分（方向映射 / 难度分层 / 随机项）、难度加权绩点、绩点表边界、挂科警告阈值、毕业论文等级
 
 import { readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { loadConfig } from '../../src/config/loader.js';
 import { createGameState } from '../../src/core/state.js';
 import {
-  runFinalExam, gradePoint, checkWarning, judgeThesis, takeExam,
+  runFinalExam, gradePoint, checkWarning, judgeThesis, takeExam, courseProfile, subjectsFor,
 } from '../../src/core/academy.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -17,7 +17,6 @@ const root = join(__dirname, '..', '..');
 const reader = { read: (p) => readFile(join(root, 'config', `${p}.json`), 'utf8') };
 const config = await loadConfig(reader);
 const exam = config.balance.exam;
-const fluctuation = Number.isFinite(exam.fluctuation) ? exam.fluctuation : 0.1;
 
 let failures = 0;
 function check(name, cond, detail = '') {
@@ -40,27 +39,46 @@ function rngStub(nextValue) {
   return { next: () => nextValue, chance: () => true, int: () => 1, pick: (a) => a[0] };
 }
 
+const passLine = Number.isFinite(exam.passLine) ? exam.passLine : 60;
+const formula = {
+  satiety: Number.isFinite(exam.progSatiety) ? exam.progSatiety : 12,
+  progBonus: Number.isFinite(exam.progBonus) ? exam.progBonus : 32,
+  progCap: Number.isFinite(exam.progCap) ? exam.progCap : 2,
+  base: Number.isFinite(exam.base) ? exam.base : 46,
+  kWeight: Number.isFinite(exam.knowledgeWeight) ? exam.knowledgeWeight : 0.3,
+  hWeight: Number.isFinite(exam.healthWeight) ? exam.healthWeight : 0.15,
+  hClamp: Number.isFinite(exam.healthClamp) ? exam.healthClamp : 12,
+  noise: Number.isFinite(exam.noiseAmp) ? exam.noiseAmp : 8,
+};
+
+/** 按 src/core/academy.js 的新公式复算单门分（含课程方向进度与难度） */
+function expectScore(state, name, nextValue) {
+  const prof = courseProfile(name, config, exam);
+  const knowledge = Number(state.player.attributes.knowledge) || 0;
+  const health = Number(state.player.attributes.health) || 0;
+  const prog = Math.max(0, Number((state.academics.subjectProgress || {})[prof.topic]) || 0);
+  const progGain = formula.progBonus * Math.sqrt(Math.min(prog / formula.satiety, formula.progCap));
+  const healthMod = Math.max(-formula.hClamp, Math.min(formula.hClamp, formula.hWeight * (health - 60)));
+  const raw = formula.base + progGain + formula.kWeight * knowledge + healthMod - prof.difficulty
+    + (nextValue * 2 - 1) * formula.noise;
+  return Math.max(passLine, Math.min(100, Math.round(raw)));
+}
+
 console.log('== B · 学业单测 ==');
 
-// --- runFinalExam：rng 恒 0 → 按公式 ×(1-fluctuation)，且永不挂科 ---
+// --- runFinalExam：rng 恒 0 → 取随机项下限，且永不挂科 ---
 {
   const s = baseState(10);
   const res = runFinalExam(s, config, rngStub(0));
-  const passLine = Number.isFinite(exam.passLine) ? exam.passLine : 60;
-  // 公式（与 src/core/academy.js 一致，参数来自 config）：
-  //   score = clamp(round((passLine + 分科进度加成 + 学识兜底10×√(学识/100) + (健康-60)×0.1) × (1±波动)), passLine, 100)
-  // 本用例未累计分科进度，progGain=0。
-  const health = Number(s.player.attributes.health) || 0;
-  const knowFloor = 10 * Math.sqrt(Math.max(0, 10) / 100);
-  const rawBase = passLine + knowFloor + (health - 60) * 0.1;
-  const expected = Math.max(passLine, Math.min(100, Math.round(rawBase * (1 - fluctuation))));
-  check('runFinalExam: rng=0 → 按公式取低值（且不低于及格线）',
-    res.ok === true && res.subjects.every((x) => x.score === expected),
-    `expected=${expected}, scores=${res.subjects.map((x) => x.score).join(',')}`);
-  check('runFinalExam: 永不低于及格线 60', res.subjects.every((x) => x.score >= passLine),
+  const bad = res.subjects.filter((x) => x.score !== expectScore(s, x.name, 0));
+  check('runFinalExam: rng=0 → 逐门按新公式取低值（且不低于及格线）',
+    res.ok === true && bad.length === 0,
+    `偏差=${bad.map((x) => `${x.name}:${x.score}≠${expectScore(s, x.name, 0)}`).join(' ')}`);
+  check('runFinalExam: 永不挂科决议仍然成立（全部 ≥ passLine）',
+    res.subjects.every((x) => x.score >= passLine && x.score <= 100) && res.failedThisSemester === 0,
     `scores=${res.subjects.map((x) => x.score).join(',')}`);
-  check('runFinalExam: 返回 4 门与挂科数', res.subjects.length === exam.subjects.length
-    && res.failedThisSemester === res.subjects.filter((x) => !x.passed).length,
+  check('runFinalExam: 科目数 = 课表科目数（公共课+专业课）',
+    res.subjects.length === subjectsFor(s, config).length && res.subjects.length > 0,
     `n=${res.subjects.length}`);
   check('runFinalExam: 写 semesterRecords', Array.isArray(s.academics.semesterRecords)
     && s.academics.semesterRecords.length === 1,
@@ -70,18 +88,72 @@ console.log('== B · 学业单测 ==');
     `totalGpa=${s.academics.totalGpa}`);
 }
 
-// --- runFinalExam：rng 恒 0.999999 → 按公式 ×(1+fluctuation) ---
+// --- runFinalExam：rng 恒 ≈1 → 取随机项上限 ---
 {
   const s = baseState(10);
   const res = runFinalExam(s, config, rngStub(0.999999));
-  const passLine2 = Number.isFinite(exam.passLine) ? exam.passLine : 60;
-  const health2 = Number(s.player.attributes.health) || 0;
-  const knowFloor2 = 10 * Math.sqrt(Math.max(0, 10) / 100);
-  const rawBase2 = passLine2 + knowFloor2 + (health2 - 60) * 0.1;
-  const expected = Math.max(passLine2, Math.min(100, Math.round(rawBase2 * (1 + fluctuation))));
-  check('runFinalExam: rng≈1 → 按公式取高值',
-    res.subjects.every((x) => x.score === expected),
-    `expected=${expected}, scores=${res.subjects.map((x) => x.score).join(',')}`);
+  const nextVal = 0.999999;
+  const bad = res.subjects.filter((x) => x.score !== expectScore(s, x.name, nextVal));
+  check('runFinalExam: rng≈1 → 逐门按新公式取高值',
+    bad.length === 0,
+    `偏差=${bad.map((x) => `${x.name}:${x.score}≠${expectScore(s, x.name, nextVal)}`).join(' ')}`);
+}
+
+// --- 课程画像：方向映射 + 难度分层 + 绩点权重 ---
+{
+  const topicCases = [
+    ['大学英语（综合）', 'basics'],
+    ['体育-3', 'basics'],
+    ['形势与政策（一）', 'humanities'],
+    ['马克思主义基本原理', 'humanities'],
+    ['专业核心', 'major'], // 老配置的精确名映射
+    ['计算机组成原理', 'major'],
+    ['概率统计（理工）', 'major'],
+  ];
+  const wrong = topicCases.filter(([n, t]) => courseProfile(n, config, exam).topic !== t);
+  check('courseProfile: 课程方向映射（英语/体育→basics，形势/思政→humanities，专业课→major）',
+    wrong.length === 0,
+    wrong.map(([n]) => `${n}→${courseProfile(n, config, exam).topic}`).join(' | '));
+
+  const easy = courseProfile('形势与政策（一）', config, exam).difficulty;
+  const mid = courseProfile('大学英语（综合）', config, exam).difficulty;
+  const hard = courseProfile('概率统计（理工）', config, exam).difficulty;
+  const lab = courseProfile('计算机网络课程设计', config, exam).difficulty;
+  check('courseProfile: 难度分层（形势2 / 英语5 / 数学统计9 / 课程设计8）',
+    easy === 2 && mid === 5 && hard === 9 && lab === 8,
+    `${easy}/${mid}/${hard}/${lab}`);
+
+  const wEasy = courseProfile('形势与政策（一）', config, exam).weight;
+  const wHard = courseProfile('概率统计（理工）', config, exam).weight;
+  check('courseProfile: 难度越高绩点权重越大', wHard > wEasy, `${wEasy} vs ${wHard}`);
+}
+
+// --- 同一分科进度下，难课分低、水课分高（课程区分度） ---
+{
+  const s = baseState(30);
+  s.player.attributes.health = 60;
+  s.academics.subjectProgress = { major: 20, basics: 20, humanities: 20 };
+  const res = runFinalExam(s, config, rngStub(0.5));
+  const get = (n) => res.subjects.find((x) => x.name === n);
+  const pol = get('形势与政策（一）');
+  // 该学期课表里最难的那门（不写死课名，兼容各学院课表）
+  const hardest = res.subjects.reduce((a, x) => (x.difficulty > a.difficulty ? x : a), res.subjects[0]);
+  check('runFinalExam: 同一进度下难课分低、水课分高',
+    !!pol && !!hardest && pol.difficulty < hardest.difficulty && pol.score > hardest.score,
+    `${pol && pol.name}:${pol && pol.score}(难度${pol && pol.difficulty}) vs ${hardest && hardest.name}:${hardest && hardest.score}(难度${hardest && hardest.difficulty})`);
+}
+
+// --- 学期绩点按课程难度加权（不是等权平均） ---
+{
+  const s = baseState(30);
+  s.player.attributes.health = 60;
+  s.academics.subjectProgress = { major: 20, basics: 20, humanities: 20 };
+  const res = runFinalExam(s, config, rngStub(0.5));
+  const wSum = res.subjects.reduce((a, x) => a + x.weight, 0);
+  const weighted = Math.round((res.subjects.reduce((a, x) => a + x.gpa * x.weight, 0) / wSum) * 100) / 100;
+  const plain = Math.round((res.subjects.reduce((a, x) => a + x.gpa, 0) / res.subjects.length) * 100) / 100;
+  check('runFinalExam: 学期绩点按难度加权', res.semesterGpa === weighted && weighted !== plain,
+    `加权=${weighted} 等权=${plain}`);
 }
 
 // --- takeExam 兼容层：score=平均分，passed=全部通过 ---

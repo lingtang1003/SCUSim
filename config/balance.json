@@ -22,15 +22,43 @@
   "exam": {
     "subjects": ["高等数学", "大学英语", "专业核心", "思想政治"],
     "subjectTopics": { "专业核心": "major", "高等数学": "basics", "大学英语": "basics", "思想政治": "humanities" },
+    "courseTopicRules": [
+      { "topic": "basics", "match": "英语|西班牙语|日语|第二外语|口语|听力|视听说|翻译|语音|会话" },
+      { "topic": "basics", "match": "体育" },
+      { "topic": "humanities", "match": "形势与政策|思想道德|马克思|毛泽东|近现代史|军事理论|国情教育|职业发展|就业指导|国际礼仪|思想政治" },
+      { "topic": "major", "match": "毕业实习|毕业论文" }
+    ],
+    "defaultTopic": "major",
+    "courseDifficultyRules": [
+      { "difficulty": 2, "match": "形势与政策|军事理论|职业发展|就业指导|国际礼仪|国情教育|体育" },
+      { "difficulty": 3, "match": "思想道德|马克思主义|毛泽东|近现代史" },
+      { "difficulty": 4, "match": "毕业实习" },
+      { "difficulty": 6, "match": "毕业论文" },
+      { "difficulty": 9, "match": "高等数学|微积分|数学分析|高等代数|线性代数|解析几何|概率论|概率统计|常微分方程|偏微分方程|泛函分析|抽象代数|交换代数|模形式|数学物理方法|离散数学|医科数学|统计学|卫生统计|计量经济" },
+      { "difficulty": 8, "match": "物理|化学|生物化学|生理学|病理学|药理学|医学免疫|医学生物学|诊断学|法医学|机能学" },
+      { "difficulty": 8, "match": "实验|实习|课程设计|实训|上机" },
+      { "difficulty": 8, "match": "编译|操作系统|计算机组成|系统结构|计算机网络|数据结构|数据库|算法|嵌入式|集成电路|电路|信号|通信|微波|天线|电子|CAD|制图|Morse|软件|数字逻辑|数字电路" },
+      { "difficulty": 7, "match": "ACCA|会计|财务|审计|税法|经济法|国际经济法|战略管理|管理学|统计|金融" },
+      { "difficulty": 7, "match": "法理学|宪法|刑法|合同法|国际公法|仲裁|诉讼|知识产权|行政法|公司法|商法" },
+      { "difficulty": 5, "match": "英语|西班牙语|日语|第二外语|诗歌|文学|文论|语法|语言学|汉字学|训诂|写作|阅读|听力|口语|视听说|翻译" }
+    ],
+    "defaultDifficulty": 6,
+    "progSatiety": 12,
+    "progBonus": 32,
+    "progCap": 2.0,
+    "base": 46,
+    "knowledgeWeight": 0.30,
+    "healthWeight": 0.15,
+    "healthClamp": 12,
+    "noiseAmp": 8,
+    "gpaWeightByDifficulty": 0.1,
     "subjectSatiety": 12,
-    "subjectBonus": 30,
+    "subjectBonus": 32,
     "fluctuation": 0.12,
     "passLine": 60,
-    "base": 50,
-    "knowledgeWeight": 1.0,
     "studyBonusPerAction": 3,
     "difficulty": 10,
-    "note": "单门 score = round((60 + 分科进度加成(开根号递减) + 学识兜底 + (健康-60)×0.1) × (1±fluctuation))，夹[60,100]；分科进度按学习地点主题累计，学识仅兜底，永不挂科"
+    "note": "单门 score = clamp(round(base + progBonus×√(min(该方向进度/progSatiety, progCap)) + knowledgeWeight×学识 + clamp(healthWeight×(健康-60), ±healthClamp) - 该课难度 + 随机±noiseAmp), passLine, 100)；科目按 config/courses.json 的公共课+专业课逐门算，课程按名称规则映射到 study 方向（major/basics/humanities）并分难度；学期绩点按难度加权。保留「永不挂科」决议：低于及格线一律钳到 60"
   },
 
   "gpaTable": [
