@@ -426,6 +426,12 @@ check('H: 已遇见的林予显示真名',
   byClass(rootUi, 'vn-rel__name').some((n) => n.textContent === '林予'));
 check('H: 未遇见的角色显示为「？？？」',
   byClass(rootUi, 'vn-rel__name').filter((n) => n.textContent === '？？？').length >= 4);
+check('H: 已遇见的林予显示称号与人物简介（此前遗漏未渲染）',
+  byClass(rootUi, 'vn-rel__title').some((n) => n.textContent === '校报上没署名的作者')
+  && byClass(rootUi, 'vn-rel__intro').some((n) => String(n.textContent).includes('校报的摄影兼写手')));
+check('H: 未遇见的角色不显示称号与简介（不剧透）',
+  byClass(rootUi, 'vn-rel__title').length === 1 && byClass(rootUi, 'vn-rel__intro').length === 1,
+  `title=${byClass(rootUi, 'vn-rel__title').length} intro=${byClass(rootUi, 'vn-rel__intro').length}`);
 
 // 迎新晚会选人之后：左侧立绘换成对方；结算正文是旁白，名牌用「旁白」
 appUi.render(sUi, {

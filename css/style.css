@@ -4723,6 +4723,14 @@ body { font-synthesis: none; }
   white-space: nowrap;
 }
 .vn-rel__role { margin: 0; font-size: 12px; color: var(--ink-3); }
+.vn-rel__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1.35;
+  color: #d4b05a;
+}
+.vn-rel__intro { margin: 0; font-size: 12px; line-height: 1.5; color: var(--ink-2); }
 .vn-rel__bar {
   height: 6px;
   border-radius: 999px;

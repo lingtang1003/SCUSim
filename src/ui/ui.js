@@ -2406,7 +2406,11 @@ export function createApp(ctx) {
               h('b', { class: 'vn-rel__name' }, [rel.met ? c.name : '？？？']),
               h('span', { class: 'vn-rel__stage' }, [rel.met ? stage.name : '未遇见']),
             ]),
+            // 称号：config 里写好但此前从未渲染；未遇见时不剧透
+            rel.met && c.title ? h('div', { class: 'vn-rel__title' }, [c.title]) : null,
             h('p', { class: 'vn-rel__role' }, [rel.met ? (c.role || '') : '还没在校园里遇见。']),
+            // 人物简介：同上，已遇见才显示
+            rel.met && c.intro ? h('p', { class: 'vn-rel__intro' }, [c.intro]) : null,
             h('div', { class: 'vn-rel__bar' }, [
               h('i', { style: 'width:' + pct + '%' }),
             ]),
