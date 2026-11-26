@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { loadConfig } from '../../src/config/loader.js';
 import { createGameState } from '../../src/core/state.js';
 import {
-  runFinalExam, gradePoint, checkWarning, judgeThesis, takeExam,
+  runFinalExam, gradePoint, checkWarning, judgeThesis, takeExam, subjectsFor,
 } from '../../src/core/academy.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -59,9 +59,10 @@ console.log('== B · 学业单测 ==');
     `expected=${expected}, scores=${res.subjects.map((x) => x.score).join(',')}`);
   check('runFinalExam: 永不低于及格线 60', res.subjects.every((x) => x.score >= passLine),
     `scores=${res.subjects.map((x) => x.score).join(',')}`);
-  check('runFinalExam: 返回 4 门与挂科数', res.subjects.length === exam.subjects.length
+  check('runFinalExam: 科目数 = 该学期实际排课数（公共课 + 专业课）',
+    res.subjects.length === subjectsFor(s, config).length
     && res.failedThisSemester === res.subjects.filter((x) => !x.passed).length,
-    `n=${res.subjects.length}`);
+    `n=${res.subjects.length} vs ${subjectsFor(s, config).length}`);
   check('runFinalExam: 写 semesterRecords', Array.isArray(s.academics.semesterRecords)
     && s.academics.semesterRecords.length === 1,
     JSON.stringify(s.academics.semesterRecords));

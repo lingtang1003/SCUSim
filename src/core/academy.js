@@ -97,6 +97,41 @@ function majorsAt(collegeMap, semester) {
   return [];
 }
 
+/**
+ * 「课程名 → 学习方向」的默认关键词表（可用 balance.exam.topicRules 覆盖）。
+ * 背景：考试科目现在是 courses.json 里的真实课程名（如「大学英语（综合）」），
+ * 而 subjectProgress 是按 major / basics / humanities 累计的；
+ * 缺了这层解析，每门课都查不到主题，分科进度加成会永远是 0。
+ */
+const DEFAULT_TOPIC_RULES = [
+  { topic: 'basics', words: ['英语', '体育', '微积分', '线性代数', '大学物理', '概率统计', '数学', '物理', '化学'] },
+  { topic: 'humanities', words: ['形势与政策', '思想道德', '马克思主义', '毛泽东思想', '近现代史', '军事理论', '职业发展', '就业指导', '文学', '历史', '哲学'] },
+];
+
+/**
+ * 科目名 → 学习方向（major / basics / humanities）。
+ * 解析顺序：exam.subjectTopics 显式映射 → exam.topicRules 关键词 → exam.defaultTopic → 'major'
+ * @param {string} name 科目 / 课程名
+ * @param {object} exam balance.exam
+ * @returns {string}
+ */
+export function resolveTopic(name, exam) {
+  const e = exam || {};
+  const label = String(name == null ? '' : name);
+  const map = (e.subjectTopics && typeof e.subjectTopics === 'object') ? e.subjectTopics : {};
+  if (map[label]) return map[label];
+  const rules = Array.isArray(e.topicRules) && e.topicRules.length ? e.topicRules : DEFAULT_TOPIC_RULES;
+  for (const rule of rules) {
+    const topic = rule && rule.topic;
+    const words = rule && Array.isArray(rule.words) ? rule.words : [];
+    if (!topic) continue;
+    for (const w of words) {
+      if (w && label.indexOf(String(w)) >= 0) return topic;
+    }
+  }
+  return e.defaultTopic || 'major';
+}
+
 export function subjectsFor(state, config, examCfg) {
   const exam = examCfg || getExamConfig(config);
   const fallback = Array.isArray(exam.subjects) && exam.subjects.length
@@ -141,14 +176,14 @@ export function runFinalExam(state, config, rng) {
 
   const next = (rng && typeof rng.next === 'function') ? () => rng.next() : () => 0.5;
   const health = Number(state.player.attributes.health) || 0;
-  const topicMap = (exam.subjectTopics && typeof exam.subjectTopics === 'object') ? exam.subjectTopics : {};
   const progress = (state.academics && state.academics.subjectProgress) || {};
   const satiety = Number.isFinite(exam.subjectSatiety) ? exam.subjectSatiety : 12;
   const subjBonus = Number.isFinite(exam.subjectBonus) ? exam.subjectBonus : 30;
 
   const results = subjects.map((name) => {
     const n = next();
-    const topic = topicMap[name];
+    // 课程名先解析成学习方向（major / basics / humanities），才能取到对应方向的学习进度
+    const topic = resolveTopic(name, exam);
     const prog = topic ? (Number(progress[topic]) || 0) : 0;
     // 分科进度加成（开根号边际递减）：刷满 satiety 次该方向学习 → subjBonus 分
     const progGain = subjBonus * Math.sqrt(Math.max(0, prog) / satiety);

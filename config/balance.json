@@ -22,6 +22,11 @@
   "exam": {
     "subjects": ["高等数学", "大学英语", "专业核心", "思想政治"],
     "subjectTopics": { "专业核心": "major", "高等数学": "basics", "大学英语": "basics", "思想政治": "humanities" },
+    "topicRules": [
+      { "topic": "basics", "words": ["英语", "体育", "微积分", "线性代数", "大学物理", "概率统计", "数学", "物理", "化学"] },
+      { "topic": "humanities", "words": ["形势与政策", "思想道德", "马克思主义", "毛泽东思想", "近现代史", "军事理论", "职业发展", "就业指导", "文学", "历史", "哲学"] }
+    ],
+    "defaultTopic": "major",
     "subjectSatiety": 12,
     "subjectBonus": 30,
     "fluctuation": 0.12,
@@ -30,7 +35,7 @@
     "knowledgeWeight": 1.0,
     "studyBonusPerAction": 3,
     "difficulty": 10,
-    "note": "单门 score = round((60 + 分科进度加成(开根号递减) + 学识兜底 + (健康-60)×0.1) × (1±fluctuation))，夹[60,100]；分科进度按学习地点主题累计，学识仅兜底，永不挂科"
+    "note": "单门 score = round((60 + 分科进度加成(开根号递减) + 学识兜底 + (健康-60)×0.1) × (1±fluctuation))，夹[60,100]；分科进度按学习地点主题累计（major/basics/humanities），学识仅兜底，永不挂科。课程名→主题的解析顺序：subjectTopics[课程名] 显式映射 → topicRules 关键词 → defaultTopic（默认 major），见 academy.resolveTopic"
   },
 
   "gpaTable": [

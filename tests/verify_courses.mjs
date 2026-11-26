@@ -7,7 +7,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadConfig } from '../src/config/loader.js';
 import { newGame } from '../src/core/engine.js';
-import { runFinalExam, subjectsFor } from '../src/core/academy.js';
+import { runFinalExam, subjectsFor, resolveTopic } from '../src/core/academy.js';
 import { createRng } from '../src/core/rng.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -150,6 +150,83 @@ test('subjectsFor: 大四（学期 7/8）只考公共课，不排专业课', () 
   const pub8 = config.courses.public['8'];
   const onlyPublic = (subs, pub) => subs.length === pub.length && subs.every((x) => pub.includes(x));
   return onlyPublic(s7, pub7) && onlyPublic(s8, pub8);
+});
+
+// 4) 课程名 → 学习方向（major / basics / humanities）
+//    回归：科目改成真实课程名后，subjectTopics 的 4 个标签再也匹配不上，
+//    每门课的「分科进度加成」恒为 0，等于整个学习方向系统失效。
+const EXAM = config.balance.exam;
+const allCourseNames = (() => {
+  const set = new Set();
+  for (const sem of Object.keys(courses.public || {})) (courses.public[sem] || []).forEach((n) => set.add(n));
+  for (const col of Object.keys(courses.colleges || {})) {
+    for (const sem of Object.keys(courses.colleges[col])) {
+      (courses.colleges[col][sem] || []).forEach((n) => set.add(n));
+    }
+  }
+  return [...set];
+})();
+
+test('resolveTopic: 每门课程都能解析成 major / basics / humanities', () => {
+  const bad = allCourseNames.filter((n) => !['major', 'basics', 'humanities'].includes(resolveTopic(n, EXAM)));
+  return bad.length ? bad.slice(0, 6).join(',') : true;
+});
+test('resolveTopic: 英语/体育/数学类落到 basics，思政/形势与政策落到 humanities', () => {
+  const cases = [
+    ['大学英语（综合）', 'basics'],
+    ['体育-1', 'basics'],
+    ['微积分（Ⅰ）', 'basics'],
+    ['概率统计（理工）', 'basics'],
+    ['思想道德与法治', 'humanities'],
+    ['形势与政策（三）', 'humanities'],
+    ['马克思主义基本原理', 'humanities'],
+    ['数据结构与算法分析', 'major'],
+    ['编译原理', 'major'],
+  ];
+  const bad = cases.filter(([name, want]) => resolveTopic(name, EXAM) !== want);
+  return bad.length ? bad.map(([n, w]) => n + '→' + resolveTopic(n, EXAM) + '(期望' + w + ')').join(',') : true;
+});
+
+/** 造一个「学识/健康都 60、随机取中性 0.5」的考场，方便比较分差 */
+function examState(collegeId, progress) {
+  const s = stateOf(collegeId, 3);
+  s.player.attributes.knowledge = 60;
+  s.player.attributes.health = 60;
+  s.academics.subjectProgress = progress;
+  return s;
+}
+const neutralRng = { next: () => 0.5 };
+
+test('runFinalExam: 刷「专业方向」后专业课分数明显更高（分科进度真的生效了）', () => {
+  const s = examState('cs', { major: 12, basics: 0, humanities: 0 });
+  const subs = subjectsFor(s, config);
+  const majorName = subs.find((n) => resolveTopic(n, EXAM) === 'major');
+  const basicsName = subs.find((n) => resolveTopic(n, EXAM) === 'basics');
+  if (!majorName || !basicsName) return '该学期缺 major/basics 科目: ' + subs.join(',');
+  const r = runFinalExam(s, config, neutralRng);
+  const scoreOf = (n) => (r.subjects.find((x) => x.name === n) || {}).score;
+  const diff = scoreOf(majorName) - scoreOf(basicsName);
+  return diff >= 25 ? true : `专业课 ${scoreOf(majorName)} vs 基础课 ${scoreOf(basicsName)}（差 ${diff}）`;
+});
+
+test('runFinalExam: 加成只给对应方向，不会给所有科目一起加分', () => {
+  const s = examState('cs', { major: 0, basics: 0, humanities: 12 });
+  const subs = subjectsFor(s, config);
+  const majorName = subs.find((n) => resolveTopic(n, EXAM) === 'major');
+  const humanName = subs.find((n) => resolveTopic(n, EXAM) === 'humanities');
+  if (!majorName || !humanName) return '该学期缺 major/humanities 科目: ' + subs.join(',');
+  const r = runFinalExam(s, config, neutralRng);
+  const scoreOf = (n) => (r.subjects.find((x) => x.name === n) || {}).score;
+  return scoreOf(humanName) - scoreOf(majorName) >= 25
+    ? true
+    : `人文科目 ${scoreOf(humanName)} vs 专业科目 ${scoreOf(majorName)}`;
+});
+
+test('runFinalExam: 完全没有进度时所有科目同分（不加成也不惩罚）', () => {
+  const s = examState('cs', { major: 0, basics: 0, humanities: 0 });
+  const r = runFinalExam(s, config, neutralRng);
+  const scores = new Set(r.subjects.map((x) => x.score));
+  return scores.size === 1 ? true : [...scores].join(',');
 });
 
 console.log(`\n== verify_courses 结果 ==`);

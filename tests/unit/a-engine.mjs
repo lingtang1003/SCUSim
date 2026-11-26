@@ -24,6 +24,7 @@ import {
 } from '../../src/core/engine.js';
 import { judgeEnding, evaluateCondition } from '../../src/core/ending.js';
 import { computeWeight } from '../../src/events/eventManager.js';
+import { subjectsFor } from '../../src/core/academy.js';
 import { clampAttrs, pushHistory, pushLog, createGameState } from '../../src/core/state.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -109,9 +110,11 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
     && s.academics.totalGpa === 0
     && s.academics.thesis === null);
 
-  // 三标签修正：study_hard(k+2,h-1) + gamer(k+1,h-1,s-1) + chill(k-1,h+1)
-  check('newGame: 标签修正叠加（学识 5→7 / 健康 5→4 / 社交 5→4）',
-    s.player.attributes.knowledge === 7 && s.player.attributes.health === 4 && s.player.attributes.social === 4,
+  // 三标签修正（v2.2 数值，见 config/tags.json）：
+  //   study_hard(k+3,s-1,h-1) + gamer(k+2,s-1,h-1) + chill(h+2,k-1)
+  //   → 学识 5+3+2-1=9，社交 5-1-1=3，健康 5-1-1+2=5
+  check('newGame: 标签修正叠加（学识 5→9 / 社交 5→3 / 健康 5→5）',
+    s.player.attributes.knowledge === 9 && s.player.attributes.health === 5 && s.player.attributes.social === 3,
     JSON.stringify(s.player.attributes));
   check('newGame: 标签修正写入履历', s.history.some((h) => h.type === 'tags'));
 
@@ -216,9 +219,9 @@ console.log('== A 引擎单测（a-engine · W1–W3）==');
   const resolved = resolvePendingEvent(se, examOpt.id, cfgExam, createRng(30));
   const rec = se.academics.semesterRecords[se.academics.semesterRecords.length - 1];
   check('resolvePendingEvent: 事件结算后才返回 settlement', resolved.ok === true && !!resolved.settlement);
-  check('advance: 期末科目数 = 配置 subjects 数（4 门）',
-    rec && rec.subjects.length === base.balance.exam.subjects.length,
-    String(rec && rec.subjects.length));
+  check('advance: 期末科目数 = 该学期实际排课数（公共课 + 专业课）',
+    rec && rec.subjects.length === subjectsFor(se, cfgExam).length,
+    String(rec && rec.subjects.length) + ' vs ' + subjectsFor(se, cfgExam).length);
   check('advance: 分数落在 [passLine, 100]（永不挂科决议）',
     rec && rec.subjects.every((x) => x.score >= base.balance.exam.passLine && x.score <= 100),
     JSON.stringify(rec && rec.subjects.map((x) => x.score)));
