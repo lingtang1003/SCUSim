@@ -46,6 +46,9 @@
       "activities": [
         "study"
       ],
+      "activityLabels": {
+        "study": "自习学习"
+      },
       "desc": "安静的自习区，学识 +2。",
       "line": "（图书馆的空调声很低，翻书声一层一层）",
       "labelDx": 0,
@@ -141,7 +144,7 @@
       "id": "gym",
       "name": "体育馆",
       "campus": "jiang-an",
-      "scene": "track",
+      "scene": "gym",
       "x": 75.0,
       "y": 6.0,
       "requiresHealth": 5,
@@ -158,7 +161,7 @@
       "id": "bridge",
       "name": "长桥",
       "campus": "jiang-an",
-      "scene": "mingyuan",
+      "scene": "river",
       "x": 46.7,
       "y": 64.0,
       "requiresHealth": 0,

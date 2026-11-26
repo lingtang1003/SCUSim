@@ -97,12 +97,16 @@ const BG = {
 const SCENES = {
   title: { files: [BG.gateScu] },
   campus: { files: [BG.avenue, BG.magnolia, BG.plaza, BG.plazaStreet, BG.duskRoad, BG.lawn, BG.river] },
-  classroom: { files: [BG.library, BG.classScreen, BG.classSunlit, BG.classEmpty, BG.classPodium, BG.corridor] },
-  clubroom: { files: [BG.activityWall, BG.jiangjie, BG.plaza, BG.plazaStreet, BG.corridor] },
-  track: { files: [BG.field, BG.gym, BG.lawn] },
+  classroom: { files: [BG.classScreen, BG.classSunlit, BG.classEmpty, BG.classPodium, BG.corridor] },
+  clubroom: { files: [BG.activityWall, BG.plaza, BG.plazaStreet] },
+  track: { files: [BG.field] },
   store: { files: [BG.metroPlatform, BG.metroEscalator] },
-  street: { files: [BG.hotpot, BG.bar, BG.canteen, BG.canteenWest] },
-  dorm: { files: [BG.duskRoad, BG.river, BG.lawn, BG.avenue] },
+  street: { files: [BG.hotpot, BG.bar, BG.plaza, BG.plazaStreet] },
+  dorm: { files: [BG.avenue, BG.duskRoad] },
+  canteen: { files: [BG.canteen, BG.canteenWest] },
+  gate: { files: [BG.gate] },
+  gym: { files: [BG.gym] },
+  river: { files: [BG.river] },
   create: { files: [BG.createWelcome] },
   event: { files: [] },
   libraryHall: { files: [BG.libraryHall] },
@@ -906,7 +910,11 @@ export function createApp(ctx) {
     const all = listOf('actions');
     const loc = locationOf(state);
     if (!loc || !Array.isArray(loc.activities) || !loc.activities.length) return all;
-    return all.filter((a) => loc.activities.indexOf(a.id) >= 0);
+    const labels = (loc && loc.activityLabels) || null;
+    return all.filter((a) => loc.activities.indexOf(a.id) >= 0).map((a) => {
+      const label = labels && labels[a.id];
+      return label ? Object.assign({}, a, { name: label }) : a;
+    });
   }
 
   function actionChoices(state, availability) {
