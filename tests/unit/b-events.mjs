@@ -437,6 +437,8 @@ console.log('== B · 事件单测 ==');
     const GROUPS = {
       canteen: ['canteen', 'wj_canteen'], college: ['college', 'wj_college'],
       track: ['track', 'wj_track'], dorm: ['dorm', 'wj_dorm'],
+      // 江安 / 望江 都有校门（gate / wj_gate），校门类文案两边都算对
+      wj_gate: ['wj_gate', 'gate'],
     };
     const all = [].concat(events.fixed || [], events.random || []);
     const bad = [];

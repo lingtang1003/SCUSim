@@ -90,7 +90,7 @@ console.log('== SCUSim 生活费 / 提示窗自检 ==');
 
 check('A: 生活费配置为每 4 周一次', Number(RULES.allowance.everyTurns) === 4, String(RULES.allowance.everyTurns));
 check('A: 生活费金额 80', Number(RULES.allowance.amount) === 80, String(RULES.allowance.amount));
-check('B: 每周固定开销 20', Number(RULES.fee.amount) === 20, String(RULES.fee.amount));
+check('B: 每周固定开销 15', Number(RULES.fee.amount) === 15, String(RULES.fee.amount));
 
 // ---------------------------------------------------------------------------
 // A/B/C) 跑 8 周，核对进出账与通知
@@ -141,11 +141,11 @@ check('B: 每周固定开销 20', Number(RULES.fee.amount) === 20, String(RULES.
   // 第 5~7 周：只扣开销
   for (const t of [5, 6, 7]) {
     const row = rows.find((x) => x.turn === t);
-    check(`B: 第 ${t} 周只扣 20（每 ${every} 周才发一次）`,
+    check(`B: 第 ${t} 周只扣 ${fee}（每 ${every} 周才发一次）`,
       row && row.after === row.before - fee && !row.allowNote, JSON.stringify(row));
   }
   const r8 = rows.find((x) => x.turn === 8);
-  check('A: 第 8 周再发一次 +80 − 20',
+  check(`A: 第 8 周再发一次 +${amount} − ${fee}`,
     r8 && r8.after === r8.before + amount - fee, JSON.stringify(r8));
 }
 
@@ -174,6 +174,29 @@ check('B: 每周固定开销 20', Number(RULES.fee.amount) === 20, String(RULES.
   const auto = app.showNotice({ title: '自动消失', duration: 30 });
   await new Promise((r) => setTimeout(r, 90));
   check('E: 到时间自动移除', auto && rootEl.children.indexOf(auto) < 0);
+
+  // F) 每周账单：每周末都要弹（只扣开销 / 开销+生活费 两种标题）
+  check('F: app 暴露了 showWeeklyBill', typeof app.showWeeklyBill === 'function');
+  const feeOnly = app.showWeeklyBill({ turn: 5, fee: 15, allowance: 0, money: 42 });
+  check('F: 只扣开销那周 → 标题「本周固定开销 −15」',
+    !!feeOnly && String(feeOnly.textContent).includes('本周固定开销 −15'),
+    feeOnly && feeOnly.textContent);
+  check('F: 正文带周数 / 开销 / 当前金钱',
+    !!feeOnly && String(feeOnly.textContent).includes('第 5 周')
+    && String(feeOnly.textContent).includes('固定开销 −15')
+    && String(feeOnly.textContent).includes('当前金钱 42'),
+    feeOnly && feeOnly.textContent);
+
+  const both = app.showWeeklyBill({ turn: 8, fee: 15, allowance: 80, money: 137 });
+  check('F: 生活费那周 → 标题「生活费到账 +80」',
+    !!both && String(both.textContent).includes('生活费到账 +80'),
+    both && both.textContent);
+  check('F: 同一天也写清扣了多少开销',
+    !!both && String(both.textContent).includes('固定开销 −15')
+    && String(both.textContent).includes('生活费 +80')
+    && String(both.textContent).includes('当前金钱 137'),
+    both && both.textContent);
+  check('F: 金额为 0 时不弹', app.showWeeklyBill({ turn: 3, fee: 0, allowance: 0 }) === null);
 }
 
 console.log(`\n总计 ${pass + failures.length} 项，PASS ${pass}，FAIL ${failures.length}`);

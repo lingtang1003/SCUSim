@@ -56,7 +56,7 @@
 | `endingPriorityOrder` | `"asc"｜"desc"` | 否 | ⏳ D-W3 | ending.sortByPriority | `asc` = 数值越小越高；缺省 `desc` 兼容现配置 |
 | `historyLimit` / `logLimit` | number | 否 | 默认 60 | state | 履历/日志环形上限 |
 | `idleDecay` | object | 否 | ⏸ 默认关闭（已由 `weeklyRules.neglect` 接管） | engine.applyIdleDecay | 连续空窗扣属性：`{everyTurns:4, resetPerYear:true, knowledge:{actions:['study'],amount:3}, health:{actions:['exercise','rest'],amount:2}}`；缺省则不扣（兼容旧存档）。仓库里已置 `null`，机制保留但默认不生效 |
-| `weeklyRules` | object | 否 | ✅ 已生效 | core/rhythm.js（advance / doAction / actionAvailability 调用） | 每周固定规则：`fee`（每周固定开销，默认 −20）、`eat`（这周必须吃一次饭，否则扣健康，默认 −15；`actions`+`locations` 决定什么算吃饭）、`allowance`（每 `everyTurns` 周 +`amount`，默认 **4 周 +80**，到账时 UI 弹 `.vn-notice` 提示窗）、`broke`（金钱 < 0 时只能做 `allowedActions`，默认兼职/休息）、`neglect`（属性连续 `afterTurns` 周没涨就 −`amount`，默认 2 周 −10；`amounts` 可按属性覆盖，学识默认 −5，掉完重新计时）。缺省则全部不生效 |
+| `weeklyRules` | object | 否 | ✅ 已生效 | core/rhythm.js（advance / doAction / actionAvailability 调用） | 每周固定规则：`fee`（**每周**固定开销，默认 **−15**，每周末由 `app.showWeeklyBill` 弹账单提示窗）、`eat`（这周必须吃一次饭，否则扣健康，默认 −15；`actions`+`locations` 决定什么算吃饭）、`allowance`（每 `everyTurns` 周 +`amount`，默认 **4 周 +80**，与开销合并进同一张账单）、`broke`（金钱 < 0 时只能做 `allowedActions`，默认兼职/休息）、`neglect`（属性连续 `afterTurns` 周没涨就 −`amount`，默认 2 周 −10；`amounts` 可按属性覆盖，学识默认 −5，掉完重新计时）。缺省则全部不生效 |
 | `dropout` | object | 否 | ✅ 已生效 | core/rhythm.checkDropout（advance 里调用） | 学识归零 = 退学：`{attribute:'knowledge', atMost:0, endingId:'ending_warning'}`，触发后直接把 `state.endingId` 定死，`advance()` 返回该 `endingId`，不再生成事件 / 考试 |
 | `healthZeroRule` | object | 否 | ✅ 已生效 | core/rhythm.blockedByZeroHealth + engine.actionAvailability | 健康归零时只允许「效果里 health > 0」的活动（默认 `onlyPositiveHealthActions: true`）；低健康（< `healthRestrictThreshold`）也按同一条「能加健康就放行」判断 |
 | `socialRules` | object | 否 | ✅ 已生效 | core/rhythm.applySocialRules + storyline.meetingSkipChance + eventManager.computeWeight | 社交过低的后果：`affinity`（社交 < `below`(30) 时已遇见角色好感 −`penalty`(20)，掉线触发一次，回到线上才重新计数）、`scarcity`（社交 < `below`(20) 时人物剧情按 `skipChance`(0.75) 概率不登场、带 charId 的事件权重 ×`eventWeightScale`(0.25)） |
@@ -486,6 +486,7 @@ state.storylines = { /* lineId: { step, status, since, lastTurn, lowTurns } */ }
 | `pendingEvent.options[].hints` | engine → UI | 选项上的好感提示 |
 | `app.showRelations()` | main/UI | 关系面板（UI 内部读 `lastState` + `config.characters`） |
 | `app.showNotice({icon,title,text,tone,duration})` | main → UI | 非阻塞提示窗（`.vn-notice`，顶部居中，3.5s 自动消失，不进弹窗队列）。生活费到账用它，其余周结算仍走 `showToast` |
+| `app.showWeeklyBill({turn,fee,allowance,money})` | main → UI | 每周末的账单提示窗：`fee`+`allowance` 合成一张卡（只扣开销 → 「本周固定开销 −N」；有生活费 → 「生活费到账 +N」），正文「第 N 周 · 固定开销 −X · 生活费 +Y · 当前金钱 Z」 |
 
 ### C.6 文件归属（v2.1 新增）
 

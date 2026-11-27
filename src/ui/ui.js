@@ -2975,6 +2975,31 @@ export function createApp(ctx) {
   }
 
   /**
+   * 每周账单提示窗：把「固定开销 / 生活费」合成一张卡，每周末弹一次。
+   * 有生活费的那周标题是「生活费到账 +N」，否则是「本周固定开销 −N」。
+   * @param {{turn?:number, fee?:number, allowance?:number, money?:number}} opts
+   */
+  function showWeeklyBill(opts) {
+    const o = opts || {};
+    const fee = Number(o.fee) || 0;
+    const allowance = Number(o.allowance) || 0;
+    const money = Number(o.money);
+    const parts = [];
+    if (fee > 0) parts.push('固定开销 −' + fee);
+    if (allowance > 0) parts.push('生活费 +' + allowance);
+    if (!parts.length) return null;
+    const hasIncome = allowance > 0;
+    const textParts = ['第 ' + (Number.isFinite(Number(o.turn)) ? Number(o.turn) : '?') + ' 周', parts.join(' · ')];
+    if (Number.isFinite(money)) textParts.push('当前金钱 ' + money);
+    return showNotice({
+      icon: hasIncome ? '💰' : '💸',
+      tone: hasIncome ? 'success' : 'info',
+      title: hasIncome ? '生活费到账 +' + allowance : '本周固定开销 −' + fee,
+      text: textParts.join(' · '),
+    });
+  }
+
+  /**
    * 事件选项前置不足时的说明：优先显示在事件弹层里（不挡选项），
    * 没有事件弹层时退回 toast。
    */
@@ -3006,6 +3031,7 @@ export function createApp(ctx) {
     showError,
     showToast,
     showNotice,
+    showWeeklyBill,
     showGallery,
     showSlots,
     showMap,

@@ -5995,6 +5995,119 @@
       ]
     },
     {
+      "id": "ev_pl_gate_1",
+      "name": "校门口的招工牌",
+      "weight": 8,
+      "termRange": [
+        1,
+        8
+      ],
+      "text": "校门边立着一块手写招工牌：快递代拿、家教、发单，纸角被风吹得一掀一掀。",
+      "options": [
+        {
+          "id": "note",
+          "label": "撕下联系方式",
+          "resultText": "你把三家的电话都存进手机，晚上回宿舍挨个打了过去。",
+          "effects": {
+            "money": 10,
+            "attributes": {
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "pass",
+          "label": "看一眼就走",
+          "resultText": "你想起这周还有两次课没补，把牌子上的号码记了一半就算了。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work",
+      "place": [
+        "gate"
+      ]
+    },
+    {
+      "id": "ev_pl_gate_2",
+      "name": "门卫室的热水",
+      "weight": 8,
+      "termRange": [
+        1,
+        10
+      ],
+      "text": "门卫室的大爷把热水壶挪到窗台，冲你招手：「进来接一杯，外面风大。」",
+      "options": [
+        {
+          "id": "thanks",
+          "label": "接一杯，谢过大爷",
+          "resultText": "你在门卫室站了一会儿，听着收音机里的天气预报，身上暖过来。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": 1
+            }
+          }
+        },
+        {
+          "id": "wave",
+          "label": "摆手赶时间",
+          "resultText": "你朝大爷扬了扬手里的书，脚步没停。",
+          "effects": {}
+        }
+      ],
+      "spot": [
+        "parttime",
+        "rest"
+      ],
+      "topic": "work",
+      "place": [
+        "gate"
+      ]
+    },
+    {
+      "id": "ev_pl_gate_3",
+      "name": "晚归的闸机",
+      "weight": 8,
+      "termRange": [
+        1,
+        12
+      ],
+      "text": "打工回来已经过了十一点，校门口只剩闸机上一盏灯亮着，保安在值班室里抬头看了你一眼。",
+      "options": [
+        {
+          "id": "hurry",
+          "label": "刷卡小跑回宿舍",
+          "resultText": "你一路小跑，风把外套灌得鼓起来，进楼时正好听到熄灯铃。",
+          "effects": {
+            "attributes": {
+              "health": 1
+            }
+          }
+        },
+        {
+          "id": "sit",
+          "label": "在门柱下坐一会儿",
+          "resultText": "你靠着门柱坐了几分钟，看车灯一辆辆从校门外划过去。",
+          "effects": {
+            "attributes": {
+              "health": 1,
+              "social": -1
+            }
+          }
+        }
+      ],
+      "spot": [
+        "parttime"
+      ],
+      "topic": "work",
+      "place": [
+        "gate"
+      ]
+    },
+    {
       "id": "ev_pl_wjgate_3",
       "name": "校门口的花摊",
       "weight": 8,

@@ -240,7 +240,7 @@
   "weeklyRules": {
     "note": "每周固定规则（core/rhythm.js）：1) 这周必须吃一次饭，否则扣健康；2) 每周固定扣一笔开销 fee；3) 每 everyTurns 周发一次生活费；4) 金钱为负时只能做 allowedActions，其余锁死；5) 某属性连续 afterTurns 周没涨过就掉 amount 点（amounts 可按属性覆盖，学识更轻）。idleDecay 已置 null（旧的「按行动空窗」扣减，由 neglect 接管）。",
     "fee": {
-      "amount": 20,
+      "amount": 15,
       "message": "本周固定开销"
     },
     "eat": {

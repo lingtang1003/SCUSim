@@ -221,7 +221,7 @@ HUD 左侧胶囊组里多了一枚按需出现的红色胶囊 `.vn-chip--warn`�
 退学这步 `advance()` 会直接返回 `endingId`，`main.onAdvance` 立刻放结局（不再等第 40 回合）。
 回归：`tests/verify_rules.mjs`（39 条）+ `tests/verify_social.mjs`（18 条）。
 
-### 8.4 提示窗 `.vn-notice`（生活费到账）
+### 8.4 提示窗 `.vn-notice`（每周账单 / 生活费到账）
 
 和 toast 分开的两种"通知"，别混用：
 
@@ -229,14 +229,16 @@ HUD 左侧胶囊组里多了一枚按需出现的红色胶囊 `.vn-chip--warn`�
 |---|---|---|
 | 位置 | 底部居中 | 顶部居中（HUD 下方 96px） |
 | 出现方式 | 叠着弹、2.4s 消失 | 一次一张、3.5s 消失或点 × |
-| 用途 | 瞬时反馈（点一下、存个档、扣了点血） | **需要看清的事件**：生活费到账 |
+| 用途 | 瞬时反馈（点一下、存个档、扣了点血） | **需要看清的事件**：每周账单（固定开销 / 生活费） |
 | 遮挡 | 不挡任何东西 | 不挡任何东西（不是 overlay，不进弹窗队列） |
 
 - API：`app.showNotice({ icon, title, text, tone, duration })`，挂进 `rootEl`，不动 `overlayEl`；
-- 生活费到账由 `main.onAdvance` 读 `res.notices` 里的 `type === 'allowance'` 触发，
-  标题「💰 生活费到账 +80」，正文带「第 N 周 · 每 4 周发放一次 · 当前金钱 X」；
-- 其余周结算提示仍走 toast（同一件事不重复说两遍）；
-- 回归：`tests/verify_notice.mjs`（22 条，含"点 × 移除 / 到时间自动移除"）。
+- 每周账单：`app.showWeeklyBill({ turn, fee, allowance, money })` —— **每周末必弹**：
+  只扣开销那周标题是「💸 本周固定开销 −15」，发生活费那周合并成「💰 生活费到账 +80」，
+  正文统一写「第 N 周 · 固定开销 −X · 生活费 +Y · 当前金钱 Z」；
+- 触发点在 `main.onAdvance`：读 `res.weekly.fee / res.weekly.allowance`（引擎的结算结果）；
+  这两类不再走 toast，其余周结算提示（没吃饭 / 属性荒废 / 社交惩罚）仍走 toast；
+- 回归：`tests/verify_notice.mjs`（28 条，含"点 × 移除 / 到时间自动移除 / 两种账单标题"）。
 
 ## 9. Agent Prompt Guide
 
